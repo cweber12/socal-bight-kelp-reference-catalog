@@ -1,0 +1,26 @@
+# Fetched sources: reproducible from src/fetch/ plus catalog/data-lock.json. Never tracked.
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Tests and tooling
+.coverage
+.coverage.*
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+
+# Notebooks
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store

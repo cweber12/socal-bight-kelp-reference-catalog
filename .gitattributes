@@ -1,0 +1,5 @@
+# LF everywhere, including on Windows checkouts, so records and notebooks diff cleanly.
+* text=auto eol=lf
+*.png binary
+*.pdf binary
+*.zip binary
