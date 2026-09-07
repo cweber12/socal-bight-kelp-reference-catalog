@@ -25,7 +25,9 @@ is protected.
 ## How work is tracked
 
 One milestone is active at a time; the next thing to do is the top open `ready-for-agent` issue in
-it. A PRD for each milestone lives at `docs/prd/<slug>.md`.
+it. A PRD for each milestone lives at `docs/prd/<slug>.md`. An issue is ready when it names the
+seam, the failing test and the non-goals and fits one PR; if you cannot state the failing test,
+stop and ask.
 
 ## In-flight bugs
 
