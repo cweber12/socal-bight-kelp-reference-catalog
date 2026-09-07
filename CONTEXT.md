@@ -1,0 +1,254 @@
+# CONTEXT — what this catalog is, and the rules every record follows
+
+This file is the authority. `src/kelpcatalog/schema.py` implements it; if the two disagree, this
+file is right and the code is a bug.
+
+## Purpose
+
+A catalog of the authoritative sources — datasets, monitoring programs, reports and papers — for
+kelp forest monitoring in the Southern California Bight, organized by **topic** and by **region**,
+so that a researcher can find what exists for a question or a place, reach the original in one
+click, and check any value against it.
+
+The catalog supports analysis repos; it does not do analysis.
+
+## The rule
+
+> A record holds only what the source itself states, and what anyone repeating the fetch would
+> reproduce. Nothing else.
+
+What that admits and excludes:
+
+| admitted | excluded |
+|---|---|
+| a source's title, steward, URL, DOI, licence text as published | any judgement of a source's quality |
+| access steps that a stranger can follow today | narrative about how the record came to be |
+| format, variables and units as the source lists them | summary statistics computed here |
+| coverage as the source states it, with where it states it | fits, corrections or re-derivations of published relationships |
+| retrieved date, sha256 and byte count of a fetched file | "first-look" observations, interpretations, verdicts |
+| a fact anyone repeating the fetch would see ("returns 401 without a bearer token, 2026-09-04") | drafts, correspondence, to-do notes |
+| an equation exactly as a paper prints it, with page or equation number | an equation adjusted, clipped or extended here |
+| a one-line reason a reviewed item was excluded | paragraphs about why |
+
+Figures follow the same rule: a notebook may load a catalogued file by id, apply an equation as a
+cited reference prints it, and plot; every mark on the figure traces to a record or a printed
+equation, and a `provenance(...)` caption under the figure says which.
+
+## Record format
+
+A record is one markdown file whose entire content is a YAML frontmatter block. The body below the
+closing `---` must be empty. Markdown rather than YAML because GitHub renders frontmatter as a table,
+so records browse without a site build. The record's type is the directory it lives in; its id is
+its file name.
+
+```text
+catalog/
+  sources/<id>.md          a dataset, program, report series or transcribed table
+  references/<citekey>.md  a paper or report cited by a source or a figure
+  excluded/<slug>.md       an item reviewed and not admitted, with its one-line reason
+  regions/<id>.md          a node of the region tree
+  beds/<n>.md              a CDFW Administrative Kelp Bed
+  sites/<id>.md            a monitoring program's named station
+  tables/<id>.csv          transcribed tables; each has a source record with tier TRANSCRIBED
+  data-lock.json           every fetched file's url, sha256 and bytes (arrives with the lock gate)
+```
+
+`data/` is git-ignored and reproducible from `src/fetch/` plus the lock. Nothing is ever written
+into `data/` by hand.
+
+## Vocabularies
+
+**status** — whether the route to the source is known to work.
+`VERIFIED` (fetched or opened successfully on the `retrieved` date) · `PATTERN` (route documented
+but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+
+**tier** — how the local content, if any, came to exist.
+`FETCHED` (bytes retrieved unmodified from the steward's host) · `TRANSCRIBED` (values typed from a
+printed page, or extracted from a document by a named script, into `catalog/tables/`) · `NOT HELD`
+(nothing local; the record describes the source and how to ask).
+
+**topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
+
+**regions** — the tree below. A source tags the most specific node that covers it; `global` is
+allowed without a record for sources with no regional bound (ONI).
+
+## Topics: the ten questions
+
+Three groups, ten topics, each topic a question. The groups are how the regional programs and
+policy syntheses sort the drivers of kelp change (NOAA sanctuaries; California Research Bureau
+2026; Bight '08 Rocky Reef); the questions are what a notebook answers.
+
+| group | topic | question |
+|---|---|---|
+| Physical environment | `ocean-climate` | What thermal, nutrient, oxygen and pH climate are the beds exposed to, and how is it trending? |
+| | `canyon-dynamics` | How much cool, nutrient-rich water do canyon internal tides deliver, and when? |
+| | `waves-storms-sediment` | When do swells and storms remove kelp, and what is the sand doing at the bed margins? |
+| | `substrate` | Where is the rock, how complex is it, and what does that predict? |
+| Kelp and community | `canopy` | How has surface canopy extent changed since 1911, bed by bed? |
+| | `bed-state` | What are the kelp and its community doing on the reef, where, and since when? |
+| | `grazers-predators-competitors` | What sets urchin and competitor pressure on the beds, and what holds it in check? |
+| | `recruitment-connectivity` | How do spores, larvae and genes move between beds, and what does that mean for recovery? |
+| Human uses and management | `water-quality-harvest` | What do discharges, runoff, power plants and kelp harvest do to the beds? |
+| | `restoration-mitigation` | What has been tried to restore or offset kelp loss, and what did it do? |
+
+**Sub-topics** are the sections of a topic's notebook. A tag `ocean-climate/heatwaves` places a
+source in that section; a bare `ocean-climate` places it under *General*. A source may carry any
+number of tags across any topics.
+
+| topic | sub-topics |
+|---|---|
+| `ocean-climate` | `temperature` · `nutrients` · `upwelling-enso` · `heatwaves` · `oxygen-ph` |
+| `canyon-dynamics` | `internal-tides` · `canyon-circulation` · `observations` |
+| `waves-storms-sediment` | `swell-climate` · `storms` · `sediment-sand` · `beach-coupling` |
+| `substrate` | `rock-mapping` · `relief-rugosity` · `artificial-substrate` |
+| `canopy` | `aerial-surveys` · `satellite` · `historical-baselines` · `persistence` |
+| `bed-state` | `diver-surveys` · `community` · `invasives` · `mpas` |
+| `grazers-predators-competitors` | `urchins` · `predators` · `grazing-fishes` · `drift-algae` · `competitors` |
+| `recruitment-connectivity` | `spore-dispersal` · `larval-transport` · `settlement` · `genetics` |
+| `water-quality-harvest` | `discharges-outfalls` · `runoff-sedimentation` · `power-plants` · `kelp-harvest` · `fishing-pressure` |
+| `restoration-mitigation` | `outplanting` · `urchin-removal` · `artificial-reefs` · `kelp-farms` |
+
+**Topics do not decide what is admitted.** Admission is by scope — an authoritative source about
+kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, an entry in
+`schema.py`, a notebook section) in its own PR; never exclude the source for want of a tag.
+
+## The region tree
+
+Every node's `defined_by` names the source that draws the boundary. Levels:
+
+1. `scb` — the Southern California Bight, Point Conception to the US–Mexico border
+   (Bight '18, SCCWRP Technical Report 1289).
+2. `scb.mainland` and `scb.islands` — the Bight program samples the Channel Islands as their own
+   stratum; every mainland program states coverage by county.
+3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
+   `.san-diego` (coverage as stated by the Region Nine and Central Region Kelp Survey Consortia,
+   kelp.sccwrp.org). Island groups: `scb.islands.northern`, `scb.islands.southern`, with one node
+   per island beneath.
+4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
+   Islands; CDFW Giant Kelp and Bull Kelp Enhanced Status Report, 2021; shapefile at
+   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`). Program bed names are `aliases:`.
+5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
+
+Consortium (`RNKSC`, `CRKSC`) is an attribute on a county node, not a level. Depth is a field on a
+source, not a level: kelp habitat is 0–30 m (CDFW), one Bight stratum.
+
+## Record schemas
+
+Required fields are marked `*`. "Where from" says what may supply the value.
+
+### sources/<id>.md
+
+| field | type | where from |
+|---|---|---|
+| `id`* | str, `^[a-z0-9][a-z0-9._-]*$`, equals file name | chosen on entry, never changed |
+| `title`* | str | the source's own title |
+| `steward`* | str | the organisation that publishes or holds it |
+| `url`* | str or null | the landing page or direct file |
+| `doi` | str or null | |
+| `status`* | status vocabulary | |
+| `tier`* | tier vocabulary | |
+| `access`* | list of str | numbered steps a stranger can follow |
+| `format` | str or null | as the source describes its files |
+| `license`* | str | the licence text as published, verbatim; "not stated" if absent |
+| `variables`* | list of str | as the source lists them; empty list if NOT HELD |
+| `coverage` | str or null | as the source states it |
+| `coverage_stated_at` | str or null | the page or file where it is stated |
+| `retrieved`* | date or null | required non-null when FETCHED; null when NOT HELD |
+| `fetch_script` | path | required when FETCHED; must exist in the repo |
+| `file` | path | required when TRANSCRIBED; a file under `catalog/tables/` |
+| `transcribed_from` | `{reference, table, page}` | required when TRANSCRIBED |
+| `topics`* | list of topic tags (`<topic>` or `<topic>/<sub-topic>`), ≥ 1 | |
+| `regions`* | list of region ids or `global`, ≥ 1 | |
+| `beds` | list of bed ids | |
+| `sites` | list of site ids | |
+| `references` | list of citekeys | |
+| `human_task` | str or null | an `H<n>` id when the source arrives only through a person |
+
+### references/<citekey>.md
+
+| field | type | where from |
+|---|---|---|
+| `citekey`* | `^[a-z][a-z0-9]*\d{4}[a-z]?$`, equals file name | first author's surname + year |
+| `ref`* | str | the citation as printed |
+| `doi` / `url` | str or null; at least one non-null | |
+| `year`* | int | |
+| `equations` | list of `{id, as_printed, where}` | only equations a figure applies; verbatim |
+| `topics`* | list of topic tags, ≥ 1 | |
+
+### excluded/<slug>.md
+
+`slug`* (equals file name), `reviewed`* (date), `what`* (the item), `reason`* (one line),
+`url`, `doi`, `topics` (optional; lets the notebook list what was reviewed and not admitted).
+
+### regions/<id>.md
+
+`id`* (equals file name), `name`*, `parent`* (region id, or null for `scb`), `defined_by`*
+(the source that draws the boundary), `consortium` (`RNKSC` or `CRKSC`, counties only).
+
+### beds/<n>.md
+
+`id`* (the bed number as a string, equals file name), `cdfw_bed`* (int), `name`* (as in the
+shapefile), `status`* (`Open` · `Closed` · `Leasable` · `Lease Only`), `region`* (a county or
+island region id), `aliases` (program names for the same bed), `defined_by`* (the shapefile URL).
+
+### sites/<id>.md
+
+`id`* (`<program>.<site>`, equals file name), `program`*, `name`* (as the program names it),
+`bed`* (bed id or null), `lat`*, `lon`* (from the program), `defined_by`* (the program's document).
+
+## Notebooks
+
+Notebooks are how the catalog is read and shared. A notebook never holds a fact: it renders
+records. One notebook per topic, in a folder per group, plus an index:
+
+```text
+notebooks/
+  00_index.ipynb                     group → topic → sub-topic counts; topic × region matrix
+  1_physical_environment/            11_ocean_climate  12_canyon_dynamics
+                                     13_waves_storms_sediment  14_substrate
+  2_kelp_and_community/              21_canopy  22_bed_state
+                                     23_grazers_predators_competitors  24_recruitment_connectivity
+  3_human_uses_management/           31_water_quality_harvest  32_restoration_mitigation
+```
+
+Each topic notebook has the same shape, generated from the records:
+
+1. the question, verbatim from the table above; a count of sources and references; a small
+   region × sub-topic table;
+2. one section per sub-topic, in the order listed above — a sources table (id · title · steward ·
+   status · tier · coverage · link) grouped by region, Bight-wide first, then counties north to
+   south, then islands; the references tagged to the sub-topic; then any figures;
+3. *General* — sources tagged with the bare topic;
+4. *Not held* — `NOT HELD` and `ON REQUEST` sources for the topic, with their `human_task`;
+5. *Reviewed and not included* — exclusions tagged with the topic.
+
+Generated cells are marked in cell metadata (`kelpcatalog: generated`) and rewritten by the
+builder whenever records or this file change; figure cells are never generated and never touched.
+A figure cell loads a catalogued file by id, applies an equation as a cited reference prints it,
+plots, and ends with `provenance(sources=[...], references=[...], equations=[...])`, which renders
+the citation under the plot. Notebooks are committed with outputs so they read on GitHub without
+running; a source is not "in" until the notebooks that show it are refreshed in the same PR.
+
+There is no notebook per region. The by-region view is the grouping inside each topic notebook
+and the matrix in the index.
+
+## Gates
+
+`gate.py` runs every gate and exits non-zero if one fails. A gate never fails because the catalog
+grew; counts are printed, not asserted.
+
+| gate | asserts | arrives |
+|---|---|---|
+| `unit` | the schema seams, ≥ 90 % coverage | scaffold |
+| `catalog-schema` | every record parses, validates, and links only to records that exist | scaffold |
+| `notebook-structure` | every topic notebook has exactly the sections its sub-topic list requires, and the index lists every topic | milestone 6.2 |
+| `notebook-outputs` | committed notebooks carry outputs and no errors | milestone 6.2 |
+| `notebook-fresh` | re-executing a notebook reproduces its committed outputs (local; needs `data/` for figures) | milestone 6.2 |
+| `figure-provenance` | every figure cell carries a `provenance(...)` whose ids resolve | milestone 6.2 |
+| `lock-consistency` / `lock-verify` | `data-lock.json` is well-formed; local `data/` matches it | milestone 6.5 |
+
+## What is not a record
+
+Analysis, notebook cells that compute anything beyond a printed equation, narrative changelogs,
+correspondence, to-do notes, and anything about a source that the source does not itself say.
+Analysis lives in a separate repo that reads this one.

@@ -3,10 +3,10 @@
 A catalog of the authoritative sources — datasets, monitoring programs, reports and papers — behind
 kelp forest monitoring from Point Conception to the US–Mexico border, including the Channel
 Islands. Each source is one record: who holds it, how to reach it, what it contains, under what
-licence, and when it was last fetched and checksummed. Records are tagged by **topic** (eight
-questions) and by **region** (the Bight, its counties and islands, CDFW Administrative Kelp Beds,
-and program sites), so a researcher can find what exists for a question or a place and reach the
-original in one click.
+licence, and when it was last retrieved. Records are tagged by **topic** (ten questions in three
+groups, each with sub-topics) and by **region** (the Bight, its counties and islands, CDFW
+Administrative Kelp Beds, and program sites), so a researcher can find what exists for a question
+or a place and reach the original in one click.
 
 One rule governs every record: it holds only what the source itself states, and what anyone
 repeating the fetch would reproduce. No commentary, no numbers computed here. The rule, the record
@@ -18,8 +18,9 @@ recorded on its record, verbatim, and this repository does not relicense any dat
 
 ## Using it
 
-Browse `catalog/sources/` — GitHub renders each record as a table. Question and region index pages
-under `docs/` are generated from the tags once the catalog has enough records to index.
+Start at `notebooks/00_index.ipynb`: one notebook per question, in a folder per group, each
+generated from the records under `catalog/` and grouped by region inside every section. The records
+themselves render as tables on GitHub.
 
 ## Adding a source
 
