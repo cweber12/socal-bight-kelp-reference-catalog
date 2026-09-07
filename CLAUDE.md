@@ -24,30 +24,14 @@ is protected.
 
 ## How work is tracked
 
-GitHub Issues and milestones via `gh`; see `docs/agents/issue-tracker.md` and
-`docs/agents/triage-labels.md`. One milestone is active at a time. The next thing to do is the top
-open `ready-for-agent` issue in it. Ideas go in the pinned **Parking lot** issue, never as new
-issues. A PRD for each milestone lives at `docs/prd/<slug>.md`.
-
-An issue is ready when it names the seam (function signature, gate row or file format), the failing
-test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
-
-## In-flight bugs
-
-When you find a bug while implementing an issue, apply the first rule that fits and say which in the
-PR body:
-
-1. In files this PR already touches and fixable with a test in minutes → fix it in its own `fix:`
-   commit on this branch; list it under "Also fixed".
-2. Blocks the current slice → fix it first in its own commit. If not small, stop: open the issue,
-   mark the slice blocked, report back.
-3. Neither → open an issue labelled `bug` + `found-in-flight` + `needs-triage` with file, line, a
-   repro if cheap, and a link to this PR. Continue.
+One milestone is active at a time; the next thing to do is the top open `ready-for-agent` issue in
+it. A PRD for each milestone lives at `docs/prd/<slug>.md`.
 
 ## Branches, commits, PRs
 
-- One issue, one branch (`<type>/<slug>`), one PR, squash-merged. Small PRs; if the branch's
-  commits are each worth keeping, the PR is too big — split it.
+- Small PRs; if the branch's commits are each worth keeping, the PR is too big — split it.
+- A bug found while implementing an issue: apply the first rule that fits in
+  `docs/agents/issue-tracker.md`, and say which in the PR body.
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
@@ -58,3 +42,19 @@ PR body:
 
 Split work only when it earns its keep. A rename is its own slice. Do not add fields, gates,
 directories or dependencies an open issue does not ask for; put the idea in the Parking lot.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues and milestones in this repo, via `gh`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical role strings unchanged, plus `bug` and `found-in-flight`.
+See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` at the root is the authority; no `docs/adr/` yet.
+See `docs/agents/domain.md`.

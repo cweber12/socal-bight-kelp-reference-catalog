@@ -1,0 +1,57 @@
+# Issue tracker: GitHub
+
+Issues, milestones and the Parking lot live in GitHub Issues at
+`cweber12/socal-bight-kelp-reference-catalog`. Use the `gh` CLI for every operation; it infers the
+repo from `git remote -v` when run inside a clone.
+
+## Commands
+
+- **Create**: `gh issue create --title "..." --body "..."` (heredoc for multi-line bodies)
+- **Read**: `gh issue view <number> --comments`
+- **List**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |
+  {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`, with `--label`
+  and `--milestone` filters
+- **Comment**: `gh issue comment <number> --body "..."`
+- **Label**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
+- **Milestone**: `gh issue edit <number> --milestone "6.2 Topic notebooks"`
+- **Close**: `gh issue close <number> --comment "..."`
+- **Milestones themselves**: `gh api repos/{owner}/{repo}/milestones` — `gh` has no `milestone`
+  subcommand.
+
+## Conventions
+
+- One milestone is active at a time; they are named `<number> <name>` (`6.1 Scaffold`,
+  `6.2 Topic notebooks`, …). A PRD for each lives at `docs/prd/<slug>.md`.
+- **The next thing to do** is the top open `ready-for-agent` issue in the active milestone.
+- An issue is ready when it names the seam (function signature, gate row or file format), the
+  failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
+- One issue → one branch (`<type>/<slug>`) → one PR, squash-merged, `Closes #N` in the body.
+
+## Ideas are not issues
+
+Ideas go in the pinned **Parking lot** issue (#5) as one-line comments, never as new issues:
+
+    gh issue comment 5 --body "- <one line>"
+
+Weekly, each comment becomes an issue with acceptance criteria, becomes a PRD bullet, or is
+deleted. Nothing stays longer than two weeks.
+
+## Bugs found while implementing
+
+When you find a bug while implementing an issue, apply the first rule that fits and say which in
+the PR body:
+
+1. In files this PR already touches and fixable with a test in minutes → fix it in its own `fix:`
+   commit on this branch; list it under "Also fixed".
+2. Blocks the current slice → fix it first in its own commit. If not small, stop: open the issue,
+   mark the slice blocked, report back.
+3. Neither → open an issue labelled `bug` + `found-in-flight` + `needs-triage` with file, line, a
+   repro if cheap, and a link to this PR. Continue.
+
+## When a skill says "publish to the issue tracker"
+
+Create a GitHub issue. Label it `needs-triage` unless it already clears the readiness bar above.
+
+## When a skill says "fetch the relevant ticket"
+
+`gh issue view <number> --comments`.
