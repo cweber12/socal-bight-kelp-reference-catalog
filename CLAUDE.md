@@ -27,11 +27,21 @@ is protected.
 One milestone is active at a time; the next thing to do is the top open `ready-for-agent` issue in
 it. A PRD for each milestone lives at `docs/prd/<slug>.md`.
 
+## In-flight bugs
+
+When you find a bug while implementing an issue, apply the first rule that fits and say which in the
+PR body:
+
+1. In files this PR already touches and fixable with a test in minutes → fix it in its own `fix:`
+   commit on this branch; list it under "Also fixed".
+2. Blocks the current slice → fix it first in its own commit. If not small, stop: open the issue,
+   mark the slice blocked, report back.
+3. Neither → open an issue labelled `bug` + `found-in-flight` + `needs-triage` with file, line, a
+   repro if cheap, and a link to this PR. Continue.
+
 ## Branches, commits, PRs
 
 - Small PRs; if the branch's commits are each worth keeping, the PR is too big — split it.
-- A bug found while implementing an issue: apply the first rule that fits in
-  `docs/agents/issue-tracker.md`, and say which in the PR body.
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
