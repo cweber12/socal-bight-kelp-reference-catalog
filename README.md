@@ -27,7 +27,7 @@ folder per group, generated from the records — arrive with milestone 6.2 and w
 ## Adding a source
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md). In short: open an issue, run the `add-source` skill
-(or follow the checklist by hand), run `python gate.py`, open a PR.
+(or follow the checklist by hand), run `.venv/Scripts/python gate.py`, open a PR.
 
 ## Running the gates
 

@@ -7,7 +7,7 @@ Closes #
 ## Gate output
 
 ```
-<!-- paste `python gate.py` output from your machine -->
+<!-- paste `.venv/Scripts/python gate.py` output from your machine -->
 ```
 
 ## Checklist
