@@ -74,9 +74,12 @@ allowed without a record for sources with no regional bound (ONI).
 
 ## Topics: the ten questions
 
-Three groups, ten topics, each topic a question. The groups are how the regional programs and
-policy syntheses sort the drivers of kelp change (NOAA sanctuaries; California Research Bureau
-2026; Bight '08 Rocky Reef); the questions are what a notebook answers.
+Three groups, ten topics, each topic a question. The three groups follow how the drivers are
+sorted in NOAA Office of National Marine Sanctuaries, "Kelp forest impacts"
+(sanctuaries.noaa.gov/visit/ecosystems/kelpimpacts.html); California Research Bureau, "Kelp
+forests" brief, 2 April 2026 (library.ca.gov/crb/nexus/briefs/kelp-forests/); and SCCWRP, Bight '08
+Rocky Reef (dataportal.sccwrp.org, page 28ae52ed…), all retrieved 2026-09-07. The questions are
+what a notebook answers.
 
 | group | topic | question |
 |---|---|---|
@@ -116,26 +119,35 @@ kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, 
 
 Every node's `defined_by` names the source that draws the boundary. Levels:
 
-1. `scb` — the Southern California Bight, Point Conception to the US–Mexico border
-   (Bight '18, SCCWRP Technical Report 1289).
+1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
+   Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker
+   2022, SCCWRP Technical Report 1289, Introduction).
 2. `scb.mainland` and `scb.islands` — the Bight program samples the Channel Islands as their own
    stratum; every mainland program states coverage by county.
 3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
-   `.san-diego` (coverage as stated by the Region Nine and Central Region Kelp Survey Consortia,
-   kelp.sccwrp.org). Island groups: `scb.islands.northern`, `scb.islands.southern`, with one node
-   per island beneath.
+   `.san-diego` (coverage as stated for the Region Nine and Central Region Kelp Survey Consortia on
+   the kelp.sccwrp.org home page, retrieved 2026-09-07). Island groups: `scb.islands.northern`,
+   `scb.islands.southern`, with one node per island beneath.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
-   Islands; CDFW Giant Kelp and Bull Kelp Enhanced Status Report, 2021; shapefile at
-   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`). Program bed names are `aliases:`.
+   Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
+   https://marinespecies.wildlife.ca.gov/kelp/true/, retrieved 2026-09-07). The boundaries are
+   drawn by shapefiles under the directory `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`
+   (per the same report, Monitoring section); the exact file is recorded on each bed's `defined_by`
+   when beds arrive in 6.3. Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
-Consortium is an attribute on a county node, not a level, and it is a **list**: kelp.sccwrp.org
-states that RNKSC covers San Diego and southern Orange counties and CRKSC covers northern Orange,
-Los Angeles and Ventura, so the boundary runs through Orange County, which states both
-(`consortium: [RNKSC, CRKSC]`), and Santa Barbara County is covered by neither, which states none
-(`consortium: []`). A county node says which consortia the county falls under and nothing finer:
-which consortium surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3.
-Depth is a field on a source, not a level: kelp habitat is 0–30 m (CDFW), one Bight stratum.
+Consortium is an attribute on a county node, not a level, and it is a **list**: the kelp.sccwrp.org
+home page, retrieved 2026-09-07, states that RNKSC covers San Diego and southern Orange counties and
+CRKSC covers northern Orange, Los Angeles and Ventura, so the boundary runs through Orange County,
+which states both (`consortium: [RNKSC, CRKSC]`), and Santa Barbara County is listed by neither
+consortium on that page (`consortium: []`); the field states what the page lists, not a claim about
+the county. A county node says which consortia the county falls under and nothing finer: which
+consortium surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3.
+
+Depth is not a level of the tree. A source's depth range is part of its `coverage`, as the source
+states it. For orientation: CDFW gives giant kelp habitat as "the low intertidal to depths of 25
+meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, same URL), which sits
+within Bight '18's Inner Shelf stratum, 7–30 m (TR 1289, Table 1).
 
 ## Record schemas
 

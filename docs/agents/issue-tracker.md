@@ -20,8 +20,10 @@ repo from `git remote -v` when run inside a clone.
 
 ## Conventions
 
-- One milestone is active at a time; they are named `<number> <name>` (`6.1 Scaffold`,
-  `6.2 Topic notebooks`, …). A PRD for each lives at `docs/prd/<slug>.md`.
+- One milestone is active at a time; they are named `<number> <name>`: `6.1 Scaffold`,
+  `6.2 Topic notebooks`, `6.3 Regions, beds, sites`, `6.4 Re-entry`, `6.5 Lock and fetch`,
+  `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
+  `docs/prd/<slug>.md`.
 - **The next thing to do** is the top open `ready-for-agent` issue in the active milestone.
 - An issue is ready when it names the seam (function signature, gate row or file format), the
   failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
@@ -36,7 +38,7 @@ Ideas go in the pinned **Parking lot** issue (#5) as one-line comments, never as
 Weekly, each comment becomes an issue with acceptance criteria, becomes a PRD bullet, or is
 deleted. Nothing stays longer than two weeks.
 
-## Bugs found while implementing
+## In-flight bugs
 
 When you find a bug while implementing an issue, apply the first rule that fits and say which in
 the PR body:

@@ -6,7 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "kelpcatalog"
 version = "0.1.0"
 description = "Source catalog for kelp forest monitoring in the Southern California Bight"
-requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.13"
 dependencies = [
     "pyyaml>=6.0",
 ]
