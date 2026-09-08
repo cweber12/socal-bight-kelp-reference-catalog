@@ -39,13 +39,18 @@ FILES = (
     "https://library.ucsd.edu/dc/object/bb5880168m/_1_1.zip/download",  # Trinidad Bay
 )
 
+REPO = "https://github.com/cweber12/socal-bight-kelp-reference-catalog"
+
+# Name the catalog and give the steward a way to reach us.
+USER_AGENT = f"kelpcatalog/{SOURCE_ID} (+{REPO})"
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 
 def fetch(url: str, out_dir: Path) -> dict[str, object]:
     """Download one file into out_dir and write its manifest. Returns the manifest."""
-    request = urllib.request.Request(url, headers={"User-Agent": f"kelpcatalog/{SOURCE_ID}"})
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=300) as response:
         body = response.read()
         http_status = response.status
