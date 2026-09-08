@@ -44,7 +44,8 @@ PR body:
 
 ## Branches, commits, PRs
 
-- Small PRs; if the branch's commits are each worth keeping, the PR is too big — split it.
+- One issue, one branch (`<type>/<slug>`), one PR, squash-merged. Small PRs; if the branch's
+  commits are each worth keeping, the PR is too big — split it.
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
