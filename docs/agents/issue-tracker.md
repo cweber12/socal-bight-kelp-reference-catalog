@@ -29,6 +29,21 @@ repo from `git remote -v` when run inside a clone.
   failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
 - One issue → one branch (`<type>/<slug>`) → one PR, squash-merged, `Closes #N` in the body.
 
+## Record issues
+
+An issue whose work is entering one source into `catalog/sources/` takes a fixed shape. Like any
+issue whose work is entry or prose rather than code, it cannot name a failing test, so the
+readiness bar's "stop and ask" does not apply — the answer is written here. The `add-source` skill
+is what works it.
+
+- **Seam** — the record and its fetch script: `catalog/sources/<id>.md`, and `src/fetch/<id>.py`
+  when the tier is `FETCHED`.
+- **Failing test** — none mechanical. Gates print counts and never assert them (`CONTEXT.md`,
+  "Gates"), so there is no test to write. Say that; do not invent one.
+- **Acceptance** — `gate.py` green, and the record reviewed field by field against the source.
+- **Non-goals** — no other source, no notebook change, no schema change.
+- **Done when** — merged.
+
 ## Ideas are not issues
 
 Ideas go in the pinned **Parking lot** issue (#5) as one-line comments, never as new issues:
