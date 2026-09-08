@@ -24,19 +24,19 @@ from pathlib import Path
 
 SOURCE_ID = "sio_shore_stations"
 
-# The first-listed component of each of the ten station objects in collection
-# https://library.ucsd.edu/dc/collection/bb4719748r on 2026-09-08.
+# The first-listed component of the five station objects in collection
+# https://library.ucsd.edu/dc/collection/bb4719748r whose stated coordinates put them
+# inside the Bight as CONTEXT.md defines it - Point Conception south to the US-Mexico
+# border. The collection's other five stations (Granite Canyon 36.44 N, Pacific Grove
+# 36.62 N, Farallon Islands 37.70 N, Trinidad Beach 41.06 N, Trinidad Bay 41.06 N) lie
+# north of Point Conception and are not fetched here; each station's latitude is printed
+# in the header block of its own CSVs.
 FILES = (
-    "https://library.ucsd.edu/dc/object/bb4003017c/_1_1.zip/download",  # La Jolla, Scripps Pier
-    "https://library.ucsd.edu/dc/object/bb8849478k/_1_1.zip/download",  # San Clemente
-    "https://library.ucsd.edu/dc/object/bb1067837x/_1_1.zip/download",  # Newport Beach
-    "https://library.ucsd.edu/dc/object/bb5914297b/_1_1.zip/download",  # Point Dume / Zuma Beach
-    "https://library.ucsd.edu/dc/object/bb07606686/_1_1.zip/download",  # Santa Barbara
-    "https://library.ucsd.edu/dc/object/bb2979118z/_1_1.zip/download",  # Granite Canyon
-    "https://library.ucsd.edu/dc/object/bb02145898/_1_1.zip/download",  # Pacific Grove
-    "https://library.ucsd.edu/dc/object/bb3934759t/_1_1.zip/download",  # Farallon Islands
-    "https://library.ucsd.edu/dc/object/bb6187339c/_1_1.zip/download",  # Trinidad Beach
-    "https://library.ucsd.edu/dc/object/bb5880168m/_1_1.zip/download",  # Trinidad Bay
+    "https://library.ucsd.edu/dc/object/bb07606686/_1_1.zip/download",  # Santa Barbara 34.40 N
+    "https://library.ucsd.edu/dc/object/bb5914297b/_1_1.zip/download",  # Point Dume 34.02 N
+    "https://library.ucsd.edu/dc/object/bb1067837x/_1_1.zip/download",  # Newport Beach 33.61 N
+    "https://library.ucsd.edu/dc/object/bb8849478k/_1_1.zip/download",  # San Clemente 33.42 N
+    "https://library.ucsd.edu/dc/object/bb4003017c/_1_1.zip/download",  # La Jolla 32.87 N
 )
 
 REPO = "https://github.com/cweber12/socal-bight-kelp-reference-catalog"
