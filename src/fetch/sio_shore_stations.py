@@ -49,8 +49,23 @@ def fetch(url: str, out_dir: Path) -> dict[str, object]:
         body = response.read()
         http_status = response.status
         headers = response.headers
-    # Every URL ends in /download; the served name is in Content-Disposition.
-    name = headers.get_filename() or url.rsplit("/", 1)[-1]
+    # A 200 is not enough: this host answers browser-like clients with an HTML
+    # challenge page. Never store or manifest one as a verified archive.
+    if not body.startswith(b"PK\x03\x04"):
+        raise RuntimeError(
+            f"{url}: body is not a zip (first bytes {body[:4]!r}, "
+            f"Content-Type {headers.get('Content-Type')!r})"
+        )
+    # Every URL ends in /download, so the served name is in Content-Disposition and
+    # there is no usable fallback: the URL path would name every file "download" and
+    # each archive would overwrite the last. Refuse rather than guess.
+    served = headers.get_filename()
+    if not served:
+        raise RuntimeError(f"{url}: no Content-Disposition filename; refusing to guess one")
+    # get_filename() sanitises nothing, and the value is server-supplied.
+    name = Path(served).name
+    if name in ("", ".", ".."):
+        raise RuntimeError(f"{url}: unusable served file name {served!r}")
     manifest = {
         "url": url,
         "fetched_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
