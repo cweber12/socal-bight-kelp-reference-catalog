@@ -30,6 +30,7 @@ KINDS = ("sources", "references", "excluded", "regions", "beds", "sites")
 STATUS = ("VERIFIED", "PATTERN", "NOT PUBLIC", "ON REQUEST")
 TIER = ("FETCHED", "TRANSCRIBED", "NOT HELD")
 BED_STATUS = ("Open", "Closed", "Leasable", "Lease Only")
+CONSORTIUM = ("RNKSC", "CRKSC")
 # Topics and their sub-topics, in notebook order. CONTEXT.md "Topics" is the authority;
 # the group each topic belongs to is in GROUPS. A topic tag is "<topic>" or
 # "<topic>/<subtopic>".
@@ -98,6 +99,11 @@ def topic_problem(tag: str) -> str | None:
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 CITEKEY_RE = re.compile(r"^[a-z][a-z0-9]*\d{4}[a-z]?$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+HUMAN_TASK_RE = re.compile(r"^H\d+$")
+
+# Transcribed values live in one place, so a record cannot point at data/ (git-ignored)
+# or at a file outside the catalog.
+TABLES_DIR = "catalog/tables/"
 
 FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n?(.*)\Z", re.S)
 
@@ -307,8 +313,17 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             out.append(Problem(p, "status", f"must be one of {STATUS}"))
         if "tier" not in bad and d.get("tier") not in TIER:
             out.append(Problem(p, "tier", f"must be one of {TIER}"))
+        if "regions" not in bad and not d.get("regions"):
+            out.append(Problem(p, "regions", "at least one region"))
+        task = d.get("human_task")
+        if "human_task" not in bad and isinstance(task, str) and not HUMAN_TASK_RE.match(task):
+            out.append(Problem(p, "human_task", f"does not match {HUMAN_TASK_RE.pattern}"))
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
+    if rec.kind == "regions" and "consortium" not in bad:
+        con = d.get("consortium")
+        if con is not None and con not in CONSORTIUM:
+            out.append(Problem(p, "consortium", f"must be one of {CONSORTIUM}"))
     if "topics" in d and "topics" not in bad:
         if not d["topics"] and RULES[rec.kind]["topics"][0]:
             out.append(Problem(p, "topics", "at least one topic"))
@@ -331,6 +346,14 @@ def _id_problems(rec: Record) -> list[Problem]:
     pattern = CITEKEY_RE if rec.kind == "references" else ID_RE
     if not pattern.match(rid):
         out.append(Problem(rec.path, key, f"does not match {pattern.pattern}"))
+    if rec.kind == "sites":
+        program, _, site = rid.partition(".")
+        if rid.count(".") != 1 or not program or not site:
+            out.append(Problem(rec.path, key, "must be <program>.<site>, both parts non-empty"))
+    if rec.kind == "beds":
+        bed = rec.data.get("cdfw_bed")
+        if isinstance(bed, int) and not isinstance(bed, bool) and rid != str(bed):
+            out.append(Problem(rec.path, key, f"must equal cdfw_bed ({str(bed)!r})"))
     return out
 
 
@@ -357,6 +380,8 @@ def _tier_problems(rec: Record, root: Path | None, bad: set[str]) -> list[Proble
             )
         if not d.get("file"):
             out.append(Problem(p, "file", "required when tier is TRANSCRIBED (catalog/tables/...)"))
+        elif not str(d["file"]).replace("\\", "/").startswith(TABLES_DIR):
+            out.append(Problem(p, "file", f"must be a file under {TABLES_DIR}"))
         elif root is not None and not (root / str(d["file"])).exists():
             out.append(Problem(p, "file", f"{d['file']} does not exist in the repo"))
     elif tier == "NOT HELD":
