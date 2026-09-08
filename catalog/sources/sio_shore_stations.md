@@ -81,15 +81,25 @@ coverage: >-
   Date Collected "1916 to present"; Extent "10 digital objects." This record holds the five of
   those ten stations whose stated coordinates fall between Point Conception and the US-Mexico
   border: Santa Barbara Harbor 34°24'13.9"N, Point Dume 34°01'04.5"N, Newport Beach
-  33°36'24.1"N, San Clemente 33°25'08.6"N and La Jolla 32°52'01.0"N. In the copy
-  retrieved 2026-09-08 the first-listed component of each of those five objects carries the
-  archive date 2026-06-30, and the last data row of every .csv inside them is dated 2026, 3, 31
+  33°36'24.1"N, San Clemente 33°25'08.6"N and La Jolla 32°52'01.0"N. Each station's span as
+  its object page states it: Santa Barbara "Temperature data: January 1, 1955 to March 31, 2026";
+  Point Dume "Temperature data: December 5, 1956 to March 31, 2026"; Newport Beach "Temperature
+  data: November 12, 1924 to March 31, 2026" and "Salinity data: November 12, 1924 to March 31,
+  2026"; San Clemente "Temperature data: July 1, 1965 to March 31, 2026" and "Salinity data:
+  July 1, 1965 to March 31, 2026"; La Jolla "Surface temperature and salinity data: August 22,
+  1916 to March 31, 2026" and "Bottom (~5m) temperature and salinity data: July 21, 1926 to
+  March 31, 2026". In the copy retrieved 2026-09-08 the first-listed component of each of those
+  five objects carries the archive date 2026-06-30, and the last data row of every .csv inside
+  them is dated 2026, 3, 31
 coverage_stated_at: >-
   https://library.ucsd.edu/dc/collection/bb4719748r states the Description, Date Collected and
   Extent quoted above; each station's coordinates are printed in the header block of the .csv
-  members of its own archive; the component titles on the five station object pages linked from
-  that collection page state the archive date, and the last data row of each .csv inside the
-  archives retrieved 2026-09-08 states the end of the data
+  members of its own archive; the Description field of the first-listed component on each of the
+  five station object pages linked from that collection page states that station's span
+  (https://library.ucsd.edu/dc/object/ bb07606686, bb5914297b, bb1067837x, bb8849478k and
+  bb4003017c, retrieved 2026-09-08); the component titles on those same pages state the archive
+  date, and the last data row of each .csv inside the archives retrieved 2026-09-08 states the
+  end of the data
 retrieved: 2026-09-08
 fetch_script: src/fetch/sio_shore_stations.py
 file: null
