@@ -8,7 +8,7 @@ exits non-zero if any gate fails. Gates that need machine state a fresh clone la
 declare skip_if and are skipped there - skipping is for the clone, not the author:
 run this locally before every PR.
 
-Today there is one gate. The plan (docs/prd/) says which ones come next and when.
+Today there is one gate. CONTEXT.md, 'Gates', is the schedule for the ones not yet here.
 """
 
 from __future__ import annotations

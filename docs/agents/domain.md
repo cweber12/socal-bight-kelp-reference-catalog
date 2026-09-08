@@ -24,17 +24,28 @@ right and the code is a bug** — change the code, not the document, unless a hu
     /
     ├── CONTEXT.md          the authority: the rule, schemas, vocabularies, region tree
     ├── CLAUDE.md           how to work: tracker, branches, commits, scope guards
+    ├── catalog/            the records themselves, one markdown file each
+    │   ├── sources/        a dataset, program, report series or transcribed table
+    │   ├── references/     a paper or report cited by a source or a figure
+    │   ├── excluded/       an item reviewed and not admitted, with its one-line reason
+    │   ├── regions/        a node of the region tree
+    │   ├── beds/           a CDFW Administrative Kelp Bed
+    │   ├── sites/          a monitoring program's named station
+    │   └── tables/         transcribed tables as CSV
     ├── docs/
     │   ├── agents/         this file and its siblings
     │   └── prd/<slug>.md   one PRD per milestone
-    └── src/kelpcatalog/    schema.py implements CONTEXT.md
+    ├── gate.py             the one command that runs every gate
+    ├── src/kelpcatalog/    schema.py implements CONTEXT.md
+    └── tests/              the unit gate's tests, with fixtures
 
 ## Use the vocabulary as written
 
 When your output names a domain concept — an issue title, a refactor proposal, a hypothesis, a test
 name — use the term as `CONTEXT.md` defines it. The controlled vocabularies are `status`, `tier`,
-the ten `topics` with their sub-topics, and the region tree. These are closed sets: a value outside
-them is a schema error, not a synonym.
+the ten `topics` with their sub-topics, the region tree, a bed's `status` (`Open` · `Closed` ·
+`Leasable` · `Lease Only`) and a county node's `consortium` (`RNKSC` · `CRKSC`). These are closed
+sets: a value outside them is a schema error, not a synonym.
 
 If the concept you need isn't there, that's a signal — either you're inventing language the project
 doesn't use (reconsider), or there's a real gap. A missing topic is added in its own PR; a source is

@@ -1,7 +1,3 @@
-Two licences apply to this repository.
-
-CODE (everything under src/, tests/, gate.py, .github/, and configuration files):
-
 MIT License
 
 Copyright (c) 2026 Cole Weber
@@ -23,14 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-CATALOG TEXT (everything under catalog/ and docs/, and CONTEXT.md):
-
-Licensed under the Creative Commons Attribution 4.0 International License
-(CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
-
-DATA:
-
-This repository does not redistribute or relicense any dataset. Each source's
-own licence is recorded, verbatim, in the `license` field of its record under
-catalog/sources/. Fetched data stays in the git-ignored data/ directory.

@@ -6,10 +6,11 @@
 2. Open the source's own page and confirm the route works today.
 3. Create `catalog/sources/<id>.md` with the fields in `CONTEXT.md` — every value from the source
    itself, the licence text verbatim, no prose body.
-4. Run `python gate.py`. Fix every problem it names.
+4. Run `.venv/Scripts/python gate.py` (`.venv/bin/python` on macOS/Linux). Fix every problem it
+   names.
 5. Open a PR titled `catalog: add <id>`; paste the gate output into the body.
 
-Inside a Claude Code session the `add-source` skill does steps 1–4.
+Inside a Claude Code session the `add-source` skill does steps 1–4 (arriving with milestone 6.1).
 
 ## Adding a reference, exclusion, region, bed or site
 

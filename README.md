@@ -13,24 +13,26 @@ repeating the fetch would reproduce. No commentary, no numbers computed here. Th
 schemas and the region tree are in [`CONTEXT.md`](CONTEXT.md). Figures, where they exist, plot
 catalogued data with equations as the cited paper prints them, with the citation under the plot.
 
-**Licences.** Code is MIT; catalog text is CC BY 4.0 (see `LICENSE`). Each source's own licence is
-recorded on its record, verbatim, and this repository does not relicense any data.
+**Licences.** Code is MIT ([`LICENSE`](LICENSE)); everything else in the repository — catalog
+records, documentation, `CONTEXT.md`, `README.md`, `CLAUDE.md`, `CONTRIBUTING.md` — is CC BY 4.0
+([`LICENSE-CATALOG.md`](LICENSE-CATALOG.md)). Each source's own licence is on its record; no data
+is relicensed.
 
 ## Using it
 
-Start at `notebooks/00_index.ipynb`: one notebook per question, in a folder per group, each
-generated from the records under `catalog/` and grouped by region inside every section. The records
-themselves render as tables on GitHub.
+Records live under `catalog/` and render as tables on GitHub. Notebooks — one per question, in a
+folder per group, generated from the records — arrive with milestone 6.2 and will start at
+`notebooks/00_index.ipynb`.
 
 ## Adding a source
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md). In short: open an issue, run the `add-source` skill
-(or follow the checklist by hand), run `python gate.py`, open a PR.
+(or follow the checklist by hand), run `.venv/Scripts/python gate.py`, open a PR.
 
 ## Running the gates
 
 ```sh
 python -m venv .venv
 .venv/Scripts/pip install -e ".[dev]"      # .venv/bin/pip on macOS/Linux
-python gate.py
+.venv/Scripts/python gate.py               # .venv/bin/python on macOS/Linux
 ```
