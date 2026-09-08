@@ -50,9 +50,9 @@ git grep -il -e "<host>/<path>" \
 the word *monitoring* in it, and a search that fires on every run gets ignored. The URL search takes
 `www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt` — no `https://`, no `?query`.
 
-Both searches are load-bearing. `-w` counts underscore as a word character, so `-e "noaa_oni"` will
-not match a record filed as `noaa_oni_copy` — the URL search is what catches that shape. Neither
-search covers for the other; run both.
+Both searches are load-bearing, and neither covers for the other. `-w` counts underscore as a word
+character, so searching `noaa_oni` does not match the id `noaa_oni_copy`: two records of one source
+need not share an id, but they do share a URL, which is what the second search is for.
 
 Read every match. **STOP if one is this source** — name the file and the matching line and ask
 whether to update that record instead. Do not add a second record for one source.
@@ -93,9 +93,9 @@ does not list.
 - `license`: the licence text verbatim as published. Look in this order and stop at the first that
   states terms: the file itself, its landing page, then a terms/licence/disclaimer page that landing
   page links from its own footer. Quote it, then say where you found it — inside the same value,
-  since the schema has no second field for it (a `license_stated_at` is in the Parking lot). Never
-  substitute a licence name you inferred: "public domain (US federal government work)" is a
-  conclusion, not published text. `"not stated"` only when none of those states terms.
+  since the schema has no second field for it. Never substitute a licence name you inferred:
+  "public domain (US federal government work)" is a conclusion, not published text. `"not stated"`
+  only when none of those states terms.
 - `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
@@ -146,9 +146,10 @@ the steward updates the file, and CPC sends no `ETag` on the ONI file at all. Do
 
 Set `fetch_script: src/fetch/<id>.py`, and set `retrieved` to the local date of the manifest's
 `fetched_at`. When that differs from the date you wrote down in step 2 — a fetch that lands after
-midnight, a run resumed the next day — re-confirm the page facts in step 6 and date every string in
-the record to that same day. Each dated string states when you confirmed it, and one entry should
-not carry two dates.
+midnight, a run resumed the next day — re-confirm the page facts in step 6, and the record then
+dates to the fetch day throughout. A "…, retrieved YYYY-MM-DD" clause states the day you read that
+page, so never re-date one you did not re-read: a record may honestly carry two dates, but never a
+date you did not observe.
 
 `data/` is git-ignored and reproducible from the script. **Never write into `data/` by hand and
 never `git add` it** — the script is the record of the fetch.
