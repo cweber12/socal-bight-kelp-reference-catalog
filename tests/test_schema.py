@@ -3,6 +3,11 @@ that need more than one record to fail: unresolved links and duplicate ids.
 
 Fixtures live in tests/fixtures/<case>/catalog/<kind>/*.md so a case is a whole
 miniature repo and check_catalog() runs on it unchanged.
+
+The last two sections come from a mutation sweep - disable one rule in schema.py, run
+the suite, see whether anything fails - and pin the rules it found undefended: one
+named test per conditional rule, then every field of every record type dropped and
+mistyped, table-driven over RULES.
 """
 
 from __future__ import annotations
@@ -13,7 +18,7 @@ from typing import Any
 import pytest
 
 from kelpcatalog import check_catalog, parse_record, split_topic, topic_problem, validate
-from kelpcatalog.schema import GROUPS, KINDS, STATUS, TOPICS, Catalog, Record
+from kelpcatalog.schema import GROUPS, KINDS, RULES, STATUS, TIER, TOPICS, Catalog, Record
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -288,6 +293,29 @@ def a_source_of(status: str, tier: str) -> Record:
     return builders[tier](status=status, tier=tier)
 
 
+def a_reference(**overrides: Any) -> Record:
+    data: dict[str, Any] = {
+        "citekey": "konotchick2012",
+        "ref": "Konotchick T et al. (2012) Estuarine, Coastal and Shelf Science 106:85-92",
+        "doi": "10.1016/j.ecss.2012.04.026",
+        "year": 2012,
+        "topics": ["ocean-climate"],
+    }
+    data.update(overrides)
+    return Record("references", "catalog/references/konotchick2012.md", data)
+
+
+def an_excluded(**overrides: Any) -> Record:
+    data: dict[str, Any] = {
+        "slug": "example-excluded-2026",
+        "reviewed": "2026-09-05",
+        "what": "Example et al. 2026, a study at a site outside the Bight",
+        "reason": "Baja California site, not the Southern California Bight",
+    }
+    data.update(overrides)
+    return Record("excluded", "catalog/excluded/example-excluded-2026.md", data)
+
+
 def a_region(**overrides: Any) -> Record:
     data: dict[str, Any] = {
         "id": "scb.mainland.san-diego",
@@ -430,3 +458,173 @@ def test_gitkeep_and_transcribed_tables_are_not_unexpected():
     tree = FIXTURES / "unexpected_file"
     assert (tree / "catalog" / "beds" / ".gitkeep").is_file()
     assert (tree / "catalog" / "tables" / "parnell2005_table1.csv").is_file()
+
+
+# --- the conditional rules a mutation sweep found undefended ------------------------
+#
+# Sweep: disable one rule in schema.py, run the suite, see whether anything fails. A
+# mutant that survives is a rule no test defends. Nine of the survivors were the
+# conditional and cross-record rules below - each a rule CONTEXT.md states that a
+# record could break in silence. One named test each; the per-field survivors are the
+# table-driven pair at the end of this file.
+#
+# The five that need a repo on disk - a fetch script, a transcribed table, a bed, a
+# site, a reference to resolve against - validate against tests/fixtures/valid, which
+# is already a whole miniature repo, rather than a fixture tree of their own.
+
+
+def valid_catalog() -> Catalog:
+    catalog, problems = check_catalog(FIXTURES / "valid")
+    assert problems == [], "\n".join(map(str, problems))
+    return catalog
+
+
+def test_tier_must_come_from_the_vocabulary():
+    # CONTEXT.md, "Vocabularies": tier is FETCHED, TRANSCRIBED or NOT HELD. status had
+    # this test from the start; tier did not, so 'FETCHD' validated.
+    assert validate(a_source(tier="NOT HELD")) == []
+    assert reports(validate(a_source(tier="FETCHD"))) == [("tier", f"must be one of {TIER}")]
+
+
+def test_topics_needs_at_least_one_tag():
+    # CONTEXT.md, sources and references: topics* ... >= 1. A source that fits no topic
+    # means adding a topic, never an empty list.
+    assert reports(validate(a_source(topics=[]))) == [("topics", "at least one topic")]
+    assert reports(validate(a_reference(topics=[]))) == [("topics", "at least one topic")]
+    # excluded.topics is optional, so an empty list there is not the same failure.
+    assert validate(an_excluded(topics=[])) == []
+
+
+def test_fetch_script_must_exist_in_the_repo():
+    # CONTEXT.md, sources: fetch_script ... required when FETCHED; must exist in the
+    # repo. A record naming a script nobody wrote does not reproduce the fetch.
+    catalog = valid_catalog()
+    assert validate(a_fetched_source(fetch_script="src/fetch/noaa_oni.py"), catalog) == []
+    assert ("fetch_script", "src/fetch/nope.py does not exist in the repo") in reports(
+        validate(a_fetched_source(fetch_script="src/fetch/nope.py"), catalog)
+    )
+
+
+def test_transcribed_file_must_exist_in_the_repo():
+    # CONTEXT.md, sources: file ... required when TRANSCRIBED; a file under
+    # catalog/tables/. That the path is under catalog/tables/ has a test above; that
+    # the file is actually there had none.
+    catalog = valid_catalog()
+    held = a_transcribed_source(file="catalog/tables/parnell2005_table1.csv")
+    assert validate(held, catalog) == []
+    assert ("file", "catalog/tables/nope.csv does not exist in the repo") in reports(
+        validate(a_transcribed_source(file="catalog/tables/nope.csv"), catalog)
+    )
+
+
+def test_not_held_source_has_no_retrieved_date():
+    # CONTEXT.md, sources: retrieved ... null when NOT HELD. Nothing was retrieved, so
+    # a date here states a fetch that did not happen.
+    assert validate(a_source(retrieved=None)) == []
+    assert reports(validate(a_source(retrieved="2026-09-07"))) == [
+        ("retrieved", "must be null when tier is NOT HELD")
+    ]
+
+
+def test_not_held_source_names_no_fetch_script():
+    # CONTEXT.md, tier: NOT HELD is "nothing local", and fetch_script is required when
+    # FETCHED - a NOT HELD record naming one describes a fetch it did not make.
+    assert validate(a_source(fetch_script=None)) == []
+    assert reports(validate(a_source(fetch_script="src/fetch/noaa_oni.py"))) == [
+        ("fetch_script", "must be absent when tier is NOT HELD")
+    ]
+
+
+def test_source_beds_must_resolve():
+    # CONTEXT.md, "Gates": catalog-schema links only to records that exist. regions and
+    # references were tested; beds and sites were not.
+    catalog = valid_catalog()
+    assert validate(a_source(beds=["3"]), catalog) == []
+    assert ("beds", "'99' is not a bed record") in reports(validate(a_source(beds=["99"]), catalog))
+
+
+def test_source_sites_must_resolve():
+    catalog = valid_catalog()
+    assert validate(a_source(sites=["leichter2023.point-loma"]), catalog) == []
+    assert ("sites", "'leichter2023.nowhere' is not a site record") in reports(
+        validate(a_source(sites=["leichter2023.nowhere"]), catalog)
+    )
+
+
+def test_transcribed_from_reference_must_resolve():
+    # CONTEXT.md, sources: transcribed_from {reference, table, page} - the reference is
+    # the printed page the values were typed from, so it has to be a record here.
+    catalog = valid_catalog()
+    held = a_transcribed_source(file="catalog/tables/parnell2005_table1.csv")
+    assert validate(held, catalog) == []
+    absent = a_transcribed_source(
+        file="catalog/tables/parnell2005_table1.csv",
+        transcribed_from={"reference": "nobody2020", "table": "Table 1", "page": "p. 2"},
+    )
+    assert ("transcribed_from.reference", "'nobody2020' is not a reference record") in reports(
+        validate(absent, catalog)
+    )
+
+
+# --- every field of every record type, dropped and mistyped ------------------------
+#
+# The same sweep left 88 per-field mutants alive: most fields had no test that omitted
+# or mistyped them. Table-driven over RULES rather than 88 fixtures, so a field added
+# to RULES arrives with both tests already written, and a field whose rule CONTEXT.md
+# changes fails here rather than going unnoticed.
+
+BUILDERS = {
+    "sources": a_source,
+    "references": a_reference,
+    "excluded": an_excluded,
+    "regions": a_region,
+    "beds": a_bed,
+    "sites": a_site,
+}
+
+# One value of the wrong type per type RULES uses. Each is the kind of thing a record
+# actually gets wrong: a bare string where a list belongs, a quoted number, a mapping
+# flattened to prose.
+WRONG_VALUE: dict[str, Any] = {
+    "str": 5,
+    "str?": 5,
+    "int": "2012",
+    "float": "32.69",
+    "date": 5,
+    "date?": 5,
+    "map?": "reference, table, page",
+    "list[str]": "one string, not a list",
+    "list[topic]": "bed-state",
+    "list[eq]": ["not a mapping"],
+}
+
+FIELD_RULES = [(k, n, r, t) for k, fields in RULES.items() for n, (r, t) in fields.items()]
+REQUIRED_FIELDS = [(k, n) for k, n, required, _ in FIELD_RULES if required]
+TYPED_FIELDS = [(k, n, t) for k, n, _, t in FIELD_RULES]
+
+
+def a_valid(kind: str) -> Record:
+    rec = BUILDERS[kind]()
+    assert validate(rec) == [], (
+        f"the base {kind} record must be valid, or the mutated field is not what failed"
+    )
+    return rec
+
+
+@pytest.mark.parametrize(
+    "kind, name", REQUIRED_FIELDS, ids=[f"{k}.{n}" for k, n in REQUIRED_FIELDS]
+)
+def test_every_required_field_is_required(kind: str, name: str):
+    rec = a_valid(kind)
+    dropped = Record(kind, rec.path, {k: v for k, v in rec.data.items() if k != name})
+    assert (name, "required field is missing") in reports(validate(dropped))
+
+
+@pytest.mark.parametrize(
+    "kind, name, typ", TYPED_FIELDS, ids=[f"{k}.{n}" for k, n, _ in TYPED_FIELDS]
+)
+def test_every_field_is_typed(kind: str, name: str, typ: str):
+    assert typ in WRONG_VALUE, f"RULES uses {typ!r}; add a value of the wrong type for it"
+    rec = a_valid(kind)
+    mistyped = Record(kind, rec.path, {**rec.data, name: WRONG_VALUE[typ]})
+    assert (name, f"expected {typ}") in reports(validate(mistyped))
