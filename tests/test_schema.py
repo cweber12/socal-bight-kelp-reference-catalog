@@ -270,7 +270,7 @@ def a_region(**overrides: Any) -> Record:
     data: dict[str, Any] = {
         "id": "scb.mainland.san-diego",
         "name": "San Diego County",
-        "parent": None,
+        "parent": "scb.mainland",
         "defined_by": "http://kelp.sccwrp.org/",
     }
     data.update(overrides)
@@ -318,14 +318,26 @@ def test_transcribed_file_must_be_under_catalog_tables():
     ]
 
 
-def test_region_consortium_is_a_closed_vocabulary():
-    # CONTEXT.md, regions: consortium (`RNKSC` or `CRKSC`, counties only)
+def test_region_consortium_is_a_list_of_consortia():
+    # CONTEXT.md, regions: consortium (list of RNKSC / CRKSC, non-empty only when
+    # parent is scb.mainland). kelp.sccwrp.org splits Orange County between the two
+    # and leaves Santa Barbara County to neither, so one value cannot state it.
     assert validate(a_region()) == []
-    assert validate(a_region(consortium="RNKSC")) == []
-    assert validate(a_region(consortium="CRKSC")) == []
-    assert validate(a_region(consortium=None)) == []
-    assert reports(validate(a_region(consortium="SCCWRP"))) == [
+    assert validate(a_region(consortium=["RNKSC"])) == []
+    orange = a_region(id="scb.mainland.orange", name="Orange County", consortium=["RNKSC", "CRKSC"])
+    assert validate(orange) == []
+    santa_barbara = a_region(
+        id="scb.mainland.santa-barbara", name="Santa Barbara County", consortium=[]
+    )
+    assert validate(santa_barbara) == []
+
+    assert reports(validate(a_region(consortium=["SCCWRP"]))) == [
         ("consortium", "must be one of ('RNKSC', 'CRKSC')")
+    ]
+    assert reports(validate(a_region(consortium="RNKSC"))) == [("consortium", "expected list[str]")]
+    assert reports(validate(a_region(consortium=None))) == [("consortium", "expected list[str]")]
+    assert reports(validate(a_region(id="scb", parent=None, consortium=["RNKSC"]))) == [
+        ("consortium", "non-empty only when parent is scb.mainland")
     ]
 
 
