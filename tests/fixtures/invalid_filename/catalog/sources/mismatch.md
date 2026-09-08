@@ -8,7 +8,7 @@ status: VERIFIED
 tier: FETCHED
 access: ["Download oni.ascii.txt from the CPC indices page"]
 format: whitespace-delimited text
-license: "public domain (US federal government work)"
+license: "licence text verbatim on entry"
 variables: [SEAS, YR, TOTAL, ANOM]
 coverage: "as stated in the file header on retrieval"
 coverage_stated_at: "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt"
