@@ -74,6 +74,9 @@ GROUPS: dict[str, tuple[str, ...]] = {
     "human-uses-management": ("water-quality-harvest", "restoration-mitigation"),
 }
 GLOBAL_REGION = "global"
+# The consortium boundary runs through Orange County, so consortium is a list, and it is
+# an attribute of a county - a node whose parent is the mainland. CONTEXT.md, region tree.
+MAINLAND_REGION = "scb.mainland"
 
 
 def split_topic(tag: str) -> tuple[str, str | None]:
@@ -201,7 +204,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "name": (True, "str"),
         "parent": (True, "str?"),
         "defined_by": (True, "str"),
-        "consortium": (False, "str?"),
+        "consortium": (False, "list[str]"),
     },
     "beds": {
         "id": (True, "str"),
@@ -321,9 +324,12 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "consortium" not in bad:
-        con = d.get("consortium")
-        if con is not None and con not in CONSORTIUM:
-            out.append(Problem(p, "consortium", f"must be one of {CONSORTIUM}"))
+        con = d.get("consortium") or []
+        for c in con:
+            if c not in CONSORTIUM:
+                out.append(Problem(p, "consortium", f"must be one of {CONSORTIUM}"))
+        if con and "parent" not in bad and d.get("parent") != MAINLAND_REGION:
+            out.append(Problem(p, "consortium", f"non-empty only when parent is {MAINLAND_REGION}"))
     if "topics" in d and "topics" not in bad:
         if not d["topics"] and RULES[rec.kind]["topics"][0]:
             out.append(Problem(p, "topics", "at least one topic"))

@@ -129,8 +129,13 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
    `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`). Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
-Consortium (`RNKSC`, `CRKSC`) is an attribute on a county node, not a level. Depth is a field on a
-source, not a level: kelp habitat is 0–30 m (CDFW), one Bight stratum.
+Consortium is an attribute on a county node, not a level, and it is a **list**: kelp.sccwrp.org
+states that RNKSC covers San Diego and southern Orange counties and CRKSC covers northern Orange,
+Los Angeles and Ventura, so the boundary runs through Orange County, which states both
+(`consortium: [RNKSC, CRKSC]`), and Santa Barbara County is covered by neither, which states none
+(`consortium: []`). A county node says which consortia the county falls under and nothing finer:
+which consortium surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3.
+Depth is a field on a source, not a level: kelp habitat is 0–30 m (CDFW), one Bight stratum.
 
 ## Record schemas
 
@@ -183,7 +188,8 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 ### regions/<id>.md
 
 `id`* (equals file name), `name`*, `parent`* (region id, or null for `scb`), `defined_by`*
-(the source that draws the boundary), `consortium` (`RNKSC` or `CRKSC`, counties only).
+(the source that draws the boundary), `consortium` (list of `RNKSC` / `CRKSC`, non-empty only
+when `parent` is `scb.mainland`; `[]` where neither consortium covers the county).
 
 ### beds/<n>.md
 
