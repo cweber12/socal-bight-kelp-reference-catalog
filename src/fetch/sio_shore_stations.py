@@ -18,6 +18,7 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import sys
 import urllib.request
 from pathlib import Path
 
@@ -88,8 +89,24 @@ def fetch(url: str, out_dir: Path) -> dict[str, object]:
 
 
 def main() -> None:
+    # A failure part-way through leaves some archives on disk and others missing,
+    # with nothing to mark the directory incomplete. Fetch what can be fetched,
+    # then name every failure and exit non-zero.
+    failures: list[tuple[str, Exception]] = []
     for url in FILES:
-        print(json.dumps(fetch(url, OUT_DIR), indent=2))
+        try:
+            print(json.dumps(fetch(url, OUT_DIR), indent=2))
+        except Exception as exc:  # noqa: BLE001 - every failure is reported below
+            failures.append((url, exc))
+            print(f"FAILED {url}: {exc}", file=sys.stderr)
+    if failures:
+        print(
+            f"\n{len(failures)} of {len(FILES)} files did not fetch; {OUT_DIR} is incomplete:",
+            file=sys.stderr,
+        )
+        for url, exc in failures:
+            print(f"  {url}: {exc}", file=sys.stderr)
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
