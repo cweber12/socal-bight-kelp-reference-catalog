@@ -369,6 +369,13 @@ def _tier_problems(rec: Record, root: Path | None, bad: set[str]) -> list[Proble
     d, p = rec.data, rec.path
     out: list[Problem] = []
     tier = d.get("tier")
+    # status and tier are not independent (CONTEXT.md, "Vocabularies"): VERIFIED says the
+    # route was exercised, and only a fetch or a printed page in hand could have exercised
+    # it. Stating it here states it from both ends at once.
+    if tier == "NOT HELD" and d.get("status") == "VERIFIED":
+        out.append(
+            Problem(p, "status", "VERIFIED requires tier FETCHED or TRANSCRIBED; tier is NOT HELD")
+        )
     if tier == "FETCHED":
         for f in ("url", "retrieved", "fetch_script"):
             if not d.get(f):

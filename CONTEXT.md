@@ -60,7 +60,10 @@ into `data/` by hand.
 
 **status** — whether the route to the source is known to work.
 `VERIFIED` (fetched or opened successfully on the `retrieved` date) · `PATTERN` (route documented
-but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+but not exercised) · `NOT PUBLIC` · `ON REQUEST`. Status and tier are not independent: only a fetch
+or a printed page in hand can have exercised the route, so `VERIFIED` requires a `tier` of `FETCHED`
+or `TRANSCRIBED`; equivalently, a `NOT HELD` record's status is `PATTERN`, `NOT PUBLIC` or
+`ON REQUEST`.
 
 **tier** — how the local content, if any, came to exist.
 `FETCHED` (bytes retrieved unmodified from the steward's host) · `TRANSCRIBED` (values typed from a

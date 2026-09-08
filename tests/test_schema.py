@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 
 from kelpcatalog import check_catalog, parse_record, split_topic, topic_problem, validate
-from kelpcatalog.schema import GROUPS, KINDS, TOPICS, Catalog, Record
+from kelpcatalog.schema import GROUPS, KINDS, STATUS, TOPICS, Catalog, Record
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -226,7 +226,7 @@ def test_catalog_ids_helper():
 
 # --- rules CONTEXT.md states, one test each ----------------------------------------
 #
-# Each of the six below is a record that validate() accepted before this section
+# Each of the seven below is a record that validate() accepted before this section
 # existed. CONTEXT.md is the authority, so accepting them was the bug. The records are
 # built inline rather than as fixtures: with no catalog, validate() runs every rule
 # except the link checks, so one wrong field yields exactly one problem.
@@ -264,6 +264,28 @@ def a_transcribed_source(**overrides: Any) -> Record:
         "transcribed_from": {"reference": "konotchick2012", "table": "Table 1", "page": "p. 2"},
     }
     return a_source(**(transcribed | overrides))
+
+
+def a_fetched_source(**overrides: Any) -> Record:
+    fetched: dict[str, Any] = {
+        "status": "VERIFIED",
+        "tier": "FETCHED",
+        "url": "https://origin.cpc.ncep.noaa.gov/oni.ascii.txt",
+        "retrieved": "2026-09-07",
+        "fetch_script": "src/fetch/oni.py",
+    }
+    return a_source(**(fetched | overrides))
+
+
+def a_source_of(status: str, tier: str) -> Record:
+    """A source whose tier-specific fields are all in order, so the status/tier
+    pairing is the only thing left that can be wrong."""
+    builders = {
+        "FETCHED": a_fetched_source,
+        "TRANSCRIBED": a_transcribed_source,
+        "NOT HELD": a_source,
+    }
+    return builders[tier](status=status, tier=tier)
 
 
 def a_region(**overrides: Any) -> Record:
@@ -316,6 +338,31 @@ def test_transcribed_file_must_be_under_catalog_tables():
     assert reports(validate(a_transcribed_source(file="data/tables/x.csv"))) == [
         ("file", "must be a file under catalog/tables/")
     ]
+
+
+VERIFIED_BY_TIER = ("status", "VERIFIED requires tier FETCHED or TRANSCRIBED; tier is NOT HELD")
+
+
+@pytest.mark.parametrize("status", [s for s in STATUS if s != "VERIFIED"])
+def test_not_held_admits_every_status_but_verified(status: str):
+    # CONTEXT.md, tier: NOT HELD is "nothing local", so its status is one of the three
+    # that do not claim the route was exercised.
+    assert validate(a_source_of(status, "NOT HELD")) == []
+
+
+def test_verified_status_requires_fetched_or_transcribed_tier():
+    # CONTEXT.md, status: VERIFIED means the route was exercised - fetched on the
+    # retrieved date, or a printed page in hand. A NOT HELD record holds nothing and
+    # names no fetch, so nothing here could have verified it.
+    assert validate(a_source_of("VERIFIED", "FETCHED")) == []
+    assert validate(a_source_of("VERIFIED", "TRANSCRIBED")) == []
+    # Stated from the status end: VERIFIED on a record that holds nothing.
+    assert reports(validate(a_source(status="VERIFIED"))) == [VERIFIED_BY_TIER]
+    # And from the tier end: NOT HELD on a record that claims VERIFIED. One constraint,
+    # so one problem, and it names both fields.
+    assert reports(
+        validate(a_transcribed_source(tier="NOT HELD", file=None, transcribed_from=None))
+    ) == [VERIFIED_BY_TIER]
 
 
 def test_region_consortium_is_a_list_of_consortia():
