@@ -25,8 +25,8 @@ Search all three directories for the id, the URL, the DOI and distinctive words 
 same source is often already in under a different id, or already reviewed and turned down:
 
 ```sh
-grep -ril -e "<id>" -e "<url>" -e "<doi>" -e "<title words>" \
-  catalog/sources catalog/references catalog/excluded
+git grep -il -e "<id>" -e "<url>" -e "<doi>" -e "<title words>" \
+  -- catalog/sources catalog/references catalog/excluded
 ```
 
 **STOP if anything matches.** Name the file and the matching line and ask whether to update that
@@ -62,7 +62,8 @@ are marked `*` there. The whole file is one YAML frontmatter block and the body 
 - `license`: the licence text **verbatim** as published; `"not stated"` when the source states none.
 - `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it.
-- `retrieved`: today's date from step 2 when `FETCHED`; `null` when `NOT HELD`.
+- `retrieved`: today's date from step 2 when `FETCHED`; `null` when `TRANSCRIBED` (the
+  provenance is `transcribed_from`, not a fetch); `null` when `NOT HELD`.
 - `topics`: tags from `CONTEXT.md` only. **A source that fits no topic is never excluded for it** —
   stop and say so, and adding the topic is its own PR.
 - `regions`: the most specific node that covers it, or `global` for a source with no regional bound.
@@ -72,7 +73,8 @@ are marked `*` there. The whole file is one YAML frontmatter block and the body 
 
 The script downloads the file(s) into `data/raw/<id>/` and writes, per file,
 `data/raw/<id>/manifest_<stem>.json` with `url`, `fetched_at`, `sha256`, `bytes`, `http_status`.
-Standard library only (`urllib`, `hashlib`, `json`) — do not add a dependency.
+Standard library only (`urllib`, `hashlib`, `json`) — do not add a dependency
+(`CLAUDE.md`: no dependencies an issue did not ask for).
 
 Run it. Set `retrieved` from that run, and set `fetch_script: src/fetch/<id>.py`.
 

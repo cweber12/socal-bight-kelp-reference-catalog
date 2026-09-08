@@ -10,7 +10,8 @@
    names.
 5. Open a PR titled `catalog: add <id>`; paste the gate output into the body.
 
-Inside a Claude Code session the `add-source` skill does steps 1–4 (arriving with milestone 6.1).
+Inside a Claude Code session the `add-source` skill does steps 1–6 of its own checklist —
+steps 1–4 here, and it stops before the PR.
 
 ## Adding a reference, exclusion, region, bed or site
 
