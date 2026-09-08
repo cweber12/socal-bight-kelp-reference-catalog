@@ -26,6 +26,11 @@ from typing import Any
 import yaml
 
 KINDS = ("sources", "references", "excluded", "regions", "beds", "sites")
+# Every directory under catalog/ and the one extension its files carry: records are
+# markdown, and catalog/tables/ holds the transcribed CSVs (CONTEXT.md, "Record format").
+# .gitkeep is how git holds an empty one, so it is not a stray.
+RECORD_DIRS: dict[str, str] = {**dict.fromkeys(KINDS, ".md"), "tables": ".csv"}
+KEEP_FILE = ".gitkeep"
 
 STATUS = ("VERIFIED", "PATTERN", "NOT PUBLIC", "ON REQUEST")
 TIER = ("FETCHED", "TRANSCRIBED", "NOT HELD")
@@ -467,17 +472,33 @@ def _duplicate_problems(catalog: Catalog) -> list[Problem]:
 
 
 def load_catalog(root: Path) -> tuple[Catalog, list[Problem]]:
-    """Read every record under root/catalog/<kind>/. Parse problems are returned, not raised."""
+    """Read every record under root/catalog/<kind>/. Parse problems are returned, not raised.
+
+    The directories are listed rather than globbed: a file the directory should not hold -
+    a record saved as .yaml, say - is reported, never read.
+    """
     catalog = Catalog(root=root)
     problems: list[Problem] = []
     base = root / "catalog"
-    for kind in KINDS:
-        for path in sorted((base / kind).glob("*.md")):
+    for dirname, ext in RECORD_DIRS.items():
+        directory = base / dirname
+        if not directory.is_dir():
+            continue
+        for path in sorted(directory.iterdir()):
+            if not path.is_file() or path.name == KEEP_FILE:
+                continue
             rel = path.relative_to(root).as_posix()
-            rec, probs = parse_record(path.read_text(encoding="utf-8"), kind, rel)
+            if path.suffix != ext:
+                problems.append(
+                    Problem(rel, "file", f"unexpected file; catalog/{dirname}/ holds *{ext}")
+                )
+                continue
+            if dirname not in KINDS:
+                continue  # catalog/tables/ holds transcribed values, not records
+            rec, probs = parse_record(path.read_text(encoding="utf-8"), dirname, rel)
             problems += probs
             if rec is not None:
-                catalog.records[kind].append(rec)
+                catalog.records[dirname].append(rec)
     return catalog, problems
 
 

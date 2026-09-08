@@ -408,3 +408,25 @@ def test_bed_id_is_its_cdfw_bed_number():
     # CONTEXT.md, beds: id* (the bed number as a string, equals file name)
     assert validate(a_bed()) == []
     assert reports(validate(a_bed(cdfw_bed=4))) == [("id", "must equal cdfw_bed ('4')")]
+
+
+# --- a record directory holds only records -----------------------------------------
+
+
+def test_unexpected_file_under_a_record_directory_is_reported():
+    # CONTEXT.md, "Record format": a record is one markdown file. Globbing for *.md
+    # skipped anything else in silence, so a record saved as catalog/sources/stray.yaml
+    # - the wrong extension, the content still YAML - left the gate green without it.
+    _, problems = check_catalog(FIXTURES / "unexpected_file")
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        ("catalog/sources/stray.yaml", "file", "unexpected file; catalog/sources/ holds *.md")
+    ]
+
+
+def test_gitkeep_and_transcribed_tables_are_not_unexpected():
+    # .gitkeep holds an empty record directory in git, and catalog/tables/ holds the
+    # transcribed CSVs by design; neither is a stray. The equality above says they are
+    # silent - this says the fixture still contains them to be silent about.
+    tree = FIXTURES / "unexpected_file"
+    assert (tree / "catalog" / "beds" / ".gitkeep").is_file()
+    assert (tree / "catalog" / "tables" / "parnell2005_table1.csv").is_file()
