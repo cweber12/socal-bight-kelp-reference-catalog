@@ -24,13 +24,11 @@ is protected.
 
 ## How work is tracked
 
-GitHub Issues and milestones via `gh`; see `docs/agents/issue-tracker.md` and
-`docs/agents/triage-labels.md`. One milestone is active at a time. The next thing to do is the top
-open `ready-for-agent` issue in it. Ideas go in the pinned **Parking lot** issue, never as new
-issues. A PRD for each milestone lives at `docs/prd/<slug>.md`.
-
-An issue is ready when it names the seam (function signature, gate row or file format), the failing
-test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
+One milestone is active at a time; the next thing to do is the top open `ready-for-agent` issue in
+it. A PRD for each milestone lives at `docs/prd/<slug>.md`. An issue is ready when it names the
+seam, the failing test and the non-goals and fits one PR; if you cannot state the failing test,
+stop and ask. Ideas go in the pinned Parking-lot issue as one-line comments, never as new issues;
+the only issues an agent opens on its own are found-in-flight bugs under rule 3.
 
 ## In-flight bugs
 
@@ -58,3 +56,19 @@ PR body:
 
 Split work only when it earns its keep. A rename is its own slice. Do not add fields, gates,
 directories or dependencies an open issue does not ask for; put the idea in the Parking lot.
+
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues and milestones in this repo, via `gh`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical role strings unchanged, plus `bug` and `found-in-flight`.
+See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` at the root is the authority; no `docs/adr/` yet.
+See `docs/agents/domain.md`.
