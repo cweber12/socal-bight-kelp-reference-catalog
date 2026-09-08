@@ -32,8 +32,9 @@ repo from `git remote -v` when run inside a clone.
 ## Record issues
 
 An issue whose work is entering one source into `catalog/sources/` takes a fixed shape, and it is
-the one issue that cannot name a failing test — the readiness bar's "stop and ask" does not apply,
-because the answer is written here. The `add-source` skill is what works it.
+one of the shapes that cannot name a failing test — a skill or docs issue is the other. The
+readiness bar's "stop and ask" does not apply, because the answer is written here. The
+`add-source` skill is what works it.
 
 - **Seam** — the record and its fetch script: `catalog/sources/<id>.md`, and `src/fetch/<id>.py`
   when the tier is `FETCHED`.
