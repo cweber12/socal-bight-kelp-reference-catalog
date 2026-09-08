@@ -8,11 +8,12 @@ miniature repo and check_catalog() runs on it unchanged.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from kelpcatalog import check_catalog, parse_record, split_topic, topic_problem, validate
-from kelpcatalog.schema import GROUPS, KINDS, TOPICS, Catalog
+from kelpcatalog.schema import GROUPS, KINDS, TOPICS, Catalog, Record
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -221,3 +222,130 @@ def test_excluded_records_may_carry_topics_but_need_not():
 def test_catalog_ids_helper():
     c = Catalog(root=Path("."))
     assert c.ids("sources") == set()
+
+
+# --- rules CONTEXT.md states, one test each ----------------------------------------
+#
+# Each of the six below is a record that validate() accepted before this section
+# existed. CONTEXT.md is the authority, so accepting them was the bug. The records are
+# built inline rather than as fixtures: with no catalog, validate() runs every rule
+# except the link checks, so one wrong field yields exactly one problem.
+
+
+def reports(problems: list[Any]) -> list[tuple[str, str]]:
+    return [(p.field, p.message) for p in problems]
+
+
+def a_source(**overrides: Any) -> Record:
+    """A NOT HELD source that validates; each override mutates one field."""
+    data: dict[str, Any] = {
+        "id": "x",
+        "title": "A source",
+        "steward": "A steward",
+        "url": None,
+        "status": "NOT PUBLIC",
+        "tier": "NOT HELD",
+        "access": ["Ask the program PI"],
+        "license": "not stated",
+        "variables": [],
+        "retrieved": None,
+        "topics": ["bed-state"],
+        "regions": ["scb"],
+    }
+    data.update(overrides)
+    return Record("sources", "catalog/sources/x.md", data)
+
+
+def a_transcribed_source(**overrides: Any) -> Record:
+    transcribed: dict[str, Any] = {
+        "status": "VERIFIED",
+        "tier": "TRANSCRIBED",
+        "file": "catalog/tables/x.csv",
+        "transcribed_from": {"reference": "konotchick2012", "table": "Table 1", "page": "p. 2"},
+    }
+    return a_source(**(transcribed | overrides))
+
+
+def a_region(**overrides: Any) -> Record:
+    data: dict[str, Any] = {
+        "id": "scb.mainland.san-diego",
+        "name": "San Diego County",
+        "parent": None,
+        "defined_by": "http://kelp.sccwrp.org/",
+    }
+    data.update(overrides)
+    return Record("regions", f"catalog/regions/{data['id']}.md", data)
+
+
+def a_bed(**overrides: Any) -> Record:
+    data: dict[str, Any] = {
+        "id": "3",
+        "cdfw_bed": 3,
+        "name": "A bed",
+        "status": "Open",
+        "region": "scb.mainland.san-diego",
+        "defined_by": "https://filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/",
+    }
+    data.update(overrides)
+    return Record("beds", f"catalog/beds/{data['id']}.md", data)
+
+
+def a_site(**overrides: Any) -> Record:
+    data: dict[str, Any] = {
+        "id": "leichter2023.point-loma",
+        "program": "leichter2023",
+        "name": "Point Loma mooring",
+        "bed": None,
+        "lat": 32.69,
+        "lon": -117.27,
+        "defined_by": "10.3389/fmars.2023.1007789",
+    }
+    data.update(overrides)
+    return Record("sites", f"catalog/sites/{data['id']}.md", data)
+
+
+def test_source_needs_at_least_one_region():
+    # CONTEXT.md, sources: regions* ... list of region ids or `global`, >= 1
+    assert validate(a_source()) == []
+    assert reports(validate(a_source(regions=[]))) == [("regions", "at least one region")]
+
+
+def test_transcribed_file_must_be_under_catalog_tables():
+    # CONTEXT.md, sources: file ... a file under `catalog/tables/`
+    assert validate(a_transcribed_source()) == []
+    assert reports(validate(a_transcribed_source(file="data/tables/x.csv"))) == [
+        ("file", "must be a file under catalog/tables/")
+    ]
+
+
+def test_region_consortium_is_a_closed_vocabulary():
+    # CONTEXT.md, regions: consortium (`RNKSC` or `CRKSC`, counties only)
+    assert validate(a_region()) == []
+    assert validate(a_region(consortium="RNKSC")) == []
+    assert validate(a_region(consortium="CRKSC")) == []
+    assert validate(a_region(consortium=None)) == []
+    assert reports(validate(a_region(consortium="SCCWRP"))) == [
+        ("consortium", "must be one of ('RNKSC', 'CRKSC')")
+    ]
+
+
+def test_human_task_is_an_h_number():
+    # CONTEXT.md, sources: human_task ... an `H<n>` id
+    assert validate(a_source(human_task="H2")) == []
+    assert validate(a_source(human_task=None)) == []
+    assert reports(validate(a_source(human_task="2"))) == [("human_task", r"does not match ^H\d+$")]
+
+
+@pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
+def test_site_id_is_program_dot_site(bad: str):
+    # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)
+    assert validate(a_site()) == []
+    assert reports(validate(a_site(id=bad))) == [
+        ("id", "must be <program>.<site>, both parts non-empty")
+    ]
+
+
+def test_bed_id_is_its_cdfw_bed_number():
+    # CONTEXT.md, beds: id* (the bed number as a string, equals file name)
+    assert validate(a_bed()) == []
+    assert reports(validate(a_bed(cdfw_bed=4))) == [("id", "must equal cdfw_bed ('4')")]
