@@ -26,7 +26,7 @@ loop.
 | 3 | tracker setup | labels, milestones, board, Parking lot, `docs/agents/` | `docs/agents/issue-tracker.md` says `gh` |
 | 4 | `add-source` skill v0 | `.claude/skills/add-source/SKILL.md` | de-dupes against sources, references, excluded; checks the route; writes the record; runs `gate.py` |
 | 5 | first source: `noaa_oni` | one record, one fetch script | merged via PR through the skill |
-| 6 | second and third: `sio_shore_stations`, `calcofi_93.3_28.0` | two records, two scripts | merged; the skill's rough edges from slice 5 fixed first |
+| 6 | second and third: `sio_shore_stations`, `calcofi` | two records, two scripts | merged; the skill's rough edges from slice 5 fixed first |
 
 ## Non-goals
 
