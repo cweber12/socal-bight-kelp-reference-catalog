@@ -76,8 +76,8 @@ printed page, or extracted from a document by a named script, into `catalog/tabl
 allowed without a record for sources with no regional bound (ONI). `global` is therefore not a node
 of the tree, and not a region wider than the Bight: it states the *absence* of a bound, not a bound
 that happens to be large. It is also the one region tag with no record, so it has no `name` to
-print; where a notebook groups by region it is headed **No regional bound**, and *Notebooks* below
-says where in the order it falls.
+print; *Notebooks* below gives the heading a notebook prints instead, and where in the order it
+falls.
 
 ## Topics: the ten questions
 
@@ -247,8 +247,10 @@ Each topic notebook has the same shape, generated from the records:
 4. *Not held* — `NOT HELD` and `ON REQUEST` sources for the topic, with their `human_task`;
 5. *Reviewed and not included* — exclusions tagged with the topic.
 
-**The region order.** Groups run in the order this file lists the tree, parents before their
-children: Bight-wide (`scb`) first; then `scb.mainland` and its counties north to south —
+**The region order.** Groups run in the tree's own order, traversed depth-first — a node, then all
+its descendants, before the next sibling — with siblings in the order this file lists them. The
+tree above is numbered by level, so the traversal, not that numbering, fixes the order:
+Bight-wide (`scb`) first; then `scb.mainland` and its counties north to south —
 `santa-barbara`, `ventura`, `los-angeles`, `orange`, `san-diego`; then `scb.islands`, its groups in
 the order listed (`northern`, then `southern`), and the islands beneath each; and `global` last.
 Siblings this file does not itself put in an order — the islands within a group — sort by id, so
