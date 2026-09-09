@@ -20,6 +20,9 @@ htmlcov/
 .ipynb_checkpoints/
 *.nbconvert.ipynb
 
+# Agent scratch: session notes and review drafts, not repo documents.
+Claude outputs/
+
 # OS
 Thumbs.db
 desktop.ini
