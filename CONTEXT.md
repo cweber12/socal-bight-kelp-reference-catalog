@@ -73,7 +73,11 @@ printed page, or extracted from a document by a named script, into `catalog/tabl
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 
 **regions** — the tree below. A source tags the most specific node that covers it; `global` is
-allowed without a record for sources with no regional bound (ONI).
+allowed without a record for sources with no regional bound (ONI). `global` is therefore not a node
+of the tree, and not a region wider than the Bight: it states the *absence* of a bound, not a bound
+that happens to be large. It is also the one region tag with no record, so it has no `name` to
+print; where a notebook groups by region it is headed **No regional bound**, and *Notebooks* below
+says where in the order it falls.
 
 ## Topics: the ten questions
 
@@ -237,11 +241,27 @@ Each topic notebook has the same shape, generated from the records:
 1. the question, verbatim from the table above; a count of sources and references; a small
    region × sub-topic table;
 2. one section per sub-topic, in the order listed above — a sources table (id · title · steward ·
-   status · tier · coverage · link) grouped by region, Bight-wide first, then counties north to
-   south, then islands; the references tagged to the sub-topic; then any figures;
+   status · tier · coverage · link) grouped by region, in the region order below; the references
+   tagged to the sub-topic; then any figures;
 3. *General* — sources tagged with the bare topic;
 4. *Not held* — `NOT HELD` and `ON REQUEST` sources for the topic, with their `human_task`;
 5. *Reviewed and not included* — exclusions tagged with the topic.
+
+**The region order.** Groups run in the order this file lists the tree, parents before their
+children: Bight-wide (`scb`) first; then `scb.mainland` and its counties north to south —
+`santa-barbara`, `ventura`, `los-angeles`, `orange`, `san-diego`; then `scb.islands`, its groups in
+the order listed (`northern`, then `southern`), and the islands beneath each; and `global` last.
+Siblings this file does not itself put in an order — the islands within a group — sort by id, so
+the order is total over every node the tree has or gains. It is a property of the region id alone,
+because it must hold for the county and island nodes before their records exist in 6.3. A group's
+heading is its node's `name`; `global` has no record and is headed **No regional bound**.
+
+`global` sorts last rather than first, and the three reasons are recorded here so that the next
+reader need not re-derive them: `global` is the *absence* of a regional bound rather than a bound
+wider than the Bight, so "widest first" does not reach it; it is the one region tag with no record,
+so it is not a node of the tree and is not interleaved with nodes; and a Bight catalog leads with
+its Bight-wide sources. Sorting it first, as the widest bound, is the alternative, and is rejected
+on those three grounds.
 
 Generated cells are marked in cell metadata (`kelpcatalog: generated`) and rewritten by the
 builder whenever records or this file change; figure cells are never generated and never touched.
