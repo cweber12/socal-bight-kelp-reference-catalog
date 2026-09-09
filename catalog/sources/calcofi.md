@@ -1,11 +1,7 @@
 ---
 id: calcofi
 title: California Cooperative Oceanic Fisheries Investigations
-steward: >-
-  California Cooperative Oceanic Fisheries Investigations, whose Data Policy lists its
-  participating agencies as "NOAA Southwest Fisheries Science Center, National Marine Fisheries
-  Service", "Scripps Institution of Oceanography, UC San Diego" and "California Department of
-  Fish & Wildlife (Marine Region)"
+steward: California Cooperative Oceanic Fisheries Investigations
 url: https://calcofi.org/
 doi: null
 status: VERIFIED
@@ -20,8 +16,10 @@ access:
     CalCOFI_Database_194903-202105_csv_16October2023.zip and the same stem with mdb, sql and xml
   - >-
     The same two tables are served one station at a time as ERDDAP tabledap, on a host of the
-    NOAA Southwest Fisheries Science Center, which the Data Policy above names among CalCOFI's
-    participating agencies
+    NOAA Southwest Fisheries Science Center. https://calcofi.org/data/data-usage-policy/ lists
+    CalCOFI's participating agencies as "NOAA Southwest Fisheries Science Center, National
+    Marine Fisheries Service", "Scripps Institution of Oceanography, UC San Diego" and
+    "California Department of Fish & Wildlife (Marine Region)", retrieved 2026-09-08
   - >-
     Open https://coastwatch.pfeg.noaa.gov/erddap/search/index.html?searchFor=CalCOFI. The
     entries titled "CalCOFI SIO Hydrographic Cast Data" and "CalCOFI SIO Hydrographic Bottle
@@ -31,7 +29,9 @@ access:
   - >-
     Requests under https://coastwatch.pfeg.noaa.gov/erddap/tabledap/ returned HTTP 302 on
     2026-09-08 with a Location under https://oceanview.pfeg.noaa.gov/erddap/tabledap/ carrying
-    the same query. The two URLs below are the oceanview ones, which answer without a redirect
+    the same query. The two URLs below are the oceanview ones, which answer without a redirect;
+    src/fetch/calcofi.py requests those, so it pins the redirect target rather than the host
+    the search page above advertises
   - >-
     The pattern is <erddap>/tabledap/<dataset>.csv?&sta_id=%22<line>%20<station>%22 - one
     request per table; no variable list before the constraint, so every variable is returned;
@@ -51,8 +51,11 @@ format: >-
   of column names, then a row of units, then one row per record, and holds no byte above 127 in
   the copy retrieved 2026-09-08. The variables below are those two column-name rows: 62 columns
   in the cast file and 65 in the bottle file, of which five - time, latitude, longitude, cst_cnt
-  and sta_id - appear in both. No single file carries all of them; the measurements are in the
-  bottle file and the cast metadata in the cast file
+  and sta_id - appear in both. No single file carries all of them, and the list is ordered so
+  that it can be split back apart: the first 62 entries are the cast file's column-name row in
+  its order, and the last 60 are the names that appear only in the bottle file, in its order.
+  The Bottle Database page states "The Cast table contains metadata." and "The Bottle table
+  contains oceanographic data."
 license: >-
   "CalCOFI oceanographic and biological data are licensed under the Creative Commons Attribution
   4.0 International License." and "Persons who utilize CalCOFI data are required to state so in
@@ -62,12 +65,17 @@ license: >-
   https://calcofi.org/data/data-usage-policy/, reached as "Data Usage Policy" under Data in the
   navigation of https://calcofi.org/ and as the "data-use agreement" that
   https://calcofi.org/data/oceanographic-data/bottle-database/ states is accepted by downloading,
-  retrieved 2026-09-08). The two ERDDAP dataset pages the files were fetched from state a
-  different licence, seven <br>-separated lines beginning "The data may be used and redistributed
-  for free but is not intended" and ending "completeness, or usefulness, of this information."
-  (https://oceanview.pfeg.noaa.gov/erddap/info/siocalcofiHydroCast/index.html and
-  https://oceanview.pfeg.noaa.gov/erddap/info/siocalcofiHydroBottle/index.html, retrieved
-  2026-09-08)
+  retrieved 2026-09-08). The two ERDDAP dataset pages the files were fetched from state
+  different terms: "The data may be used and redistributed for free but is not intended for
+  legal use, since it may contain inaccuracies. Neither the data Contributor, ERD, NOAA, nor the
+  United States Government, nor any of their employees or contractors, makes any warranty,
+  express or implied, including warranties of merchantability and fitness for a particular
+  purpose, or assumes any legal liability for the accuracy, completeness, or usefulness, of this
+  information." (the license attribute on
+  https://oceanview.pfeg.noaa.gov/erddap/info/siocalcofiHydroCast/index.html and
+  https://oceanview.pfeg.noaa.gov/erddap/info/siocalcofiHydroBottle/index.html, where it is
+  published hard-wrapped over seven <br>-separated lines and is quoted here with those seven
+  line breaks as single spaces, retrieved 2026-09-08)
 variables:
   - time
   - latitude
@@ -200,11 +208,10 @@ coverage: >-
   Station Positions page lists as Line 93.3, Sta 28, Lat (dec) 32.91304, Lon (dec) -117.39438,
   Est Depth 609, Sta Type ROS - a position between Point Conception and the US-Mexico border. In
   the copy retrieved 2026-09-08 the cast file holds 220 rows and the bottle file 5910 rows; every
-  row of both carries sta_id "093.3 028.0"; both run from 1959-02-06T23:48:00Z to
-  2021-05-04T21:02:00Z; bottle depths (depthm, meters) run 0.0 to 639.0; and the positions
-  recorded on the rows run 32.5 to 32.942 degrees_north and -117.417 to -117.35 degrees_east, the
-  southernmost of them the single cast timed 1978-08-02T02:33:00Z, whose ac_line and ac_sta are
-  95.1 and 30.9
+  row of both carries sta_id "093.3 028.0"; and both run from 1959-02-06T23:48:00Z to
+  2021-05-04T21:02:00Z, read off their first and last data rows. One of the 220 casts, timed
+  1978-08-02T02:33:00Z, is recorded at latitude 32.5 and longitude -117.383 with ac_line 95.1 and
+  ac_sta 30.9, and 29 of the bottle rows carry that latitude
 coverage_stated_at: >-
   https://calcofi.org/data/oceanographic-data/bottle-database/ states the description and the
   span quoted above;
