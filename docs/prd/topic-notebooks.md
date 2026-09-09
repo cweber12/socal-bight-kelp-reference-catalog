@@ -12,6 +12,56 @@ generated cells marked in cell metadata; committed with outputs so they read on 
 running — and schedules the four gates that hold that shape. None of it exists: there is no
 `notebooks/` directory, no builder, and `src/kelpcatalog/` is still just `schema.py`.
 
+## What the notebooks are for
+
+The reason the notebook is the published artifact, so that a slice can tell whether it is serving
+its purpose:
+
+> Instead of scanning research papers and data portals one site at a time, a researcher opens the
+> notebook for the topic they care about and finds what is known about it compiled in one place:
+> what each study states about each aspect of the topic, several studies side by side, the data
+> underneath, and a figure that makes the pattern visible.
+
+**Everything in it comes from an authoritative source. Nothing is made up here and nothing is
+derived here.** That is not a constraint bolted onto the goal, it is what makes the compilation
+worth reading: a notebook that quotes five papers verbatim with page cites is more useful, and far
+more durable, than one that paraphrases them into a consensus. The line is exactly where "The rule"
+puts it — the catalog collates, the researcher compares, and any fit, correction or re-derivation
+of a published relationship belongs to the analysis repo that reads this one.
+
+The notebook is therefore committed and read on GitHub, not produced on request: a published
+reference a stranger can click into with no clone, no environment and no session.
+
+**What this milestone delivers toward that**: the shape — a notebook per topic, a section per
+sub-topic, the sources that hold the data, the references tagged to each section, the region
+grouping, and the figure machinery with the provenance gate that keeps every mark traceable.
+
+**What it does not**: a record field for what a study *found*. A reference record today is a
+citation — `citekey`, `ref`, `doi`/`url`, `year`, `equations`, `topics` — so a sub-topic section
+renders a bibliography, not what the papers say. Closing that is the decision below, not 6.2's
+work.
+
+### Two decisions this milestone does not make, both due before #42
+
+Recorded here because #42 is where each would change what a notebook renders, and both are
+`CONTEXT.md` scope questions rather than notebook work. Each is a line on Parking lot #5.
+
+1. **Where a paper lives, and whether a reference states its findings.** `CONTEXT.md`'s Purpose
+   says the catalog holds "datasets, monitoring programs, reports and papers", but `sources/` is
+   "a dataset, program, report series or transcribed table" and `references/` is "a paper or report
+   **cited by a source or a figure**". A paper that gives context, which no source cites and no
+   figure applies, has no home in either. Separately, a `findings` field holding statements
+   verbatim with their page or section is admissible under "The rule" as written — the rule
+   excludes *our* interpretation, not the paper's own words — and it is what turns a bibliography
+   into the compilation described above.
+2. **Whether every topic gets a notebook, or only a topic with sources.** `CONTEXT.md`'s prose says
+   "One notebook per topic"; its `notebook-structure` gate says "every topic notebook has exactly
+   the sections its sub-topic list requires, and **the index** lists every topic" — which checks
+   the notebooks that exist and puts the every-topic obligation on the index. Committing only
+   topics that have sources would mean two notebooks plus the index today rather than eleven, with
+   `canyon-dynamics` arriving in the same PR as its first source, and gaps still visible in the
+   index counts.
+
 ## Solution
 
 A builder that turns records into the notebook `CONTEXT.md` already describes, the index that lists
@@ -192,6 +242,17 @@ field. No regions below `scb` (6.3) — the region ordering ships with the count
 the county nodes arrive later. No `data-lock.json` and no lock gate (6.5). No citation export and
 no index pages beyond `00_index.ipynb` (6.6). No new sources. No analysis: a figure cell loads a
 catalogued file, applies an equation as a reference prints it, and plots — it computes nothing else.
+
+**No on-demand notebook generation.** A later capability will interview a researcher about what
+they want and assemble a notebook narrower than a topic — "nutrients at Point Loma since 2014" is a
+query, not a topic, and ten fixed notebooks cannot answer it. It is deliberately out of scope here
+and nothing in this milestone forecloses it: it reads the committed records and runs the same
+builder, so #41, #42 and #44 are the half both share. When it is built, one line decides whether it
+is safe — **the session chooses the filter; the builder produces the content.** A session that
+selects records and passes them to `build_topic` yields output that still traces cell by cell to a
+record. A session that reads records and writes up what it judges relevant produces exactly the
+narrative, interpretation and verdicts "The rule" excludes, with no gate able to catch it, because
+nothing is committed for a gate to check.
 
 ## Done
 
