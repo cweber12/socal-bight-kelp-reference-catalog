@@ -254,9 +254,12 @@ Bight-wide (`scb`) first; then `scb.mainland` and its counties north to south �
 `santa-barbara`, `ventura`, `los-angeles`, `orange`, `san-diego`; then `scb.islands`, its groups in
 the order listed (`northern`, then `southern`), and the islands beneath each; and `global` last.
 Siblings this file does not itself put in an order — the islands within a group — sort by id, so
-the order is total over every node the tree has or gains. It is a property of the region id alone,
-because it must hold for the county and island nodes before their records exist in 6.3. A group's
-heading is its node's `name`; `global` has no record and is headed **No regional bound**.
+the order is total over every value a `regions` field can hold: every node the tree has or gains at
+levels 1 to 3, and `global`. Beds and sites are levels 4 and 5 of the tree but are not region
+ids — a source carries them in `beds` and `sites` — so this order does not reach them. The order
+is a property of the region id alone, because it must hold for the county and island nodes before
+their records exist in 6.3. A group's heading is its node's `name`; `global` has no record and is
+headed **No regional bound**.
 
 `global` sorts last rather than first, and the three reasons are recorded here so that the next
 reader need not re-derive them: `global` is the *absence* of a regional bound rather than a bound
