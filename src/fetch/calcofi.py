@@ -11,26 +11,34 @@ record of the fetch (CONTEXT.md, "Record format"). Standard library only.
 FILES is built from a query template, not a fixed list of file URLs: the CalCOFI Bottle
 Database is served whole by calcofi.org and one station at a time by ERDDAP, and this
 record holds one station. Each URL is a tabledap request for every variable of one table,
-constrained to a single sta_id. ERDDAP requires every constraint to be preceded by '&'
-("Bad Request: Query error: All constraints (including \"sta_id=...\") must be preceded
-by '&'."), so the query begins '?&'; with no variable list before it, all variables are
-returned.
+constrained to a single sta_id. ERDDAP requires every constraint to be preceded by '&',
+so the query begins '?&'; with no variable list before it, all variables are returned.
 
 Naming. A query URL's path is the same for every query on a dataset, so the URL path
 cannot name the file: two stations would both be written as siocalcofiHydroCast.csv and
 the second would overwrite the first. ERDDAP answers with a Content-Disposition whose
 file name carries a suffix derived from the query - the same query gives the same name
 on a repeat fetch, and a different query a different name - so the served name is taken
-from that header, as it is for sio_shore_stations. NAMES ARE CHECKED FOR COLLISION
-ANYWAY: the suffix is a hash of the query alone, so two tables constrained alike differ
-only by the dataset prefix, and a scheme that quietly overwrote a file would lose bytes
-without a trace.
+from that header, as it is for sio_shore_stations.
+
+That trades one hazard for its opposite, and BOTH are handled here. Silent overwrite:
+the suffix hashes the query alone, so two tables constrained alike differ only by the
+dataset prefix, and `taken` refuses a second file that would land on the first. Silent
+accumulation: because the names are query-derived rather than fixed, editing STATION -
+or a server upgrade changing how ERDDAP derives the suffix - makes a re-run write new
+files BESIDE the old ones instead of over them, leaving a directory whose contents no
+longer say which files this script fetched. So a run that fetched everything prunes what
+it did not write. A run with any failure prunes nothing: the fetched files are still
+wanted, and there is no complete set to prune against.
 """
 
 from __future__ import annotations
 
+import csv
 import datetime as dt
+import email.message
 import hashlib
+import io
 import json
 import sys
 import urllib.parse
@@ -47,8 +55,9 @@ ERDDAP = "https://oceanview.pfeg.noaa.gov/erddap/tabledap"
 # between Point Conception and the US-Mexico border - the Bight, as CONTEXT.md defines it.
 STATION = "093.3 028.0"
 
-# The two tables of the Bottle Database, as the Bottle Database page names them: Cast
-# (one row per cast) and Bottle (one row per bottle). No other CalCOFI dataset is fetched.
+# The two tables of the Bottle Database, as the Bottle Database page names them: "The Cast
+# table contains metadata." and "The Bottle table contains oceanographic data." No other
+# CalCOFI dataset is fetched.
 DATASETS = ("siocalcofiHydroCast", "siocalcofiHydroBottle")
 
 # sta_id="093.3 028.0" percent-encoded: the quotes ERDDAP requires around a string value
@@ -66,16 +75,52 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 
-def served_name(headers: object, url: str) -> str:
+def served_name(headers: email.message.Message, url: str) -> str:
     """The file name the server gave, refusing anything unusable rather than guessing."""
-    name = headers.get_filename()  # type: ignore[attr-defined]
-    if not name:
+    served = headers.get_filename()
+    if not served:
         raise RuntimeError(f"{url}: no Content-Disposition filename; refusing to guess one")
-    # get_filename() sanitises nothing, and the value is server-supplied.
-    name = Path(name).name
+    # get_filename() sanitises nothing, and the value is server-supplied. Report the
+    # value as served, not the sanitised one: Path(".").name and Path("/").name are both
+    # "", which would tell the operator nothing about what ERDDAP actually sent.
+    name = Path(served).name
     if name in ("", ".", ".."):
-        raise RuntimeError(f"{url}: unusable served file name {name!r}")
+        raise RuntimeError(f"{url}: unusable served file name {served!r}")
     return name
+
+
+def check_csv(body: bytes, url: str) -> None:
+    """Refuse a 200 that is not the whole CSV that was asked for.
+
+    ERDDAP reports a bad query with an HTTP error status - a constraint missing its '&'
+    or an unknown variable gives 400, a constraint matching no rows or an unknown
+    datasetID gives 404 - and urlopen raises HTTPError on all of them, so those never
+    reach this function. What does reach it is a 200 whose body is not what was ordered.
+    tabledap streams its rows after the 200 and the Content-Type are already on the wire
+    and sends no Content-Length, so a run that dies mid-stream can still complete the
+    HTTP message, with the rows it managed and an error appended. A dropped connection
+    raises IncompleteRead in urlopen, but that completed-but-short case does not: it
+    would be stored, hashed and manifested as a verified fetch, and the record's row
+    counts would quietly stop describing the file on disk.
+
+    Every row of a tabledap CSV carries the same field count as its column-name row, so a
+    truncated final row or an appended error line is a row of the wrong width.
+    """
+    rows = [r for r in csv.reader(io.StringIO(body.decode("ISO-8859-1"))) if r]
+    if len(rows) < 3:
+        raise RuntimeError(
+            f"{url}: expected a name row, a units row and data, got {len(rows)} rows"
+        )
+    header = rows[0]
+    if "sta_id" not in header:
+        raise RuntimeError(f"{url}: no sta_id column in the name row {header[:6]}")
+    ragged = [i for i, row in enumerate(rows) if len(row) != len(header)]
+    if ragged:
+        raise RuntimeError(
+            f"{url}: {len(ragged)} row(s) do not have the name row's {len(header)} fields "
+            f"(first at row {ragged[0]}: {rows[ragged[0]][:3]}); response is truncated or "
+            f"carries an appended error"
+        )
 
 
 def fetch(url: str, out_dir: Path, taken: dict[str, str]) -> dict[str, object]:
@@ -85,13 +130,14 @@ def fetch(url: str, out_dir: Path, taken: dict[str, str]) -> dict[str, object]:
         body = response.read()
         http_status = response.status
         headers = response.headers
-    # ERDDAP reports a query error as a 200-shaped text/plain body beginning "Error {".
-    # Never store or manifest one as a verified response.
+    # A 200 is not enough. Content-Type first, which catches a host answering a
+    # browser-like client with an HTML challenge page, then the body itself.
     content_type = headers.get("Content-Type")
     if not (content_type or "").startswith("text/csv"):
         raise RuntimeError(
             f"{url}: Content-Type is {content_type!r}, not text/csv (first bytes {body[:60]!r})"
         )
+    check_csv(body, url)
     name = served_name(headers, url)
     if name in taken:
         raise RuntimeError(f"{url}: served name {name!r} already written by {taken[name]}")
@@ -117,6 +163,16 @@ def fetch(url: str, out_dir: Path, taken: dict[str, str]) -> dict[str, object]:
     return manifest
 
 
+def prune(out_dir: Path, keep: set[str]) -> list[str]:
+    """Delete files this run did not write, so the directory holds exactly FILES."""
+    removed = []
+    for path in sorted(out_dir.iterdir()):
+        if path.is_file() and path.name not in keep:
+            path.unlink()
+            removed.append(path.name)
+    return removed
+
+
 def main() -> None:
     # A failure part-way through leaves one table on disk and the other missing, with
     # nothing to mark the directory incomplete. Fetch what can be fetched, then name
@@ -131,12 +187,16 @@ def main() -> None:
             print(f"FAILED {url}: {exc}", file=sys.stderr)
     if failures:
         print(
-            f"\n{len(failures)} of {len(FILES)} files did not fetch; {OUT_DIR} is incomplete:",
+            f"\n{len(failures)} of {len(FILES)} files did not fetch; {OUT_DIR} is incomplete "
+            f"and nothing was pruned:",
             file=sys.stderr,
         )
         for url, exc in failures:
             print(f"  {url}: {exc}", file=sys.stderr)
         raise SystemExit(1)
+    keep = set(taken) | {f"manifest_{name}.json" for name in taken}
+    for name in prune(OUT_DIR, keep):
+        print(f"pruned {name}: not written by this run")
 
 
 if __name__ == "__main__":
