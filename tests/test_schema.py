@@ -189,6 +189,7 @@ def test_every_topic_belongs_to_exactly_one_group():
     [
         ("ocean-climate", None),
         ("ocean-climate/heatwaves", None),
+        ("ocean-climate/salinity", None),
         ("ocean-climate/nope", "unknown sub-topic 'nope' for 'ocean-climate'"),
         ("nope/heatwaves", "unknown topic 'nope'"),
         ("ocean-climate/heatwaves/extra", "malformed topic tag 'ocean-climate/heatwaves/extra'"),
@@ -197,6 +198,19 @@ def test_every_topic_belongs_to_exactly_one_group():
 )
 def test_topic_tags_and_subtopics(tag: str, why: str | None):
     assert topic_problem(tag) == why
+
+
+def test_ocean_climate_carries_salinity_in_notebook_order():
+    # The tuple is the notebook's section order (CONTEXT.md, "Sub-topics"), so salinity
+    # reads second, next to temperature: the other half of a shoreline hydrographic record.
+    assert TOPICS["ocean-climate"] == (
+        "temperature",
+        "salinity",
+        "nutrients",
+        "upwelling-enso",
+        "heatwaves",
+        "oxygen-ph",
+    )
 
 
 def test_split_topic():
