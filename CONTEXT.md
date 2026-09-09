@@ -86,7 +86,7 @@ what a notebook answers.
 
 | group | topic | question |
 |---|---|---|
-| Physical environment | `ocean-climate` | What thermal, nutrient, oxygen and pH climate are the beds exposed to, and how is it trending? |
+| Physical environment | `ocean-climate` | What thermal, salinity, nutrient, oxygen and pH climate are the beds exposed to, and how is it trending? |
 | | `canyon-dynamics` | How much cool, nutrient-rich water do canyon internal tides deliver, and when? |
 | | `waves-storms-sediment` | When do swells and storms remove kelp, and what is the sand doing at the bed margins? |
 | | `substrate` | Where is the rock, how complex is it, and what does that predict? |
@@ -103,7 +103,7 @@ number of tags across any topics.
 
 | topic | sub-topics |
 |---|---|
-| `ocean-climate` | `temperature` · `nutrients` · `upwelling-enso` · `heatwaves` · `oxygen-ph` |
+| `ocean-climate` | `temperature` · `salinity` · `nutrients` · `upwelling-enso` · `heatwaves` · `oxygen-ph` |
 | `canyon-dynamics` | `internal-tides` · `canyon-circulation` · `observations` |
 | `waves-storms-sediment` | `swell-climate` · `storms` · `sediment-sand` · `beach-coupling` |
 | `substrate` | `rock-mapping` · `relief-rugosity` · `artificial-substrate` |

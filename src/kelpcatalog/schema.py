@@ -40,7 +40,14 @@ CONSORTIUM = ("RNKSC", "CRKSC")
 # the group each topic belongs to is in GROUPS. A topic tag is "<topic>" or
 # "<topic>/<subtopic>".
 TOPICS: dict[str, tuple[str, ...]] = {
-    "ocean-climate": ("temperature", "nutrients", "upwelling-enso", "heatwaves", "oxygen-ph"),
+    "ocean-climate": (
+        "temperature",
+        "salinity",
+        "nutrients",
+        "upwelling-enso",
+        "heatwaves",
+        "oxygen-ph",
+    ),
     "canyon-dynamics": ("internal-tides", "canyon-circulation", "observations"),
     "waves-storms-sediment": ("swell-climate", "storms", "sediment-sand", "beach-coupling"),
     "substrate": ("rock-mapping", "relief-rugosity", "artificial-substrate"),

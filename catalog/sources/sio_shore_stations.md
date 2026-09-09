@@ -106,6 +106,7 @@ file: null
 transcribed_from: null
 topics:
   - ocean-climate/temperature
+  - ocean-climate/salinity
   - ocean-climate/heatwaves
 regions:
   - scb
