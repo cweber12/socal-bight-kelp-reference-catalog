@@ -14,6 +14,8 @@ access:
   - That page states "Please fill out the form below before accessing the data. This helps us
     keep track of data usage." and links an "Access Form" at
     https://docs.google.com/forms/d/e/1FAIpQLSfq-ufEwjviE5GW5ulOyHj5IJPBe3E7iXaieZjJi9E9EXR4Fg/viewform
+  - That form was submitted for this catalog on 2026-09-08, naming the five stations below and
+    both parameters
   - The same page states the data "are available in excel and csv spreadsheet formats through the
     UC San Diego Library Digital Collections. https://doi.org/10.6075/J0S75GHD", which resolves to
     https://library.ucsd.edu/dc/collection/bb4719748r
