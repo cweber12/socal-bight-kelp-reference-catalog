@@ -24,7 +24,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from kelpcatalog import check_catalog  # noqa: E402
-from kelpcatalog.notebooks import check_structure  # noqa: E402
+from kelpcatalog.structure import check_structure  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -60,8 +60,9 @@ def gate_notebook_structure() -> tuple[bool, str]:
 
     Reads the committed notebooks, not the builder's output: a notebook edited by hand,
     or left behind by a sub-topic added to TOPICS, fails here. It does not check that a
-    notebook's counts are current with the records - that is #48 - so a green row here
-    says the sections are right and says nothing about what is in them.
+    notebook's counts are current with the records, and no gate does - #48 re-executes a
+    notebook, and re-execution never rebuilds a markdown cell from the records. A green
+    row here says the sections are right and says nothing about what is in them.
     """
     sections, problems = check_structure(ROOT)
     counts = f"{len(sections)} notebooks, {sum(len(s) for s in sections.values())} sections"

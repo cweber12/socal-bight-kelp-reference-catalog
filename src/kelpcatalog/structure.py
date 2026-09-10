@@ -19,9 +19,15 @@ committed bytes.
 A gate reports; it does not fix. Nothing here writes, and there is no `--fix` flag (#43).
 
 What it does not assert, so that a reader does not take more from a green row than it
-says: outputs (#45), figure provenance (#46), and whether the committed notebooks are
-current with the records (#48). A notebook whose sections are right and whose counts have
-gone stale passes here.
+says: outputs (#45) and figure provenance (#46).
+
+It also does not assert that a notebook is **current with the records**, and no gate does.
+A notebook whose sections are right and whose counts have gone stale passes here - and
+passes #48 too, which re-executes a notebook and compares `execution_count`, `outputs` and
+cell source. A generated cell is markdown, and re-executing a notebook never rebuilds a
+markdown cell from the records, so a stale count line reproduces itself exactly. What keeps
+the eleven current is process, not a gate: CONTEXT.md, "Notebooks" - "a source is not 'in'
+until the notebooks that show it are refreshed in the same PR".
 
 nbformat is a dev dependency, so - like build.py - this module is deliberately not imported
 by `kelpcatalog/__init__.py`: `import kelpcatalog` must work in a runtime install.

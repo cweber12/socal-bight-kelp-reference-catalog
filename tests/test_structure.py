@@ -22,7 +22,7 @@ from nbformat.v4 import new_code_cell, new_markdown_cell
 
 from kelpcatalog.build import GENERATED, GENERATED_KEY, write_notebook
 from kelpcatalog.generate import NOTEBOOKS_DIR, generate
-from kelpcatalog.notebooks import check_structure
+from kelpcatalog.structure import check_structure
 from kelpcatalog.plan import INDEX_PATH, NOTEBOOK_PATHS
 from kelpcatalog.schema import TOPICS
 
