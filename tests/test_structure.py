@@ -22,9 +22,9 @@ from nbformat.v4 import new_code_cell, new_markdown_cell
 
 from kelpcatalog.build import GENERATED, GENERATED_KEY, write_notebook
 from kelpcatalog.generate import NOTEBOOKS_DIR, generate
-from kelpcatalog.structure import check_structure
 from kelpcatalog.plan import INDEX_PATH, NOTEBOOK_PATHS
 from kelpcatalog.schema import TOPICS
+from kelpcatalog.structure import check_structure
 
 ROOT = Path(__file__).parents[1]
 FIXTURE = Path(__file__).parent / "fixtures" / "notebook"
@@ -261,3 +261,60 @@ def test_a_tree_with_no_notebooks_fails_once_per_notebook(tmp_path: Path):
     _, found = check_structure(tmp_path)
 
     assert len(found) == 11
+
+
+# --- what the module advertises, pinned -----------------------------------------------
+#
+# Added after the audit of PR #62: each of these passed when it was written, and each
+# kills a mutant that survived the whole suite before it existed.
+
+
+@pytest.mark.parametrize(
+    "written",
+    ["## heatwaves ##", "##   heatwaves  ", "## heatwaves   ###"],
+    ids=["closing-hashes", "loose-spacing", "both"],
+)
+def test_a_heading_is_read_past_its_cosmetic_whitespace(tmp_path: Path, written: str):
+    # HEADING_RE's tolerance is deliberate - a hand-edited notebook should not fail this
+    # gate over spacing CommonMark ignores - and nothing pinned it.
+    root = a_repo(tmp_path)
+    notebook = read(root, OCEAN_CLIMATE)
+    cell = next(c for c in notebook.cells if c.id == "kelpcatalog-subtopic-heatwaves")
+    cell.source = written + cell.source[len("## heatwaves") :]
+    rewrite(root, OCEAN_CLIMATE, notebook)
+
+    assert problems(root) == []
+
+
+def test_a_directory_where_a_notebook_should_be_reads_as_missing(tmp_path: Path):
+    # `is_file()`, not `exists()`: a directory at a notebook's path holds no sections, so
+    # "missing" is what a reader needs to be told.
+    root = a_repo(tmp_path)
+    target = root / NOTEBOOKS_DIR / OCEAN_CLIMATE
+    target.unlink()
+    target.mkdir()
+
+    (problem,) = problems(root)
+
+    assert problem.message.startswith("the notebook is missing")
+
+
+def test_a_sub_topic_named_like_a_fixed_section_is_reported_rather_than_raised(monkeypatch):
+    # A gate returns (passed, message). This is the one shape that reaches the ordering
+    # branch with the two lists agreeing as far as the notebook runs.
+    monkeypatch.setitem(TOPICS, "ocean-climate", (*TOPICS["ocean-climate"], "General"))
+
+    _, found = check_structure(ROOT)
+
+    assert [p for p in found if p.path == rel(OCEAN_CLIMATE)]
+
+
+def test_hashes_with_no_text_open_no_section(tmp_path: Path):
+    # A heading needs text. Without this, `##` alone reads as a section named nothing,
+    # which would then be reported as a section the topic does not have.
+    root = a_repo(tmp_path)
+    notebook = read(root, OCEAN_CLIMATE)
+    notebook.cells[1].source += "\n\n##   \n"
+    rewrite(root, OCEAN_CLIMATE, notebook)
+
+    assert problems(root) == []

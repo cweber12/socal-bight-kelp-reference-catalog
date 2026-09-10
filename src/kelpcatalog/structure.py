@@ -87,7 +87,7 @@ def sections(notebook: NotebookNode) -> list[str]:
     return [heading for depth, _, heading in _headings(notebook) if depth <= SECTION_DEPTH]
 
 
-def expected_sections(topic: str) -> list[str]:
+def _expected_sections(topic: str) -> list[str]:
     """The sections a topic notebook must hold, in order.
 
     Derived, not transcribed: `TOPICS` is CONTEXT.md's sub-topic list and the three fixed
@@ -103,7 +103,7 @@ def expected_sections(topic: str) -> list[str]:
     ]
 
 
-def listed_topics(notebook: NotebookNode) -> set[str]:
+def _listed_topics(notebook: NotebookNode) -> set[str]:
     """The topics the index lists: the text of each `###` heading, a link unwrapped."""
     out = set()
     for depth, text, _ in _headings(notebook):
@@ -115,7 +115,7 @@ def listed_topics(notebook: NotebookNode) -> set[str]:
 
 def _topic_problems(path: str, notebook: NotebookNode, topic: str) -> list[Problem]:
     """Every way a topic notebook's sections differ from the ones `TOPICS` requires."""
-    expected = expected_sections(topic)
+    expected = _expected_sections(topic)
     found = sections(notebook)
     if found == expected:
         return []
@@ -131,6 +131,17 @@ def _topic_problems(path: str, notebook: NotebookNode, topic: str) -> list[Probl
         return out
     # Same sections, same number of each, different order: the two lists line up, so the
     # first index they disagree at names the section that moved.
+    #
+    # `next` has no default because it cannot come up empty here, and the argument is
+    # written out because "obviously it matches" is how a gate acquires a traceback.
+    # Reaching this line means every section of one list is in the other and `found` holds
+    # no duplicate, so the two can differ only by a duplicate in `expected` - a sub-topic
+    # named exactly `General`, `Not held` or `Reviewed and not included`. `expected` puts
+    # sub-topics *before* those three, so that duplicate always lands in the interior, and
+    # `found` is then never a prefix of `expected`: some index disagrees, and `next` finds
+    # it. A sub-topic list that could append to the end would break the argument, not the
+    # loop - and test_a_sub_topic_named_like_a_fixed_section_is_reported_rather_than_raised
+    # is the case that would then fail.
     at = next(i for i, section in enumerate(found) if section != expected[i])
     return [Problem(path, found[at], f"section is out of order; {expected[at]} comes here")]
 
@@ -138,7 +149,7 @@ def _topic_problems(path: str, notebook: NotebookNode, topic: str) -> list[Probl
 def _index_problems(path: str, notebook: NotebookNode) -> list[Problem]:
     """CONTEXT.md asks the index for every topic. A topic with no sources is listed with
     its zeros - the empty rows are the ingestion worklist - so nothing exempts one."""
-    listed = listed_topics(notebook)
+    listed = _listed_topics(notebook)
     return [
         Problem(path, topic, "the index does not list this topic")
         for topic in TOPICS
