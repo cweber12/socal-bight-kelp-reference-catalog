@@ -885,8 +885,10 @@ def tagged(catalog: Catalog, kind: str, tag: str) -> list[Record]:
 
 
 def test_the_index_lists_every_group_and_every_topic_in_order():
+    # Every h2, not the first three: the slice this used to take let the matrix heading
+    # be renamed, or a fourth section appear, with nothing failing.
     nb = build_index(a_catalog())
-    assert headings(nb, level=2)[: len(GROUPS)] == list(GROUPS)
+    assert headings(nb, level=2) == [*GROUPS, "topic × region"]
     assert topic_headings(nb) == [t for topics in GROUPS.values() for t in topics]
     assert topic_headings(nb) == list(TOPICS)
 
@@ -937,6 +939,42 @@ def test_the_sub_topic_table_counts_every_sub_topic():
                 str(len(tagged(catalog, "sources", f"{topic}/{sub}"))),
                 str(len(tagged(catalog, "references", f"{topic}/{sub}"))),
             ], f"{topic}/{sub}"
+
+
+def test_the_overview_counts_the_whole_catalog():
+    # Nothing reached the overview cell: the per-topic assertions split the text at
+    # "### [<topic>]", which is below it, so a totals line counting sources twice passed
+    # the whole suite. A wrong number there is the precise thing "a notebook never holds
+    # a fact" exists to prevent.
+    catalog = a_catalog()
+    assert build_index(catalog).cells[0].source.splitlines() == [
+        "# Index",
+        "",
+        f"{len(catalog.records['sources'])} sources · {len(catalog.records['references'])}"
+        " references",
+    ]
+
+
+def test_the_sub_topic_table_labels_its_columns():
+    # The counts are pinned by the row assertions above, and the labels over them were
+    # not - so `sources` and `references` could swap and every number still be right,
+    # leaving the index stating something false about the catalog. No gate would catch
+    # it: #43 checks sections, #45 outputs, #48 freshness; none reads a table header.
+    headers = {ln for ln in index_text(a_catalog()).splitlines() if ln.startswith("| sub-topic |")}
+    assert headers == {"| sub-topic | sources | references |"}
+    assert len(TOPICS) == 10, "one header per topic, collapsed to a set above"
+
+
+def test_a_topics_sub_topic_rows_run_in_context_mds_order_with_general_last():
+    # row_after finds a row by its first cell anywhere below the heading, so every
+    # assertion above is order-insensitive and reversing the rows passed them.
+    # CONTEXT.md fixes the order - the sub-topics as its table lists them - and General
+    # is the section beside them, so it comes last.
+    text = index_text(a_catalog())
+    for topic, subs in TOPICS.items():
+        rows = [ln for ln in text.split(f"### [{topic}]", 1)[1].splitlines() if ln.startswith("| ")]
+        table = rows[2 : 2 + len(subs) + 1]  # the header and its rule come first
+        assert [cells_of(ln)[0] for ln in table] == [*subs, "General"], topic
 
 
 def test_a_bare_topic_tag_is_counted_under_general():
