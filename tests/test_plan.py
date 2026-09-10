@@ -84,6 +84,46 @@ def test_every_question_is_a_question(topic: str):
 
 
 # --- the eleven notebooks ----------------------------------------------------------
+#
+# Typed from CONTEXT.md, "Notebooks", the `notebooks/` tree block: the index, then each
+# group's folder and the file stems under it, in the order the block prints them. From
+# that block, not from plan.py - a copy of the dicts would prove nothing.
+
+CONTEXT_INDEX = "00_index.ipynb"
+
+CONTEXT_NOTEBOOKS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "1_physical_environment",
+        ("11_ocean_climate", "12_canyon_dynamics", "13_waves_storms_sediment", "14_substrate"),
+    ),
+    (
+        "2_kelp_and_community",
+        (
+            "21_canopy",
+            "22_bed_state",
+            "23_grazers_predators_competitors",
+            "24_recruitment_connectivity",
+        ),
+    ),
+    (
+        "3_human_uses_management",
+        ("31_water_quality_harvest", "32_restoration_mitigation"),
+    ),
+)
+
+
+def test_the_notebook_tree_is_the_one_context_md_prints():
+    # The block prints folders and stems and names no topic keys, so the values are what
+    # is compared; test_a_notebook_is_numbered_by_group_then_position pins which topic
+    # each stem belongs to. Comparing values in order needs the keys to run in
+    # CONTEXT.md's own group and topic order, which is what GROUPS and TOPICS hold.
+    assert list(GROUP_FOLDERS) == list(GROUPS)
+    assert list(NOTEBOOK_PATHS) == list(TOPICS)
+    assert INDEX_PATH == CONTEXT_INDEX
+    assert list(GROUP_FOLDERS.values()) == [folder for folder, _ in CONTEXT_NOTEBOOKS]
+    assert list(NOTEBOOK_PATHS.values()) == [
+        f"{folder}/{stem}.ipynb" for folder, stems in CONTEXT_NOTEBOOKS for stem in stems
+    ]
 
 
 def test_every_topic_has_a_notebook_path():
@@ -203,6 +243,8 @@ def test_global_sorts_last_not_first():
         "",
         "scbb",  # not a node; the root is scb and an id splits on "."
         "pacific",
+        "scb.",  # an empty segment: a trailing dot is not the node `scb`
+        "scb..mainland",  # nor is an interior one the node `scb.mainland`
     ],
 )
 def test_a_region_id_with_no_place_in_the_order_raises(region_id: str):
@@ -230,6 +272,31 @@ def test_global_is_headed_no_regional_bound_with_no_region_record():
 def test_a_group_heading_is_its_nodes_name():
     catalog = a_catalog(("scb", "Southern California Bight"))
     assert region_heading("scb", catalog) == "Southern California Bight"
+
+
+def test_a_heading_is_looked_up_and_not_taken_from_the_first_record():
+    # Several records, so a heading that ignored the id it was asked for would show. The
+    # descendants come first, as a loaded catalog's do - it walks the directory sorted
+    # and "scb.islands.md" sorts before "scb.md" - so a lookup matching a prefix rather
+    # than the whole id would answer "scb" with a node below it. The names below are the
+    # fixture's own: CONTEXT.md states no `name` for a node under `scb`, and none of them
+    # has a record until 6.3.
+    catalog = a_catalog(
+        ("scb.islands", "Channel Islands"),
+        ("scb.mainland", "Mainland"),
+        ("scb.mainland.ventura", "Ventura"),
+        ("scb", "Southern California Bight"),
+    )
+    assert region_heading("scb.mainland.ventura", catalog) == "Ventura"
+    assert region_heading("scb.islands", catalog) == "Channel Islands"
+    assert region_heading("scb.mainland", catalog) == "Mainland"
+    assert region_heading("scb", catalog) == "Southern California Bight"
+
+
+def test_a_heading_needs_this_regions_record_and_not_just_any():
+    catalog = a_catalog(("scb", "Southern California Bight"))
+    with pytest.raises(KeyError):
+        region_heading("scb.islands", catalog)
 
 
 def test_a_heading_needs_the_region_record():
