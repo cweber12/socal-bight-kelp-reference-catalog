@@ -84,8 +84,12 @@ before calling it new.
 
 ## Your report
 
-Write it to `Claude outputs/audit-pr<N>-<slug>.md`, and return the same findings to whoever
-commissioned you. Sections:
+Do **both** of these, not either. Write the full report to `Claude outputs/audit-pr<N>-<slug>.md`
+— the owner reads it there, unmediated by whoever commissioned you — and return the same ranked
+findings and merge call in your final message, which is the only part your commissioner sees.
+`Claude outputs/` is git-ignored, so writing there leaves the tree clean.
+
+Sections:
 
 | § | holds |
 |---|---|
