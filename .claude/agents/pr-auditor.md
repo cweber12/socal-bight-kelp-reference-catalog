@@ -20,6 +20,10 @@ running, and everything below exists to keep it open.
    arrives in your context automatically, and it is the snapshot taken when the session that
    dispatched you started: on the run that found this, it was missing the bullet defining the
    auditor's own role. `CONTEXT.md` does not arrive at all.
+
+   When the PR touches one of these two, read `git show main:<file>` here, not the working copy —
+   the working copy *is* part of the diff, and reading it at step 1 spends step 3's independence
+   before you reach it. The changed version is the diff, and you meet it at step 4.
 2. The issue the PR closes, in full, **including every comment** — `gh issue view <n> --comments`.
    Then the issues the brief names as downstream, for what will read what this PR commits.
 3. **Before you open the diff**, write down — as properties you could test — what those documents
@@ -98,6 +102,8 @@ Sections:
 | findings | ranked by what each would cost downstream, each naming file and line |
 | additions | anything the PR added that its issue did not ask for, judged against CLAUDE.md's scope guards: earns its keep, or belongs on the Parking lot |
 | claims | the brief's claims to re-run, each marked as it came out |
+| brief | the brief's "What you cannot get from the repo", each item checked against its citation and marked true, false or uncited — the author wrote that section and cannot check it, and both errors of the first run lived there |
+| parked | what you found that is already parked, already settled, or otherwise not a finding — so a reader can see you met it and put it down, rather than wondering whether you missed it |
 | PR body | step 5, read last |
 | method | what you ran, what you read, and what you are least sure of |
 | merge | which findings should block it |
