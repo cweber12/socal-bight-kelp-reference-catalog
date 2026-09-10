@@ -330,6 +330,13 @@ def test_exclusions_render_for_their_topic_only():
 # --- generated cells ---------------------------------------------------------------
 
 
+def test_the_generated_marker_is_the_one_context_md_names():
+    # CONTEXT.md, "Notebooks": "Generated cells are marked in cell metadata
+    # (`kelpcatalog: generated`)". Every other assertion imports these symbols,
+    # so nothing else holds them to the prose.
+    assert (GENERATED_KEY, GENERATED) == ("kelpcatalog", "generated")
+
+
 def test_every_cell_the_builder_writes_is_marked_generated():
     nb = build_topic("ocean-climate", a_catalog())
     assert generated(nb) == list(nb.cells)
