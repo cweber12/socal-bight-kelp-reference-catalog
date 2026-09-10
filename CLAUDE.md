@@ -50,6 +50,9 @@ PR body:
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
+- A PR is ready when it has been audited. The `audit-pr` skill commissions the audit in a context
+  that never watched the PR being written, and relays what it found; which findings to act on is
+  the owner's call, not the author's.
 - Never write into `data/`. Never add a record by hand when the `add-source` skill exists — use it.
 - Never write a parser for any external manifest or prose file. Records are entered, not migrated.
 
