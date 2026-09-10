@@ -18,11 +18,12 @@ import json
 from pathlib import Path
 
 import pytest
-from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
+from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook, new_output
 
 from kelpcatalog import Catalog, Record, check_catalog
 from kelpcatalog.build import (
     COVERAGE_CHARS,
+    EMPTY_CELL,
     GENERATED,
     GENERATED_KEY,
     build_topic,
@@ -372,10 +373,11 @@ def test_a_rebuild_over_its_own_output_is_identical():
 
 
 def a_figure_cell():
+    # The outputs must be NotebookNodes, not plain dicts: nbformat reads them by
+    # attribute as it serializes. Nothing wrote a figure cell to disk until the merge
+    # was asserted at the byte level, so this was wrong and nothing said so.
     cell = new_code_cell("provenance(sources=['shore_temp'])")
-    cell.outputs = [
-        {"output_type": "display_data", "data": {"text/plain": ["<Figure>"]}, "metadata": {}}
-    ]
+    cell.outputs = [new_output("display_data", data={"text/plain": "<Figure>"})]
     cell.execution_count = 1
     return cell
 
@@ -567,3 +569,255 @@ def test_an_on_request_source_lands_in_not_held_whatever_its_tier():
     body = sections(build_topic("ocean-climate", catalog))
     assert "asked_and_got" in body["Not held"]
     assert "asked_and_got" in body["heatwaves"]
+
+
+# --- the writer, and the ids that reach it -----------------------------------------
+#
+# Every determinism assertion above is on `json.dumps(build_topic(...))`, and the one
+# byte-level assertion builds with existing=None. That left the merge path unasserted at
+# the byte level - which is the level #44's "regenerating a clean tree changes no bytes"
+# and #47's "the figure cell is byte-identical" actually live at, and the level where
+# nbformat's repair-on-serialize shows up.
+
+
+def cells_of(row: str) -> list[str]:
+    """A table row's cells, splitting on the pipes that are not escaped."""
+    swapped = row.replace(r"\|", "\x00")
+    return [c.strip().replace("\x00", r"\|") for c in swapped.strip("|").split("|")]
+
+
+def written(nb, path: Path) -> bytes:
+    write_notebook(nb, path)
+    return path.read_bytes()
+
+
+def test_two_writes_through_the_merge_are_the_same_bytes(tmp_path: Path):
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(2, a_figure_cell())
+
+    def build():
+        return build_topic("ocean-climate", catalog, existing=existing)
+
+    assert written(build(), tmp_path / "a.ipynb") == written(build(), tmp_path / "b.ipynb")
+
+
+def test_a_kept_cell_with_no_id_gets_a_derived_one(tmp_path: Path):
+    # nbformat.read leaves cells id-less below nbformat_minor 5, and nbformat.writes then
+    # mints a random id as it serializes - so one build is different bytes on every write.
+    catalog = a_catalog()
+    existing = new_notebook()
+    existing.nbformat_minor = 4
+    generated_cell = new_markdown_cell("## temperature")
+    generated_cell.id = "kelpcatalog-subtopic-temperature"
+    generated_cell.metadata[GENERATED_KEY] = GENERATED
+    figure = a_figure_cell()
+    del figure["id"]
+    existing.cells = [generated_cell, figure]
+
+    def build():
+        return build_topic("ocean-climate", catalog, existing=existing)
+
+    kept = next(c for c in build().cells if c.cell_type == "code")
+    assert kept.id == "kelpcatalog-kept-2"
+    assert written(build(), tmp_path / "a.ipynb") == written(build(), tmp_path / "b.ipynb")
+
+
+def test_a_kept_cell_that_copied_a_generated_id_gets_a_derived_one(tmp_path: Path):
+    # The reachable half: #47's workflow is to copy a generated cell and drop the marker.
+    # nbformat.writes emits DuplicateCellId and renumbers it, randomly, on every write.
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    squatter = new_markdown_cell("hand-written, carrying a generated cell's id")
+    squatter.id = "kelpcatalog-overview"
+    existing.cells.append(squatter)
+
+    def build():
+        return build_topic("ocean-climate", catalog, existing=existing)
+
+    ids = [c.id for c in build().cells]
+    assert len(ids) == len(set(ids))
+    assert ids.count("kelpcatalog-overview") == 1
+    assert written(build(), tmp_path / "a.ipynb") == written(build(), tmp_path / "b.ipynb")
+
+
+def test_writing_a_built_notebook_asks_nbformat_to_repair_nothing(tmp_path: Path):
+    # The sharpest statement of the two above: a repair is what mints the random value,
+    # so the property is that a built notebook never triggers one.
+    import warnings
+
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    squatter = new_markdown_cell("x")
+    squatter.id = "kelpcatalog-overview"
+    orphan = new_markdown_cell("y")
+    del orphan["id"]
+    existing.cells += [squatter, orphan]
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        write_notebook(
+            build_topic("ocean-climate", catalog, existing=existing), tmp_path / "n.ipynb"
+        )
+
+
+def test_a_minted_id_that_is_already_taken_is_minted_again():
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    holder = new_markdown_cell("holds the name a later position would mint")
+    holder.id = "kelpcatalog-kept-1"
+    orphan = new_markdown_cell("needs a name")
+    del orphan["id"]
+    existing.cells = [holder, orphan, *existing.cells]
+
+    ids = [c.id for c in build_topic("ocean-climate", catalog, existing=existing).cells]
+    assert len(ids) == len(set(ids))
+    assert "kelpcatalog-kept-1" in ids and "kelpcatalog-kept-1x" in ids
+
+
+def test_a_kept_cell_with_an_id_of_its_own_keeps_it():
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(2, a_figure_cell())
+    kept_id = existing.cells[2].id
+    assert build_topic("ocean-climate", catalog, existing=existing).cells[2].id == kept_id
+
+
+def test_the_result_shares_no_objects_with_the_notebook_it_was_given():
+    # test_the_builder_does_not_mutate_the_notebook_it_was_given passes without the
+    # deepcopies, because build_topic never writes through the alias. This is the
+    # property those deepcopies are actually for.
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(0, new_markdown_cell("hand-written"))
+    existing.metadata["kernelspec"] = {"name": "python3"}
+
+    rebuilt = build_topic("ocean-climate", catalog, existing=existing)
+
+    assert rebuilt.cells[0] is not existing.cells[0]
+    assert rebuilt.metadata is not existing.metadata
+    assert rebuilt.metadata["kernelspec"] is not existing.metadata["kernelspec"]
+
+
+# --- a record's prose is not markdown ----------------------------------------------
+
+
+def a_source_record(**overrides) -> Catalog:
+    """One region and one source, built in memory so that a single field is what differs."""
+    catalog = Catalog(root=FIXTURES / "notebook")
+    catalog.records["regions"] = [
+        Record("regions", "catalog/regions/scb.md", {"id": "scb", "name": "The Bight"})
+    ]
+    data = {
+        "id": "p",
+        "title": "A source",
+        "steward": "A steward",
+        "status": "VERIFIED",
+        "tier": "FETCHED",
+        "topics": ["ocean-climate/temperature"],
+        "regions": ["scb"],
+        "url": None,
+        "doi": None,
+        "coverage": None,
+    }
+    data.update(overrides)
+    catalog.records["sources"] = [Record("sources", "catalog/sources/p.md", data)]
+    return catalog
+
+
+def a_row(catalog: Catalog, section: str = "temperature") -> list[str]:
+    body = sections(build_topic("ocean-climate", catalog))[section]
+    return cells_of(next(ln for ln in body.splitlines() if ln.startswith("| [p]")))
+
+
+def test_a_pipe_in_a_field_does_not_split_the_row():
+    row = a_row(a_source_record(title="Temperature | salinity"))
+    assert len(row) == 7
+    assert row[1] == r"Temperature \| salinity"
+
+
+def test_a_pipe_in_a_url_does_not_split_the_row():
+    # No record carries one today. ArcGIS REST query URLs put a pipe in outFields, and
+    # this catalog already has an ArcGIS-backed portal in view, so "today" is the claim.
+    row = a_row(a_source_record(url="https://ex.org/query?outFields=a|b"))
+    assert len(row) == 7
+    assert row[6] == r"[link](https://ex.org/query?outFields=a\|b)"
+
+
+def test_a_newline_in_a_field_does_not_break_the_table():
+    row = a_row(a_source_record(title="A title\nover two lines"))
+    assert len(row) == 7
+    assert row[1] == "A title over two lines"
+
+
+def test_an_empty_string_renders_as_an_absent_value():
+    assert a_row(a_source_record(steward=""))[2] == EMPTY_CELL
+
+
+def test_truncation_leaves_no_trailing_punctuation_before_the_ellipsis():
+    assert a_row(a_source_record(coverage="word, " * 40))[5].endswith("word…")
+
+
+def test_the_link_columns_anchor_is_the_doi_or_the_word_link():
+    # One rule for all three tables: the doi where there is one - short, and the string a
+    # reader copies - else the word `link`, which keeps a 116-character URL out of a cell.
+    assert a_row(a_source_record(doi="10.5555/x", url="https://ex.org/"))[6] == (
+        "[10.5555/x](https://doi.org/10.5555/x)"
+    )
+    assert a_row(a_source_record(url="https://ex.org/"))[6] == "[link](https://ex.org/)"
+    assert a_row(a_source_record())[6] == EMPTY_CELL
+
+
+def test_one_source_and_one_reference_are_counted_in_the_singular():
+    catalog = a_source_record()
+    catalog.records["references"] = [
+        Record(
+            "references",
+            "catalog/references/andrews2020.md",
+            {"citekey": "andrews2020", "ref": "R", "topics": ["ocean-climate"]},
+        )
+    ]
+    assert "1 source · 1 reference" in build_topic("ocean-climate", catalog).cells[0].source
+
+
+def test_a_topic_with_no_sources_states_the_count_once():
+    overview = build_topic("canyon-dynamics", an_empty_catalog()).cells[0].source
+    assert "0 sources · 0 references" in overview
+    assert "No sources" not in overview
+    assert "| region |" not in overview, "no matrix, not an empty one"
+
+
+def test_sources_sort_by_id_whatever_order_the_catalog_holds_them_in():
+    # load_catalog walks a sorted directory, so a loaded catalog cannot reach this; the
+    # builder is pure and must not depend on the order it is handed records in.
+    catalog = a_source_record()
+    given = catalog.records["sources"][0]
+    catalog.records["sources"] = [
+        given,
+        Record("sources", "catalog/sources/a.md", {**given.data, "id": "a"}),
+    ]
+    temperature = sections(build_topic("ocean-climate", catalog))["temperature"]
+    assert temperature.index("[a](") < temperature.index("[p](")
+
+
+# --- regions ------------------------------------------------------------------------
+
+
+def test_a_source_tagging_two_regions_renders_under_each_in_region_order():
+    # This records what the builder does, not a decision: whether a source with two region
+    # tags repeats in every group or renders once is parked on #5, and no current source
+    # carries two. The test is here so #44 cannot commit the opposite by accident.
+    temperature = sections(
+        build_topic("ocean-climate", a_source_record(regions=["global", "scb"]))
+    )["temperature"]
+    assert temperature.count("| [p](") == 2
+    assert temperature.index("The Bight") < temperature.index("No regional bound")
+
+
+def test_a_region_named_twice_renders_once_and_agrees_with_the_matrix():
+    # `regions: [scb, scb]` is a record the schema accepts today (a bug filed against
+    # schema.py under CLAUDE.md rule 3). Whatever the schema comes to allow, a source is
+    # one source: two identical rows in one table against a matrix that counts one would
+    # be the notebook contradicting itself inside a single cell.
+    nb = build_topic("ocean-climate", a_source_record(regions=["scb", "scb"]))
+    assert sections(nb)["temperature"].count("| [p](") == 1
+    assert "| The Bight | 1 |" in nb.cells[0].source

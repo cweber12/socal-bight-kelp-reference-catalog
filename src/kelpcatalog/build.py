@@ -13,8 +13,10 @@ figure cell, so writing one over the committed notebook would delete the figure 
 silence. build_topic therefore rewrites the cells carrying `kelpcatalog: generated` and
 carries every other cell through, in place, byte for byte.
 
-A notebook holds no facts. Every string below is either a record's own field, a heading
-CONTEXT.md prints, or a count - which CONTEXT.md permits a notebook to compute.
+A notebook holds no facts. Every string below is one of four kinds: a record's own field,
+a heading CONTEXT.md prints, a count - which CONTEXT.md permits a notebook to compute - or a
+piece of the table furniture that carries no fact at all ("_No sources._", the column header
+"region", the em dash for an absent value, the ellipsis on a truncation).
 
 nbformat is a dev dependency, so this module is deliberately not imported by
 `kelpcatalog/__init__.py`: `import kelpcatalog` must work in a runtime install.
@@ -67,6 +69,12 @@ REVIEWED = "Reviewed and not included"
 # The cut falls on a word boundary, and the id in the first column links to the record,
 # where GitHub renders the whole field as a table: nothing is lost, only moved.
 #
+# The alternative, measured so the next reader need not re-derive it: at 300 the notebook
+# carries 2283 characters and two of the three records show a span rather than one, because
+# noaa_oni's 243-character field then renders whole. 160 is kept because chasing spans is
+# self-defeating - PRD finding 2 is that these records state no span a rule can extract - so
+# the column is a pointer at either length, and the cheaper pointer is the better one.
+#
 # One constant, one function: the day a record holds a span field that "The rule" admits,
 # the column renders that field and both go.
 COVERAGE_CHARS = 160
@@ -76,6 +84,8 @@ EMPTY_CELL = "—"
 SOURCE_COLUMNS = ("id", "title", "steward", "status", "tier", "coverage", "link")
 NOT_HELD_COLUMNS = ("id", "title", "steward", "status", "tier", "human_task")
 EXCLUDED_COLUMNS = ("slug", "what", "reason", "reviewed", "link")
+
+LINK_TEXT = "link"
 
 NO_SOURCES = "_No sources._"
 NO_REFERENCES = "_No references._"
@@ -95,7 +105,15 @@ def _tags(rec: Record) -> list[str]:
 
 
 def _regions(rec: Record) -> list[str]:
-    return list(rec.data.get("regions") or [])
+    """The distinct regions a record tags, in the order it lists them.
+
+    Distinct because a source is one source: `regions: [scb, scb]` is a record the schema
+    accepts today, and iterating it as written renders the source twice in one table while
+    section 1's matrix, which counts sources, counts it once. The record is malformed
+    either way - see the bug filed against schema.py - but the grouping is right here
+    regardless of what the schema comes to allow.
+    """
+    return list(dict.fromkeys(rec.data.get("regions") or []))
 
 
 def _carries(rec: Record, topic: str, sub: str | None) -> bool:
@@ -124,11 +142,17 @@ def _not_held(rec: Record) -> bool:
 # --- markdown --------------------------------------------------------------------
 
 
+def _escape_pipes(text: str) -> str:
+    """A pipe ends a table cell unless it is escaped, and GFM honours the escape inside
+    an inline span - so a link's destination needs it as much as its text does."""
+    return text.replace("|", r"\|")
+
+
 def _inline(value: object) -> str:
     """A record's value as one table cell: whitespace collapsed, pipes escaped."""
     if value is None or value == "":
         return EMPTY_CELL
-    return " ".join(str(value).split()).replace("|", r"\|")
+    return _escape_pipes(" ".join(str(value).split()))
 
 
 def _truncate(text: str, limit: int = COVERAGE_CHARS) -> str:
@@ -142,10 +166,10 @@ def _truncate(text: str, limit: int = COVERAGE_CHARS) -> str:
     return cut.rstrip(" ,;:.") + ELLIPSIS
 
 
-def _link(text: str | None, target: str | None) -> str:
+def _link(text: str, target: str | None) -> str:
     if not target:
         return EMPTY_CELL
-    return f"[{_inline(text or target)}]({target})"
+    return f"[{_inline(text)}]({_escape_pipes(str(target))})"
 
 
 def _table(columns: tuple[str, ...], rows: list[list[str]]) -> list[str]:
@@ -161,12 +185,18 @@ def _record_link(topic: str, kind: str, record_id: str) -> str:
     return f"{up}catalog/{kind}/{record_id}.md"
 
 
-def _source_link(rec: Record) -> str:
-    """CONTEXT.md's `link` column: the doi where the record has one, else the url."""
+def _external_link(rec: Record) -> str:
+    """Link out of a table: the doi where the record has one, else the url.
+
+    CONTEXT.md names the `link` column and says nothing about which of the two to prefer;
+    the preference is #42's. The anchor text is the doi, which is short and is the string
+    a reader copies, or the word "link", which keeps a 116-character URL out of a table
+    cell. One rule, used by all three tables.
+    """
     doi = rec.data.get("doi")
     if doi:
         return _link(str(doi), f"https://doi.org/{doi}")
-    return _link(None, rec.data.get("url"))
+    return _link(LINK_TEXT, rec.data.get("url"))
 
 
 # --- the sources table -------------------------------------------------------------
@@ -182,15 +212,18 @@ def _source_row(topic: str, rec: Record) -> list[str]:
         _inline(d.get("status")),
         _inline(d.get("tier")),
         _truncate(_inline(coverage)) if coverage else EMPTY_CELL,
-        _source_link(rec),
+        _external_link(rec),
     ]
 
 
 def _sources_by_region(topic: str, sources: list[Record], catalog: Catalog) -> list[str]:
     """Grouped by region, in the notebook's own region order (#40, plan.region_sort_key).
 
-    A source tagging more than one region renders under each of them; whether it should
-    is parked on #5, and nothing here decides it - no current source carries two.
+    A source tagging more than one region renders under each of them. Whether it should,
+    or should render once, is parked on #5; no current source carries two, so nothing
+    observable turns on it yet. This is what the builder does today, and a test records
+    it so that #44 cannot commit the opposite by accident - the test pins the behaviour,
+    not the parked decision.
     """
     if not sources:
         return [NO_SOURCES]
@@ -218,13 +251,9 @@ def _references(topic: str, references: list[Record]) -> list[str]:
     """
     if not references:
         return [NO_REFERENCES]
-    out = []
-    for rec in references:
-        d = rec.data
-        target = f"https://doi.org/{d['doi']}" if d.get("doi") else d.get("url")
-        cite = _inline(d.get("ref"))
-        out.append(f"- **{rec.id}** {cite} {_link('link', target)}")
-    return out
+    return [
+        f"- **{rec.id}** {_inline(rec.data.get('ref'))} {_external_link(rec)}" for rec in references
+    ]
 
 
 # --- the five sections -------------------------------------------------------------
@@ -263,9 +292,11 @@ def _overview(topic: str, catalog: Catalog) -> str:
         f"> {TOPIC_QUESTIONS[topic]}",
         "",
         f"{_counted(len(sources), 'source')} · {_counted(len(references), 'reference')}",
-        "",
     ]
-    lines += _matrix(topic, catalog, sources) if sources else [NO_SOURCES]
+    # No matrix when there is nothing to put in it: the count above already says so, and
+    # "0 sources" followed by "_No sources._" states one thing twice.
+    if sources:
+        lines += ["", *_matrix(topic, catalog, sources)]
     return "\n".join(lines)
 
 
@@ -309,19 +340,16 @@ def _reviewed(topic: str, catalog: Catalog) -> str:
     lines = [f"## {REVIEWED}", ""]
     if not excluded:
         return "\n".join([*lines, NO_EXCLUSIONS])
-    rows = []
-    for rec in excluded:
-        d = rec.data
-        target = f"https://doi.org/{d['doi']}" if d.get("doi") else d.get("url")
-        rows.append(
-            [
-                _link(rec.id, _record_link(topic, "excluded", rec.id)),
-                _inline(d.get("what")),
-                _inline(d.get("reason")),
-                _inline(d.get("reviewed")),
-                _link("link", target),
-            ]
-        )
+    rows = [
+        [
+            _link(rec.id, _record_link(topic, "excluded", rec.id)),
+            _inline(rec.data.get("what")),
+            _inline(rec.data.get("reason")),
+            _inline(rec.data.get("reviewed")),
+            _external_link(rec),
+        ]
+        for rec in excluded
+    ]
     return "\n".join([*lines, *_table(EXCLUDED_COLUMNS, rows)])
 
 
@@ -372,7 +400,39 @@ def _merge(generated: list[NotebookNode], existing: NotebookNode) -> list[Notebo
     for cell in generated:
         out.append(cell)
         out += kept.get(cell.id, [])
+    _settle_ids(out)
     return out
+
+
+def _settle_ids(cells: list[NotebookNode]) -> None:
+    """Give any kept cell that lacks an id of its own a derived one.
+
+    nbformat.writes repairs a notebook as it serializes: it mints an id for a cell that
+    has none, and silently renumbers one that duplicates another. Both mint a *random*
+    value, so a notebook that reaches the writer needing repair is written differently
+    every time - the one remaining way this builder's determinism can fail, and it fails
+    at the byte level that #44 and #47 assert at, not at build_topic's.
+
+    So the repair happens here, where it can be derived rather than drawn. A cell whose
+    id is already its own is untouched, which is every cell of a notebook this builder
+    wrote; the two that are not are a cell read back from a notebook older than cell ids
+    (nbformat_minor 4) and a hand-authored cell that copied a generated cell's id. Both
+    settle after one rebuild and are stable from then on.
+    """
+    taken = {cell["id"] for cell in cells if is_generated(cell)}
+    for position, cell in enumerate(cells):
+        if is_generated(cell):
+            continue
+        if cell.get("id") and cell["id"] not in taken:
+            taken.add(cell["id"])
+            continue
+        # A minted id can itself be spoken for - a hand-authored cell is free to carry
+        # any string, this shape included - so it is minted until it is free.
+        candidate = f"{ID_PREFIX}kept-{position}"
+        while candidate in taken:
+            candidate += "x"
+        cell["id"] = candidate
+        taken.add(candidate)
 
 
 def build_topic(topic: str, catalog: Catalog, existing: NotebookNode | None = None) -> NotebookNode:
