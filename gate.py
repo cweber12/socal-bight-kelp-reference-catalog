@@ -8,7 +8,8 @@ exits non-zero if any gate fails. Gates that need machine state a fresh clone la
 declare skip_if and are skipped there - skipping is for the clone, not the author:
 run this locally before every PR.
 
-Today there is one gate. CONTEXT.md, 'Gates', is the schedule for the ones not yet here.
+CONTEXT.md, 'Gates', is the table of what each gate asserts and the schedule for the
+ones not yet here. A row here that is not a row there is a gate nothing asked for.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from kelpcatalog import check_catalog  # noqa: E402
+from kelpcatalog.structure import check_structure  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -52,9 +54,27 @@ def gate_catalog_schema() -> tuple[bool, str]:
     return True, counts
 
 
+def gate_notebook_structure() -> tuple[bool, str]:
+    """Every topic notebook has exactly the sections its sub-topic list requires, and the
+    index lists every topic.
+
+    Reads the committed notebooks, not the builder's output: a notebook edited by hand,
+    or left behind by a sub-topic added to TOPICS, fails here. It does not check that a
+    notebook's counts are current with the records, and no gate does - #48 re-executes a
+    notebook, and re-execution never rebuilds a markdown cell from the records. A green
+    row here says the sections are right and says nothing about what is in them.
+    """
+    sections, problems = check_structure(ROOT)
+    counts = f"{len(sections)} notebooks, {sum(len(s) for s in sections.values())} sections"
+    if problems:
+        return False, "\n".join(str(p) for p in problems) + f"\n({counts})"
+    return True, counts
+
+
 GATES: list[Gate] = [
     Gate("unit", gate_unit),
     Gate("catalog-schema", gate_catalog_schema),
+    Gate("notebook-structure", gate_notebook_structure),
 ]
 
 
