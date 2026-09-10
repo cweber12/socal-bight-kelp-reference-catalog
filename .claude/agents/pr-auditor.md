@@ -16,7 +16,10 @@ running, and everything below exists to keep it open.
 
 ## Read in this order, and do not read ahead
 
-1. `CLAUDE.md`, then `CONTEXT.md` in full.
+1. `CLAUDE.md`, then `CONTEXT.md` in full — **from disk**, both of them. A copy of `CLAUDE.md`
+   arrives in your context automatically, and it is the snapshot taken when the session that
+   dispatched you started: on the run that found this, it was missing the bullet defining the
+   auditor's own role. `CONTEXT.md` does not arrive at all.
 2. The issue the PR closes, in full, **including every comment** — `gh issue view <n> --comments`.
    Then the issues the brief names as downstream, for what will read what this PR commits.
 3. **Before you open the diff**, write down — as properties you could test — what those documents
