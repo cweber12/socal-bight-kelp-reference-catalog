@@ -30,6 +30,13 @@ one thing the header is for: **what downstream depends on this slice** — the i
 what it commits, so the auditor can rank a finding by what it would cost there rather than by how
 much there is to say about it.
 
+**Name the governing clause.** Quote the sentence or table row in `CONTEXT.md` this slice is
+measured against — "every topic notebook has exactly the sections its sub-topic list requires, and
+the index lists every topic" — and ask what it requires, forbids and leaves open. That quotation is
+what section 0 is written against; without it the auditor has nothing to form an expectation from
+before the diff, and the strongest part of both hand-written predecessors becomes the author's
+habit rather than the method's.
+
 **The questions.** Two or three. Not more — a fourth question buys less than the depth it costs on
 the first. A question earns its place by being answerable wrongly: "does the index render only what
 CONTEXT.md asks for, and is every count right?" is a question; "is the code good?" is not. Draw
