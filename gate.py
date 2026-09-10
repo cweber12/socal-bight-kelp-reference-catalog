@@ -24,6 +24,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from kelpcatalog import check_catalog  # noqa: E402
+from kelpcatalog.outputs import check_outputs  # noqa: E402
 from kelpcatalog.structure import check_structure  # noqa: E402
 
 
@@ -71,10 +72,31 @@ def gate_notebook_structure() -> tuple[bool, str]:
     return True, counts
 
 
+def gate_notebook_outputs() -> tuple[bool, str]:
+    """Committed notebooks carry outputs and no errors.
+
+    Read as: every code cell carries outputs, and no output is an error - the reading
+    adopted in docs/prd/topic-notebooks.md and argued in #45. A notebook with no code
+    cells passes with nothing to check, which is all eleven today, because generated
+    cells are markdown and the only code cell a notebook ever has is a figure (#47).
+    The strict reading - every notebook carries outputs - would fail a topic notebook
+    for not yet having a figure, which is a gate asserting content.
+
+    Reads the committed notebooks, never a re-execution: that is #48, and not
+    re-executing is why this row can run in CI while that one cannot.
+    """
+    cells, problems = check_outputs(ROOT)
+    counts = f"{len(cells)} notebooks, {sum(len(c) for c in cells.values())} code cells"
+    if problems:
+        return False, "\n".join(str(p) for p in problems) + f"\n({counts})"
+    return True, counts
+
+
 GATES: list[Gate] = [
     Gate("unit", gate_unit),
     Gate("catalog-schema", gate_catalog_schema),
     Gate("notebook-structure", gate_notebook_structure),
+    Gate("notebook-outputs", gate_notebook_outputs),
 ]
 
 
