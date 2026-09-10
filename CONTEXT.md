@@ -239,7 +239,10 @@ notebooks/
 Each topic notebook has the same shape, generated from the records:
 
 1. the question, verbatim from the table above; a count of sources and references; a small
-   region × sub-topic table;
+   region × sub-topic table, whose columns are the topic's sub-topics **and *General***, because
+   *General* is a section beside them and a source carrying the bare tag must be counted where
+   the notebook renders it — a matrix of sub-topics alone would print a row of zeros for a region
+   whose sources the notebook does show;
 2. one section per sub-topic, in the order listed above — a sources table (id · title · steward ·
    status · tier · coverage · link) grouped by region, in the region order below; the references
    tagged to the sub-topic; then any figures;
