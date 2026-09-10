@@ -80,6 +80,12 @@ either way:
 Never inline the method into the brief. Two copies drift, and the copy you paste is the one you
 were about to edit in your own favour.
 
+**Then send it nothing until it reports.** `SendMessage` can continue a running subagent, and an
+author who "clarifies" a finding mid-run has talked their own auditor into agreement — the one
+thing a fresh chat prevented that a subagent does not prevent by itself. One dispatch, one report.
+If the brief was wrong, that is a finding about the brief: let the audit land, then fix the brief
+and commission a new one.
+
 Commission from a **clean tree**: `git status --short` empty, everything committed and pushed. The
 auditor restores what it changes and verifies the restore against `git status`, so a tree that
 starts dirty gives it no baseline to verify against — and your uncommitted work reads to it as part
