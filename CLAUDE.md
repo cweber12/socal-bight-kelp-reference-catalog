@@ -17,6 +17,7 @@ add a topic in its own PR, not exclude the source. Notebooks render records; the
 ```sh
 python -m venv .venv && .venv/Scripts/pip install -e ".[dev]"    # Windows; use .venv/bin on Unix
 .venv/Scripts/python gate.py   # every gate; run before every PR, paste the output into the PR
+.venv/Scripts/python -m kelpcatalog.generate   # rebuild all eleven notebooks from the records
 ```
 
 CI runs `gate.py` (Ubuntu and Windows), `ruff check` and `ruff format --check` on every PR. `main`
