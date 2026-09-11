@@ -202,6 +202,16 @@ def test_a_line_magic_does_not_make_a_cell_unreadable(tmp_path: Path):
     assert problems(root) == []
 
 
+def test_an_indented_magic_does_not_make_a_cell_unreadable(tmp_path: Path):
+    # A magic is legal inside a block, so the blanking has to find one that is indented.
+    # The block keeps a statement of its own, because blanking the only statement in a
+    # block leaves an IndentationError that no amount of stripping helps with - which is
+    # reported, and is the right answer for a cell whose magic *was* the block.
+    root = a_repo(tmp_path, a_figure_cell(above=f"if True:\n    %matplotlib inline\n    {PLOT}"))
+
+    assert problems(root) == []
+
+
 def test_a_shell_escape_does_not_make_a_cell_unreadable(tmp_path: Path):
     root = a_repo(tmp_path, a_figure_cell(above=f"!echo building\n{PLOT}"))
 
@@ -476,6 +486,40 @@ def test_a_cell_that_is_not_python_is_reported(tmp_path: Path):
     # quotes its input back in its error, so an `in` assertion over a cell reading
     # "is not Python" would pass on the cell rather than on the gate.
     assert problem.message.startswith("is not Python this gate can read")
+
+
+def test_a_magic_after_the_call_is_reported(tmp_path: Path):
+    # The call is the last *statement* but not the last thing in the cell, so IPython runs
+    # the magic after it and the cell's value - the caption - is the magic's, not the
+    # call's. Blanking the magic to parse the cell is what hides this, so the check is
+    # made against the source as written. Found by the audit of PR #67.
+    root = a_repo(tmp_path, a_figure_cell(above="", call='provenance(sources=["noaa_oni"])\n%time'))
+
+    assert messages(root) == ["does not end in provenance(...)"]
+
+
+def test_a_shell_escape_after_the_call_is_reported(tmp_path: Path):
+    root = a_repo(
+        tmp_path, a_figure_cell(above="", call='provenance(sources=["noaa_oni"])\n!echo done')
+    )
+
+    assert messages(root) == ["does not end in provenance(...)"]
+
+
+def test_a_comment_after_the_call_is_not_a_statement_after_it(tmp_path: Path):
+    # The positive control for the two above: a trailing comment runs nothing and displaces
+    # nothing, so the call is still what the cell ends with.
+    root = a_repo(tmp_path, a_figure_cell('provenance(sources=["noaa_oni"])\n# the ONI anomaly'))
+
+    assert problems(root) == []
+
+
+def test_a_cell_magic_below_the_first_line_is_reported(tmp_path: Path):
+    # `%%capture` is legal only on line 1, so a cell carrying one lower down is not IPython
+    # either. Blanking it as though it were a line magic made the rest parse and pass.
+    root = a_repo(tmp_path, a_figure_cell(above=f"import os\n%%capture\n{PLOT}"))
+
+    assert messages(root) == ["opens with a cell magic, so it is not Python this gate can read"]
 
 
 def test_a_cell_magic_is_reported(tmp_path: Path):

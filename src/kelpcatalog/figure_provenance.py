@@ -22,8 +22,11 @@ there, and there is none in this repo yet. Two consequences are worth stating ra
 leaving to be discovered. An id has to be *written out* as a string for the gate to see
 it, so a computed id list is reported rather than passed - a gate that reads source can
 only check what is written. And the check that the call comes last is the same fact as the
-caption appearing: a cell's value is its last expression's, so a `provenance(...)` with a
-statement after it renders nothing under the plot.
+caption *appearing*: a cell's value is its last expression's, so a `provenance(...)` with a
+statement after it renders nothing at all. It is not the same fact as the caption appearing
+*under* the figure, which is CONTEXT.md's word and which this gate does not secure - see
+`notebook.Provenance` on the output order a kernel would actually write, which is #47's to
+settle against a running one.
 
 **What it does not assert**, so that a reader does not take more from a green row than it
 says. Two questions were put to this slice and both are answered *no*, because CONTEXT.md's
@@ -127,28 +130,47 @@ def _figure_cells(notebook: NotebookNode) -> list[tuple[str, NotebookNode]]:
     ]
 
 
+def _is_magic(line: str) -> bool:
+    """Whether this line is IPython's rather than Python's."""
+    return line.lstrip().startswith(LINE_MAGIC)
+
+
 def _without_magics(source: str) -> str:
     """The cell's source with IPython's line magics and shell escapes blanked out.
 
     Blanked rather than dropped so that a line number in a SyntaxError still points at the
-    line a reader would count to. Only reached when the source does not parse as it
-    stands, so valid Python is never put through this.
+    line a reader would count to.
     """
-    return "\n".join(
-        "" if line.lstrip().startswith(LINE_MAGIC) else line for line in source.splitlines()
-    )
+    return "\n".join("" if _is_magic(line) else line for line in source.splitlines())
 
 
 def _parse(source: str) -> tuple[ast.Module | None, str | None]:
-    """The cell as a syntax tree, or why it could not be read."""
-    if source.lstrip().startswith(CELL_MAGIC):
+    """The cell as a syntax tree, or why it could not be read.
+
+    Plain Python first, and a cell that parses that way is never looked at again: a `%` or
+    a `!` inside a string is then a string, not a magic, and blanking the line it sits on
+    would corrupt the cell to no purpose. Only a cell that does *not* parse can be IPython,
+    and that is the only one the rest of this reaches.
+
+    A `%%` line is a cell magic, which hands the whole cell to something that is not the
+    Python compiler - so there is nothing here to read - and it is legal only as the first
+    line. One below the first is broken IPython, which is equally unreadable, so the search
+    is over every line: blanking such a line as though it were a line magic made the rest
+    of the cell parse and pass. Found by the audit of PR #67.
+    """
+    try:
+        return ast.parse(source), None
+    except SyntaxError:
+        pass
+    if any(line.lstrip().startswith(CELL_MAGIC) for line in source.splitlines()):
         return None, CELL_MAGIC_MESSAGE
-    for text in (source, _without_magics(source)):
-        try:
-            return ast.parse(text), None
-        except SyntaxError as e:
-            problem = f"{UNREADABLE_CELL}: {e.msg}"
-    return None, problem
+    try:
+        return ast.parse(_without_magics(source)), None
+    # The message comes from the second parse, not the first: the first failed on a line
+    # this gate has since accounted for, so its "invalid syntax" would point at a magic
+    # that is not the problem.
+    except SyntaxError as e:
+        return None, f"{UNREADABLE_CELL}: {e.msg}"
 
 
 def _callee(call: ast.Call) -> str | None:
@@ -160,18 +182,32 @@ def _callee(call: ast.Call) -> str | None:
     return None
 
 
-def _the_call(tree: ast.Module) -> ast.Call | None:
+def _magic_below(source: str, line: int) -> bool:
+    """Whether any line of the source past `line` (1-indexed) is IPython's.
+
+    The trailing half of "ends with". A magic is blanked before the cell is parsed, so the
+    tree cannot see one standing after the last statement - and IPython runs it after the
+    call, which makes the cell's value the magic's rather than the caption's. Checked
+    against the source as written, which is the only place it survives.
+    """
+    return any(_is_magic(text) for text in source.splitlines()[line:])
+
+
+def _the_call(tree: ast.Module, source: str) -> ast.Call | None:
     """The `provenance(...)` the cell ends with, or None if it does not end with one.
 
     Last, because a cell's value is its last expression's: a call with a statement after
-    it, or one whose value is assigned, renders no caption under the plot.
+    it, or one whose value is assigned, renders no caption under the plot. A comment after
+    it is not a statement and displaces nothing; a magic is neither, and is handled above.
     """
     if not tree.body:
         return None
     last = tree.body[-1]
     if not isinstance(last, ast.Expr) or not isinstance(last.value, ast.Call):
         return None
-    return last.value if _callee(last.value) == PROVENANCE else None
+    if _callee(last.value) != PROVENANCE or _magic_below(source, last.end_lineno or 0):
+        return None
+    return last.value
 
 
 def _ids(call: ast.Call) -> tuple[dict[str, list[str]], list[str]]:
@@ -249,10 +285,11 @@ def _resolve_problems(found: dict[str, list[str]], catalog: Catalog) -> list[str
 
 def _cell_problems(cell: NotebookNode, catalog: Catalog) -> list[str]:
     """Every way one figure cell's citation is wrong, in the order a reader meets them."""
-    tree, unreadable = _parse(str(cell.get("source") or ""))
+    source = str(cell.get("source") or "")
+    tree, unreadable = _parse(source)
     if tree is None:
         return [unreadable] if unreadable else []
-    call = _the_call(tree)
+    call = _the_call(tree, source)
     if call is None:
         return [NO_PROVENANCE]
     found, problems = _ids(call)
