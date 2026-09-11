@@ -203,20 +203,23 @@ the same PR.* One command rebuilds every notebook from the records:
 .venv/Scripts/python -m kelpcatalog.generate     # .venv/bin/python on macOS/Linux
 ```
 
-**Name the notebooks before running it**, so the diff can contradict you. For a source you are
-**adding**, the set is exact: one notebook per *topic* in the record's `topics`, one per topic on a
-reference record step 5 drafted (`topics` is required there too, and a reference renders in its own
-topics, not the source's), and `00_index.ipynb`, whose counts a new record always moves. A tag is
-`<topic>` or `<topic>/<sub-topic>` and only the topic half picks the notebook —
-`ocean-climate/salinity` puts the source in a section of `11_ocean_climate.ipynb`, not in a notebook
-of its own. `plan.NOTEBOOK_PATHS` maps a topic to its path and `plan.INDEX_PATH` is the index; they
-transcribe `CONTEXT.md`'s `notebooks/` tree, which is the authority.
+**Name the notebooks before running it**, so the diff can contradict you.
 
-**When step 1 sent you to update an existing record, name a smaller set** — the notebooks whose
-*rendering* your edit changes, which is a subset of the record's topics. A record keeps showing in
-every topic it is tagged with, so a notebook re-renders identically when nothing it prints has
-moved; and `00_index.ipynb` carries counts and names no source, so an edit that moves no count
-leaves it byte-identical.
+**Adding a record** — the set is exact, and every notebook in it moves: one per *topic* in the
+record's `topics`, one per topic on a reference record step 5 drafted (`topics` is required there
+too, and a reference renders in its own topics, not the source's), and `00_index.ipynb`, which
+counts sources and references and so moves for either. A tag is `<topic>` or `<topic>/<sub-topic>`
+and only the topic half picks the notebook — `ocean-climate/salinity` puts the source in a section
+of `11_ocean_climate.ipynb`, not in a notebook of its own. `plan.NOTEBOOK_PATHS` maps a topic to its
+path and `plan.INDEX_PATH` is the index; they transcribe `CONTEXT.md`'s `notebooks/` tree, which is
+the authority.
+
+**Updating a record**, when step 1 sent you to one — name the union of its topics *before* and
+*after* your edit, plus `00_index.ipynb`. A tag you removed or retagged still moves the notebook it
+is leaving, so neither reading alone bounds the set. The union is a bound and not an equality:
+inside it a notebook moves only when something it prints changed, so expect fewer to move than you
+named — a `steward` edit moves both of this record's topic notebooks and not the index, and adding
+one tag moves one topic notebook and the index.
 
 Then read what moved. The command writes them all; git shows the ones whose rendering changed.
 
@@ -224,15 +227,19 @@ Then read what moved. The command writes them all; git shows the ones whose rend
 git status --short notebooks/
 ```
 
-**STOP if that set is not the one you named.** A notebook that moved and you did not name means
-either the `topics` are not what you read them to be, or it was already behind its records and this
-run swept it in — someone landed a record without refreshing. A notebook you named that did not move
-means that same first thing when the record is new; on the update path it means only that your edit
-changed nothing that notebook prints. Report which, rather than running the command again.
+**STOP if anything moved that your set does not contain.** That means the `topics` are not what you
+read them to be, or the tree was already behind its records and this run swept it in. Tell the two
+apart by opening the moved notebook's diff and looking for the id you are working on: if it is
+there, your set was wrong; if the diff is entirely other records, someone landed a record without
+refreshing. Report which, rather than running the command again.
+
+On the **add** path also **STOP if a notebook you named did not move** — the set is exact there. On
+the **update** path that is ordinary, because the union is a bound.
 
 **Regeneration never touches a figure.** The builder writes generated cells as markdown only, and a
 figure cell is "never generated and never touched" (`CONTEXT.md`, "Notebooks"), so a record change
-rewrites prose and moves no PNG byte: regenerating cannot turn `notebook-fresh` red. That row gets
+rewrites prose and moves no PNG byte, so a regeneration after a record change cannot turn
+`notebook-fresh` red. That row gets
 teeth when you open a notebook in Jupyter to change a figure — it compares `execution_count` as well
 as outputs, so a cell saved with `execution_count: 2`, what running a cell twice gives, is reported
 stale even when the picture is right. End such a session with **Restart and Run All**.
@@ -242,7 +249,8 @@ Stage the record, any reference record, the fetch script and every notebook that
 
 ## 8. Show and stop
 
-Print, in full: the record; the manifest of every file fetched; the gate output verbatim; the
+Print, in full: the record and any reference record; the manifest of every file fetched; the gate
+output verbatim; the
 result of the two step-6 checks — which quoted strings you diffed and against what, and that every
 URL the script fetches is in `access`; and the notebooks step 7 moved. Then **stop**. Do not commit
 and do not open a PR. Wait to be told.

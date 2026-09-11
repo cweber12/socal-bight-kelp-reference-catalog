@@ -11,7 +11,8 @@
 5. Run `.venv/Scripts/python -m kelpcatalog.generate` and stage every notebook it moves — a source
    is not "in" until the notebooks that show it are refreshed in the same PR (`CONTEXT.md`,
    "Notebooks"). Then run `gate.py` again — it reads the notebooks you have just rewritten.
-6. Open a PR titled `catalog: add <id>`; paste the gate output into the body.
+6. Commit the record, its fetch script and the notebooks that moved, then open a PR titled
+   `catalog: add <id>`; paste the gate output into the body.
 
 Inside a Claude Code session the `add-source` skill does steps 1–7 of its own checklist —
 steps 1–5 here, and it stops before committing.
