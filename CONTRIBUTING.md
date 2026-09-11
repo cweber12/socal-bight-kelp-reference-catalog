@@ -8,13 +8,13 @@
    itself, the licence text verbatim, no prose body.
 4. Run `.venv/Scripts/python gate.py` (`.venv/bin/python` on macOS/Linux). Fix every problem it
    names.
-5. Run `.venv/Scripts/python -m kelpcatalog.generate` and commit every notebook it moves — a source
+5. Run `.venv/Scripts/python -m kelpcatalog.generate` and stage every notebook it moves — a source
    is not "in" until the notebooks that show it are refreshed in the same PR (`CONTEXT.md`,
    "Notebooks"). Then run `gate.py` again — it reads the notebooks you have just rewritten.
 6. Open a PR titled `catalog: add <id>`; paste the gate output into the body.
 
 Inside a Claude Code session the `add-source` skill does steps 1–7 of its own checklist —
-steps 1–5 here, and it stops before the PR.
+steps 1–5 here, and it stops before committing.
 
 ## Adding a reference, exclusion, region, bed or site
 

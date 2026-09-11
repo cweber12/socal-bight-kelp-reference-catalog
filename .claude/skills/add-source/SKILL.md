@@ -29,9 +29,9 @@ git switch -c catalog/add-<id>
 ```
 
 A branch is `<type>/<slug>` and `catalog` is the type for record changes (`CLAUDE.md`, "Branches,
-commits, PRs"). Every file this skill writes belongs on that branch — the record, the fetch script,
-and the notebooks step 7 regenerates, nothing else. Creating the branch is not committing to it;
-step 8 still stops short of a commit.
+commits, PRs"). Every file this skill writes belongs on that branch — the record, any reference
+record, the fetch script, and the notebooks step 7 regenerates, nothing else. Creating the branch is
+not committing to it; step 8 still stops short of a commit.
 
 ## 1. De-duplicate
 
@@ -189,7 +189,7 @@ Then two checks no gate makes. Both feed step 8.
   file it came from and compare it character for character. A curly quote straightened, a hyphen
   dropped, a line break turned into a space: each is a value the source does not state. Correct
   the record to what the source states today; if the source itself has changed since you drafted
-  the record, say so in the step-7 report.
+  the record, say so in the step-8 report.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
@@ -203,12 +203,20 @@ the same PR.* One command rebuilds every notebook from the records:
 .venv/Scripts/python -m kelpcatalog.generate     # .venv/bin/python on macOS/Linux
 ```
 
-**Name the notebooks the source appears in before running it**, so the diff can contradict you: one
-per *topic* in the record's `topics`, plus `00_index.ipynb`, which every source changes because it
-carries the counts. A tag is `<topic>` or `<topic>/<sub-topic>` and only the topic half picks the
-notebook — `ocean-climate/salinity` puts the source in a section of `11_ocean_climate.ipynb`, not
-in a notebook of its own. `plan.NOTEBOOK_PATHS` maps a topic to its path and `plan.INDEX_PATH` is
-the index; they transcribe `CONTEXT.md`'s `notebooks/` tree, which is the authority.
+**Name the notebooks before running it**, so the diff can contradict you. For a source you are
+**adding**, the set is exact: one notebook per *topic* in the record's `topics`, one per topic on a
+reference record step 5 drafted (`topics` is required there too, and a reference renders in its own
+topics, not the source's), and `00_index.ipynb`, whose counts a new record always moves. A tag is
+`<topic>` or `<topic>/<sub-topic>` and only the topic half picks the notebook —
+`ocean-climate/salinity` puts the source in a section of `11_ocean_climate.ipynb`, not in a notebook
+of its own. `plan.NOTEBOOK_PATHS` maps a topic to its path and `plan.INDEX_PATH` is the index; they
+transcribe `CONTEXT.md`'s `notebooks/` tree, which is the authority.
+
+**When step 1 sent you to update an existing record, name a smaller set** — the notebooks whose
+*rendering* your edit changes, which is a subset of the record's topics. A record keeps showing in
+every topic it is tagged with, so a notebook re-renders identically when nothing it prints has
+moved; and `00_index.ipynb` carries counts and names no source, so an edit that moves no count
+leaves it byte-identical.
 
 Then read what moved. The command writes them all; git shows the ones whose rendering changed.
 
@@ -216,20 +224,21 @@ Then read what moved. The command writes them all; git shows the ones whose rend
 git status --short notebooks/
 ```
 
-**STOP if that set is not the one you named.** A notebook you named that did not move means the
-record is not tagged the way you read it. A notebook that moved and you did not name means either
-the same thing, or that it was already behind its records and this run swept it in — someone landed
-a record without refreshing. Report which, rather than running the command again.
-
-Stage the record, the fetch script and every notebook that moved, then **run `gate.py` again** —
-step 6's run described bytes these have replaced, and rows of it read notebooks.
+**STOP if that set is not the one you named.** A notebook that moved and you did not name means
+either the `topics` are not what you read them to be, or it was already behind its records and this
+run swept it in — someone landed a record without refreshing. A notebook you named that did not move
+means that same first thing when the record is new; on the update path it means only that your edit
+changed nothing that notebook prints. Report which, rather than running the command again.
 
 **Regeneration never touches a figure.** The builder writes generated cells as markdown only, and a
 figure cell is "never generated and never touched" (`CONTEXT.md`, "Notebooks"), so a record change
-rewrites prose, no PNG byte moves, and `notebook-fresh` stays green. That row gets teeth only when
-you open a notebook in Jupyter to change a figure: it compares `execution_count` as well as outputs,
-so a cell saved with `execution_count: 2` — what running a cell twice gives — is reported stale even
-when the picture is right. End such a session with **Restart and Run All**.
+rewrites prose and moves no PNG byte: regenerating cannot turn `notebook-fresh` red. That row gets
+teeth when you open a notebook in Jupyter to change a figure — it compares `execution_count` as well
+as outputs, so a cell saved with `execution_count: 2`, what running a cell twice gives, is reported
+stale even when the picture is right. End such a session with **Restart and Run All**.
+
+Stage the record, any reference record, the fetch script and every notebook that moved, then **run
+`gate.py` again** — step 6's run described bytes these have replaced, and rows of it read notebooks.
 
 ## 8. Show and stop
 

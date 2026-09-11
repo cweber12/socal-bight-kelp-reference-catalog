@@ -57,7 +57,8 @@ PR body:
   found; which findings to act on is the owner's call, not the author's.
 - Never write into `data/`. Never add a record by hand when the `add-source` skill exists — use it.
 - A record and the notebooks that show it land in one PR: after the gate, run
-  `python -m kelpcatalog.generate` and commit every notebook it moves (`CONTEXT.md`, "Notebooks").
+  `.venv/Scripts/python -m kelpcatalog.generate` and commit every notebook it moves
+  (`CONTEXT.md`, "Notebooks").
 - Never write a parser for any external manifest or prose file. Records are entered, not migrated.
 
 ## Scope guards
