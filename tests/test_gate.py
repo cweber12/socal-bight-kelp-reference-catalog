@@ -41,6 +41,7 @@ GATE_ROWS = {
     "catalog-schema",
     "notebook-structure",
     "notebook-outputs",
+    "notebook-fresh",
     "figure-provenance",
     "lint",
 }
@@ -59,9 +60,10 @@ CONTEXT_GATES = {
     "lock-verify": "milestone 6.5",
 }
 
-# Rows CONTEXT.md's table names that gate.py does not run yet. `notebook-fresh` is #48;
-# the lock pair is milestone 6.5. Moving a name out of here is part of landing its row.
-SCHEDULED_NOT_YET_RUN = {"notebook-fresh", "lock-consistency", "lock-verify"}
+# Rows CONTEXT.md's table names that gate.py does not run yet: the lock pair, milestone
+# 6.5. Moving a name out of here is part of landing its row - `notebook-fresh` left with
+# #48.
+SCHEDULED_NOT_YET_RUN = {"lock-consistency", "lock-verify"}
 
 _ROW = re.compile(r"^(\S+)( +)(ok|FAIL|SKIP)(?= )")
 
@@ -307,6 +309,7 @@ FAKE_CATALOG = SimpleNamespace(records={"sources": ["a", "b", "c"], "regions": [
 WRAPPERS = [
     ("gate_notebook_structure", "check_structure", "2 notebooks, 3 sections"),
     ("gate_notebook_outputs", "check_outputs", "2 notebooks, 3 code cells"),
+    ("gate_notebook_fresh", "check_fresh", "2 notebooks, 3 cells re-executed"),
     ("gate_figure_provenance", "check_figure_provenance", "2 notebooks, 3 figure cells"),
     ("gate_catalog_schema", "check_catalog", "3 sources, 1 regions"),
 ]
@@ -481,3 +484,31 @@ def test_the_interpreter_can_run_ruff_as_a_module() -> None:
 
     assert ok
     assert out.startswith("ruff ")
+
+
+# --- the notebook-fresh row --------------------------------------------------------------
+#
+# The repo's first real `skip_if`. The skip machinery itself is tested above against fake
+# rows; these two are about the wiring of the one row that uses it.
+
+
+def test_notebook_fresh_is_the_only_row_that_can_skip() -> None:
+    """The set, written out. A `skip_if` added to another row would make it skippable in a
+    fresh clone, and a `skip_if` dropped from this one would make it fail in CI rather than
+    skip - neither is visible in the report until the row concerned is red."""
+    assert {g.name for g in gate.GATES if g.skip_if} == {"notebook-fresh"}
+
+
+def test_the_notebook_fresh_row_asks_about_the_repo_root(monkeypatch) -> None:
+    """A skip predicate pointed at a tree that is not there answers about the wrong machine:
+    aimed at the working directory it would skip whenever `gate.py` was run from elsewhere,
+    and the row would silently never run. The expected root is computed from `gate.__file__`
+    rather than read from `gate.ROOT`, so a mutated ROOT fails here."""
+    seen: list[Path] = []
+    monkeypatch.setattr(gate, "skip_reason", lambda root: (seen.append(root), "no data/")[1])
+
+    row = next(g for g in gate.GATES if g.name == "notebook-fresh")
+
+    assert row.skip_if is not None
+    assert row.skip_if() == "no data/"
+    assert seen == [Path(gate.__file__).parent]
