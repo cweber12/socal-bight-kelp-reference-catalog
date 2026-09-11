@@ -28,6 +28,7 @@ from kelpcatalog.build import (
     GENERATED_KEY,
     build_index,
     build_topic,
+    is_figure,
     write_notebook,
 )
 from kelpcatalog.plan import NOTEBOOK_PATHS, TOPIC_QUESTIONS, region_heading, region_sort_key
@@ -1098,8 +1099,90 @@ def test_a_hand_authored_cell_in_the_index_survives_a_rebuild():
     assert len(rebuilt.cells) == len(INDEX_CELL_IDS) + 1
 
 
-def test_neither_builder_invents_notebook_metadata():
-    # PR #56: metadata is carried through from `existing` and none is invented, so the
-    # eleven committed notebooks carry none until a figure needs a kernel (#47).
+def test_neither_builder_invents_metadata_for_a_notebook_with_no_figure():
+    # PR #56: metadata is carried through from `existing`, and the kernelspec below is
+    # the only metadata either builder invents - so a notebook that has never held a
+    # figure carries none.
     assert build_index(a_catalog()).metadata == {}
     assert build_topic("ocean-climate", a_catalog()).metadata == {}
+
+
+# --- the kernelspec a figure needs -------------------------------------------------
+#
+# #47's first comment: a hand-added kernelspec survives a regeneration *over* a notebook,
+# because metadata is carried through, but not a build from records alone - so it is the
+# builder that adds it. A figure cell needs a kernel to execute at all, and the outputs
+# CONTEXT.md commits a notebook with are what a kernel produced.
+#
+# Written out here rather than imported from build.py, key included. A test that compared
+# the builder's output to `build.KERNEL` or indexed it by `build.KERNELSPEC` would put the
+# same value on both sides and pass whatever that value became: two mutants of the values
+# survived a sweep before these were written this way, and the audit of PR #69 then found
+# the key had escaped the same treatment. The whole of `metadata` is asserted, so metadata
+# the builder has no business inventing fails here too.
+THE_METADATA = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}}
+
+
+def test_a_notebook_holding_a_figure_cell_is_given_a_kernelspec():
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    rebuilt = build_topic("ocean-climate", catalog, existing=existing)
+
+    assert rebuilt.metadata == THE_METADATA
+
+
+def test_the_index_is_given_one_too_when_it_holds_a_figure_cell():
+    # build_index merges for the same reason build_topic does, so it can hold one.
+    catalog = a_catalog()
+    existing = build_index(catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    assert build_index(catalog, existing=existing).metadata == THE_METADATA
+
+
+def test_a_generated_code_cell_would_not_earn_a_kernelspec():
+    # The predicate is "a code cell the builder did not generate", not "a code cell":
+    # the two differ, and only the first is a figure (CONTEXT.md, "Notebooks").
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    cell = a_figure_cell()
+    cell.metadata[GENERATED_KEY] = GENERATED
+    existing.cells.insert(1, cell)
+
+    assert build_topic("ocean-climate", catalog, existing=existing).metadata == {}
+
+
+def test_adding_the_kernelspec_leaves_a_rebuild_byte_identical():
+    # It is written on every build, not only the first, so the second build must not
+    # differ from the first - which is what #47's third "Done when" asserts on disk.
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    once = build_topic("ocean-climate", catalog, existing=existing)
+    twice = build_topic("ocean-climate", catalog, existing=once)
+
+    assert json.dumps(twice, sort_keys=True) == json.dumps(once, sort_keys=True)
+
+
+# --- what a figure cell is ----------------------------------------------------------
+
+
+def test_is_figure_is_true_of_a_code_cell_the_builder_did_not_generate():
+    assert is_figure(a_figure_cell())
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [new_markdown_cell("## a section"), new_code_cell("provenance(sources=[])")],
+    ids=["markdown", "code"],
+)
+def test_is_figure_is_false_of_any_generated_cell(cell):
+    cell.metadata[GENERATED_KEY] = GENERATED
+    assert not is_figure(cell)
+
+
+def test_is_figure_is_false_of_a_markdown_cell_nobody_generated():
+    assert not is_figure(new_markdown_cell("Hand-written, not generated."))

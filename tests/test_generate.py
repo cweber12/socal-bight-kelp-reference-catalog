@@ -14,7 +14,9 @@ and one process cannot tell: Python fixes the seed once, at start-up.
 
 from __future__ import annotations
 
+import json
 import os
+import shutil
 import subprocess
 import sys
 import warnings
@@ -244,3 +246,79 @@ def test_it_refuses_to_render_a_catalog_that_does_not_validate(tmp_path: Path):
         generate(tmp_path, into=tmp_path / "out")
 
     assert not (tmp_path / "out").exists()
+
+
+# --- the committed figure ------------------------------------------------------------
+#
+# #47's third "Done when" - "a builder regeneration leaves the figure cell byte-identical"
+# - asserted against the notebook that actually holds one, rather than against a figure
+# cell a test built. The tests above insert one into the fixture tree and are the general
+# property; these two are the committed artifact, outputs and all.
+
+FIGURE_NOTEBOOK = NOTEBOOK_PATHS["ocean-climate"]
+FIGURE_CELL_ID = "figure-oni-anomaly"
+
+
+def code_cells(path: Path) -> dict[str, str]:
+    """Every code cell of the notebook, serialized, keyed by id.
+
+    Serialized because that is the level "byte-identical" lives at, and keyed by id
+    rather than counted because a count is blind to a collection that grows: a second
+    figure would leave `len(...) == 1` failing for the wrong reason and a set comparison
+    saying exactly what arrived.
+    """
+    notebook = nbformat.read(path, as_version=4)
+    return {
+        cell.id: json.dumps(cell, sort_keys=True)
+        for cell in notebook.cells
+        if cell.cell_type == "code"
+    }
+
+
+def test_regenerating_the_committed_notebooks_leaves_the_figure_cell_byte_identical(
+    tmp_path: Path,
+):
+    # The committed tree is copied in first, because that is what a regeneration in the
+    # repo meets: generate() reads each notebook back and merges over it, and a run into
+    # an empty directory would build from records alone and hold no figure at all.
+    shutil.copytree(ROOT / NOTEBOOKS_DIR, tmp_path, dirs_exist_ok=True)
+    before = code_cells(tmp_path / FIGURE_NOTEBOOK)
+    assert set(before) == {FIGURE_CELL_ID}, "the committed ONI figure cell is gone"
+
+    generate(ROOT, into=tmp_path)
+
+    assert code_cells(tmp_path / FIGURE_NOTEBOOK) == before
+
+
+def test_the_committed_figure_commits_its_caption_under_its_figure(tmp_path: Path):
+    # CONTEXT.md says the caption sits *under* the figure ("The rule"; "Notebooks"), and
+    # no gate secures it: `figure-provenance` reads the cell's source and never its
+    # outputs, so a cell that dropped its `plt.show()` would publish the figure from
+    # matplotlib's post_execute hook - after the caption - and stay green while reading
+    # on GitHub with the citation above the plot it cites. Measured in #47; this is the
+    # only thing standing on the order.
+    cell = next(
+        c
+        for c in nbformat.read(ROOT / NOTEBOOKS_DIR / FIGURE_NOTEBOOK, as_version=4).cells
+        if c.id == FIGURE_CELL_ID
+    )
+
+    kinds = [output.output_type for output in cell.outputs]
+
+    assert kinds == ["display_data", "execute_result"]
+    assert "image/png" in cell.outputs[0].data
+    assert "text/markdown" in cell.outputs[1].data
+
+
+def test_the_committed_figure_notebook_carries_the_kernelspec_and_nothing_else():
+    # Asserted on the committed file rather than on a build, because that is the artifact
+    # #48 re-executes and nbclient reads the kernel name from here. Written out whole, so
+    # it pins three things at once: that the builder wrote a kernelspec because this
+    # notebook holds a figure, the values it wrote, and that `language_info` - which
+    # nbclient stamps with the executing machine's Python patch version - is not committed.
+    # Deleting this key by hand left every gate green until this test existed (audit of #69).
+    notebook = nbformat.read(ROOT / NOTEBOOKS_DIR / FIGURE_NOTEBOOK, as_version=4)
+
+    assert notebook.metadata == {
+        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}
+    }

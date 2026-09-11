@@ -14,9 +14,9 @@ What that buys, stated so a reader does not take more: `nbformat.validate` shows
 notebook is a shape nbformat accepts, and says nothing about whether a kernel would emit
 the cell's outputs - this gate reads no outputs, so the question does not arise here the
 way it does for `notebook-outputs`. What it *cannot* show is that the cell sources below
-are ones #47 will write, because nothing in this repo has been executed and `matplotlib`
-is not installed. The plotting lines in these fixtures are stand-ins, and the gate never
-looks at them.
+are ones a figure cell really carries: the plotting lines in these fixtures are stand-ins,
+and the gate never looks at them. #47 committed the first executed figure cell, in
+11_ocean_climate, which is the one to read for what a real one holds.
 """
 
 from __future__ import annotations

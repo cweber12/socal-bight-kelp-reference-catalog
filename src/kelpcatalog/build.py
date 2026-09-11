@@ -41,6 +41,42 @@ from .schema import GROUPS, TOPICS, Catalog, Record, split_topic
 GENERATED_KEY = "kelpcatalog"
 GENERATED = "generated"
 
+# nbformat's own word for a code cell. A figure cell is one the builder did not generate:
+# CONTEXT.md says figure cells are "never generated and never touched", and the notebook
+# shape names no other kind of code cell.
+CODE = "code"
+
+# --- the kernel a figure is executed by --------------------------------------------
+#
+# CONTEXT.md, "Notebooks": notebooks are "committed with outputs so they read on GitHub
+# without running", and a figure cell's outputs exist only because a kernel produced them.
+# Notebook metadata is the only place a notebook can name the kernel that does it, so the
+# builder writes one the moment the assembled notebook holds a figure cell - rather than a
+# hand-added kernelspec, which survives a regeneration *over* a notebook (metadata is
+# carried through) but not a build from records alone, where a figure would be lost with
+# it. #47's first comment is the argument in full.
+#
+# The values are notebook furniture and carry no fact about any source. `python3` is the
+# name ipykernel registers itself under - `ipykernel/kernelspec.py` builds it as
+# `"python%i" % sys.version_info[0]`, so it is the major version and not a fixed string,
+# and it is what a venv with ipykernel in it offers. nbclient reads it from here when it
+# is handed a notebook and no kernel name (`nbclient/client.py`: `self.nb.metadata.get(
+# "kernelspec", {}).get("name")`), which is how #48 will re-execute one.
+#
+# Three cases, and the third is the one a reader would not guess. A notebook with no
+# figure cell is left alone: nothing is invented, and whatever metadata it carries comes
+# through. One that holds a figure and carries no kernelspec gains this one. One that
+# holds a figure and already carries a kernelspec has it **replaced** - the builder owns
+# this key whenever a figure is present, so a kernel a reader named by hand does not
+# survive a regeneration. That is deliberate, because a kernelspec the builder does not
+# control is a notebook it cannot say will execute; but note what it means, since the two
+# halves of notebook metadata are treated in opposite ways. This key, the one a human
+# picks, is overwritten. `language_info`, which is pure machine state, is carried through
+# untouched - see the PR body for #47 on why it is not committed. The audit of PR #69
+# found the comment that stood here claiming the opposite of all this.
+KERNELSPEC = "kernelspec"
+KERNEL = {"display_name": "Python 3", "language": "python", "name": "python3"}
+
 # Cell ids are derived from the section's identity, never generated: nbformat's
 # new_markdown_cell assigns a random id per call, so a builder that let it choose would
 # rewrite every id - and so every byte of the file - on a rebuild that changed no record.
@@ -443,8 +479,14 @@ def _index_matrix(catalog: Catalog) -> str:
 
     A row per topic whether or not it holds anything, so the matrix is the same shape
     from one PR to the next and a gap reads as a column of zeros. With no region tag in
-    use it degenerates to the topic list rather than disappearing, which is the one thing
-    CONTEXT.md's gate asks the index for.
+    use it degenerates to the topic list rather than disappearing.
+
+    That is this cell's own choice and satisfies no gate: `notebook-structure` reads the
+    index's topics from the depth-3 `### [<topic>](<path>)` headings the group cells
+    carry (`structure.py`, `_listed_topics`) and does not read the matrix at all. Nothing
+    breaks today - both cells are generated together and neither can go missing without
+    the other - but whoever restructures the index should know the matrix is not what
+    "the index lists every topic" is met by. #64.
     """
     sources = catalog.records["sources"]
     regions = sorted({r for rec in sources for r in _regions(rec)}, key=region_sort_key)
@@ -470,6 +512,16 @@ def _index_sections(catalog: Catalog) -> list[tuple[str, str]]:
 
 def is_generated(cell: NotebookNode) -> bool:
     return (cell.get("metadata") or {}).get(GENERATED_KEY) == GENERATED
+
+
+def is_figure(cell: NotebookNode) -> bool:
+    """A code cell the builder did not generate - CONTEXT.md's "figure cells".
+
+    One definition, here beside `is_generated`, because two modules ask it of the same
+    cells and must agree: the builder, to decide whether a notebook needs a kernelspec,
+    and `figure_provenance.py`, to decide what carries a citation.
+    """
+    return cell.get("cell_type") == CODE and not is_generated(cell)
 
 
 def _generated_cell(cell_id: str, source: str) -> NotebookNode:
@@ -539,14 +591,20 @@ def _settle_ids(cells: list[NotebookNode]) -> None:
 def _assemble(sections: list[tuple[str, str]], existing: NotebookNode | None) -> NotebookNode:
     """The generated cells as a notebook, merged over `existing` where there is one.
 
-    Notebook metadata is carried through and none is invented, so a notebook that has
-    never held a figure carries none - no kernelspec until a figure needs one.
+    Notebook metadata is carried through, and the only metadata invented is the
+    kernelspec a figure cell needs to be executed at all - so a notebook that has never
+    held a figure still carries none. See KERNEL above.
     """
     cells = [_generated_cell(cell_id, source) for cell_id, source in sections]
     notebook = new_notebook()
     if existing is not None:
         notebook.metadata = copy.deepcopy(existing.metadata)
         cells = _merge(cells, existing)
+    if any(is_figure(cell) for cell in cells):
+        # dict(), so the module constant is never the object a notebook carries. No test
+        # pins this and none can: NotebookNode converts a dict on assignment, so the
+        # alias is already broken one line later whatever this does. It is here to say so.
+        notebook.metadata[KERNELSPEC] = dict(KERNEL)
     notebook.cells = cells
     return notebook
 

@@ -13,20 +13,24 @@ so a generated cell is not one; and its notebook shape names no other kind of co
 sections 1 to 5 are generated markdown, and section 2 ends "then any figures". That is a
 reading of the shape rather than a sentence CONTEXT.md prints, and it is the reading this
 gate takes: a code cell that is not generated is a figure cell and must carry a citation.
-Today the question is moot, because the builder emits markdown cells only and no notebook
-carries a code cell at all (the first is #47).
+`build.is_figure` is that predicate, shared with the builder, which asks it of the same
+cells to decide whether a notebook needs a kernelspec. One notebook carries one figure
+cell today - the ONI anomaly in 11_ocean_climate (#47).
 
 **It reads the cell's source, never its outputs and never a run.** The ids are parsed out
 of the committed text with `ast`, which is why this row can run in CI: there is no kernel
-there, and there is none in this repo yet. Two consequences are worth stating rather than
-leaving to be discovered. An id has to be *written out* as a string for the gate to see
-it, so a computed id list is reported rather than passed - a gate that reads source can
+there. Two consequences are worth stating rather than leaving to be discovered. An id has
+to be *written out* as a string for the gate to see it, so a computed id list is reported
+rather than passed - a gate that reads source can
 only check what is written. And the check that the call comes last is the same fact as the
 caption *appearing*: a cell's value is its last expression's, so a `provenance(...)` with a
 statement after it renders nothing at all. It is not the same fact as the caption appearing
-*under* the figure, which is CONTEXT.md's word and which this gate does not secure - see
-`notebook.Provenance` on the output order a kernel would actually write, which is #47's to
-settle against a running one.
+*under* the figure, which is CONTEXT.md's word and which this gate does not secure. #47
+measured what a kernel actually writes and what puts the caption second - see
+`notebook.Provenance`. This row reads no outputs, so it is not what holds that order: a
+cell committing its caption above its figure passes here. What holds it is a test on the
+committed cell (`tests/test_generate.py`) and, for a cell whose source stopped producing
+it, #48's re-execution.
 
 **What it does not assert**, so that a reader does not take more from a green row than it
 says. Two questions were put to this slice and both are answered *no*, because CONTEXT.md's
@@ -39,10 +43,10 @@ Parking lot as that.
    whose sole output is a `stream` satisfies `notebook-outputs` too, so a figure that
    silently stopped plotting reads on GitHub as a caption with nothing above it and
    `gate.py` stays green - the shape PRD finding 7 records the 6.2 spike producing. It is
-   not closed here for the reason above, and for a second: matplotlib is not installed,
-   nothing in this repo has ever been executed, and a check written today could only be
-   tested against a hand-built output dict standing in for what a kernel emits. #47 is
-   where the first real committed figure output exists to write it against.
+   not closed here for the reason above. #46 had a second reason - that nothing in the
+   repo had been executed, so a check could only be tested against a hand-built output
+   dict - and #47 spent it: there is a real committed figure output to write one against
+   now. The first reason stands, and it is the one that decides it.
 2. **A `provenance()` naming nothing passes.** It carries a call, and its zero ids
    resolve. CONTEXT.md's "The rule" is the ground for failing it - "every mark on the
    figure traces to a record or a printed equation, and a `provenance(...)` caption under
@@ -70,13 +74,12 @@ from pathlib import Path
 import nbformat
 from nbformat import NotebookNode
 
-from .build import is_generated
+from .build import is_figure
 from .generate import NOTEBOOKS_DIR
 from .notebook import EQUATION_SEP, EQUATIONS, PROVENANCE, REFERENCES, SOURCES
 from .plan import INDEX_PATH, NOTEBOOK_PATHS
 from .schema import TOPICS, Catalog, Problem, load_catalog
 
-CODE = "code"
 NOTEBOOK_FIELD = "notebook"
 
 # IPython's own syntax, which is not Python: a line magic or a shell escape is a
@@ -126,7 +129,7 @@ def _figure_cells(notebook: NotebookNode) -> list[tuple[str, NotebookNode]]:
     return [
         (_name(cell, position), cell)
         for position, cell in enumerate(notebook.cells)
-        if cell.get("cell_type") == CODE and not is_generated(cell)
+        if is_figure(cell)
     ]
 
 

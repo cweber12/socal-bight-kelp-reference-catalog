@@ -13,8 +13,9 @@ That buys less than it sounds like, and the limit belongs here rather than in a 
 head: validating shows nbformat would *accept* a shape, not that a kernel *emits* it. The v4
 schema types a stream's `name` as a bare string with no enum, so `name: "STDERR"` and
 `name: ""` both validate, neither is anything Jupyter writes, and this gate passes both.
-Nothing here can close that gap while the repo has no kernel in it - `nbclient` and
-`ipykernel` arrive with #48.
+Nothing here closes that gap: every output below is hand-built, not
+emitted. #47 brought `nbclient` and `ipykernel` in and committed the first outputs a
+kernel actually wrote, in 11_ocean_climate.
 """
 
 from __future__ import annotations

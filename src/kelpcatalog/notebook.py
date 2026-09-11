@@ -9,9 +9,9 @@ Seams:
     load(source_id, root=None) -> Mapping[str, Path]              the catalogued files
 
 This is the one module in the package a *notebook* imports, which is why it depends on
-nothing but the standard library and `.schema`. `nbformat` is a dev dependency and
-`matplotlib` is not a dependency at all, so a figure cell that imports this module gets
-neither; `provenance` renders markdown and knows nothing about figures.
+nothing but the standard library and `.schema`. `nbformat` and `matplotlib` are both dev
+dependencies and this module imports neither, so a figure cell that wants to plot imports
+matplotlib itself; `provenance` renders markdown and knows nothing about figures.
 
 **`provenance` resolves nothing.** It takes ids and renders them; whether an id names a
 record is the `figure-provenance` gate's question, asked of the committed cell's source
@@ -115,19 +115,29 @@ class Provenance:
     Frozen, and rendered through `_repr_markdown_`: an object carrying that method is
     what IPython's markdown formatter displays, so the caption reaches the notebook
     without this module importing IPython, which is not a dependency and would not be
-    one at a fresh clone. Nothing in this repo has yet been executed by a kernel - the
-    first execution is #48 - so none of what follows has been observed here.
+    one at a fresh clone.
 
-    Two things #47 should establish rather than assume, both raised by the audit of #67.
+    Two things the audit of #67 raised, both measured in #47 against a running kernel
+    (matplotlib 3.11.1, ipykernel 7.3.0, nbclient 0.11.0) and both as it predicted.
+
     The `execute_result` a kernel writes carries a `text/plain` beside the markdown, and
-    it comes from `__repr__` - the dataclass's - not from the `__str__` below, so the
-    dataclass repr is part of the bytes #48 will compare. And **CONTEXT.md says the
-    caption goes *under* the figure**, which the gate's "ends with `provenance(...)`" does
-    not secure: with the inline backend and no explicit `plt.show()`, `matplotlib_inline`
-    publishes the figure from a `post_execute` hook, *after* this result, and the cell
-    would commit as `[caption, figure]`. Whether `plt.show()` before the call is the
-    answer is #47's to settle, against a running kernel - PRD finding 7 records the spike
-    getting no image at all from `Agg` plus `plt.show()`.
+    it comes from `__repr__` - the dataclass's - not from the `__str__` below. The cell
+    in 11_ocean_climate commits `Provenance(sources=('noaa_oni',), references=(),
+    equations=())` there, so the dataclass repr is part of the bytes #48 compares.
+
+    And **CONTEXT.md says the caption goes *under* the figure**, which the gate's "ends
+    with `provenance(...)`" does not secure. With the inline backend and no explicit
+    `plt.show()`, `matplotlib_inline` publishes the figure from a `post_execute` hook,
+    *after* this result, and the cell commits as `[caption, figure]` - measured. The
+    answer is `plt.show()` before the call, which publishes the figure where the cell
+    stands and commits `[figure, caption]`; PRD finding 7's "no image at all" was
+    `matplotlib.use("Agg")`, not `plt.show()`, and does not reach the inline backend.
+    No gate holds that order - `figure-provenance` reads source, and `notebook-outputs`
+    reads only that an output exists and is neither an error nor a stderr stream. What
+    holds it for the committed cell is a test
+    (`test_the_committed_figure_commits_its_caption_under_its_figure`);
+    what would hold it for a cell whose source stopped producing it is #48, since
+    dropping the `plt.show()` changes no committed byte until something re-executes.
     """
 
     sources: tuple[str, ...] = ()
