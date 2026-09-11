@@ -394,6 +394,77 @@ def test_a_topic_whose_notebook_is_not_generated_is_walked_and_skipped(
     assert set(checked) == {rel(OCEAN_CLIMATE)}
 
 
+# --- cells a run does not complete normally ----------------------------------------------
+#
+# Both of these are about what `execute` does with a cell that does not simply run: one that
+# raises, and one nbclient is told to skip. A mutation sweep over this slice found them - the
+# two survivors it had, plus the clearing in `_cleared` that they pin.
+
+SKIP_EXECUTION = "skip-execution"
+
+
+@pytest.fixture(scope="module")
+def two_cells_as_executed(tmp_path_factory):
+    """Two cells whose outputs a kernel really produced. Two, so that a run which stops at
+    the first is distinguishable from one that carries on."""
+    folder = tmp_path_factory.mktemp("two-cells")
+    notebook = a_notebook(a_cell("1 + 1", outputs=()), a_cell("2 + 2", outputs=()))
+    return execute(notebook, folder)
+
+
+def test_a_cell_that_has_started_raising_is_reported_and_the_cells_after_it_still_run(
+    tmp_path, two_cells_as_executed
+):
+    """`allow_errors=True`. Without it the run stops at the first raising cell, nbclient
+    raises, and the whole notebook is reported as one that could not be executed - which
+    names no cell and leaves every cell after it unchecked.
+
+    A traceback carries absolute paths and a kernel's own frames, so the message names the
+    output's fields and never their values.
+    """
+    committed = copy.deepcopy(two_cells_as_executed)
+    committed.cells[0].source = "1 / 0"
+    root = a_repo(tmp_path, committed)
+
+    checked, (problem,) = check_fresh(root)
+
+    assert problem.field == committed.cells[0].id, "the raising cell, not the notebook"
+    assert problem.message == (
+        "output 0 (execute_result) differs in "
+        "data, ename, evalue, execution_count, metadata, output_type, traceback"
+    )
+    assert checked == {rel(OCEAN_CLIMATE): [c.id for c in committed.cells]}
+    # One problem, not two: the second cell ran after the first raised and reproduced what it
+    # carries. With the run stopping at the first error there would be nothing to say about it.
+    assert len(checked[rel(OCEAN_CLIMATE)]) == 2
+
+
+def test_a_cell_nbclient_is_told_to_skip_is_reported_as_not_re_executed(
+    tmp_path, as_this_gate_runs_it
+):
+    """nbclient's `skip_cells_with_tag` defaults to `skip-execution`, and a cell carrying it
+    returns before the client resets that cell's outputs. So it comes back holding whatever
+    it was handed - which is why `execute` clears the committed outputs first: handed them,
+    the cell would give them straight back and reproduce itself without running.
+
+    Reported rather than passed over, and that is the conservative reading of CONTEXT.md's
+    row: a cell re-execution skipped did not reproduce its committed outputs, and this gate
+    cannot vouch for outputs it did not watch a kernel produce. No notebook in the repo
+    carries the tag today.
+    """
+    committed = copy.deepcopy(as_this_gate_runs_it)
+    committed.cells[0].metadata["tags"] = [SKIP_EXECUTION]
+    root = a_repo(tmp_path, committed)
+
+    found = problems(root)
+
+    assert [p.field for p in found] == [committed.cells[0].id] * 2
+    assert [p.message for p in found] == [
+        "re-executes as execution_count None, not the committed 1",
+        "re-executes with 0 outputs, not the committed 1",
+    ]
+
+
 # --- the committed tree ------------------------------------------------------------------
 
 
