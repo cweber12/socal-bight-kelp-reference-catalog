@@ -296,6 +296,7 @@ grew; counts are printed, not asserted.
 | `notebook-outputs` | committed notebooks carry outputs and no errors | milestone 6.2 |
 | `notebook-fresh` | re-executing a notebook reproduces its committed outputs (local; needs `data/` for figures) | milestone 6.2 |
 | `figure-provenance` | every figure cell carries a `provenance(...)` whose ids resolve | milestone 6.2 |
+| `lint` | `ruff check` and `ruff format --check` are clean, over the repo — notebook code cells included | milestone 6.2 |
 | `lock-consistency` / `lock-verify` | `data-lock.json` is well-formed; local `data/` matches it | milestone 6.5 |
 
 ## What is not a record
