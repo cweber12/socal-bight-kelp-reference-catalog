@@ -236,7 +236,7 @@ def test_load_iterates_in_a_fixed_order_whatever_the_directory_gives(tmp_path: P
     # A figure that iterates the mapping must plot the same series on every machine, so
     # `load` imposes an order rather than passing the directory's through. The listing is
     # reversed here because the filesystem's own order cannot be chosen and NTFS returns
-    # names sorted: without this, dropping `sorted()` from `load` survives the suite on
+    # names sorted: without this, dropping the sort from `load` survives the suite on
     # Windows and is caught only on the Ubuntu half of CI. Verified by sweeping it.
     names = ["c.txt", "a.txt", "b.txt"]
     root = a_repo(tmp_path, "sio_shore_stations", fetched={"sio_shore_stations": names})
@@ -248,6 +248,24 @@ def test_load_iterates_in_a_fixed_order_whatever_the_directory_gives(tmp_path: P
     files = load("sio_shore_stations", root=root)
 
     assert list(files) == ["a.txt", "b.txt", "c.txt"]
+
+
+def test_load_orders_names_that_differ_only_in_case_the_same_way_everywhere(tmp_path: Path):
+    # The order must be the *file names'*, not the Paths'. `sorted()` over Path objects
+    # compares a case-folded form on Windows and the raw string on POSIX, so this set
+    # comes back `_x, a, B` here and `B, _x, a` on the Ubuntu half of CI - and #48 compares
+    # committed bytes, which would then never agree on both. Found by the audit of PR #67.
+    #
+    # Three names chosen so that case changes the order without changing identity: `B`
+    # sorts before `_` and `a` by code point and after both when folded. A pair like
+    # `A.csv`/`a.csv` cannot be the fixture - a case-insensitive filesystem holds one file
+    # for the two, and the test would silently measure two files instead of three.
+    names = ["B.csv", "a.csv", "_x.csv"]
+    root = a_repo(tmp_path, "calcofi", fetched={"calcofi": names})
+
+    files = load("calcofi", root=root)
+
+    assert list(files) == ["B.csv", "_x.csv", "a.csv"]
 
 
 def test_load_ignores_a_file_no_manifest_names(tmp_path: Path):
@@ -344,4 +362,12 @@ def test_load_raises_when_the_working_directory_is_under_no_repo(tmp_path: Path,
     with pytest.raises(FileNotFoundError) as raised:
         load("noaa_oni")
 
-    assert "no catalog" in str(raised.value)
+    # Both halves, written out around the path in the middle. This is the first module in
+    # the repo whose messages a person reads rather than a gate, and the remediation clause
+    # is the half that tells them what to do: a sweep rewrote it and the whole suite stayed
+    # green until this assertion existed. Found by the audit of PR #67.
+    message = str(raised.value)
+    assert message.startswith("no catalog/ at or above ")
+    assert message.endswith(
+        "run a notebook from inside the repo, or name the root with load(source_id, root=...)."
+    )
