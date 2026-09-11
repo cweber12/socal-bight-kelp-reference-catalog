@@ -32,7 +32,7 @@ from nbformat import NotebookNode
 from nbformat.v4 import new_markdown_cell, new_notebook
 
 from .plan import NOTEBOOK_PATHS, TOPIC_QUESTIONS, region_heading, region_sort_key
-from .schema import TOPICS, Catalog, Record, split_topic
+from .schema import GROUPS, TOPICS, Catalog, Record, split_topic
 
 # --- what marks a generated cell ---------------------------------------------------
 #
@@ -40,6 +40,42 @@ from .schema import TOPICS, Catalog, Record, split_topic
 
 GENERATED_KEY = "kelpcatalog"
 GENERATED = "generated"
+
+# nbformat's own word for a code cell. A figure cell is one the builder did not generate:
+# CONTEXT.md says figure cells are "never generated and never touched", and the notebook
+# shape names no other kind of code cell.
+CODE = "code"
+
+# --- the kernel a figure is executed by --------------------------------------------
+#
+# CONTEXT.md, "Notebooks": notebooks are "committed with outputs so they read on GitHub
+# without running", and a figure cell's outputs exist only because a kernel produced them.
+# Notebook metadata is the only place a notebook can name the kernel that does it, so the
+# builder writes one the moment the assembled notebook holds a figure cell - rather than a
+# hand-added kernelspec, which survives a regeneration *over* a notebook (metadata is
+# carried through) but not a build from records alone, where a figure would be lost with
+# it. #47's first comment is the argument in full.
+#
+# The values are notebook furniture and carry no fact about any source. `python3` is the
+# name ipykernel registers itself under - `ipykernel/kernelspec.py` builds it as
+# `"python%i" % sys.version_info[0]`, so it is the major version and not a fixed string,
+# and it is what a venv with ipykernel in it offers. nbclient reads it from here when it
+# is handed a notebook and no kernel name (`nbclient/client.py`: `self.nb.metadata.get(
+# "kernelspec", {}).get("name")`), which is how #48 will re-execute one.
+#
+# Three cases, and the third is the one a reader would not guess. A notebook with no
+# figure cell is left alone: nothing is invented, and whatever metadata it carries comes
+# through. One that holds a figure and carries no kernelspec gains this one. One that
+# holds a figure and already carries a kernelspec has it **replaced** - the builder owns
+# this key whenever a figure is present, so a kernel a reader named by hand does not
+# survive a regeneration. That is deliberate, because a kernelspec the builder does not
+# control is a notebook it cannot say will execute; but note what it means, since the two
+# halves of notebook metadata are treated in opposite ways. This key, the one a human
+# picks, is overwritten. `language_info`, which is pure machine state, is carried through
+# untouched - see the PR body for #47 on why it is not committed. The audit of PR #69
+# found the comment that stood here claiming the opposite of all this.
+KERNELSPEC = "kernelspec"
+KERNEL = {"display_name": "Python 3", "language": "python", "name": "python3"}
 
 # Cell ids are derived from the section's identity, never generated: nbformat's
 # new_markdown_cell assigns a random id per call, so a builder that let it choose would
@@ -283,6 +319,15 @@ def _matrix(topic: str, catalog: Catalog, sources: list[Record]) -> list[str]:
     return _table(("region", *TOPICS[topic], GENERAL), rows)
 
 
+def _counts(sources: list[Record], references: list[Record]) -> str:
+    """The count line, printed by a topic notebook and by the index's entry for it.
+
+    One function because the two must agree: a reader who follows the index's link must
+    not find a different number at the other end.
+    """
+    return f"{_counted(len(sources), 'source')} · {_counted(len(references), 'reference')}"
+
+
 def _overview(topic: str, catalog: Catalog) -> str:
     sources = _of_topic(catalog, "sources", topic)
     references = _of_topic(catalog, "references", topic)
@@ -291,7 +336,7 @@ def _overview(topic: str, catalog: Catalog) -> str:
         "",
         f"> {TOPIC_QUESTIONS[topic]}",
         "",
-        f"{_counted(len(sources), 'source')} · {_counted(len(references), 'reference')}",
+        _counts(sources, references),
     ]
     # No matrix when there is nothing to put in it: the count above already says so, and
     # "0 sources" followed by "_No sources._" states one thing twice.
@@ -364,11 +409,119 @@ def _sections(topic: str, catalog: Catalog) -> list[tuple[str, str]]:
     return out
 
 
+# --- the index ---------------------------------------------------------------------
+#
+# CONTEXT.md, "Notebooks": `00_index.ipynb  group -> topic -> sub-topic counts; topic x
+# region matrix`. Both halves read the catalog the topic notebooks read, so a source
+# carrying a bare topic tag is counted here where its notebook renders it - under
+# General - and a sub-topic breakdown without a General row would drop it. That is the
+# defect #59 fixed in section 1's own matrix, one level up.
+#
+# The index's headings are the keys themselves - `physical-environment`, `ocean-climate`
+# - as a topic notebook's are. CONTEXT.md's ten-questions table prints a group's name in
+# prose ("Physical environment"), but the notebooks head every section with the tag, and
+# a display name for each group would be a fourth transcription of CONTEXT.md to keep in
+# step. The one rendering choice here is the link on a topic's heading, which is
+# NOTEBOOK_PATHS' value and nothing else: the index sits at notebooks/00_index.ipynb, so
+# a topic notebook's path is already relative to it.
+
+INDEX_TITLE = "Index"
+MATRIX_HEADING = "topic × region"
+TOPIC_COLUMN = "topic"
+SUBTOPIC_COLUMNS = ("sub-topic", "sources", "references")
+
+INDEX_OVERVIEW_ID = f"{ID_PREFIX}index-overview"
+INDEX_GROUP_ID = f"{ID_PREFIX}index-group-"
+INDEX_MATRIX_ID = f"{ID_PREFIX}index-matrix"
+
+
+def _index_overview(catalog: Catalog) -> str:
+    return "\n".join(
+        [
+            f"# {INDEX_TITLE}",
+            "",
+            _counts(catalog.records["sources"], catalog.records["references"]),
+        ]
+    )
+
+
+def _index_group(group: str, catalog: Catalog) -> str:
+    """One group: each of its topics, its counts, and its sub-topics' counts.
+
+    A topic with no sources is listed with its zeros rather than left out. The empty
+    rows are the ingestion worklist, and CONTEXT.md's `notebook-structure` gate puts the
+    every-topic obligation on the index.
+    """
+    lines = [f"## {group}"]
+    for topic in GROUPS[group]:
+        subs: list[str | None] = [*TOPICS[topic], None]
+        rows = [
+            [
+                sub if sub is not None else GENERAL,
+                str(len(_section_records(catalog, "sources", topic, sub))),
+                str(len(_section_records(catalog, "references", topic, sub))),
+            ]
+            for sub in subs
+        ]
+        lines += [
+            "",
+            f"### [{topic}]({NOTEBOOK_PATHS[topic]})",
+            "",
+            _counts(_of_topic(catalog, "sources", topic), _of_topic(catalog, "references", topic)),
+            "",
+            *_table(SUBTOPIC_COLUMNS, rows),
+        ]
+    return "\n".join(lines)
+
+
+def _index_matrix(catalog: Catalog) -> str:
+    """Every topic against every region tag in use, `global` included.
+
+    A row per topic whether or not it holds anything, so the matrix is the same shape
+    from one PR to the next and a gap reads as a column of zeros. With no region tag in
+    use it degenerates to the topic list rather than disappearing.
+
+    That is this cell's own choice and satisfies no gate: `notebook-structure` reads the
+    index's topics from the depth-3 `### [<topic>](<path>)` headings the group cells
+    carry (`structure.py`, `_listed_topics`) and does not read the matrix at all. Nothing
+    breaks today - both cells are generated together and neither can go missing without
+    the other - but whoever restructures the index should know the matrix is not what
+    "the index lists every topic" is met by. #64.
+    """
+    sources = catalog.records["sources"]
+    regions = sorted({r for rec in sources for r in _regions(rec)}, key=region_sort_key)
+
+    def count(topic: str, region: str) -> str:
+        return str(sum(1 for r in sources if _in_topic(r, topic) and region in _regions(r)))
+
+    columns = (TOPIC_COLUMN, *(_inline(region_heading(r, catalog)) for r in regions))
+    rows = [[topic, *(count(topic, region) for region in regions)] for topic in TOPICS]
+    return "\n".join([f"## {MATRIX_HEADING}", "", *_table(columns, rows)])
+
+
+def _index_sections(catalog: Catalog) -> list[tuple[str, str]]:
+    """Every generated cell of the index: (derived id, markdown)."""
+    out = [(INDEX_OVERVIEW_ID, _index_overview(catalog))]
+    out += [(f"{INDEX_GROUP_ID}{group}", _index_group(group, catalog)) for group in GROUPS]
+    out.append((INDEX_MATRIX_ID, _index_matrix(catalog)))
+    return out
+
+
 # --- building ----------------------------------------------------------------------
 
 
 def is_generated(cell: NotebookNode) -> bool:
     return (cell.get("metadata") or {}).get(GENERATED_KEY) == GENERATED
+
+
+def is_figure(cell: NotebookNode) -> bool:
+    """A code cell the builder did not generate - CONTEXT.md's "figure cells".
+
+    One definition, here beside `is_generated`, because two modules ask it of the same
+    cells and must agree: the builder, to decide whether a notebook needs a kernelspec,
+    and `figure_provenance.py`, to decide what carries a citation.
+    """
+    return cell.get("cell_type") == CODE and not is_generated(cell)
 
 
 def _generated_cell(cell_id: str, source: str) -> NotebookNode:
@@ -435,6 +588,27 @@ def _settle_ids(cells: list[NotebookNode]) -> None:
         taken.add(candidate)
 
 
+def _assemble(sections: list[tuple[str, str]], existing: NotebookNode | None) -> NotebookNode:
+    """The generated cells as a notebook, merged over `existing` where there is one.
+
+    Notebook metadata is carried through, and the only metadata invented is the
+    kernelspec a figure cell needs to be executed at all - so a notebook that has never
+    held a figure still carries none. See KERNEL above.
+    """
+    cells = [_generated_cell(cell_id, source) for cell_id, source in sections]
+    notebook = new_notebook()
+    if existing is not None:
+        notebook.metadata = copy.deepcopy(existing.metadata)
+        cells = _merge(cells, existing)
+    if any(is_figure(cell) for cell in cells):
+        # dict(), so the module constant is never the object a notebook carries. No test
+        # pins this and none can: NotebookNode converts a dict on assignment, so the
+        # alias is already broken one line later whatever this does. It is here to say so.
+        notebook.metadata[KERNELSPEC] = dict(KERNEL)
+    notebook.cells = cells
+    return notebook
+
+
 def build_topic(topic: str, catalog: Catalog, existing: NotebookNode | None = None) -> NotebookNode:
     """One topic notebook, rendered from the records that carry the topic's tags.
 
@@ -444,13 +618,21 @@ def build_topic(topic: str, catalog: Catalog, existing: NotebookNode | None = No
     """
     if topic not in TOPICS:
         raise KeyError(f"unknown topic {topic!r}; CONTEXT.md's ten-questions table is the list")
-    cells = [_generated_cell(cell_id, source) for cell_id, source in _sections(topic, catalog)]
-    notebook = new_notebook()
-    if existing is not None:
-        notebook.metadata = copy.deepcopy(existing.metadata)
-        cells = _merge(cells, existing)
-    notebook.cells = cells
-    return notebook
+    return _assemble(_sections(topic, catalog), existing)
+
+
+def build_index(catalog: Catalog, existing: NotebookNode | None = None) -> NotebookNode:
+    """The index notebook: group -> topic -> sub-topic counts, and the topic x region matrix.
+
+    Pure, like build_topic, and merged over `existing` for the same reason: #44's issue
+    gives this seam no `existing` parameter, and under that signature an entry point that
+    regenerates everything would delete any cell of 00_index.ipynb it did not generate,
+    which is exactly what build_topic's merge exists to prevent. Nothing observable turns
+    on it today - the index has no such cell and CONTEXT.md specifies no figure for it -
+    so the parameter is optional and `build_index(catalog)` is the signature the issue
+    names. See the PR body.
+    """
+    return _assemble(_index_sections(catalog), existing)
 
 
 def write_notebook(notebook: NotebookNode, path: Path) -> None:

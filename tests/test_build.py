@@ -26,11 +26,13 @@ from kelpcatalog.build import (
     EMPTY_CELL,
     GENERATED,
     GENERATED_KEY,
+    build_index,
     build_topic,
+    is_figure,
     write_notebook,
 )
-from kelpcatalog.plan import TOPIC_QUESTIONS
-from kelpcatalog.schema import TOPICS
+from kelpcatalog.plan import NOTEBOOK_PATHS, TOPIC_QUESTIONS, region_heading, region_sort_key
+from kelpcatalog.schema import GROUPS, TOPICS
 
 ROOT = Path(__file__).parents[1]
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -328,6 +330,13 @@ def test_exclusions_render_for_their_topic_only():
 
 
 # --- generated cells ---------------------------------------------------------------
+
+
+def test_the_generated_marker_is_the_one_context_md_names():
+    # CONTEXT.md, "Notebooks": "Generated cells are marked in cell metadata
+    # (`kelpcatalog: generated`)". Every other assertion imports these symbols,
+    # so nothing else holds them to the prose.
+    assert (GENERATED_KEY, GENERATED) == ("kelpcatalog", "generated")
 
 
 def test_every_cell_the_builder_writes_is_marked_generated():
@@ -821,3 +830,359 @@ def test_a_region_named_twice_renders_once_and_agrees_with_the_matrix():
     nb = build_topic("ocean-climate", a_source_record(regions=["scb", "scb"]))
     assert sections(nb)["temperature"].count("| [p](") == 1
     assert "| The Bight | 1 |" in nb.cells[0].source
+
+
+# --- the index ----------------------------------------------------------------------
+#
+# CONTEXT.md, "Notebooks": `00_index.ipynb  group -> topic -> sub-topic counts; topic x
+# region matrix`. The index reads the same catalog the topic notebooks read, so a source
+# carrying a bare topic tag must be counted here wherever a notebook renders it - under
+# General - which is #59's defect one level up.
+
+INDEX_CELL_IDS = [
+    "kelpcatalog-index-overview",
+    "kelpcatalog-index-group-physical-environment",
+    "kelpcatalog-index-group-kelp-and-community",
+    "kelpcatalog-index-group-human-uses-management",
+    "kelpcatalog-index-matrix",
+]
+
+
+def index_text(catalog: Catalog) -> str:
+    return "\n\n".join(c.source for c in build_index(catalog).cells)
+
+
+def topic_headings(nb) -> list[str]:
+    """The topic each of the index's h3 headings names, with its link stripped."""
+    return [h.split("](", 1)[0].lstrip("[") for h in headings(nb, level=3)]
+
+
+def row_after(text: str, heading: str, first_cell: str) -> list[str]:
+    """The first table row whose first cell is `first_cell`, below `heading`."""
+    block = text.split(heading, 1)[1]
+    line = next(ln for ln in block.splitlines() if ln.startswith(f"| {first_cell} |"))
+    return cells_of(line)
+
+
+# The issue asks that the index's counts equal counts computed from the same catalog
+# directly, so these count the record dicts rather than going through build.py's helpers.
+
+
+def carrying(catalog: Catalog, kind: str, topic: str) -> list[Record]:
+    """Records with any tag under the topic - bare or sub-topic."""
+    return [
+        r
+        for r in catalog.records[kind]
+        if any(t.split("/")[0] == topic for t in r.data.get("topics") or [])
+    ]
+
+
+def tagged(catalog: Catalog, kind: str, tag: str) -> list[Record]:
+    """Records carrying exactly this tag."""
+    return [r for r in catalog.records[kind] if tag in (r.data.get("topics") or [])]
+
+
+# --- what the index lists ----------------------------------------------------------
+
+
+def test_the_index_lists_every_group_and_every_topic_in_order():
+    # Every h2, not the first three: the slice this used to take let the matrix heading
+    # be renamed, or a fourth section appear, with nothing failing.
+    nb = build_index(a_catalog())
+    assert headings(nb, level=2) == [*GROUPS, "topic × region"]
+    assert topic_headings(nb) == [t for topics in GROUPS.values() for t in topics]
+    assert topic_headings(nb) == list(TOPICS)
+
+
+def test_the_index_lists_every_topic_even_with_no_sources():
+    assert topic_headings(build_index(an_empty_catalog())) == list(TOPICS)
+
+
+def test_the_index_links_each_topic_to_the_path_the_plan_names():
+    # From NOTEBOOK_PATHS, never a second copy of the layout: the index sits at
+    # notebooks/00_index.ipynb, so a topic notebook's path is already relative to it.
+    text = index_text(a_catalog())
+    for topic, path in NOTEBOOK_PATHS.items():
+        assert f"### [{topic}]({path})" in text, topic
+
+
+# --- group -> topic -> sub-topic counts --------------------------------------------
+
+
+def test_a_topics_line_counts_its_sources_and_references():
+    catalog = a_catalog()
+    text = index_text(catalog)
+    for topic in TOPICS:
+        block = text.split(f"### [{topic}]", 1)[1]
+        sources = len(carrying(catalog, "sources", topic))
+        references = len(carrying(catalog, "references", topic))
+        assert f"{sources} source" in block and f"{references} reference" in block, topic
+
+
+def test_a_topics_count_is_the_one_its_own_notebook_prints():
+    # The index and the notebook read the same catalog; a reader who follows the link
+    # must not find a different number at the other end. Line 4 of a topic notebook's
+    # overview cell is its count line.
+    catalog = a_catalog()
+    text = index_text(catalog)
+    for topic in TOPICS:
+        counts = build_topic(topic, catalog).cells[0].source.splitlines()[4]
+        assert counts in text.split(f"### [{topic}]", 1)[1], topic
+
+
+def test_the_sub_topic_table_counts_every_sub_topic():
+    catalog = a_catalog()
+    text = index_text(catalog)
+    for topic, subs in TOPICS.items():
+        for sub in subs:
+            assert row_after(text, f"### [{topic}]", sub) == [
+                sub,
+                str(len(tagged(catalog, "sources", f"{topic}/{sub}"))),
+                str(len(tagged(catalog, "references", f"{topic}/{sub}"))),
+            ], f"{topic}/{sub}"
+
+
+def test_the_overview_counts_the_whole_catalog():
+    # Nothing reached the overview cell: the per-topic assertions split the text at
+    # "### [<topic>]", which is below it, so a totals line counting sources twice passed
+    # the whole suite. A wrong number there is the precise thing "a notebook never holds
+    # a fact" exists to prevent.
+    catalog = a_catalog()
+    assert build_index(catalog).cells[0].source.splitlines() == [
+        "# Index",
+        "",
+        f"{len(catalog.records['sources'])} sources · {len(catalog.records['references'])}"
+        " references",
+    ]
+
+
+def test_the_sub_topic_table_labels_its_columns():
+    # The counts are pinned by the row assertions above, and the labels over them were
+    # not - so `sources` and `references` could swap and every number still be right,
+    # leaving the index stating something false about the catalog. No gate would catch
+    # it: #43 checks sections, #45 outputs, #48 freshness; none reads a table header.
+    headers = {ln for ln in index_text(a_catalog()).splitlines() if ln.startswith("| sub-topic |")}
+    assert headers == {"| sub-topic | sources | references |"}
+    assert len(TOPICS) == 10, "one header per topic, collapsed to a set above"
+
+
+def test_a_topics_sub_topic_rows_run_in_context_mds_order_with_general_last():
+    # row_after finds a row by its first cell anywhere below the heading, so every
+    # assertion above is order-insensitive and reversing the rows passed them.
+    # CONTEXT.md fixes the order - the sub-topics as its table lists them - and General
+    # is the section beside them, so it comes last.
+    text = index_text(a_catalog())
+    for topic, subs in TOPICS.items():
+        rows = [ln for ln in text.split(f"### [{topic}]", 1)[1].splitlines() if ln.startswith("| ")]
+        table = rows[2 : 2 + len(subs) + 1]  # the header and its rule come first
+        assert [cells_of(ln)[0] for ln in table] == [*subs, "General"], topic
+
+
+def test_a_bare_topic_tag_is_counted_under_general():
+    # bare_climate carries bare `ocean-climate` and brooks2019 the same; the notebook
+    # renders both under General, and the index counts them in the same place. A table
+    # of sub-topics alone would drop a source the notebook does show.
+    text = index_text(a_catalog())
+    assert row_after(text, "### [ocean-climate]", "General") == ["General", "1", "1"]
+
+
+def test_the_real_catalogs_bare_tag_is_counted_under_general():
+    catalog, _ = check_catalog(ROOT)
+    text = index_text(catalog)
+    assert row_after(text, "### [waves-storms-sediment]", "General")[1] == "1"
+    assert "1 source" in text.split("### [waves-storms-sediment]", 1)[1]
+
+
+# --- the topic x region matrix -----------------------------------------------------
+
+
+def matrix_header(catalog: Catalog) -> list[str]:
+    text = index_text(catalog)
+    return cells_of(next(ln for ln in text.splitlines() if ln.startswith("| topic |")))
+
+
+def test_the_matrix_has_a_column_for_every_region_in_use_global_included():
+    # The fixture's sources tag scb and global; global sorts last and is headed
+    # "No regional bound" (plan.region_heading).
+    assert matrix_header(a_catalog()) == [
+        "topic",
+        "Southern California Bight",
+        "No regional bound",
+    ]
+
+
+def test_the_matrix_columns_run_in_region_sort_key_order():
+    catalog = a_catalog()
+    regions = sorted(
+        {r for rec in catalog.records["sources"] for r in rec.data["regions"]},
+        key=region_sort_key,
+    )
+    assert matrix_header(catalog)[1:] == [region_heading(r, catalog) for r in regions]
+
+
+def test_the_matrix_has_a_row_for_every_topic_in_topics_order():
+    body = index_text(a_catalog()).split("| topic |", 1)[1].splitlines()[2:]
+    assert [cells_of(ln)[0] for ln in body if ln.startswith("|")] == list(TOPICS)
+
+
+def test_the_matrix_counts_equal_counts_from_the_catalog_directly():
+    catalog = a_catalog()
+    text = index_text(catalog)
+    for topic in TOPICS:
+        row = row_after(text, "| topic |", topic)
+        for column, region in enumerate(("scb", "global"), start=1):
+            expected = sum(
+                1 for rec in carrying(catalog, "sources", topic) if region in rec.data["regions"]
+            )
+            assert row[column] == str(expected), (topic, region)
+
+
+def test_the_matrix_counts_a_bare_tagged_source_in_its_topic():
+    # noaa_oni is `regions: [global]` and carries bare `waves-storms-sediment`. A matrix
+    # counting only sub-topic tags would print a row of zeros for a topic whose notebook
+    # renders a source.
+    catalog, _ = check_catalog(ROOT)
+    assert row_after(index_text(catalog), "| topic |", "waves-storms-sediment") == [
+        "waves-storms-sediment",
+        "0",
+        "1",
+    ]
+
+
+def test_the_matrix_lists_every_topic_when_no_region_is_in_use():
+    # An empty catalog has no region column, and the matrix degenerates to the topic
+    # list rather than disappearing: the index lists every topic (CONTEXT.md, "Gates").
+    assert matrix_header(an_empty_catalog()) == ["topic"]
+    assert topic_headings(build_index(an_empty_catalog())) == list(TOPICS)
+
+
+# --- generated cells, and the merge ------------------------------------------------
+
+
+def test_every_index_cell_is_marked_generated():
+    nb = build_index(a_catalog())
+    assert generated(nb) == list(nb.cells)
+    assert all(c.cell_type == "markdown" for c in nb.cells)
+
+
+def test_index_cell_ids_are_derived_from_section_identity():
+    assert [c.id for c in build_index(a_catalog()).cells] == INDEX_CELL_IDS
+
+
+def test_two_builds_of_the_index_are_identical():
+    catalog = a_catalog()
+    assert json.dumps(build_index(catalog), sort_keys=True) == json.dumps(
+        build_index(catalog), sort_keys=True
+    )
+
+
+def test_a_rebuild_of_the_index_over_its_own_output_is_identical():
+    catalog = a_catalog()
+    once = build_index(catalog)
+    twice = build_index(catalog, existing=once)
+    assert json.dumps(twice, sort_keys=True) == json.dumps(once, sort_keys=True)
+
+
+def test_a_hand_authored_cell_in_the_index_survives_a_rebuild():
+    # The index is merged for the reason a topic notebook is: an entry point that rebuilt
+    # it from records alone would delete every cell it did not generate, in silence. The
+    # PR body carries the decision.
+    catalog = a_catalog()
+    existing = build_index(catalog)
+    figure = a_figure_cell()
+    existing.cells.insert(1, figure)
+    before = json.dumps(figure, sort_keys=True)
+
+    rebuilt = build_index(catalog, existing=existing)
+
+    assert json.dumps(rebuilt.cells[1], sort_keys=True) == before
+    assert len(rebuilt.cells) == len(INDEX_CELL_IDS) + 1
+
+
+def test_neither_builder_invents_metadata_for_a_notebook_with_no_figure():
+    # PR #56: metadata is carried through from `existing`, and the kernelspec below is
+    # the only metadata either builder invents - so a notebook that has never held a
+    # figure carries none.
+    assert build_index(a_catalog()).metadata == {}
+    assert build_topic("ocean-climate", a_catalog()).metadata == {}
+
+
+# --- the kernelspec a figure needs -------------------------------------------------
+#
+# #47's first comment: a hand-added kernelspec survives a regeneration *over* a notebook,
+# because metadata is carried through, but not a build from records alone - so it is the
+# builder that adds it. A figure cell needs a kernel to execute at all, and the outputs
+# CONTEXT.md commits a notebook with are what a kernel produced.
+#
+# Written out here rather than imported from build.py, key included. A test that compared
+# the builder's output to `build.KERNEL` or indexed it by `build.KERNELSPEC` would put the
+# same value on both sides and pass whatever that value became: two mutants of the values
+# survived a sweep before these were written this way, and the audit of PR #69 then found
+# the key had escaped the same treatment. The whole of `metadata` is asserted, so metadata
+# the builder has no business inventing fails here too.
+THE_METADATA = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}}
+
+
+def test_a_notebook_holding_a_figure_cell_is_given_a_kernelspec():
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    rebuilt = build_topic("ocean-climate", catalog, existing=existing)
+
+    assert rebuilt.metadata == THE_METADATA
+
+
+def test_the_index_is_given_one_too_when_it_holds_a_figure_cell():
+    # build_index merges for the same reason build_topic does, so it can hold one.
+    catalog = a_catalog()
+    existing = build_index(catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    assert build_index(catalog, existing=existing).metadata == THE_METADATA
+
+
+def test_a_generated_code_cell_would_not_earn_a_kernelspec():
+    # The predicate is "a code cell the builder did not generate", not "a code cell":
+    # the two differ, and only the first is a figure (CONTEXT.md, "Notebooks").
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    cell = a_figure_cell()
+    cell.metadata[GENERATED_KEY] = GENERATED
+    existing.cells.insert(1, cell)
+
+    assert build_topic("ocean-climate", catalog, existing=existing).metadata == {}
+
+
+def test_adding_the_kernelspec_leaves_a_rebuild_byte_identical():
+    # It is written on every build, not only the first, so the second build must not
+    # differ from the first - which is what #47's third "Done when" asserts on disk.
+    catalog = a_catalog()
+    existing = build_topic("ocean-climate", catalog)
+    existing.cells.insert(1, a_figure_cell())
+
+    once = build_topic("ocean-climate", catalog, existing=existing)
+    twice = build_topic("ocean-climate", catalog, existing=once)
+
+    assert json.dumps(twice, sort_keys=True) == json.dumps(once, sort_keys=True)
+
+
+# --- what a figure cell is ----------------------------------------------------------
+
+
+def test_is_figure_is_true_of_a_code_cell_the_builder_did_not_generate():
+    assert is_figure(a_figure_cell())
+
+
+@pytest.mark.parametrize(
+    "cell",
+    [new_markdown_cell("## a section"), new_code_cell("provenance(sources=[])")],
+    ids=["markdown", "code"],
+)
+def test_is_figure_is_false_of_any_generated_cell(cell):
+    cell.metadata[GENERATED_KEY] = GENERATED
+    assert not is_figure(cell)
+
+
+def test_is_figure_is_false_of_a_markdown_cell_nobody_generated():
+    assert not is_figure(new_markdown_cell("Hand-written, not generated."))

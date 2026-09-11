@@ -21,8 +21,11 @@ is relicensed.
 ## Using it
 
 Records live under `catalog/` and render as tables on GitHub. Notebooks — one per question, in a
-folder per group, generated from the records — arrive with milestone 6.2 and will start at
-`notebooks/00_index.ipynb`.
+folder per group, generated from the records — start at
+[`notebooks/00_index.ipynb`](notebooks/00_index.ipynb), which counts what each topic holds and
+sets the topics against the regions in use. They are committed, so they read on GitHub without
+running; `.venv/Scripts/python -m kelpcatalog.generate` rebuilds every one of them from the
+records.
 
 ## Adding a source
 

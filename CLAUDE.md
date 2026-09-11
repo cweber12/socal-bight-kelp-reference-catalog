@@ -17,6 +17,7 @@ add a topic in its own PR, not exclude the source. Notebooks render records; the
 ```sh
 python -m venv .venv && .venv/Scripts/pip install -e ".[dev]"    # Windows; use .venv/bin on Unix
 .venv/Scripts/python gate.py   # every gate; run before every PR, paste the output into the PR
+.venv/Scripts/python -m kelpcatalog.generate   # rebuild all eleven notebooks from the records
 ```
 
 CI runs `gate.py` (Ubuntu and Windows), `ruff check` and `ruff format --check` on every PR. `main`
@@ -51,6 +52,9 @@ PR body:
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
+- A PR is ready when it has been audited, unless the owner says to skip. The `audit-pr` skill
+  commissions the audit in a context that never watched the PR being written, and relays what it
+  found; which findings to act on is the owner's call, not the author's.
 - Never write into `data/`. Never add a record by hand when the `add-source` skill exists — use it.
 - Never write a parser for any external manifest or prose file. Records are entered, not migrated.
 

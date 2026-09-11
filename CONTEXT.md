@@ -238,11 +238,13 @@ notebooks/
 
 Each topic notebook has the same shape, generated from the records:
 
-1. the question, verbatim from the table above; a count of sources and references; a small
-   region × sub-topic table, whose columns are the topic's sub-topics **and *General***, because
-   *General* is a section beside them and a source carrying the bare tag must be counted where
-   the notebook renders it — a matrix of sub-topics alone would print a row of zeros for a region
-   whose sources the notebook does show;
+1. the question, verbatim from the table above; a count of sources and references; and, when the
+   topic has sources, a small region × sub-topic table, whose columns are the topic's sub-topics
+   **and *General***, because *General* is a section beside them and a source carrying the bare
+   tag must be counted where the notebook renders it — a matrix of sub-topics alone would print a
+   row of zeros for a region whose sources the notebook does show. A topic with none gets no
+   table: its rows are one per region holding a source, so it would render a header and a rule
+   over nothing, under a line that already reads `0 sources · 0 references`;
 2. one section per sub-topic, in the order listed above — a sources table (id · title · steward ·
    status · tier · coverage · link) grouped by region, in the region order below; the references
    tagged to the sub-topic; then any figures;
@@ -294,6 +296,7 @@ grew; counts are printed, not asserted.
 | `notebook-outputs` | committed notebooks carry outputs and no errors | milestone 6.2 |
 | `notebook-fresh` | re-executing a notebook reproduces its committed outputs (local; needs `data/` for figures) | milestone 6.2 |
 | `figure-provenance` | every figure cell carries a `provenance(...)` whose ids resolve | milestone 6.2 |
+| `lint` | `ruff check` and `ruff format --check` are clean over the repo's Python — `.py` files, notebook code cells, and Python fenced in Markdown — less what `pyproject.toml` excludes, which is `catalog` and the test fixtures | milestone 6.2 |
 | `lock-consistency` / `lock-verify` | `data-lock.json` is well-formed; local `data/` matches it | milestone 6.5 |
 
 ## What is not a record
