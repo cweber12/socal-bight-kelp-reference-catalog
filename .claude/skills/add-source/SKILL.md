@@ -1,6 +1,6 @@
 ---
 name: add-source
-description: Use when adding one source — a dataset, monitoring program, report series or transcribed table — to catalog/sources/ in the SoCal Bight kelp reference catalog. Invoked as /add-source <id-or-url>. Walks the source in: de-duplicate, confirm the route, draft the record, fetch, run the gate, stop for review.
+description: Use when adding one source — a dataset, monitoring program, report series or transcribed table — to catalog/sources/ in the SoCal Bight kelp reference catalog. Invoked as /add-source <id-or-url>. Walks the source in: de-duplicate, confirm the route, draft the record, fetch, run the gate, refresh the notebooks, stop for review.
 ---
 
 # add-source
@@ -10,7 +10,7 @@ vocabulary and the rule the record obeys: *a record holds only what the source i
 what anyone repeating the fetch would reproduce.* Facts in fields; the body below the closing `---`
 is empty.
 
-Step 0 is setup. Do the seven steps **1–7 in order**. **Stop at the first one that fails**: say
+Step 0 is setup. Do the eight steps **1–8 in order**. **Stop at the first one that fails**: say
 which step, what it found, and what you have written so far, then wait. Never skip ahead, and never
 make a step pass by widening the schema or by writing a value the source does not state.
 
@@ -29,8 +29,9 @@ git switch -c catalog/add-<id>
 ```
 
 A branch is `<type>/<slug>` and `catalog` is the type for record changes (`CLAUDE.md`, "Branches,
-commits, PRs"). Every file this skill writes belongs on that branch — the record, the fetch script,
-nothing else. Creating the branch is not committing to it; step 7 still stops short of a commit.
+commits, PRs"). Every file this skill writes belongs on that branch — the record, any reference
+record, the fetch script, and the notebooks step 7 regenerates, nothing else. Creating the branch is
+not committing to it; step 8 still stops short of a commit.
 
 ## 1. De-duplicate
 
@@ -160,8 +161,9 @@ behind a fetch that did not happen.
 ## 5. If a field needs a reference: draft `catalog/references/<citekey>.md`
 
 Add a reference only when a field needs it — `transcribed_from.reference` — or when a figure that
-already exists applies it. Otherwise `references: []`. Do not try to predict whether some future
-figure will cite the paper: no notebooks exist before milestone 6.2, so that answer is always no.
+already exists applies it. Otherwise `references: []`. Judge that against the figures committed
+today: step 7 regenerates markdown and writes no figure cell, so a figure that would cite the paper
+arrives in its own change and brings whatever it cites with it.
 
 `citekey` is first author's surname + year and equals the file name, and a reference needs a `doi`
 or a `url`. Only equations an existing figure applies go in `equations`, each
@@ -180,27 +182,82 @@ relaxing a rule, never by deleting the field it complains about.
 **STOP if the gate is wrong** — if it contradicts `CONTEXT.md`. `CONTEXT.md` wins and the code is a
 bug: report it instead of working around it (`CLAUDE.md`, "In-flight bugs").
 
-Then two checks no gate makes. Both feed step 7.
+Then two checks no gate makes. Both feed step 8.
 
 - **Byte-diff every quoted string against the source.** Take each quoted string in the record —
   title, licence, `coverage`, `format`, any phrase in quotation marks — back to the live page or
   file it came from and compare it character for character. A curly quote straightened, a hyphen
   dropped, a line break turned into a space: each is a value the source does not state. Correct
   the record to what the source states today; if the source itself has changed since you drafted
-  the record, say so in the step-7 report.
+  the record, say so in the step-8 report.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
 
-## 7. Show and stop
+## 7. Refresh the notebooks the source appears in
 
-Print, in full: the record; the manifest of every file fetched; the gate output verbatim; and the
+`CONTEXT.md`, "Notebooks": *a source is not "in" until the notebooks that show it are refreshed in
+the same PR.* One command rebuilds every notebook from the records:
+
+```sh
+.venv/Scripts/python -m kelpcatalog.generate     # .venv/bin/python on macOS/Linux
+```
+
+**Name the notebooks before running it**, so the diff can contradict you.
+
+**Adding a record** — the set is exact, and every notebook in it moves: one per *topic* in the
+record's `topics`, one per topic on a reference record step 5 drafted (`topics` is required there
+too, and a reference renders in its own topics, not the source's), and `00_index.ipynb`, which
+counts sources and references and so moves for either. A tag is `<topic>` or `<topic>/<sub-topic>`
+and only the topic half picks the notebook — `ocean-climate/salinity` puts the source in a section
+of `11_ocean_climate.ipynb`, not in a notebook of its own. `plan.NOTEBOOK_PATHS` maps a topic to its
+path and `plan.INDEX_PATH` is the index; they transcribe `CONTEXT.md`'s `notebooks/` tree, which is
+the authority.
+
+**Updating a record**, when step 1 sent you to one — name the union of its topics *before* and
+*after* your edit, plus `00_index.ipynb`. A tag you removed or retagged still moves the notebook it
+is leaving, so neither reading alone bounds the set. The union is a bound and not an equality:
+inside it a notebook moves only when something it prints changed, so expect fewer to move than you
+named — a `steward` edit moves both of this record's topic notebooks and not the index, and adding
+one tag moves one topic notebook and the index.
+
+Then read what moved. The command writes them all; git shows the ones whose rendering changed.
+
+```sh
+git status --short notebooks/
+```
+
+**STOP if anything moved that your set does not contain.** That means the `topics` are not what you
+read them to be, or the tree was already behind its records and this run swept it in. Tell the two
+apart by opening the moved notebook's diff and looking for the id you are working on: if it is
+there, your set was wrong; if the diff is entirely other records, someone landed a record without
+refreshing. Report which, rather than running the command again.
+
+On the **add** path also **STOP if a notebook you named did not move** — the set is exact there. On
+the **update** path that is ordinary, because the union is a bound.
+
+**Regeneration never touches a figure.** The builder writes generated cells as markdown only, and a
+figure cell is "never generated and never touched" (`CONTEXT.md`, "Notebooks"), so a record change
+rewrites prose and moves no PNG byte, so a regeneration after a record change cannot turn
+`notebook-fresh` red. That row gets
+teeth when you open a notebook in Jupyter to change a figure — it compares `execution_count` as well
+as outputs, so a cell saved with `execution_count: 2`, what running a cell twice gives, is reported
+stale even when the picture is right. End such a session with **Restart and Run All**.
+
+Stage the record, any reference record, the fetch script and every notebook that moved, then **run
+`gate.py` again** — step 6's run described bytes these have replaced, and rows of it read notebooks.
+
+## 8. Show and stop
+
+Print, in full: the record and any reference record; the manifest of every file fetched; the gate
+output verbatim; the
 result of the two step-6 checks — which quoted strings you diffed and against what, and that every
-URL the script fetches is in `access`. Then **stop**. Do not commit, do not open a PR, do not touch
-notebooks or index pages. Wait to be told.
+URL the script fetches is in `access`; and the notebooks step 7 moved. Then **stop**. Do not commit
+and do not open a PR. Wait to be told.
 
 ## Non-goals
 
-No lock file. No changes to `schema.py`. No index or notebook pages. No writing into `data/` by
+No lock file. No changes to `schema.py`. No hand-edited notebook or index page — step 7 regenerates
+both, and nothing else under `notebooks/` is this skill's to write. No writing into `data/` by
 hand. No parser for any external manifest or prose file — records are entered, not migrated. More
 than one source is more than one run of this skill.
