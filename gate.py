@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from kelpcatalog import check_catalog  # noqa: E402
 from kelpcatalog.figure_provenance import check_figure_provenance  # noqa: E402
+from kelpcatalog.fresh import check_fresh, skip_reason  # noqa: E402
 from kelpcatalog.outputs import check_outputs  # noqa: E402
 from kelpcatalog.structure import check_structure  # noqa: E402
 
@@ -115,6 +116,32 @@ def gate_notebook_outputs() -> tuple[bool, str]:
     return True, counts
 
 
+def gate_notebook_fresh() -> tuple[bool, str]:
+    """Re-executing a notebook reproduces its committed outputs.
+
+    The only row that skips, and the only one that runs a kernel. CONTEXT.md scopes it
+    "local; needs `data/` for figures", and `skip_if` is that clause: `data/` is git-ignored,
+    so a fresh clone and every CI runner skips this row while the author runs it. A skip is
+    not a pass - it is counted apart, so a run that never executed a notebook does not read
+    like one that did.
+
+    Compares the three fields #48 names - `execution_count`, `outputs` and cell source - and
+    not `metadata.execution`, which is wall-clock time. It says nothing about notebook-level
+    metadata, so the `language_info` a run stamps in is neither asserted nor forbidden here.
+
+    It also says nothing about whether a figure is *right*: a cell that consistently draws
+    the wrong thing reproduces itself exactly. What it catches is a committed output that no
+    longer follows from the source beside it - an output edited by hand, or a source edited
+    without re-running - which is the one thing reading the committed file cannot show, since
+    source and outputs are both just bytes there.
+    """
+    cells, problems = check_fresh(ROOT)
+    counts = f"{len(cells)} notebooks, {sum(len(c) for c in cells.values())} cells re-executed"
+    if problems:
+        return False, "\n".join(str(p) for p in problems) + f"\n({counts})"
+    return True, counts
+
+
 def gate_figure_provenance() -> tuple[bool, str]:
     """Every figure cell carries a `provenance(...)` whose ids resolve.
 
@@ -171,6 +198,7 @@ GATES: list[Gate] = [
     Gate("catalog-schema", gate_catalog_schema),
     Gate("notebook-structure", gate_notebook_structure),
     Gate("notebook-outputs", gate_notebook_outputs),
+    Gate("notebook-fresh", gate_notebook_fresh, skip_if=lambda: skip_reason(ROOT)),
     Gate("figure-provenance", gate_figure_provenance),
     Gate("lint", gate_lint),
 ]
