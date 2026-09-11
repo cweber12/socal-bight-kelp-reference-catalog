@@ -133,8 +133,9 @@ class Provenance:
     stands and commits `[figure, caption]`; PRD finding 7's "no image at all" was
     `matplotlib.use("Agg")`, not `plt.show()`, and does not reach the inline backend.
     No gate holds that order - `figure-provenance` reads source, and `notebook-outputs`
-    reads only that an output exists and is not an error. What holds it for the committed
-    cell is a test (`test_the_committed_figure_commits_its_caption_under_its_figure`);
+    reads only that an output exists and is neither an error nor a stderr stream. What
+    holds it for the committed cell is a test
+    (`test_the_committed_figure_commits_its_caption_under_its_figure`);
     what would hold it for a cell whose source stopped producing it is #48, since
     dropping the `plt.show()` changes no committed byte until something re-executes.
     """

@@ -308,3 +308,17 @@ def test_the_committed_figure_commits_its_caption_under_its_figure(tmp_path: Pat
     assert kinds == ["display_data", "execute_result"]
     assert "image/png" in cell.outputs[0].data
     assert "text/markdown" in cell.outputs[1].data
+
+
+def test_the_committed_figure_notebook_carries_the_kernelspec_and_nothing_else():
+    # Asserted on the committed file rather than on a build, because that is the artifact
+    # #48 re-executes and nbclient reads the kernel name from here. Written out whole, so
+    # it pins three things at once: that the builder wrote a kernelspec because this
+    # notebook holds a figure, the values it wrote, and that `language_info` - which
+    # nbclient stamps with the executing machine's Python patch version - is not committed.
+    # Deleting this key by hand left every gate green until this test existed (audit of #69).
+    notebook = nbformat.read(ROOT / NOTEBOOKS_DIR / FIGURE_NOTEBOOK, as_version=4)
+
+    assert notebook.metadata == {
+        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}
+    }

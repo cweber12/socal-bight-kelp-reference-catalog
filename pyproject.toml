@@ -19,10 +19,10 @@ dev = [
     # What a figure cell imports, and what produces the outputs it is committed with.
     # #47 declares matplotlib alone; ipykernel and nbclient are #48's and arrive a slice
     # early because they are what executed the committed figure. A notebook is committed
-    # "with outputs so they read on GitHub without running" (CONTEXT.md, "Notebooks"),
-    # those outputs exist only because a kernel produced them, and "what anyone repeating
-    # the fetch would reproduce" (CONTEXT.md, "The rule") is not reproducible from a
-    # declaration that names only what the cell imports. See the PR body for #47.
+    # "with outputs so they read on GitHub without running" (CONTEXT.md, "Notebooks"), and
+    # those outputs exist only because a kernel produced them, so a declaration naming only
+    # what the cell imports leaves no way to reproduce them. #48 needs both declared
+    # regardless. See the PR body for #47.
     "ipykernel>=6.29",
     "matplotlib>=3.9",
     "nbclient>=0.10",

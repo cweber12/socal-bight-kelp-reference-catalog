@@ -63,9 +63,17 @@ CODE = "code"
 # is handed a notebook and no kernel name (`nbclient/client.py`: `self.nb.metadata.get(
 # "kernelspec", {}).get("name")`), which is how #48 will re-execute one.
 #
-# One direction only. A notebook that holds a figure gains this; one that has lost its
-# last figure keeps whatever metadata it had, because carrying `existing.metadata`
-# through unchanged is what stops the builder from deleting something a reader put there.
+# Three cases, and the third is the one a reader would not guess. A notebook with no
+# figure cell is left alone: nothing is invented, and whatever metadata it carries comes
+# through. One that holds a figure and carries no kernelspec gains this one. One that
+# holds a figure and already carries a kernelspec has it **replaced** - the builder owns
+# this key whenever a figure is present, so a kernel a reader named by hand does not
+# survive a regeneration. That is deliberate, because a kernelspec the builder does not
+# control is a notebook it cannot say will execute; but note what it means, since the two
+# halves of notebook metadata are treated in opposite ways. This key, the one a human
+# picks, is overwritten. `language_info`, which is pure machine state, is carried through
+# untouched - see the PR body for #47 on why it is not committed. The audit of PR #69
+# found the comment that stood here claiming the opposite of all this.
 KERNELSPEC = "kernelspec"
 KERNEL = {"display_name": "Python 3", "language": "python", "name": "python3"}
 

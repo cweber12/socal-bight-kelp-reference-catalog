@@ -26,7 +26,6 @@ from kelpcatalog.build import (
     EMPTY_CELL,
     GENERATED,
     GENERATED_KEY,
-    KERNELSPEC,
     build_index,
     build_topic,
     is_figure,
@@ -1115,10 +1114,13 @@ def test_neither_builder_invents_metadata_for_a_notebook_with_no_figure():
 # builder that adds it. A figure cell needs a kernel to execute at all, and the outputs
 # CONTEXT.md commits a notebook with are what a kernel produced.
 #
-# Written out here rather than imported from build.py. A test that compared the builder's
-# output to `build.KERNEL` would put the same value on both sides and pass whatever that
-# value became - two mutants of it survived a sweep before these were written this way.
-THE_KERNELSPEC = {"display_name": "Python 3", "language": "python", "name": "python3"}
+# Written out here rather than imported from build.py, key included. A test that compared
+# the builder's output to `build.KERNEL` or indexed it by `build.KERNELSPEC` would put the
+# same value on both sides and pass whatever that value became: two mutants of the values
+# survived a sweep before these were written this way, and the audit of PR #69 then found
+# the key had escaped the same treatment. The whole of `metadata` is asserted, so metadata
+# the builder has no business inventing fails here too.
+THE_METADATA = {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}}
 
 
 def test_a_notebook_holding_a_figure_cell_is_given_a_kernelspec():
@@ -1128,7 +1130,7 @@ def test_a_notebook_holding_a_figure_cell_is_given_a_kernelspec():
 
     rebuilt = build_topic("ocean-climate", catalog, existing=existing)
 
-    assert rebuilt.metadata[KERNELSPEC] == THE_KERNELSPEC
+    assert rebuilt.metadata == THE_METADATA
 
 
 def test_the_index_is_given_one_too_when_it_holds_a_figure_cell():
@@ -1137,7 +1139,7 @@ def test_the_index_is_given_one_too_when_it_holds_a_figure_cell():
     existing = build_index(catalog)
     existing.cells.insert(1, a_figure_cell())
 
-    assert build_index(catalog, existing=existing).metadata[KERNELSPEC] == THE_KERNELSPEC
+    assert build_index(catalog, existing=existing).metadata == THE_METADATA
 
 
 def test_a_generated_code_cell_would_not_earn_a_kernelspec():
