@@ -471,8 +471,14 @@ def _index_matrix(catalog: Catalog) -> str:
 
     A row per topic whether or not it holds anything, so the matrix is the same shape
     from one PR to the next and a gap reads as a column of zeros. With no region tag in
-    use it degenerates to the topic list rather than disappearing, which is the one thing
-    CONTEXT.md's gate asks the index for.
+    use it degenerates to the topic list rather than disappearing.
+
+    That is this cell's own choice and satisfies no gate: `notebook-structure` reads the
+    index's topics from the depth-3 `### [<topic>](<path>)` headings the group cells
+    carry (`structure.py`, `_listed_topics`) and does not read the matrix at all. Nothing
+    breaks today - both cells are generated together and neither can go missing without
+    the other - but whoever restructures the index should know the matrix is not what
+    "the index lists every topic" is met by. #64.
     """
     sources = catalog.records["sources"]
     regions = sorted({r for rec in sources for r in _regions(rec)}, key=region_sort_key)
