@@ -55,7 +55,11 @@ pythonpath = ["src", "."]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = ["tests/fixtures"]
+# `catalog` because ruff formats Python fenced in Markdown, and it walks four records today.
+# CONTEXT.md's "Gates" says "a gate never fails because the catalog grew"; without this, a
+# record carrying a python fence would redden the `lint` row, which is a gate failing for a
+# reason that has nothing to do with whether the record is valid. Records hold no code.
+extend-exclude = ["tests/fixtures", "catalog"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
