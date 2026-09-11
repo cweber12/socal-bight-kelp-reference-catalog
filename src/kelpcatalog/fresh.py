@@ -10,12 +10,17 @@ Seams:
     check_fresh(root) -> (cells re-executed, problems)           the whole of the gate
     skip_reason(root) -> str | None                              why it cannot run here
 
-**What it catches, and why nothing else can.** A committed notebook's source and its outputs
-are both just bytes in one file, and nothing about the file says whether the second followed
-from the first. The other three notebook rows all read those bytes and so cannot ask: an
-output edited by hand, and a source edited without re-running, are invisible to every one of
-them. Running the cells again is the only way to ask, which is also why this row costs a
-kernel and why it is the only one that does.
+**What it catches, and what the others already catch.** A committed notebook's source and its
+outputs are both just bytes in one file, and nothing about the file says whether the second
+followed from the first. The other three notebook rows read those bytes, so each catches the
+edits that make the bytes themselves wrong: `notebook-outputs` fails a code cell whose outputs
+were deleted, or edited into an error or a stderr stream, and `figure-provenance` reads the
+committed source with `ast`, so it fails a source edit that drops `provenance(...)` or mistypes
+an id. What none of them can see is an edit that leaves well-formed bytes behind - an output
+retyped into another plausible non-error output, or a source edit that still ends in a
+resolvable `provenance(...)`. Those reproduce nothing and look like nothing, and running the
+cells again is the only way to ask. That is why this row costs a kernel, and it is the only one
+that does.
 
 **Why it is local, and what `skip_if` means here.** PNG bytes depend on the platform and the
 plotting stack, so a byte comparison cannot hold across the Ubuntu and Windows CI runners,
@@ -52,9 +57,12 @@ says.
    never rebuilds one: markdown cells are not executed, and the builder is what writes them.
    No row asserts it, which gate.py's `notebook-structure` docstring already says of itself.
 3. **Nothing about a notebook that is absent.** A file that is not there has no outputs to
-   reproduce. `structure.py` does report a missing notebook, as its own choice rather than a
-   division of labour CONTEXT.md draws - the argument is in `outputs.py`, which met the same
-   question first.
+   reproduce, and this row's quantifier is the weakest of the four: CONTEXT.md writes it over
+   "**a** notebook" where `notebook-structure` is "**every** topic notebook" and
+   `figure-provenance` is "**every** figure cell". So the silence is better grounded here than
+   the same silence is in `outputs.py`, which argued it from the absence of a clause rather
+   than from a weaker one. `structure.py` does report a missing notebook, under the "every" its
+   own row carries.
 
 A gate reports; it does not fix. Nothing here writes - not into the repo and not into
 `data/`, and a notebook found stale is reported rather than rewritten (#48: "Does not rewrite
@@ -71,8 +79,22 @@ do not, so a merge has to decide that first.
 nbclient and nbformat are dev dependencies, so - like build.py, structure.py, outputs.py and
 figure_provenance.py - this module is deliberately not imported by `kelpcatalog/__init__.py`:
 `import kelpcatalog` must work in a runtime install. It imports `DATA_DIR` from
-`kelpcatalog.notebook`, which is the directory `load()` reaches into, so the row skips on the
-absence of exactly what a figure cell would fail to find.
+`kelpcatalog.notebook`, which is the directory `load()` reaches into - so the row skips on the
+absence of the directory a figure cell loads from, and not on the absence of the file itself.
+A `data/` that exists and holds nothing satisfies the predicate: the row then runs, the figure
+cell raises inside the kernel, and the failure names the exception rather than pretending the
+notebook is stale (`_raised_now`). Closing the gap at the predicate instead would mean knowing
+which files each figure will ask for before running it, which is what 6.5's `data-lock.json`
+makes possible and nothing here can do. Found by the audit of PR #71.
+
+Two consequences of that, stated because neither is visible from the row's wording. The verdict
+depends on what `data/` *holds*, not only on whether it is there, and those bytes are living
+data: `noaa_oni`'s `oni.ascii.txt` gains a row each month, and the committed figure plots every
+row it finds - so re-fetching turns this row red on an unchanged commit, and refreshing `data/`
+obliges you to re-commit the figure. And running `gate.py` now executes whatever code the
+committed notebooks carry, unsandboxed, on any machine holding a `data/`; that follows from
+CONTEXT.md's row and is not avoidable while the row exists, but it is a change in what running
+the gate means. Both are on the Parking lot as part of one Gates-table question.
 """
 
 from __future__ import annotations
@@ -96,6 +118,14 @@ SOURCE = "source"
 EXECUTION_COUNT = "execution_count"
 OUTPUTS = "outputs"
 OUTPUT_TYPE = "output_type"
+ERROR = "error"
+ENAME = "ename"
+EVALUE = "evalue"
+
+# A message names a cell so a reader can go to it; a traceback or a paragraph-long evalue
+# belongs at the cell, not in the gate's output. The same cap `outputs.py` uses.
+MESSAGE_CHARS = 120
+ELLIPSIS = "…"
 
 NOTEBOOK_FIELD = "notebook"
 
@@ -192,14 +222,53 @@ def _differing_keys(committed: NotebookNode, executed: NotebookNode) -> list[str
     return sorted(key for key in {*committed, *executed} if committed.get(key) != executed.get(key))
 
 
+def _inline(value: object) -> str:
+    """One line of a message: whitespace collapsed, and never a whole traceback."""
+    text = " ".join(str(value or "").split())
+    return text if len(text) <= MESSAGE_CHARS else text[:MESSAGE_CHARS] + ELLIPSIS
+
+
+def _raised_now(committed: list, executed: list) -> str | None:
+    """The error the re-execution hit that the committed outputs do not carry, or None.
+
+    The cause rather than the symptom, and it is reported ahead of everything else because
+    the symptom arrives first otherwise: an error output changes the output *count*, so a
+    cell that raised would be reported as "re-executes with 1 outputs, not the committed 2"
+    - a sentence a reader cannot act on, and one indistinguishable from a notebook that is
+    merely stale. The audit of PR #71 measured exactly that against a `data/` that exists
+    and holds nothing: `load()` raises inside the kernel, and the exception naming the
+    missing directory sat inside the output this gate declines to print.
+
+    The asymmetry is the whole of the claim - an error on the re-executed side that the
+    committed side does not carry - and nothing here says a committed notebook may not hold
+    an error output. When both sides carry one, the ordinary field comparison decides it.
+
+    `evalue` as well as `ename`, capped: "FileNotFoundError" says a file is missing and
+    `evalue` says which, which is the difference between a message that ends the search and
+    one that starts it.
+    """
+    if any(output.get(OUTPUT_TYPE) == ERROR for output in committed):
+        return None
+    raised = next((output for output in executed if output.get(OUTPUT_TYPE) == ERROR), None)
+    if raised is None:
+        return None
+    return (
+        "re-executes to an error the committed outputs do not carry: "
+        f"{_inline(raised.get(ENAME))}: {_inline(raised.get(EVALUE))}"
+    )
+
+
 def _output_difference(committed: list, executed: list) -> str | None:
     """The first way this cell's outputs are not what re-execution produced, or None.
 
     The first, not all of them: the notebook is one click away, and a cell whose outputs
     have moved is read there rather than diffed here. Field names, never values - a
     `display_data` carries a PNG as one base64 string, and a gate row is not where that
-    belongs.
+    belongs. The one exception is an error that is new, above: there the value is the cause.
     """
+    raised = _raised_now(committed, executed)
+    if raised is not None:
+        return raised
     if len(committed) != len(executed):
         return f"re-executes with {len(executed)} outputs, not the committed {len(committed)}"
     for position, (before, after) in enumerate(zip(committed, executed, strict=True)):

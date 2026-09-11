@@ -30,16 +30,7 @@ from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook, new_outp
 
 from kelpcatalog import fresh
 from kelpcatalog.build import write_notebook
-from kelpcatalog.fresh import (
-    NO_DATA,
-    NOT_EXECUTED,
-    NOTEBOOK_FIELD,
-    UNREADABLE,
-    check_fresh,
-    differences,
-    execute,
-    skip_reason,
-)
+from kelpcatalog.fresh import ELLIPSIS, check_fresh, differences, execute, skip_reason
 from kelpcatalog.generate import NOTEBOOKS_DIR
 from kelpcatalog.plan import INDEX_PATH, NOTEBOOK_PATHS
 from kelpcatalog.schema import TOPICS
@@ -54,6 +45,18 @@ needs_data = pytest.mark.skipif(
 )
 
 KERNEL = {"display_name": "Python 3", "language": "python", "name": "python3"}
+
+# Every message this file expects is written out here, never imported from `kelpcatalog.fresh`.
+# A test spelling its expectation `== fresh.NO_DATA` compares the constant with itself and
+# passes just as happily after a rewording, because both sides move together - the discipline
+# `tests/test_gate.py` states for row names and `tests/test_outputs.py:304` follows for this
+# same message. The audit of PR #71 found four of these here, and a mutant making `NO_DATA`
+# name `data/raw/` - a directory the predicate does not test - survived all 526 tests.
+# `ELLIPSIS` above is imported deliberately: it is a rendering character, not a message.
+NO_DATA = "no data/, which a figure cell loads its file from"
+NOT_EXECUTED = "could not be re-executed"
+UNREADABLE = "is not a notebook this gate can read"
+NOTEBOOK_FIELD = "notebook"
 
 
 def rel(path: str) -> str:
@@ -71,6 +74,10 @@ def a_cell(source: str = "1 + 1", outputs=(), execution_count=1, **metadata):
 
 def a_result(text: str = "2"):
     return new_output("execute_result", data={"text/plain": text}, execution_count=1)
+
+
+def a_display():
+    return new_output("display_data", data={"text/plain": "<Figure size 640x480>"})
 
 
 def a_notebook(*cells):
@@ -171,6 +178,66 @@ def test_a_cell_with_no_id_is_named_by_where_it_sits():
     (name, _) = differences(committed, executed)[0]
 
     assert name == "cell 0"
+
+
+# --- a cell that raised, and why -----------------------------------------------------------
+#
+# The audit of PR #71, finding 1: a `data/` that exists but holds nothing satisfies the skip
+# predicate, so the row runs, the figure cell raises inside the kernel, and what the reader was
+# told was "re-executes with 1 outputs, not the committed 2" - a sentence indistinguishable
+# from "your notebook is stale". The exception naming the missing directory was inside the
+# output the gate declines to print.
+
+
+def an_error(ename: str = "FileNotFoundError", evalue: str = "no data/ under /repo"):
+    return new_output("error", ename=ename, evalue=evalue, traceback=["Traceback…", "…"])
+
+
+def test_a_cell_that_raised_where_it_did_not_before_is_reported_as_that(tmp_path):
+    """The cause, not the symptom. An error output changes the output count as well, and the
+    count is what a reader cannot act on: it says the notebook moved, not that the kernel could
+    not do its job."""
+    committed = a_cell(outputs=[a_result(), a_display()])
+    executed = a_cell(outputs=[an_error()])
+
+    (_, message) = differences(a_notebook(committed), a_notebook(executed))[0]
+
+    assert message == (
+        "re-executes to an error the committed outputs do not carry: "
+        "FileNotFoundError: no data/ under /repo"
+    )
+
+
+def test_the_reported_error_is_the_first_one_and_its_value_is_not_a_whole_traceback():
+    """An evalue can run to a paragraph. The gate prints one line and sends the reader to the
+    cell, as `outputs.py` does with the same cap."""
+    committed = a_cell(outputs=[a_result()])
+    executed = a_cell(outputs=[an_error(evalue="x" * 500)])
+
+    (_, message) = differences(a_notebook(committed), a_notebook(executed))[0]
+
+    assert message.endswith(ELLIPSIS)
+    assert len(message) < 500
+
+
+def test_a_cell_that_committed_an_error_and_reproduces_it_is_not_reported_twice(tmp_path):
+    """The asymmetry is what the message claims: an error on the re-executed side that the
+    committed side does not carry. A notebook committing an error output is a separate
+    question, and this row is not where it is answered - so when both sides carry one, the
+    ordinary field comparison decides it."""
+    committed = a_cell(outputs=[an_error()])
+    executed = a_cell(outputs=[an_error()])
+
+    assert differences(a_notebook(committed), a_notebook(executed)) == []
+
+
+def test_a_committed_error_that_re_executes_to_a_different_error_is_a_field_difference():
+    committed = a_cell(outputs=[an_error(ename="KeyError")])
+    executed = a_cell(outputs=[an_error(ename="ValueError")])
+
+    (_, message) = differences(a_notebook(committed), a_notebook(executed))[0]
+
+    assert message == "output 0 (error) differs in ename"
 
 
 # --- executing ---------------------------------------------------------------------------
@@ -430,8 +497,8 @@ def test_a_cell_that_has_started_raising_is_reported_and_the_cells_after_it_stil
 
     assert problem.field == committed.cells[0].id, "the raising cell, not the notebook"
     assert problem.message == (
-        "output 0 (execute_result) differs in "
-        "data, ename, evalue, execution_count, metadata, output_type, traceback"
+        "re-executes to an error the committed outputs do not carry: "
+        "ZeroDivisionError: division by zero"
     )
     assert checked == {rel(OCEAN_CLIMATE): [c.id for c in committed.cells]}
     # One problem, not two: the second cell ran after the first raised and reproduced what it

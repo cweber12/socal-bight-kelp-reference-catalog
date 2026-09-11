@@ -499,13 +499,18 @@ def test_notebook_fresh_is_the_only_row_that_can_skip() -> None:
     assert {g.name for g in gate.GATES if g.skip_if} == {"notebook-fresh"}
 
 
-def test_the_notebook_fresh_row_asks_about_the_repo_root(monkeypatch) -> None:
+def test_the_notebook_fresh_row_asks_about_the_repo_root(monkeypatch, tmp_path) -> None:
     """A skip predicate pointed at a tree that is not there answers about the wrong machine:
     aimed at the working directory it would skip whenever `gate.py` was run from elsewhere,
     and the row would silently never run. The expected root is computed from `gate.__file__`
     rather than read from `gate.ROOT`, so a mutated ROOT fails here."""
     seen: list[Path] = []
     monkeypatch.setattr(gate, "skip_reason", lambda root: (seen.append(root), "no data/")[1])
+    # The working directory moved away from the repo root first. Without this the test passes
+    # on `skip_reason(Path.cwd())` too, because pytest runs from the repo root and the two are
+    # then the same path - so the hazard the docstring above names went unpinned. The audit of
+    # PR #71 found it: that mutant survived all 526 tests.
+    monkeypatch.chdir(tmp_path)
 
     row = next(g for g in gate.GATES if g.name == "notebook-fresh")
 
