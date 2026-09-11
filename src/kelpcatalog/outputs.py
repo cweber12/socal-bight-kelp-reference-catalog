@@ -31,11 +31,18 @@ failure: a print() in a figure cell is output, which is what this row asks for.
 says. It never re-executes - that is #48, and not re-executing is why this row runs in CI
 while that one cannot. It does not read what an output *contains*, only that one exists and
 is not an error, so a figure whose committed PNG has gone stale passes here. It does not
-check provenance (#46). And it does not assert that a notebook is **present**: CONTEXT.md
-puts "every topic notebook" on `notebook-structure`, which reports a missing one, so
-reporting it here as well would print one absence under two gate names. A file that is there
-and cannot be read *is* reported, because this gate cannot then show that it carries
-anything.
+check provenance (#46).
+
+And it does not assert that a notebook is **present**: this row is about what committed
+notebooks *carry*, and a file that is not there carries nothing, so there is nothing here to
+assert about it. Note what that argument is *not*, because the next gate over this walk (#48)
+will meet the same question. CONTEXT.md's `notebook-structure` row - "every topic notebook
+has exactly the sections its sub-topic list requires" - quantifies over the notebooks that
+exist, so it does not carry the absence either; `structure.py` reports a missing notebook as
+its own robustness choice, not under a clause this module defers to. The effect is that an
+absence is still reported, but the silence here is not a division of labour CONTEXT.md draws.
+A file that is there and cannot be read *is* reported here - by both gates, as it happens -
+because this gate cannot then show that it carries anything.
 
 A gate reports; it does not fix. Nothing here writes.
 
@@ -145,9 +152,9 @@ def check_outputs(root: Path) -> tuple[dict[str, list[str]], list[Problem]]:
     problems: list[Problem] = []
     for rel in _the_eleven():
         path = root / rel
-        # is_file(), and no problem when it is false: a missing notebook is the structure
-        # gate's to report (see the module docstring), and so is a directory standing where
-        # one should be.
+        # is_file(), and no problem when it is false: a file that is not there carries
+        # nothing for this row to assert about (see the module docstring), and neither does
+        # a directory standing where a notebook should be.
         if not path.is_file():
             continue
         try:

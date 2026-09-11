@@ -7,8 +7,14 @@ gate: the builder emits markdown cells and no outputs at all, so there is no bui
 that produces a code cell carrying an error, a stderr stream or an empty `outputs` list.
 A committed fixture would therefore be hand-written JSON, and hand-written JSON is a
 weaker witness than `nbformat.v4.new_output`, which is the same constructor nbformat
-validates against. `a_repo` validates each notebook before it is written, so no test here
-can pass against a shape Jupyter would never emit.
+validates against. `a_repo` validates each notebook before it is written.
+
+That buys less than it sounds like, and the limit belongs here rather than in a reader's
+head: validating shows nbformat would *accept* a shape, not that a kernel *emits* it. The v4
+schema types a stream's `name` as a bare string with no enum, so `name: "STDERR"` and
+`name: ""` both validate, neither is anything Jupyter writes, and this gate passes both.
+Nothing here can close that gap while the repo has no kernel in it - `nbclient` and
+`ipykernel` arrive with #48.
 """
 
 from __future__ import annotations
@@ -28,6 +34,7 @@ from kelpcatalog.build import write_notebook
 from kelpcatalog.generate import NOTEBOOKS_DIR
 from kelpcatalog.outputs import MESSAGE_CHARS, check_outputs
 from kelpcatalog.plan import INDEX_PATH, NOTEBOOK_PATHS
+from kelpcatalog.schema import TOPICS
 
 ROOT = Path(__file__).parents[1]
 
@@ -45,14 +52,34 @@ def problems(root: Path):
 # --- the committed tree --------------------------------------------------------------
 
 
-def test_the_committed_notebooks_pass_and_are_counted():
+def test_the_committed_notebooks_pass_and_are_read_back_by_path():
     # Green here is vacuous today and the gate row says so out loud - it prints "11
     # notebooks, 0 code cells", because generated cells are markdown and the first figure
-    # is #47. The count is deliberately not asserted: it goes up when that figure lands.
+    # is #47. The code-cell count is deliberately not asserted: it goes up when #47 lands.
+    #
+    # The paths, not `len(checked) == 11`: a count is blind to a walk that *grows*. A topic
+    # added to TOPICS and NOTEBOOK_PATHS whose notebook has not been generated is skipped
+    # silently, which leaves the count at eleven and this test green. NOTEBOOK_PATHS rather
+    # than TOPICS, so the expectation is not read off the same name the walk iterates;
+    # test_plan.py pins the two against each other.
     checked, found = check_outputs(ROOT)
 
     assert found == [], "\n".join(str(p) for p in found)
+    assert set(checked) == {rel(INDEX_PATH), *(rel(p) for p in NOTEBOOK_PATHS.values())}
+
+
+def test_a_topic_whose_notebook_is_not_generated_is_walked_and_skipped(monkeypatch):
+    # The hazard the test above is written against, stated rather than left implicit: the
+    # walk grows with TOPICS, and a path with no file behind it is skipped in silence. The
+    # count is eleven either way, so only an assertion on the paths notices.
+    monkeypatch.setitem(TOPICS, "sea-level", ())
+    monkeypatch.setitem(NOTEBOOK_PATHS, "sea-level", "1_physical_environment/15_sea_level.ipynb")
+
+    checked, found = check_outputs(ROOT)
+
+    assert found == []
     assert len(checked) == 11
+    assert rel(NOTEBOOK_PATHS["sea-level"]) not in checked
 
 
 # --- constructing a notebook the gate will read ---------------------------------------
@@ -79,10 +106,10 @@ def a_display():
 def a_repo(tmp_path: Path, *cells, path: str = OCEAN_CLIMATE, minor: int | None = None) -> Path:
     """A repo root holding one notebook, at a path the gate walks.
 
-    One notebook, not eleven: the gate reports on the notebooks that are there, and the
-    ten that are not are the structure gate's to report - pinned below by
-    `test_a_missing_notebook_is_left_to_the_gate_that_owns_it`. So each test here holds
-    only the cells it is about.
+    One notebook, not eleven: the gate reports on the notebooks that are there, and the ten
+    that are not carry nothing for it to assert about - pinned below by
+    `test_a_missing_notebook_carries_nothing_to_check`. So each test here holds only the
+    cells it is about.
     """
     notebook = new_notebook(cells=list(cells))
     if minor is not None:
@@ -277,10 +304,11 @@ def test_a_notebook_that_cannot_be_read_fails_and_names_it(tmp_path: Path):
     assert "JSON" in problem.message
 
 
-def test_a_missing_notebook_is_left_to_the_gate_that_owns_it(tmp_path: Path):
-    # CONTEXT.md puts "every topic notebook" on `notebook-structure`, which reports a
-    # missing one; this row says only what the notebooks that are there carry. Reporting
-    # it here would print the same absence twice under two gate names.
+def test_a_missing_notebook_carries_nothing_to_check(tmp_path: Path):
+    # This row is about what committed notebooks carry, and a file that is not there
+    # carries nothing. Not because CONTEXT.md assigns the absence to `notebook-structure`:
+    # that row quantifies over the notebooks that exist too, and `structure.py` reporting a
+    # missing one is its own choice. See the module docstring.
     checked, found = check_outputs(tmp_path)
 
     assert found == []
@@ -288,8 +316,8 @@ def test_a_missing_notebook_is_left_to_the_gate_that_owns_it(tmp_path: Path):
 
 
 def test_a_directory_where_a_notebook_should_be_is_not_read(tmp_path: Path):
-    # `is_file()`, not `exists()`: a directory holds no code cells, and it is the same
-    # absence the structure gate reports.
+    # `is_file()`, not `exists()`: a directory holds no code cells, so it carries nothing
+    # for this row to assert about, exactly as a missing file does.
     root = a_repo(tmp_path, a_code_cell(outputs=[a_display()]))
     target = root / NOTEBOOKS_DIR / OCEAN_CLIMATE
     target.unlink()
