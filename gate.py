@@ -182,6 +182,8 @@ def main() -> int:
     A gate that raises is reported as a failure rather than taking the run down, so the rows
     after it still run and the traceback arrives beneath its own row instead of replacing the
     whole report. `Exception`, not `BaseException`: a KeyboardInterrupt still stops the run.
+    The guard covers `skip_if` as well as `fn` - a `skip_if` is the half that reaches for
+    machine state a fresh clone lacks, so it is the half more likely to raise.
 
     A skipped gate is not counted as a pass. It is not counted as a failure either - the
     module docstring says skipping "is for the clone, not the author", so a skip leaves the
@@ -191,12 +193,12 @@ def main() -> int:
     failed = 0
     skipped = 0
     for gate in GATES:
-        reason = gate.skip_if() if gate.skip_if else None
-        if reason:
-            skipped += 1
-            print(f"{gate.name:<{width}}  SKIP  {reason}")
-            continue
         try:
+            reason = gate.skip_if() if gate.skip_if else None
+            if reason:
+                skipped += 1
+                print(f"{gate.name:<{width}}  SKIP  {reason}")
+                continue
             ok, msg = gate.fn()
         except Exception:
             ok, msg = False, traceback.format_exc()

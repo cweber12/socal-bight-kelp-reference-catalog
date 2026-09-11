@@ -104,8 +104,11 @@ def test_every_row_gate_py_runs_is_a_row_context_md_names() -> None:
     to that table which nobody copies down here is invisible to this test. That gap is the
     Parking lot's "Nothing checks CONTEXT.md against schema.py", which is unresolved and
     wider than this file; `plan.py` and `test_plan.py` took the same route for the same
-    reason. Note the difference from theirs: `GATES` is the list the runner actually walks,
-    not a second transcription, so a row drifting from CONTEXT.md's table does fail here.
+    reason. One difference from theirs is worth naming, and is narrower than it sounds:
+    `GATES` is the list the runner actually walks rather than a second transcription, so a
+    `GATES` row that drifts from the transcription below fails here. A `CONTEXT.md` row that
+    drifts from it does not, and editing both literals below lands a row that table never
+    named. Only one of the two directions is mechanical.
     """
     assert {g.name for g in gate.GATES} == set(CONTEXT_GATES) - SCHEDULED_NOT_YET_RUN
 
@@ -206,6 +209,31 @@ def test_a_skipped_gate_prints_SKIP_and_is_not_counted_as_a_pass(monkeypatch, ca
     assert ("notebook-fresh", "SKIP") in _rows(out)
     assert "needs data/ for figures" in out
     assert "1/2 gates passed, 1 skipped" in out
+
+
+def test_a_skip_if_that_raises_is_a_failure_and_the_rows_after_it_still_run(
+    monkeypatch, capsys
+) -> None:
+    """`skip_if` is the half of a Gate that reaches for machine state, so it is the half more
+    likely to raise. Guarding only `fn` left a raising `skip_if` taking the whole run down -
+    no summary, no rows after it - which is what #48's first real `skip_if` would have met."""
+
+    def boom() -> str:
+        raise OSError("no such drive")
+
+    monkeypatch.setattr(
+        gate,
+        "GATES",
+        [gate.Gate("notebook-fresh", _explodes, skip_if=boom), _passing("lint", "clean")],
+    )
+
+    assert gate.main() == 1
+
+    out = capsys.readouterr().out
+    assert ("notebook-fresh", "FAIL") in _rows(out)
+    assert ("lint", "ok") in _rows(out)
+    assert "OSError: no such drive" in out
+    assert "1/2 gates passed" in out
 
 
 def test_a_skip_if_that_returns_none_runs_the_gate(monkeypatch, capsys) -> None:
@@ -354,6 +382,20 @@ def test_run_fails_when_the_child_exits_non_zero() -> None:
 
     assert not ok
     assert "nope" in out
+
+
+def test_run_runs_the_child_in_the_repo_root_whatever_the_caller_s_cwd(monkeypatch, tmp_path):
+    """`unit` and `lint` reach their tree by subprocess rather than by walking it, so the
+    wrong-root mutation for those two rows is `cwd=ROOT` going missing: both would then report
+    on whatever directory the caller happened to be in, and pass having examined nothing of
+    the repo. Asserted as a path equality rather than a substring, because `tmp_path` carries
+    the test's own name and would satisfy a looser check."""
+    monkeypatch.chdir(tmp_path)
+
+    ok, out = gate._run([sys.executable, "-c", "import os; print(os.getcwd())"])
+
+    assert ok
+    assert Path(out.strip()).resolve() == Path(gate.__file__).parent.resolve()
 
 
 # --- the unit row ------------------------------------------------------------------
