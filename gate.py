@@ -24,6 +24,7 @@ ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from kelpcatalog import check_catalog  # noqa: E402
+from kelpcatalog.figure_provenance import check_figure_provenance  # noqa: E402
 from kelpcatalog.outputs import check_outputs  # noqa: E402
 from kelpcatalog.structure import check_structure  # noqa: E402
 
@@ -92,11 +93,33 @@ def gate_notebook_outputs() -> tuple[bool, str]:
     return True, counts
 
 
+def gate_figure_provenance() -> tuple[bool, str]:
+    """Every figure cell carries a `provenance(...)` whose ids resolve.
+
+    A figure cell is a code cell the builder did not generate; CONTEXT.md says figure
+    cells are "never generated and never touched". The ids are read out of the committed
+    cell's source with `ast` and resolved against the records, so this row never executes
+    a notebook and runs in CI - which is also why an id has to be written out as a string
+    rather than computed.
+
+    It says nothing about what the cell *rendered*: a figure cell whose outputs carry no
+    image passes here, and so does a `provenance()` naming nothing. Both were put to #46
+    and both are answered in figure_provenance.py's docstring, where the Gates row they
+    would each need is named.
+    """
+    cells, problems = check_figure_provenance(ROOT)
+    counts = f"{len(cells)} notebooks, {sum(len(c) for c in cells.values())} figure cells"
+    if problems:
+        return False, "\n".join(str(p) for p in problems) + f"\n({counts})"
+    return True, counts
+
+
 GATES: list[Gate] = [
     Gate("unit", gate_unit),
     Gate("catalog-schema", gate_catalog_schema),
     Gate("notebook-structure", gate_notebook_structure),
     Gate("notebook-outputs", gate_notebook_outputs),
+    Gate("figure-provenance", gate_figure_provenance),
 ]
 
 
