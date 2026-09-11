@@ -25,11 +25,13 @@ is protected.
 
 ## How work is tracked
 
-One milestone is active at a time; the next thing to do is the top open `ready-for-agent` issue in
-it. A PRD for each milestone lives at `docs/prd/<slug>.md`. An issue is ready when it names the
-seam, the failing test and the non-goals and fits one PR; if you cannot state the failing test,
-stop and ask. Ideas go in the pinned Parking-lot issue as one-line comments, never as new issues;
-the only issues an agent opens on its own are found-in-flight bugs under rule 3.
+One milestone is active at a time. A PRD for each milestone lives at `docs/prd/<slug>.md`, and its
+**Slices** table is the work order. `gh issue list` is not: it sorts newest-first, so its top row
+is the last slice in the milestone. The next thing to do is the first open `ready-for-agent` issue
+in that table. An issue is ready when it names the seam, the failing test and the non-goals and
+fits one PR; if you cannot state the failing test, stop and ask. Ideas go in the pinned Parking-lot
+issue as one-line comments, never as new issues; the only issues an agent opens on its own are
+found-in-flight bugs under rule 3.
 
 ## In-flight bugs
 
