@@ -38,15 +38,17 @@ issue whose work is entry or prose rather than code, it cannot name a failing te
 readiness bar's "stop and ask" does not apply — the answer is written here. The `add-source` skill
 is what works it.
 
-- **Seam** — the record, its fetch script, and the notebooks the source appears in:
-  `catalog/sources/<id>.md`, `src/fetch/<id>.py` when the tier is `FETCHED`, and the notebooks
-  `add-source` step 7 regenerates. `CONTEXT.md`, "Notebooks": *a source is not "in" until the
-  notebooks that show it are refreshed in the same PR.*
+- **Seam** — the record, whatever its tier requires, any reference record a field needs, and the
+  notebooks that move: `catalog/sources/<id>.md`; `src/fetch/<id>.py` when the tier is `FETCHED`,
+  or `catalog/tables/<id>.csv` when it is `TRANSCRIBED`; `catalog/references/<citekey>.md` when a
+  field needs one; and the notebooks that move when `add-source` step 7 regenerates. `CONTEXT.md`,
+  "Notebooks": *a source is not "in" until the notebooks that show it are refreshed in the same PR.*
 - **Failing test** — none mechanical. Gates print counts and never assert them (`CONTEXT.md`,
   "Gates"), so there is no test to write. Say that; do not invent one.
 - **Acceptance** — `gate.py` green, the record reviewed field by field against the source, and the
   notebooks regenerated and committed in the same PR.
-- **Non-goals** — no other source, no schema change.
+- **Non-goals** — no other source, no hand-edited notebook (step 7 regenerates them), no schema
+  change.
 - **Done when** — merged.
 
 ## Ideas are not issues
