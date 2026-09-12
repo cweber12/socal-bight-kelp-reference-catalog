@@ -24,7 +24,9 @@ repo from `git remote -v` when run inside a clone.
   `6.2 Topic notebooks`, `6.3 Regions, beds, sites`, `6.4 Re-entry`, `6.5 Lock and fetch`,
   `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
   `docs/prd/<slug>.md`.
-- **The next thing to do** is the top open `ready-for-agent` issue in the active milestone.
+- **The next thing to do** is the first open `ready-for-agent` issue in the active milestone's PRD
+  **Slices** table. Not the top of `gh issue list`, which sorts newest-first and so puts the *last*
+  slice of the milestone first (`CLAUDE.md`, "How work is tracked").
 - An issue is ready when it names the seam (function signature, gate row or file format), the
   failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
 - One issue → one branch (`<type>/<slug>`) → one PR, squash-merged, `Closes #N` in the body.
