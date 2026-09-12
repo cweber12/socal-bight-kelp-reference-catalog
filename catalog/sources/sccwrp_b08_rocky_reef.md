@@ -16,12 +16,14 @@ access:
 format: >-
   PDF; served as Content-Type application/pdf
 license: >-
-  not stated: the report prints no copyright or licence statement; the ArcGIS item behind
-  its landing page https://bight.sccwrp.org/pages/bight-08-rocky-reef carries
-  "licenseInfo": null; and https://www.sccwrp.org/ links no terms, licence or copyright
-  page from its footer (all retrieved 2026-09-12)
+  not stated: the report prints no copyright or licence statement; the ArcGIS item behind its
+  landing page https://bight.sccwrp.org/pages/bight-08-rocky-reef carries "licenseInfo": null and
+  that page's own footer is configured "footerType": "none", so it links no terms page. The
+  steward's home page https://www.sccwrp.org/ states in its footer "© 2026 · Southern California
+  Coastal Water Research Project. All Rights Reserved", and links no terms or licence page (all
+  retrieved 2026-09-12)
 variables:
-  - percent cover of substrate type
+  - Percent cover of substrate type
   - substrate relief
   - benthic organisms
   - bedrock (> 1 m)
@@ -32,7 +34,7 @@ variables:
   - benthic fish transects
   - midwater fish transects
   - canopy fish transects
-  - red and purple urchins
+  - 100 red and 100 purple urchins
   - size and species of any abalone
 coverage: >-
   "Overall, 72 sites were sampled in the bight"; "60 natural rocky reefs (Figure I-1) from
@@ -41,11 +43,13 @@ coverage: >-
   at King Harbor, Redondo Beach (3 reefs) and six reefs at the Port of Los Angeles. Eleven
   of the 27 southern California oil platforms (B, Edith, Ellen, Elly, Esther, Eureka, Eva,
   Gilda, Grace, Holly and Irene) and three offshore pinnacle reefs (The Nine, San Luis,
-  SuperPin) were sampled for fishes". Within each sampling cell "four depth strata (if
+  SuperPin) were sampled for fishes using a previously determined optimal sampling
+  strategy due to their configuration". Within each sampling cell "four depth strata (if
   present) were sampled and geo referenced. These strata are the inner (~5m), middle
   (~10m) and outer (~15m) and deep strata (~25m) portions of a natural reef or kelp bed."
 coverage_stated_at: >-
-  Chapter I, Methods, printed pages 2-3 (PDF pages 20-21) of
+  The first clause at Chapter II, Methods, printed page 32 (PDF page 50); the rest at Chapter I,
+  Methods, printed pages 2-3 (PDF pages 20-21), of
   https://ftp.sccwrp.org/pub/download/DOCUMENTS/TechnicalReports/685_B08RockyReef.pdf,
   retrieved 2026-09-12
 retrieved: 2026-09-12
@@ -61,6 +65,8 @@ topics:
   - bed-state/mpas
   - grazers-predators-competitors/urchins
   - canopy
+  - canopy/historical-baselines
+  - water-quality-harvest/discharges-outfalls
   - water-quality-harvest/fishing-pressure
 regions:
   - scb

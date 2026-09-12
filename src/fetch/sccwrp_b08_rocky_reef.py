@@ -8,10 +8,12 @@ headers a repeat fetch records - content_type, last_modified and etag, null when
 server sends none. data/ is git-ignored and reproducible from this script, which is the
 record of the fetch (CONTEXT.md, "Record format"). Standard library only.
 
-The body check is the one departure from src/fetch/noaa_oni.py's shape, and it follows
-src/fetch/sio_shore_stations.py, which checks the zip magic: a truncated or error-bodied
-200 would otherwise be stored, hashed and manifested as a VERIFIED fetch with nothing to
-reveal it. %PDF- is the signature the served Content-Type claims.
+Two departures from src/fetch/noaa_oni.py's shape, both following the two later scripts.
+The body check follows sio_shore_stations.py, which checks the zip magic, and calcofi.py,
+which checks the CSV structure: a truncated or error-bodied 200 would otherwise be stored,
+hashed and manifested as a VERIFIED fetch with nothing to reveal it. %PDF- is the
+signature the served Content-Type claims. The 300-second timeout is what both of those
+scripts use for a file this size; noaa_oni.py's 120 is the outlier.
 """
 
 from __future__ import annotations
