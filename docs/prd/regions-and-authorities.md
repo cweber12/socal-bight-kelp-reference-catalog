@@ -110,8 +110,9 @@ Taken in session, each against the evidence above rather than in the abstract.
 
 4. **CCR §165.5(k) is a bed's authority; ds3135 supplies geometry.** `defined_by` names the
    regulation and the subsection; `status` is the regulation's designation verbatim, including the
-   printed `Leaseable` on beds 26 and 27. ds3135 enters as its own source, cited by the derived
-   region table. Each field traces to the source that states it.
+   printed `Leaseable` on beds 26 and 27 — which `BED_STATUS` in `schema.py` does not admit, so
+   slice 10 changes that vocabulary in both `CONTEXT.md` and the code. ds3135 enters as its own
+   source, cited by the derived region table. Each field traces to the source that states it.
 
 5. **`defined_by` becomes `{source, where}`**, mirroring `transcribed_from`.
    `catalog/regions/scb.md` currently holds a ~300-character prose citation with a URL nothing
@@ -166,18 +167,20 @@ records cannot be written until `defined_by`'s shape and the island level are se
 | 7 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` | `RULES` for `regions`/`beds`/`sites`; the schema tables; `catalog/regions/scb.md` | a `defined_by` naming no record fails; `scb.md` cites `sccwrp_tr1289` |
 | 8 | [#84](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/84) | `beds.name` becomes `beds.extent` | `RULES["beds"]`; twelve fixtures; `a_bed()`; one `CONTEXT.md` row | a bed carrying `name` fails; one carrying `extent` validates |
 | 9 | [#85](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/85) | drop `beds.aliases` | `RULES["beds"]`; the schema table; the fixtures | a bed carrying `aliases` fails as an unknown field |
-| 10 | [#16](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/16) | `beds.region` is a list of county or island nodes | the cross-record link pass in `schema.py` | a bed on `scb` or `scb.mainland` fails; one naming two counties validates; one naming an island validates |
-| 11 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `CONTEXT.md` region tree and region order; `SIBLING_ORDER` in `plan.py` | the eight islands sort by id under `scb.islands`; `region_sort_key` stays total |
-| 12 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties, with the consortium lists `CONTEXT.md` already specifies |
-| 13 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each `defined_by` CCR §165.5(k) |
-| 14 | [#18](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/18) | `CONTEXT.md` cites record ids | `CONTEXT.md`; #18 | every factual claim names a record that exists; verified by grepping the ids and checking each under `catalog/` |
+| 10 | [#92](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/92) | the bed status vocabulary | `BED_STATUS` and `_vocab_problems` in `schema.py`; the `beds` schema row | a bed carrying `Lease Only` fails; one carrying `Leaseable` validates |
+| 11 | [#16](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/16) | `beds.region` is a list of county or island nodes | the cross-record link pass in `schema.py` | a bed on `scb` or `scb.mainland` fails; one naming two counties validates; one naming an island validates |
+| 12 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `CONTEXT.md` region tree and region order; `SIBLING_ORDER` in `plan.py` | the eight islands sort by id under `scb.islands`; `region_sort_key` stays total |
+| 13 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties, with the consortium lists `CONTEXT.md` already specifies |
+| 14 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each `defined_by` CCR §165.5(k) |
+| 15 | [#18](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/18) | `CONTEXT.md` cites record ids | `CONTEXT.md`; #18 | every factual claim names a record that exists; verified by grepping the ids and checking each under `catalog/` |
 
 Slice 1 is a correction of wrong facts and lands first so that nothing is built on them. Slices 2–6
-are the five authorities, each its own `add-source` run. Slices 7–11 are the schema and ordering
-changes, all of them cheapest now. Slices 12–13 write the region tree. Slice 14 closes #18.
+are the five authorities, each its own `add-source` run. Slices 7–12 are the schema and ordering
+changes, all of them cheapest now while no bed record exists. Slices 13–14 write the region tree.
+Slice 15 closes #18.
 
 **#16 is rewritten, not closed as filed.** As written it asserts a bed's `region` is a single county
-or island node; slice 10 carries its intent with `region` as a list, and its non-goal — "not the
+or island node; slice 11 carries its intent with `region` as a list, and its non-goal — "not the
 `surveyed_by` field, that is its own slice in this milestone" — moves to 6.3b with the beds.
 
 ## Non-goals
