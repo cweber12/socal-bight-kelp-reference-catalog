@@ -24,7 +24,9 @@ repo from `git remote -v` when run inside a clone.
   `6.2 Topic notebooks`, `6.3 Regions, beds, sites`, `6.4 Re-entry`, `6.5 Lock and fetch`,
   `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
   `docs/prd/<slug>.md`.
-- **The next thing to do** is the top open `ready-for-agent` issue in the active milestone.
+- **The next thing to do** is the first open `ready-for-agent` issue in the active milestone's PRD
+  **Slices** table. Not the top of `gh issue list`, which sorts newest-first and so puts the *last*
+  slice of the milestone first (`CLAUDE.md`, "How work is tracked").
 - An issue is ready when it names the seam (function signature, gate row or file format), the
   failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
 - One issue → one branch (`<type>/<slug>`) → one PR, squash-merged, `Closes #N` in the body.
@@ -36,12 +38,15 @@ issue whose work is entry or prose rather than code, it cannot name a failing te
 readiness bar's "stop and ask" does not apply — the answer is written here. The `add-source` skill
 is what works it.
 
-- **Seam** — the record and its fetch script: `catalog/sources/<id>.md`, and `src/fetch/<id>.py`
-  when the tier is `FETCHED`.
+- **Seam** — the record, its fetch script, and the notebooks the source appears in:
+  `catalog/sources/<id>.md`, `src/fetch/<id>.py` when the tier is `FETCHED`, and the notebooks
+  `add-source` step 7 regenerates. `CONTEXT.md`, "Notebooks": *a source is not "in" until the
+  notebooks that show it are refreshed in the same PR.*
 - **Failing test** — none mechanical. Gates print counts and never assert them (`CONTEXT.md`,
   "Gates"), so there is no test to write. Say that; do not invent one.
-- **Acceptance** — `gate.py` green, and the record reviewed field by field against the source.
-- **Non-goals** — no other source, no notebook change, no schema change.
+- **Acceptance** — `gate.py` green, the record reviewed field by field against the source, and the
+  notebooks regenerated and committed in the same PR.
+- **Non-goals** — no other source, no schema change.
 - **Done when** — merged.
 
 ## Ideas are not issues
