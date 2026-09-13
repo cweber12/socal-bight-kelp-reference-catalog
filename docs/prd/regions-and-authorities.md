@@ -144,7 +144,10 @@ So the permission is made explicit rather than smuggled through an analogy:
   committed script, recording predicate, CRS and tolerance; **never a finding, only a join key.**
   `TRANSCRIBED` is *not* stretched to cover it — that tier means "extracted from a document by a
   named script", one document, and its `transcribed_from` requires a `references/` record, which
-  would not resolve. Stretching it would also admit per-bed canopy area summed from `Shape_Area`,
+  would not resolve. Note the knock-on: `CONTEXT.md`'s "Record format" says a CSV under
+  `catalog/tables/` "has a source record with tier TRANSCRIBED", and **#17 gates exactly that**, so
+  both are amended to admit any tier that writes a file there. The rule is about provenance, not
+  about which tier supplies it. Stretching it would also admit per-bed canopy area summed from `Shape_Area`,
   which is a summary statistic the rule excludes by name.
 
 The 18 island beds take their region from §165.5(k), **stated**. Only the 30 mainland beds are
@@ -232,7 +235,7 @@ so.
 | 5 | [#81](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/81) | add `cdfw_kelp_esr` | `add-source` | the JSON API route reaches the report text; the TLS caveat is recorded |
 | 6 | [#82](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/82) | add `sccwrp_kelp_aerial` | `add-source` | consortium coverage sentences verbatim |
 | 7 | [#93](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/93) | "The rule" excludes analysis, not computation | `CONTEXT.md`, "The rule" and its table | the admitted column names a deterministic index; the excluded column still names findings |
-| 8 | [#94](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/94) | a `DERIVED` tier | `TIER` in `schema.py`; the tier vocabulary in `CONTEXT.md` | a `DERIVED` record without a script is a problem; `VERIFIED` still requires `FETCHED` or `TRANSCRIBED` |
+| 8 | [#94](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/94) | a `DERIVED` tier | `TIER` and `_tier_problems` in `schema.py`; **five** `CONTEXT.md` lines, including the `tables/` provenance rule | a `DERIVED` record without a script is a problem; `transcribed_from` is not required of it; #17 admits the tier |
 | 9 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` | `RULES` for `regions`/`beds`/`sites`; `catalog/regions/scb.md` | a bare-string `defined_by` fails; `scb.md` cites `sccwrp_tr1289` |
 | 10 | [#84](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/84) | `beds.name` becomes `beds.extent` | `RULES["beds"]`; fixtures; `a_bed()`; the `beds` row | a bed carrying `name` fails; beds 105/106's form validates |
 | 11 | [#85](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/85) | drop `beds.aliases` | `RULES["beds"]`; the `beds` row; eleven fixtures | a bed carrying `aliases` fails as unknown |
