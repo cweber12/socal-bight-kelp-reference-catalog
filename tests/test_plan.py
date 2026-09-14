@@ -19,6 +19,7 @@ from kelpcatalog.plan import (
     INDEX_PATH,
     NO_REGIONAL_BOUND,
     NOTEBOOK_PATHS,
+    SIBLING_ORDER,
     TOPIC_QUESTIONS,
     region_heading,
     region_sort_key,
@@ -169,7 +170,7 @@ def test_group_folders_cover_every_group():
 def test_the_region_order_issue_41_states():
     unsorted = [
         "global",
-        "scb.islands.northern",
+        "scb.islands.anacapa",
         "scb.mainland.san-diego",
         "scb",
         "scb.mainland.ventura",
@@ -178,14 +179,17 @@ def test_the_region_order_issue_41_states():
         "scb",
         "scb.mainland.ventura",
         "scb.mainland.san-diego",
-        "scb.islands.northern",
+        "scb.islands.anacapa",
         "global",
     ]
 
 
 def test_the_whole_tree_runs_depth_first():
     # A node, then all its descendants, before the next sibling; siblings in the order
-    # CONTEXT.md lists them; islands, which it does not order, by id; global last.
+    # CONTEXT.md lists them; the eight islands, which it does not order, by id; global
+    # last. The islands sit directly under scb.islands: CCR 165.5(k) names every island
+    # but groups them as one flat "Channel Island administrative kelp beds", so there is
+    # no authority for a northern/southern level and the tree has none.
     tree = [
         "scb",
         "scb.mainland",
@@ -195,12 +199,14 @@ def test_the_whole_tree_runs_depth_first():
         "scb.mainland.orange",
         "scb.mainland.san-diego",
         "scb.islands",
-        "scb.islands.northern",
-        "scb.islands.northern.anacapa",
-        "scb.islands.northern.santa-cruz",
-        "scb.islands.southern",
-        "scb.islands.southern.san-clemente",
-        "scb.islands.southern.santa-catalina",
+        "scb.islands.anacapa",
+        "scb.islands.san-clemente",
+        "scb.islands.san-miguel",
+        "scb.islands.san-nicolas",
+        "scb.islands.santa-barbara",
+        "scb.islands.santa-catalina",
+        "scb.islands.santa-cruz",
+        "scb.islands.santa-rosa",
         "global",
     ]
     assert sorted(reversed(tree), key=region_sort_key) == tree
@@ -217,22 +223,46 @@ def test_a_county_sorts_before_the_islands_it_is_not_listed_with():
     ]
 
 
-def test_islands_within_a_group_sort_by_id():
+def test_the_eight_islands_sort_by_id():
+    # CONTEXT.md orders every sibling set except the islands, so these fall to the id
+    # sort. "san-" sorts before "santa" because "-" precedes "t".
     unsorted = [
-        "scb.islands.northern.santa-rosa",
-        "scb.islands.northern.anacapa",
-        "scb.islands.northern.san-miguel",
+        "scb.islands.santa-rosa",
+        "scb.islands.anacapa",
+        "scb.islands.santa-barbara",
+        "scb.islands.san-miguel",
+        "scb.islands.san-nicolas",
+        "scb.islands.santa-cruz",
+        "scb.islands.san-clemente",
+        "scb.islands.santa-catalina",
     ]
     assert sorted(unsorted, key=region_sort_key) == [
-        "scb.islands.northern.anacapa",
-        "scb.islands.northern.san-miguel",
-        "scb.islands.northern.santa-rosa",
+        "scb.islands.anacapa",
+        "scb.islands.san-clemente",
+        "scb.islands.san-miguel",
+        "scb.islands.san-nicolas",
+        "scb.islands.santa-barbara",
+        "scb.islands.santa-catalina",
+        "scb.islands.santa-cruz",
+        "scb.islands.santa-rosa",
     ]
+
+
+def test_scb_islands_orders_no_siblings():
+    # The whole behaviour change of #86: with no SIBLING_ORDER entry, scb.islands' children
+    # fall to the id sort. A test that only asserts over ids would pass either way - this
+    # one fails if the northern/southern entry comes back.
+    assert "scb.islands" not in SIBLING_ORDER
+    assert not any(
+        "northern" in node or "southern" in node
+        for nodes in SIBLING_ORDER.values()
+        for node in nodes
+    )
 
 
 def test_global_sorts_last_not_first():
     assert region_sort_key(GLOBAL_REGION) > region_sort_key("scb")
-    assert region_sort_key(GLOBAL_REGION) > region_sort_key("scb.islands.southern.santa-barbara")
+    assert region_sort_key(GLOBAL_REGION) > region_sort_key("scb.islands.santa-barbara")
 
 
 @pytest.mark.parametrize(
