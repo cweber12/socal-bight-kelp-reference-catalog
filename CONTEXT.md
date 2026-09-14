@@ -137,18 +137,18 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
    `scb.islands.southern`, with one node per island beneath.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
-   https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The boundaries
-   are drawn by the regulation, not by any survey: the same section states the Beds "are not based
-   on individual kelp patches but rather geographic areas that are delineated by latitude and
-   longitude coordinates and extend from the mean high tide to the state waters boundary line",
-   cites "(§165.5, Title 14, CCR)" for their restrictions, and gives
-   https://wildlife.ca.gov/Conservation/Marine/Kelp/Commercial-Harvest as where "Maps for all 87
-   Administrative Kelp Beds can be found". The shapefiles under
-   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are **canopy surveys**, not boundaries —
-   the same report's Monitoring section offers them as "Shapefiles of these surveys", the aerial
-   surveys of 1989, 1999 and annually 2002–2016. Which published layer carries the regulation's
-   coordinates is recorded on each bed's `defined_by` when beds arrive. Program bed names are
-   `aliases:`.
+   https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The boundary is
+   drawn by **CCR Title 14 §165.5(k)**, which prints the coordinates. CDFW states this of its own
+   published maps: they "are not to be used for determining the exact boundaries of the listed
+   administrative kelp beds … Please refer to Title 14, California Code of Regulations (CCR),
+   subsection 165.5(k) for administrative kelp bed boundary coordinates" (`licenseInfo` of the web
+   map the report cites for those maps, item `3098802621bd474bb4c3dbd25358c091` on
+   `cdfw.maps.arcgis.com`, retrieved 2026-09-14). The report says the same of the regulation's
+   history: the 2014 amendments "updated the Administrative Kelp Bed boundaries from compass
+   headings to latitude and longitude coordinates" (Management §3.1.1.2). The shapefiles under
+   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are the Department's **canopy
+   surveys** — its Monitoring section offers them as "Shapefiles of these surveys", the aerial
+   surveys of 1989, 1999 and annually 2002–2016. Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
 Consortium is an attribute on a county node, not a level, and it is a **list**: the kelp.sccwrp.org
