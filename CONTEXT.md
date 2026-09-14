@@ -136,11 +136,11 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
    the kelp.sccwrp.org home page, retrieved 2026-09-07). Islands: eight nodes directly under
    `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
    `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group
-   level between them and `scb.islands`: CCR Title 14 §165.5(k) prints the island on every
-   island bed and so names all eight, but groups them as one flat "Channel Island
-   administrative kelp beds", and no source read so far draws a northern/southern line.
-   Note `scb.islands.santa-barbara` (the island) and `scb.mainland.santa-barbara` (the
-   county) are distinct nodes; their ids differ by branch.
+   level between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing
+   the island on every island bed, and gathers them under one heading, "Channel Island
+   administrative kelp beds (Total 20.68 square miles)". A finer grouping arrives with the
+   source that draws it. Note `scb.islands.santa-barbara` (the island) and
+   `scb.mainland.santa-barbara` (the county) are distinct nodes; their ids differ by branch.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
    https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The beds are
@@ -271,9 +271,9 @@ its descendants, before the next sibling — with siblings in the order this fil
 tree above is numbered by level, so the traversal, not that numbering, fixes the order: Bight-wide
 (`scb`) first; then `scb.mainland` and its counties north to south — `santa-barbara`, `ventura`,
 `los-angeles`, `orange`, `san-diego`; then `scb.islands` and its eight islands; and `global` last.
-Siblings this file does not itself put in an order — the eight islands — sort by id, so the order
-is total over every value a `regions` field can hold: every region id the tree has or gains, down
-to the eight islands under `scb.islands`, and `global`. Beds and sites are levels 4 and 5 of the
+Siblings this file names but does not order — the islands — sort by id, so the order is total
+over every value a `regions` field can hold: every region id the tree has or gains, down to the
+islands under `scb.islands`, and `global`. Beds and sites are levels 4 and 5 of the
 tree but are not region ids — a source carries them in `beds` and `sites` — so this order does not
 reach them. The order is a property of the region id alone, because it must hold for the county
 and island nodes before their records exist in 6.3. A group's heading is its node's `name`;

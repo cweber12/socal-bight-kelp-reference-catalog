@@ -119,7 +119,7 @@ def region_sort_key(region_id: str) -> tuple[int, tuple[tuple[int, str], ...]]:
     """Where a region id falls in the notebook's region order.
 
     Total over every value a `regions` field can hold - every region id the tree has or
-    gains, down to the eight islands under `scb.islands`, and `global`. Beds and sites are
+    gains, down to the islands under `scb.islands`, and `global`. Beds and sites are
     levels of the tree but not region ids, so they have no place in it: they raise
     ValueError, as does anything else that is neither `global` nor a node under `scb`.
     """
@@ -136,10 +136,10 @@ def region_sort_key(region_id: str) -> tuple[int, tuple[tuple[int, str], ...]]:
         node = ".".join(parts[: depth + 1])
         listed = SIBLING_ORDER.get(".".join(parts[:depth]), ())
         # A listed sibling sorts where it is listed; one CONTEXT.md does not order - the
-        # eight islands - sorts by id. Putting the unlisted ones after the listed ones is
-        # this file's choice, not a transcription: CONTEXT.md lists every sibling set
-        # except the islands, and lists that one not at all, so no sibling set today holds
-        # both kinds and nothing observable turns on it. See the PR for #41.
+        # islands - sorts by id. Putting the unlisted ones after the listed ones is this
+        # file's choice, not a transcription: CONTEXT.md orders every sibling set except
+        # the islands, which it names without ordering, so no sibling set today holds both
+        # kinds and nothing observable turns on it. See the PR for #41.
         levels.append((listed.index(node), "") if node in listed else (len(listed), node))
     return (_IN_THE_TREE, tuple(levels))
 

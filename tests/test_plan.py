@@ -186,10 +186,9 @@ def test_the_region_order_issue_41_states():
 
 def test_the_whole_tree_runs_depth_first():
     # A node, then all its descendants, before the next sibling; siblings in the order
-    # CONTEXT.md lists them; the eight islands, which it does not order, by id; global
-    # last. The islands sit directly under scb.islands: CCR 165.5(k) names every island
-    # but groups them as one flat "Channel Island administrative kelp beds", so there is
-    # no authority for a northern/southern level and the tree has none.
+    # CONTEXT.md lists them; the islands, which it names without ordering, by id; global
+    # last. The islands sit directly under scb.islands - see CONTEXT.md, "The region
+    # tree", level 3, for why there is no group level between them.
     tree = [
         "scb",
         "scb.mainland",
