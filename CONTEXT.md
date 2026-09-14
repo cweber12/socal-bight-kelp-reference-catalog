@@ -137,10 +137,17 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
    `scb.islands.southern`, with one node per island beneath.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
-   https://marinespecies.wildlife.ca.gov/kelp/true/, retrieved 2026-09-07). The boundaries are
-   drawn by shapefiles under the directory `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`
-   (per the same report, Monitoring section); the exact file is recorded on each bed's `defined_by`
-   when beds arrive in 6.3. Program bed names are `aliases:`.
+   https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The beds are
+   defined by **CCR Title 14 §165.5(k)**, in its own words: "Administrative kelp beds are defined
+   as follows: kelp bed number, designation, area …, and boundary descriptions", and "All
+   geographic coordinates listed use the North American Datum 1983 (NAD83)"
+   (govt.westlaw.com/calregs, document `IE6B507C0DA8311F08F04978BD7C3021A`, retrieved 2026-09-14).
+   The ESR corroborates that the coordinates live in the regulation: the 2014 amendments "updated
+   the Administrative Kelp Bed boundaries from compass headings to latitude and longitude
+   coordinates" (Management §3.1.1.2). The shapefiles under
+   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are the Department's **canopy surveys**
+   — its Monitoring section offers them as "Shapefiles of these surveys", the aerial surveys of
+   1989, 1999 and annually 2002–2016. Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
 Consortium is an attribute on a county node, not a level, and it is a **list**: the kelp.sccwrp.org
@@ -153,7 +160,8 @@ consortium surveys a given **bed** is a bed field, `surveyed_by`, arriving in mi
 
 Depth is not a level of the tree. A source's depth range is part of its `coverage`, as the source
 states it. For orientation: CDFW gives giant kelp habitat as "the low intertidal to depths of 25
-meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, same URL), which sits
+meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, at the report root
+https://marinespecies.wildlife.ca.gov/kelp/, not the Management section cited above), which sits
 within Bight '18's Inner Shelf stratum, 7–30 m (TR 1289, Table 1).
 
 ## Record schemas
