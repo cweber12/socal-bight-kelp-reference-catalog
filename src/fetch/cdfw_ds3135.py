@@ -9,6 +9,13 @@ HTTP status and the response headers a repeat fetch records - content_type, last
 and etag, null when the server sends none. data/ is git-ignored and reproducible from this
 script, which is the record of the fetch (CONTEXT.md, "Record format"). Standard library
 only.
+
+A 200 is not enough. A host that answers an error or a challenge page with status 200 would
+be hashed and manifested as a VERIFIED fetch with nothing to reveal it, and CONTEXT.md
+defines VERIFIED as "the route was exercised: bytes fetched". PK is the local file
+header every zip starts with, which is what the served Content-Type claims. The 300-second
+timeout is what sio_shore_stations.py and sccwrp_b08_rocky_reef.py use for files this size;
+noaa_oni.py's 120 is the outlier.
 """
 
 from __future__ import annotations
@@ -26,16 +33,22 @@ FILES = (
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
+ZIP_MAGIC = b"PK"
 
 
 def fetch(url: str, out_dir: Path) -> dict[str, object]:
     """Download one file into out_dir and write its manifest. Returns the manifest."""
     name = url.rsplit("/", 1)[-1]
     request = urllib.request.Request(url, headers={"User-Agent": f"kelpcatalog/{SOURCE_ID}"})
-    with urllib.request.urlopen(request, timeout=120) as response:
+    with urllib.request.urlopen(request, timeout=300) as response:
         body = response.read()
         http_status = response.status
         headers = response.headers
+    if not body.startswith(ZIP_MAGIC):
+        raise RuntimeError(
+            f"{url}: body is not a zip (first bytes {body[:4]!r}, "
+            f"Content-Type {headers.get('Content-Type')!r})"
+        )
     manifest = {
         "url": url,
         "fetched_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),

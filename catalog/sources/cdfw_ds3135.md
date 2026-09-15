@@ -27,23 +27,29 @@ format: >-
   additionally as Shapefile, GeoJSON, CSV and KML, and as an ArcGIS GeoServices REST API layer of
   type "Feature Layer", geometryType "esriGeometryPolygon"
 license: >-
-  "License: This work is licensed under Creative Commons Attribution 4.0 International License (
-  https://creativecommons.org/licenses/by/4.0/ ). Using the citation standards recommended for BIOS
-  datasets ( https://www.wildlife.ca.gov/Data/BIOS/Citing-BIOS ) satisfies the attribution
-  requirements of this license. Disclaimer: The State makes no claims, promises, or guarantees about
-  the accuracy, completeness, reliability, or adequacy of these data and expressly disclaims
+  "License: This work is licensed under Creative Commons Attribution 4.0 International License
+  (https://creativecommons.org/licenses/by/4.0/). Using the citation standards recommended for
+  BIOS datasets (https://www.wildlife.ca.gov/Data/BIOS/Citing-BIOS) satisfies the attribution
+  requirements of this license. Disclaimer: The State makes no claims, promises, or guarantees
+  about the accuracy, completeness, reliability, or adequacy of these data and expressly disclaims
   liability for errors and omissions in these data. No warranty of any kind, implied, expressed, or
   statutory, including but not limited to the warranties of non-infringement of third party rights,
   title, merchantability, fitness for a particular purpose, and freedom from computer virus, is
-  given with respect to these data." The licenceInfo of the ArcGIS item behind the layer, item
+  given with respect to these data." The "licenseInfo" of the ArcGIS item behind the layer, item
   ab454f2e05724a1482a7b983ec316642, at
   https://www.arcgis.com/sharing/rest/content/items/ab454f2e05724a1482a7b983ec316642?f=json; the
-  dataset page states the same licence in short form as "License Creative Commons Attribution"
-  (both retrieved 2026-09-14)
+  dataset page states the same licence in short form as "License Creative Commons Attribution".
+  The attribution string the layer publishes is its "copyrightText", "California Department of Fish
+  and Wildlife, Marine Region GIS Laboratory" (all retrieved 2026-09-14)
 variables:
   - OBJECTID
   - "KelpBed: Number used to identify specific administrative kelp bed."
-  - "Status: Current designation (open, closed, leasable, leased)."
+  - >-
+    "Status: Current designation (open, closed, leasable, leased)." The layer also publishes the
+    value set itself, as five values rather than the four that sentence names. Its "typeIdField"
+    is "Status" and its "types" are "CLOSED", "CLOSED (TEMPORARILY)", "LEASABLE", "LEASED" and
+    "OPEN"; its "drawingInfo.renderer" is a "uniqueValue" renderer on "Status" carrying the same
+    five as both "value" and "label". The field itself declares no coded-value domain.
   - "Lessee: Current organization leasing the kelp bed."
   - "TermEnds: End date of the current lease."
   - Shape__Area
