@@ -24,8 +24,11 @@ running, and everything below exists to keep it open.
    When the PR touches one of these two, read `git show main:<file>` here, not the working copy —
    the working copy *is* part of the diff, and reading it at step 1 spends step 3's independence
    before you reach it. The changed version is the diff, and you meet it at step 4.
-2. The issue the PR closes, in full, **including every comment** — `gh issue view <n> --comments`.
-   Then the issues the brief names as downstream, for what will read what this PR commits.
+2. The issue the PR closes, in full, **including every comment** —
+   `gh issue view <n> --json title,body,comments --jq '.title, .body, .comments[].body'`. Not
+   `--comments`: that switch replaces the body with the comments and returns nothing on an issue
+   that has none (`docs/agents/issue-tracker.md`, "Read"). Then the issues the brief names as
+   downstream, for what will read what this PR commits.
 3. **Before you open the diff**, write down — as properties you could test — what those documents
    require of this slice, what they forbid, and what would make it hold a fact rather than render
    one. Write it into your report as section 0 before you look.
@@ -51,7 +54,8 @@ conversations you were not in — owner decisions, what is already parked, what 
 Each one cites where it comes from. Open the citation. A settled decision you reopen is noise, and
 a finding already on the Parking lot is not a finding.
 
-Coverage percentages are not evidence that tests bite. `gate.py` measures line coverage only. The
+Coverage percentages are not evidence that tests bite. `gate.py` measures line and branch coverage
+(`--cov-branch`, since #68), and a covered branch is one that ran, not a rule that is pinned. The
 question of whether a test would fail if the rule it names were removed is answered by removing
 the rule, not by a number.
 

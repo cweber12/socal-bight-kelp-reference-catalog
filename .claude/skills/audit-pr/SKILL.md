@@ -13,10 +13,10 @@ that carries your conclusions produces an auditor that agrees with you. Do the f
 
 ## When
 
-After the PR is open and CI is green — the auditor re-runs `gate.py` and both `ruff` commands, and
-reads the PR by number, so all of it must exist. `gate.py` runs no ruff, so "green" means all three.
-Then commission the audit **before** you report the PR as ready. A PR that has not been audited is
-not ready; say that plainly rather than reporting it as done and offering an audit.
+After the PR is open and CI is green — the auditor re-runs `gate.py`, whose `lint` row runs both
+`ruff` commands (#68), and reads the PR by number, so all of it must exist. Then commission the
+audit **before** you report the PR as ready. A PR that has not been audited is not ready; say that
+plainly rather than reporting it as done and offering an audit.
 
 Skip it only when the owner says to.
 
