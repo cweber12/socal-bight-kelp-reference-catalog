@@ -1,6 +1,7 @@
 # PRD — Scaffold (milestone 6.1)
 
-Status: done (milestone 6.1 closed with 17 issues; the third source, `calcofi`, merged 2026-09-09)
+Status: done (the third source, `calcofi`, merged 2026-09-09; milestone 6.1 closed 2026-09-15 with
+all 17 issues closed)
 Created: 2026-09-07
 
 ## Problem

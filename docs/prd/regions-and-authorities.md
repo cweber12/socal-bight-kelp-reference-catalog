@@ -237,11 +237,12 @@ and write the vocabulary from what they state. **The exit trigger is on #84**: a
 session reads what the five records state about spatial units and rewrites slices 9–14 against that
 before any is labelled ready again. Slices 7 and 8 are not frozen on the vocabulary; they wait on
 order, since nothing needs them before #107 and the bed records exist. Decision 2 was reaffirmed by
-the owner on 2026-09-15: the
-bed-to-county key is retrieval machinery held here so that a session generating a county-scoped
-notebook filters through a pinned, gated record rather than computing the join itself. Slice 6a is
-the region half of #83, split out the same day because it does not depend on what a bed is and
-because slices 16–17 would otherwise write fifteen records into a field slice 9 later rewrites.
+the owner on 2026-09-15: the bed-to-county key is retrieval machinery held here so that a session
+generating a county-scoped notebook filters through a pinned, gated record rather than computing
+the join itself. Slice 6a is the region half of #83, split out the same day because it does not
+depend on what a bed is and because slices 16–17 would otherwise write fifteen records into a field
+slice 9 later rewrites. Slice 18a is #105, a region-vocabulary decision promoted from the Parking
+lot the same day; its number places it in the table, not in the order.
 
 | order | # | slice | seam | done when |
 |---|---|---|---|---|
@@ -271,8 +272,7 @@ Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the 
 6a gives the region records the field shape they are written in. Slices 7–8 make the derived index
 legitimate before anything relies on it. Slices 9–14 are the schema, each landing `CONTEXT.md` and
 code together. Slices 15–17 build the region tree, with 16a holding the islands' authority before
-slice 17 cites it. Slice 18
-closes #18.
+slice 17 cites it. Slice 18 closes #18, and 18a waits on the owner's reading in #105, in any order.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
 county or island node; slice 13 carries its intent with `region` as a list. Its non-goal — "not the
