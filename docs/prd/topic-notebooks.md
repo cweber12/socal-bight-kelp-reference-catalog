@@ -1,6 +1,6 @@
 # PRD — Topic notebooks (milestone 6.2)
 
-Status: done (eleven notebooks, four gate rows and the `add-source` refresh step landed by 2026-09-11)
+Status: done (eleven notebooks, five gate rows and the `add-source` refresh step landed by 2026-09-11)
 Created: 2026-09-09
 Revised: 2026-09-09, after an audit of the first draft reversed its central decision.
 

@@ -228,15 +228,16 @@ Numbers are issues on milestone 6.3. The rows are in work order. **Forward depen
 are named per row**; where an issue can land ahead of what it points at, its own "Depends on" says
 so.
 
-**Freeze, 2026-09-14.** Slices 7–14 were moved from `ready-for-agent` to `needs-triage` after the
-audits of this PRD's first draft showed that its external facts held and its decisions did not.
-Slices 9–13 are frozen on the bed vocabulary: "bed" is at least four objects — the administrative
-kelp bed of §165.5(k), one survey year's canopy, a continuous kelp forest, and a program bed such as
-"Point Loma" — and the plan is to enter the five authorities first and write the vocabulary from what
-they state. **The exit trigger is on #84**: after #81 merges, one session reads what the five records
-state about spatial units and rewrites slices 9–13 against that before any is labelled ready again.
-Slices 7, 8 and 14 are not frozen on the vocabulary; they wait on order, since nothing needs them
-before #107 and the bed records exist. Decision 2 was reaffirmed by the owner on 2026-09-15: the
+**Freeze, 2026-09-14.** Slices 7–14 were moved from `ready-for-agent` to `needs-triage` after two
+audits of this PRD's first draft verified 19 of 21 and 7 of 8 of its external facts and blocked on
+the decisions it added. Slices 9–14 are frozen on the bed vocabulary: "bed" is at least four
+objects — the administrative kelp bed of §165.5(k), one survey year's canopy, a continuous kelp
+forest, and a program bed such as "Point Loma" — and the plan is to enter the five authorities first
+and write the vocabulary from what they state. **The exit trigger is on #84**: after #81 merges, one
+session reads what the five records state about spatial units and rewrites slices 9–14 against that
+before any is labelled ready again. Slices 7 and 8 are not frozen on the vocabulary; they wait on
+order, since nothing needs them before #107 and the bed records exist. Decision 2 was reaffirmed by
+the owner on 2026-09-15: the
 bed-to-county key is retrieval machinery held here so that a session generating a county-scoped
 notebook filters through a pinned, gated record rather than computing the join itself. Slice 6a is
 the region half of #83, split out the same day because it does not depend on what a bed is and
@@ -264,6 +265,7 @@ because slices 16–17 would otherwise write fifteen records into a field slice 
 | 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
 | 18 | [#18](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/18) | `CONTEXT.md` cites record ids | `CONTEXT.md` | every factual claim names a record that exists |
+| 18a | [#105](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/105) | which region a source tags when its stated bound is wider than the Bight; `needs-triage`, the owner picks the reading | `CONTEXT.md`, "Vocabularies", regions | the rule is one sentence naming its reading, and every existing record's `regions` is right under it |
 
 Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the five authorities, and
 6a gives the region records the field shape they are written in. Slices 7–8 make the derived index

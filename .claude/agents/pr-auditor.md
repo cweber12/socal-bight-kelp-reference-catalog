@@ -27,7 +27,8 @@ running, and everything below exists to keep it open.
 2. The issue the PR closes, in full, **including every comment** —
    `gh issue view <n> --json title,body,comments --jq '.title, .body, .comments[].body'`. Not
    `--comments`: that switch replaces the body with the comments and returns nothing on an issue
-   that has none (`docs/agents/issue-tracker.md`, "Read"). Then the issues the brief names as downstream, for what will read what this PR commits.
+   that has none (`docs/agents/issue-tracker.md`, "Read"). Then the issues the brief names as
+   downstream, for what will read what this PR commits.
 3. **Before you open the diff**, write down — as properties you could test — what those documents
    require of this slice, what they forbid, and what would make it hold a fact rather than render
    one. Write it into your report as section 0 before you look.
