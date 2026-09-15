@@ -49,8 +49,8 @@ variables:
   - "KelpBed: Number used to identify specific administrative kelp bed."
   - >-
     "Status: Current designation (open, closed, leasable, leased)." The layer also publishes the
-    value set itself, as five values rather than the four that sentence names. Its "typeIdField"
-    is "Status" and its "types" are "CLOSED", "CLOSED (TEMPORARILY)", "LEASABLE", "LEASED" and
+    value set itself. Its "typeIdField" is "Status" and its "types" are "CLOSED",
+    "CLOSED (TEMPORARILY)", "LEASABLE", "LEASED" and
     "OPEN"; its "drawingInfo.renderer" is a "uniqueValue" renderer on "Status" carrying the same
     five as both "value" and "label". The field itself declares no coded-value domain.
   - "Lessee: Current organization leasing the kelp bed."
