@@ -133,14 +133,27 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
    stratum; every mainland program states coverage by county.
 3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
    `.san-diego` (coverage as stated for the Region Nine and Central Region Kelp Survey Consortia on
-   the kelp.sccwrp.org home page, retrieved 2026-09-07). Island groups: `scb.islands.northern`,
-   `scb.islands.southern`, with one node per island beneath.
+   the kelp.sccwrp.org home page, retrieved 2026-09-07). Islands: eight nodes directly under
+   `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
+   `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group
+   level between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing
+   the island on every island bed, and gathers them under one heading, "Channel Island
+   administrative kelp beds (Total 20.68 square miles)". A finer grouping arrives with the
+   source that draws it. Note `scb.islands.santa-barbara` (the island) and
+   `scb.mainland.santa-barbara` (the county) are distinct nodes; their ids differ by branch.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
-   https://marinespecies.wildlife.ca.gov/kelp/true/, retrieved 2026-09-07). The boundaries are
-   drawn by shapefiles under the directory `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/`
-   (per the same report, Monitoring section); the exact file is recorded on each bed's `defined_by`
-   when beds arrive in 6.3. Program bed names are `aliases:`.
+   https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The beds are
+   defined by **CCR Title 14 §165.5(k)**, in its own words: "Administrative kelp beds are defined
+   as follows: kelp bed number, designation, area …, and boundary descriptions", and "All
+   geographic coordinates listed use the North American Datum 1983 (NAD83)"
+   (govt.westlaw.com/calregs, document `IE6B507C0DA8311F08F04978BD7C3021A`, retrieved 2026-09-14).
+   The ESR corroborates that the coordinates live in the regulation: the 2014 amendments "updated
+   the Administrative Kelp Bed boundaries from compass headings to latitude and longitude
+   coordinates" (Management §3.1.1.2). The shapefiles under
+   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are the Department's **canopy surveys**
+   — its Monitoring section offers them as "Shapefiles of these surveys", the aerial surveys of
+   1989, 1999 and annually 2002–2016. Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
 Consortium is an attribute on a county node, not a level, and it is a **list**: the kelp.sccwrp.org
@@ -153,7 +166,8 @@ consortium surveys a given **bed** is a bed field, `surveyed_by`, arriving in mi
 
 Depth is not a level of the tree. A source's depth range is part of its `coverage`, as the source
 states it. For orientation: CDFW gives giant kelp habitat as "the low intertidal to depths of 25
-meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, same URL), which sits
+meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, at the report root
+https://marinespecies.wildlife.ca.gov/kelp/, not the Management section cited above), which sits
 within Bight '18's Inner Shelf stratum, 7–30 m (TR 1289, Table 1).
 
 ## Record schemas
@@ -254,16 +268,15 @@ Each topic notebook has the same shape, generated from the records:
 
 **The region order.** Groups run in the tree's own order, traversed depth-first — a node, then all
 its descendants, before the next sibling — with siblings in the order this file lists them. The
-tree above is numbered by level, so the traversal, not that numbering, fixes the order:
-Bight-wide (`scb`) first; then `scb.mainland` and its counties north to south —
-`santa-barbara`, `ventura`, `los-angeles`, `orange`, `san-diego`; then `scb.islands`, its groups in
-the order listed (`northern`, then `southern`), and the islands beneath each; and `global` last.
-Siblings this file does not itself put in an order — the islands within a group — sort by id, so
-the order is total over every value a `regions` field can hold: every region id the tree has or
-gains, down to the islands beneath each group, and `global`. Beds and sites are levels 4 and 5 of
-the tree but are not region ids — a source carries them in `beds` and `sites` — so this order
-does not reach them. The order is a property of the region id alone, because it must hold for the
-county and island nodes before their records exist in 6.3. A group's heading is its node's `name`;
+tree above is numbered by level, so the traversal, not that numbering, fixes the order: Bight-wide
+(`scb`) first; then `scb.mainland` and its counties north to south — `santa-barbara`, `ventura`,
+`los-angeles`, `orange`, `san-diego`; then `scb.islands` and its eight islands; and `global` last.
+Siblings this file names but does not order — the islands — sort by id, so the order is total
+over every value a `regions` field can hold: every region id the tree has or gains, down to the
+islands under `scb.islands`, and `global`. Beds and sites are levels 4 and 5 of the
+tree but are not region ids — a source carries them in `beds` and `sites` — so this order does not
+reach them. The order is a property of the region id alone, because it must hold for the county
+and island nodes before their records exist in 6.3. A group's heading is its node's `name`;
 `global` has no record and is headed **No regional bound**.
 
 `global` sorts last rather than first, and the three reasons are recorded here so that the next
