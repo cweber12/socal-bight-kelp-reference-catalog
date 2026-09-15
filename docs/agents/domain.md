@@ -22,7 +22,7 @@ right and the code is a bug** — change the code, not the document, unless a hu
 ## File structure
 
     /
-    ├── CONTEXT.md          the authority: the rule, schemas, vocabularies, region tree
+    ├── CONTEXT.md          the authority: the rule, schemas, vocabularies, region tree, notebooks, gates
     ├── CLAUDE.md           how to work: tracker, branches, commits, scope guards
     ├── catalog/            the records themselves, one markdown file each
     │   ├── sources/        a dataset, program, report series or transcribed table
@@ -32,11 +32,22 @@ right and the code is a bug** — change the code, not the document, unless a hu
     │   ├── beds/           a CDFW Administrative Kelp Bed
     │   ├── sites/          a monitoring program's named station
     │   └── tables/         transcribed tables as CSV
+    ├── notebooks/          generated from the records: 00_index plus one per topic in a folder per group
     ├── docs/
     │   ├── agents/         this file and its siblings
     │   └── prd/<slug>.md   one PRD per milestone
+    ├── .claude/
+    │   ├── skills/         add-source (walks one record in), audit-pr (commissions the audit)
+    │   └── agents/         pr-auditor, the audit method
     ├── gate.py             the one command that runs every gate
-    ├── src/kelpcatalog/    schema.py implements CONTEXT.md
+    ├── src/fetch/<id>.py   one script per FETCHED source; writes data/raw/<id>/ and its manifests
+    ├── src/kelpcatalog/
+    │   ├── schema.py       implements CONTEXT.md's records, vocabularies and links
+    │   ├── plan.py         CONTEXT.md's notebook facts as data: questions, paths, region order
+    │   ├── build.py, generate.py     records in, notebooks out
+    │   ├── notebook.py     what a figure cell imports: provenance(...) and load(source_id)
+    │   └── structure.py, outputs.py, fresh.py, figure_provenance.py   the four notebook gates
+    ├── data/               git-ignored; reproducible from src/fetch/
     └── tests/              the unit gate's tests, with fixtures
 
 ## Use the vocabulary as written

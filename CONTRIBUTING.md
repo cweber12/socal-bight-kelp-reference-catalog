@@ -14,8 +14,8 @@
 6. Commit the record, its fetch script and the notebooks that moved, then open a PR titled
    `catalog: add <id>`; paste the gate output into the body.
 
-Inside a Claude Code session the `add-source` skill does steps 1–7 of its own checklist —
-steps 1–5 here, and it stops before committing.
+Inside a Claude Code session the `add-source` skill covers steps 1–5 here as its own steps 0–7,
+then stops at its step 8 without committing.
 
 ## Adding a reference, exclusion, region, bed or site
 

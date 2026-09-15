@@ -4,6 +4,8 @@ Status: active
 Created: 2026-09-12
 Revised: 2026-09-13, after an audit of the first draft reversed one of its findings and showed that
 the decision it was proudest of could not be written against the schema it was proposing.
+Revised: 2026-09-15, to record the freeze of 2026-09-14 in the Slices table it applies to, and the
+split of #83 into a regions half (#104) and a frozen beds-and-sites half.
 
 ## Problem
 
@@ -226,6 +228,20 @@ Numbers are issues on milestone 6.3. The rows are in work order. **Forward depen
 are named per row**; where an issue can land ahead of what it points at, its own "Depends on" says
 so.
 
+**Freeze, 2026-09-14.** Slices 7–14 were moved from `ready-for-agent` to `needs-triage` after the
+audits of this PRD's first draft showed that its external facts held and its decisions did not.
+Slices 9–13 are frozen on the bed vocabulary: "bed" is at least four objects — the administrative
+kelp bed of §165.5(k), one survey year's canopy, a continuous kelp forest, and a program bed such as
+"Point Loma" — and the plan is to enter the five authorities first and write the vocabulary from what
+they state. **The exit trigger is on #84**: after #81 merges, one session reads what the five records
+state about spatial units and rewrites slices 9–13 against that before any is labelled ready again.
+Slices 7, 8 and 14 are not frozen on the vocabulary; they wait on order, since nothing needs them
+before #107 and the bed records exist. Decision 2 was reaffirmed by the owner on 2026-09-15: the
+bed-to-county key is retrieval machinery held here so that a session generating a county-scoped
+notebook filters through a pinned, gated record rather than computing the join itself. Slice 6a is
+the region half of #83, split out the same day because it does not depend on what a bed is and
+because slices 16–17 would otherwise write fifteen records into a field slice 9 later rewrites.
+
 | order | # | slice | seam | done when |
 |---|---|---|---|---|
 | 1 | [#77](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/77) | correct the bed-boundary authority | `CONTEXT.md` region tree level 4 only | the directory is described as canopy surveys; §165.5(k) and ds3135 are named; no schema field changes |
@@ -234,9 +250,10 @@ so.
 | 4 | [#80](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/80) | add `sccwrp_tr1289` | `add-source` | survey area and Inner Shelf stratum quoted |
 | 5 | [#81](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/81) | add `cdfw_kelp_esr` | `add-source` | the JSON API route reaches the report text; the TLS caveat is recorded |
 | 6 | [#82](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/82) | add `sccwrp_kelp_aerial` | `add-source` | consortium coverage sentences verbatim |
+| 6a | [#104](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/104) | `regions.defined_by` becomes `{source, where}` | `RULES["regions"]`; the link pass; the `regions` row; `catalog/regions/scb.md` | a bare-string `defined_by` on a region fails; `scb.md` cites `sccwrp_tr1289`; a bed's bare string still validates |
 | 7 | [#93](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/93) | "The rule" excludes analysis, not computation | `CONTEXT.md`, "The rule" and its table | the admitted column names a deterministic index; the excluded column still names findings |
 | 8 | [#94](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/94) | a `DERIVED` tier | `TIER` and `_tier_problems` in `schema.py`; **five** `CONTEXT.md` lines, including the `tables/` provenance rule | a `DERIVED` record without a script is a problem; `transcribed_from` is not required of it; #17 admits the tier |
-| 9 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` | `RULES` for `regions`/`beds`/`sites`; `catalog/regions/scb.md` | a bare-string `defined_by` fails; `scb.md` cites `sccwrp_tr1289` |
+| 9 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` on beds and sites (regions: slice 6a); *frozen* | `RULES` for `beds`/`sites`; the twelve bed fixtures | a bare-string `defined_by` on a bed or site fails; the PR says whether a bed's authority is the regulation, a layer, or both |
 | 10 | [#84](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/84) | `beds.name` becomes `beds.extent` | `RULES["beds"]`; fixtures; `a_bed()`; the `beds` row | a bed carrying `name` fails; beds 105/106's form validates |
 | 11 | [#85](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/85) | drop `beds.aliases` | `RULES["beds"]`; the `beds` row; eleven fixtures | a bed carrying `aliases` fails as unknown |
 | 12 | [#92](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/92) | which authority `status` quotes | `BED_STATUS`; `_vocab_problems`; the `beds` row | the chosen vocabulary is in both files, and the PR says which and why |
@@ -244,12 +261,15 @@ so.
 | 14 | [#95](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/95) | `retrieved` on beds and sites | `RULES["beds"]`, `RULES["sites"]`; two schema rows | `retrieved` follows the same `date?` rule it follows on a source |
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
 | 16 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties with their consortium lists |
+| 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
 | 18 | [#18](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/18) | `CONTEXT.md` cites record ids | `CONTEXT.md` | every factual claim names a record that exists |
 
-Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the five authorities.
-Slices 7–8 make the derived index legitimate before anything relies on it. Slices 9–14 are the
-schema, each landing `CONTEXT.md` and code together. Slices 15–17 build the region tree. Slice 18
+Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the five authorities, and
+6a gives the region records the field shape they are written in. Slices 7–8 make the derived index
+legitimate before anything relies on it. Slices 9–14 are the schema, each landing `CONTEXT.md` and
+code together. Slices 15–17 build the region tree, with 16a holding the islands' authority before
+slice 17 cites it. Slice 18
 closes #18.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
@@ -263,7 +283,8 @@ audit found it was. Filed 2026-09-13:
 
 | # | slice |
 |---|---|
-| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93 and #94** |
+| [#107](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/107) | the California county boundary layer #96 joins against, as its own source — filed 2026-09-15; the layer must state its offshore extent, since ds3135's polygons run to the state-waters line |
+| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93, #94 and #107** |
 | [#97](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/97) | the 18 island bed records — needs no join; §165.5(k) states the island |
 | [#98](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/98) | the 30 mainland bed records — depends on #96 |
 | [#99](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/99) | `surveyed_by`, `ready-for-human`: no source states it per bed |

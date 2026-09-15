@@ -7,7 +7,9 @@ repo from `git remote -v` when run inside a clone.
 ## Commands
 
 - **Create**: `gh issue create --title "..." --body "..."` (heredoc for multi-line bodies)
-- **Read**: `gh issue view <number> --comments`
+- **Read**: `gh issue view <number> --json title,body,comments --jq '.title, .body, .comments[].body'`.
+  Not `--comments`: that switch *replaces* the body with the comments, and on an issue with no
+  comments it returns zero bytes with exit 0 (measured on gh 2.92.0, non-TTY, 2026-09-15).
 - **List**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |
   {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`, with `--label`
   and `--milestone` filters
@@ -15,15 +17,15 @@ repo from `git remote -v` when run inside a clone.
 - **Label**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Milestone**: `gh issue edit <number> --milestone "6.2 Topic notebooks"`
 - **Close**: `gh issue close <number> --comment "..."`
-- **Milestones themselves**: `gh api repos/{owner}/{repo}/milestones` — `gh` has no `milestone`
-  subcommand.
+- **Milestones themselves**: `gh api "repos/{owner}/{repo}/milestones?state=all"` — `gh` has no
+  `milestone` subcommand, and without `state=all` the endpoint hides closed milestones.
 
 ## Conventions
 
 - One milestone is active at a time; they are named `<number> <name>`: `6.1 Scaffold`,
-  `6.2 Topic notebooks`, `6.3 Regions, beds, sites`, `6.4 Re-entry`, `6.5 Lock and fetch`,
-  `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
-  `docs/prd/<slug>.md`.
+  `6.2 Topic notebooks`, `6.3 Regions and authorities`, `6.3b Beds and sites`, `6.4 Re-entry`,
+  `6.5 Lock and fetch`, `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
+  `docs/prd/<slug>.md`; 6.3b is scheduled inside the 6.3 PRD.
 - **The next thing to do** is the first open `ready-for-agent` issue in the active milestone's PRD
   **Slices** table. Not the top of `gh issue list`, which sorts newest-first and so puts the *last*
   slice of the milestone first (`CLAUDE.md`, "How work is tracked").
@@ -78,4 +80,5 @@ Create a GitHub issue. Label it `needs-triage` unless it already clears the read
 
 ## When a skill says "fetch the relevant ticket"
 
-`gh issue view <number> --comments`.
+The **Read** form above: `gh issue view <number> --json title,body,comments --jq '.title, .body,
+.comments[].body'`.
