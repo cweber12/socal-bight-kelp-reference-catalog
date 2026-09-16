@@ -124,7 +124,9 @@ kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, 
 
 ## The region tree
 
-Every node's `defined_by` names the source that draws the boundary. Levels:
+Every node's `defined_by` is `{source, where}`: the `sources/` record that draws the boundary
+and a locator within it (a section, a subsection, a page), the shape `transcribed_from` has.
+Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
    Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker
@@ -221,8 +223,9 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 ### regions/<id>.md
 
 `id`* (equals file name), `name`*, `parent`* (region id, or null for `scb`), `defined_by`*
-(the source that draws the boundary), `consortium` (list of `RNKSC` / `CRKSC`, non-empty only
-when `parent` is `scb.mainland`; `[]` where neither consortium covers the county).
+(`{source, where}`: a source id that exists, and where in that source the boundary is drawn),
+`consortium` (list of `RNKSC` / `CRKSC`, non-empty only when `parent` is `scb.mainland`; `[]`
+where neither consortium covers the county).
 
 ### beds/<n>.md
 

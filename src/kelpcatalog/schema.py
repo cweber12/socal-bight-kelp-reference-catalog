@@ -165,7 +165,7 @@ class Catalog:
 # --- field rules -------------------------------------------------------------------
 #
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
-# "date", "date?", "list[str]", "list[topic]", "list[eq]".
+# "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]".
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -215,7 +215,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "id": (True, "str"),
         "name": (True, "str"),
         "parent": (True, "str?"),
-        "defined_by": (True, "str"),
+        "defined_by": (True, "map"),
         "consortium": (False, "list[str]"),
     },
     "beds": {
@@ -335,6 +335,13 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             out.append(Problem(p, "human_task", f"does not match {HUMAN_TASK_RE.pattern}"))
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
+    if rec.kind == "regions" and "defined_by" not in bad:
+        # CONTEXT.md, regions: defined_by {source, where} - the record that draws the
+        # boundary and a locator within it, the shape transcribed_from has. Beds and
+        # sites still carry a string here (#83).
+        db = d["defined_by"]
+        if not all(isinstance(db.get(k), str) and db[k].strip() for k in ("source", "where")):
+            out.append(Problem(p, "defined_by", "required: {source, where}"))
     if rec.kind == "regions" and "consortium" not in bad:
         con = d.get("consortium") or []
         for c in con:
@@ -439,8 +446,12 @@ def _link_problems(rec: Record, catalog: Catalog, bad: set[str]) -> list[Problem
         tf = d.get("transcribed_from")
         if isinstance(tf, dict) and "reference" in tf:
             check("transcribed_from.reference", [str(tf["reference"])], "references")
-    if rec.kind == "regions" and d.get("parent") is not None:
-        check("parent", [str(d["parent"])], "regions")
+    if rec.kind == "regions":
+        if d.get("parent") is not None:
+            check("parent", [str(d["parent"])], "regions")
+        db = d.get("defined_by")
+        if isinstance(db, dict) and "source" in db:
+            check("defined_by.source", [str(db["source"])], "sources")
     if rec.kind == "beds":
         check("region", [str(d.get("region"))], "regions")
     if rec.kind == "sites" and d.get("bed") is not None:
