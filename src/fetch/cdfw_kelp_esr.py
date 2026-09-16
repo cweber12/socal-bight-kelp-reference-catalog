@@ -17,7 +17,10 @@ number and each file is stored under it, with its manifest as manifest_<number>.
 
 The body check is the JSON counterpart of the %PDF- check in src/fetch/sccwrp_tr1289.py:
 a truncated or error-bodied 200 would otherwise be stored, hashed and manifested as a
-VERIFIED fetch with nothing to reveal it.
+VERIFIED fetch with nothing to reveal it. It tests the payload's content and not just
+the presence of its key, because this host answers an out-of-range page with HTTP 200,
+Content-Type application/json and the 23-byte body {"speciesESRPage":null} - so a key
+that is present and null is the very failure the check exists to catch.
 """
 
 from __future__ import annotations
@@ -47,8 +50,8 @@ def fetch(url: str, out_dir: Path) -> dict[str, object]:
         http_status = response.status
         headers = response.headers
     payload = json.loads(body.decode("utf-8"))
-    if PAYLOAD_KEY not in payload:
-        raise SystemExit(f"{url}: {len(body)} bytes of JSON without a {PAYLOAD_KEY} key")
+    if not payload.get(PAYLOAD_KEY):
+        raise SystemExit(f"{url}: {len(body)} bytes of JSON with no {PAYLOAD_KEY} content")
     manifest = {
         "url": url,
         "fetched_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
