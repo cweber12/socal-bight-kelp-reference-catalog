@@ -11,8 +11,9 @@ access:
     page
   - >-
     Follow a link labelled "Giant Kelp and Bull Kelp Enhanced Status Report". The page carries four
-    of them — in the paragraph beginning "A detailed summary of CDFW kelp management", in the giant
-    kelp and bull kelp rows of its species table, and in the closing paragraph beginning "To learn
+    of them — in the paragraph beginning "A detailed summary of CDFW kelp management", in the
+    giant kelp and bull kelp rows of its species table, and in the closing paragraph beginning
+    "To learn
     more about CDFW's management of kelp and other marine algae" — and all four point to
     https://marinespecies.wildlife.ca.gov/kelp/true/ (2026-09-16)
   - >-
@@ -53,18 +54,27 @@ access:
     without customisation on 2026-09-15, from curl and from Python 3.13 urllib using its default
     SSL context
   - >-
-    The text quoted in this record comes from four places in the payload: section prose in
-    speciesESRPage.sections[].content, section titles in .sections[].name, figure and table
-    captions in .sections[].figuresAndTables[].caption, and the citation, the version note and the
-    table of contents in .footer. The prose and the captions are HTML markup, and the report's own
+    The text quoted in this record comes from six places in the payload: section prose in
+    speciesESRPage.sections[].content, section titles in .sections[].name, section ids in
+    .sections[].sectionId, figure and table captions in .sections[].figuresAndTables[].caption,
+    table bodies in .sections[].figuresAndTables[].table, and the report's citation and version
+    note in .footer.citation and .footer.version. The prose, the captions and the table bodies are
+    HTML markup, and the report's own
     line breaks are newline characters inside it that fall within phrases, as in "compass" newline
     "headings", while character entities stand unresolved, the no-break space among them. To
     reproduce a
-    quotation from any of the four: remove the tags, replacing each with nothing rather than with a
+    quotation from any of the six: remove the tags, replacing each with nothing rather than with a
     space, since markup falls inside words; resolve the character entities; then replace each run
     of whitespace, the no-break space among it, with one space. That is the text the rendered page
     shows. The same three steps reproduce the text this record quotes from the HTML pages named in
     the steps above, where an apostrophe is written as a numeric character reference
+  - >-
+    Where coverage quotes a passage that ends before the end of the payload text it is taken from,
+    whichever of the six that is, the quotation closes with an ellipsis inside the quotation marks;
+    where it runs to that end, it does not. A passage that begins after the start carries no mark,
+    and neither does a phrase quoted inside a sentence of this record, in variables or in these
+    steps. So a closing ellipsis means the source continues, and never that anything inside the
+    quotation was dropped: no quotation in this record elides text from within a passage
 format: >-
   JSON, one response per report page; served as Content-Type application/json; charset=utf-8. Each
   response is an object with the single key speciesESRPage, carrying commonName, scientificName,
@@ -130,12 +140,12 @@ coverage: >-
   California, giant kelp typically grows on rocky reefs from the low intertidal to depths of 25
   meters (82 feet) with maximum depths of 30 meters (98 feet). Bull kelp grows on similar substrate
   typically from the low intertidal to 17 meters (56 feet) with maximum depths of 40 meters (131
-  feet)." Administrative Kelp Beds: "Commercial kelp harvest is managed through 87 officially
+  feet). …" Administrative Kelp Beds: "Commercial kelp harvest is managed through 87 officially
   delineated Administrative Kelp Beds that span the entire California coastline including the
   Channel Islands. Beds have one of four statuses: Open (available to harvest by all and leases
   cannot be issued), Closed (commercial harvest of kelp is prohibited except as edible seaweed),
   Leasable (Open until an exclusive lease is granted by the Commission and then harvest is only
-  available to the lessee), or Lease Only (Closed until leased)."; "The kelp fishery is managed
+  available to the lessee), or Lease Only (Closed until leased). …"; "The kelp fishery is managed
   spatially in Administrative Kelp Beds, charted by
   the Commission in 1931. Originally, the Administrative Kelp Beds covered only the central and
   Southern California coasts, but in 1995, the northern Beds were established (Collins et al.
@@ -158,19 +168,23 @@ coverage: >-
   Canopy
   surveys: "The Department collected fishery-independent data on kelp canopy area for most years
   using aerial surveys in 1989, 1999, and annually from 2002–2016, with most data collected by the
-  Department and its contractors." and "Shapefiles of these surveys are available for download
+  Department and its contractors. …" and "Shapefiles of these surveys are available for download
   at filelib.wildlife.ca.gov - /Public/R7_MR/BIOLOGICAL/Kelp/ or using MarineBIOS, a Department
-  marine and coastal data viewer at https://wildlife.ca.gov/Conservation/Marine/GIS/MarineBIOS."
+  marine and coastal data viewer at https://wildlife.ca.gov/Conservation/Marine/GIS/MarineBIOS. …"
   Satellite canopy: Figure 1-5 is captioned "Quarterly kelp canopy area (grey) from 1984–2020 in
   three regions: north coast (Oregon-California border to San Francisco Bay), central coast (San
   Francisco Bay to Point Conception), and south coast (Point Conception to USA-Mexico border
   including the Channel Islands) as estimated from satellite imagery (Santa Barbara Coastal LTER et
-  al. 2021)."
+  al. 2021). …"
 coverage_stated_at: >-
   The citation and version are speciesESRPage.footer.citation and .footer.version, present on all
-  seven pages. The top-level sections are named in .sections[].name, which prints the numeral, one
-  page per section; .footer.tableOfContents lists the same sections with the page each falls on but
-  without the numeral, as name "The Species" against sectionId "1.". Then, on
+  seven pages. The top-level sections are named in .sections[].name, one page per section, where on
+  pages 1 to 6 the name repeats the section id ahead of the title, as "4. Monitoring and Essential
+  Fishery Information"; page 0's names carry no numeral, as "Range" and "Habitat", so a page-0
+  section is cited here by its .sections[].sectionId. .footer.tableOfContents gives every section
+  the page it falls on but never the numeral, as name "The Species" against sectionId "1.", and it
+  lists page 0 as the single entry "0." Species-at-a-Glance rather than as its subsections. Then,
+  on
   https://marinespecies-api.wildlife.ca.gov/api/reports/kelp/0, sections "0.2." Range and "0.3."
   Habitat for the range and the depths, and section "0.15." Management for the 87 beds and the four
   statuses; then .../kelp/3, section "3.1." Past and Current Management for the charting, the 1995
