@@ -28,14 +28,15 @@ access:
   - >-
     No page of the site names the organisation that publishes it. The host is a subdomain of
     sccwrp.org. The "Meetings" page, http://kelp.sccwrp.org/meeting.html, links two meeting
-    videos: https://vimeo.com/sccwrp/review/177135739/739970ee1d, under the vimeo.com/sccwrp
-    account path, and https://vimeo.com/229723053, for which Vimeo's oEmbed endpoint,
-    https://vimeo.com/api/oembed.json?url=https://vimeo.com/229723053, returns JSON whose
-    author_name is "SCCWRP" and whose author_url, once its escaped slashes are read, is
-    https://vimeo.com/sccwrp; the same endpoint answered 404 for the first video (2026-09-16).
-    The "About Us" page,
-    http://kelp.sccwrp.org/about.html, lists members under "Region Nine Kelp Survey Consortium",
-    "Central Region Kelp Survey Consortium", "Regional Water Boards" and "Project Consultant"
+    videos, https://vimeo.com/sccwrp/review/177135739/739970ee1d and
+    https://vimeo.com/229723053. Vimeo's oEmbed endpoint, as
+    https://vimeo.com/api/oembed.json?url=https://vimeo.com/229723053, returns for each video id,
+    https://vimeo.com/177135739 and https://vimeo.com/229723053, JSON whose author_name is
+    "SCCWRP" and whose author_url, once its escaped slashes are read, is https://vimeo.com/sccwrp;
+    for the review link as the page gives it, the endpoint answered 404 (2026-09-16). The "About
+    Us" page, http://kelp.sccwrp.org/about.html, is in four parts, headed "Region Nine Kelp Survey
+    Consortium", "Central Region Kelp Survey Consortium", "Regional Water Boards" and "Project
+    Consultant"
 format: >-
   HTML pages declared as XHTML 1.0 Transitional, charset UTF-8; served as Content-Type text/html.
   The Reports page links PDF files, served as Content-Type application/pdf
