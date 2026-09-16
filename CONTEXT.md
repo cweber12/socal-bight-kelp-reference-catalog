@@ -136,8 +136,9 @@ page). Beds and sites (levels 4 and 5) carry the string their own rows describe.
 3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
    `.san-diego` (the Region Nine and Central Region Kelp Survey Consortia's coverage as
    `sccwrp_kelp_status_2016` states it: "Giant kelp beds have been mapped quarterly off Ventura,
-   Los Angeles, Orange, and San Diego counties", Executive Summary, printed page i, PDF page 8;
-   the consortium paragraph below gives the extents by county). Islands: eight nodes directly under
+   Los Angeles, Orange, and San Diego counties for both the Central Region (CRKSC) and Region Nine
+   Kelp Survey Consortiums (RNKSC).", Executive Summary, printed page i (PDF page 8); the first
+   consortium paragraph below gives the extents by county). Islands: eight nodes directly under
    `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
    `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group
    level between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing
@@ -164,23 +165,28 @@ Consortium is an attribute on a county node, not a level, and it is a **list**. 
 `sccwrp_kelp_status_2016`, the 2016 "Status of the Kelp Beds" report, which states each
 consortium's extent by county and by landmark: "The CRKSC program area extends from Ventura Harbor
 (also referred to as Ventura Marina) in Ventura County south to Abalone Point in northern Laguna
-Beach in Orange County" (Introduction, Description of the Central Region Kelp Beds, printed page 4,
-PDF page 17), and "In the Region Nine kelp survey area, between Abalone Point in Laguna Beach
+Beach in Orange County" (Introduction, Description of the Central Region Kelp Beds, printed page 4
+(PDF page 17)), and "In the Region Nine kelp survey area, between Abalone Point in Laguna Beach
 (Orange County) and the U.S./Mexico Border to the south" (Introduction, Description of the Region
-Nine Kelp Beds, printed page 7, PDF page 20). So Ventura and Los Angeles state `[CRKSC]`, San Diego
-states `[RNKSC]`, and the boundary runs through Orange County, which states both
-(`consortium: [RNKSC, CRKSC]`). Santa Barbara County is named by neither the report, whose
-Executive Summary maps "off Ventura, Los Angeles, Orange, and San Diego counties" (printed page i,
-PDF page 8), nor the kelp.sccwrp.org home page (`sccwrp_kelp_aerial`), so it states
-`consortium: []`; the field states what the report names, not a claim about the county. Locators
-into the report give section, printed page and PDF page, because the PDF prints the labels iii, iv
-and v twice.
+Nine Kelp Beds, printed page 7 (PDF page 20)); Los Angeles County, which lies between those
+landmarks, it names in "the Central Region (off north and central Los Angeles County, beds from
+Sunset Malibu, and off Orange County)" (Results, Status of the 50 Kelp Beds along the Central
+Region and Region Nine through 2016, Central Region Kelp Surveys, printed page 32 (PDF page 45)).
+So Ventura and Los Angeles state `[CRKSC]`, San Diego states `[RNKSC]`, and the boundary runs
+through Orange County, which states both (`consortium: [RNKSC, CRKSC]`). Santa Barbara County is
+named by neither the report, whose Executive Summary maps "off Ventura, Los Angeles, Orange, and
+San Diego counties" (Executive Summary, printed page i (PDF page 8)), nor the kelp.sccwrp.org home
+page (`sccwrp_kelp_aerial`), so it states `consortium: []`; the field states what the report names,
+not a claim about the county. Every locator into the report gives section, printed page and PDF
+page, as the citations in this file do, because the report's printed page labels differ from its
+PDF page numbers and the labels iii, iv and v each appear twice.
 
 Where the report and the home page differ, this file adopts the report and records the difference
-rather than resolving it. The report's northern end is "Ventura Harbor" (printed page 4, PDF page
-17) where the home page has "all coastal kelp beds from the Ventura River to the USA/Mexico
-Border". The report says "The CRKSC was formed in 2003" and "the long-established RNKSC that formed
-in 1983" (printed page i, PDF page 8) where the home page says "The program began about 30 years
+rather than resolving it. The report's northern end is "Ventura Harbor" (Introduction, Description
+of the Central Region Kelp Beds, printed page 4 (PDF page 17)) where the home page has "all coastal
+kelp beds from the Ventura River to the USA/Mexico Border". The report says "The CRKSC was formed
+in 2003" and "the long-established RNKSC that formed in 1983" (Executive Summary, printed page i
+(PDF page 8)) where the home page says "The program began about 30 years
 ago (1982-1983) when the Region Nine Kelp Survey Consortium (RNKSC) was formed" and "The extent of
 these surveys was extended to northern Orange County, Los Angeles County and Ventura County in
 2002 when the Central Region Kelp Survey Consortium (CRKSC) was formed". The home page attaches
@@ -189,15 +195,18 @@ Orange Counties", and to CRKSC through "when"; it does not state which counties 
 covers, and this file no longer cites it for that. Within the report, the Introduction says "The
 CRKSC covers kelp beds from Ventura Harbor to Newport Beach (Figure 1), and the RNKSC covers
 Newport Beach to the Baja California border (Figure 2). The upcoast extent of the RNKSC is Abalone
-Point (Laguna Beach)." (printed page 1, PDF page 14), and the Results explain: "the boundary
-between the Central Region and Region Nine is Abalone Point in Laguna Beach. However, the Region
-Nine surveys have historically included the beds from Newport Harbor to Abalone Point" (Results,
-Region Nine Kelp Surveys, printed page 46, PDF page 59). Abalone Point is "in Orange County"
-(printed page 4) and the Region Nine beds are "offshore Orange County, and offshore San Diego
-County" (printed page 46), so the county lists above are the same under either landmark.
+Point (Laguna Beach)." (Introduction, printed page 1 (PDF page 14)), and the Results explain: "the
+boundary between the Central Region and Region Nine is Abalone Point in Laguna Beach. However, the
+Region Nine surveys have historically included the beds from Newport Harbor to Abalone Point
+(described above)." (Results, Status of the 50 Kelp Beds along the Central Region and Region Nine
+through 2016, Region Nine Kelp Surveys, printed page 46 (PDF page 59)). Abalone Point is "in Orange
+County" (Introduction, Description of the Central Region Kelp Beds, printed page 4 (PDF page 17)),
+and the Region Nine beds whose values Figure 20 presents are "(beds offshore Orange County, and
+offshore San Diego County, minus Point Loma and La Jolla)" (Results, Region Nine Kelp Surveys,
+printed page 46 (PDF page 59)), so the county lists above are the same under either landmark.
 
 A county node says which consortia the county falls under and nothing finer: which consortium
-surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3.
+surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3b (#99).
 
 Depth is not a level of the tree. A source's depth range is part of its `coverage`, as the source
 states it. For orientation: CDFW gives giant kelp habitat as "the low intertidal to depths of 25
