@@ -987,10 +987,15 @@ def test_a_bare_topic_tag_is_counted_under_general():
 
 
 def test_the_real_catalogs_bare_tag_is_counted_under_general():
+    # The block is bounded at the next topic heading: an unbounded split keeps every
+    # later topic's text, so a count asserted over it can be satisfied by another
+    # topic's line. The count itself is the catalog's size and is not asserted
+    # (CONTEXT.md, "Gates"); the General row above is the guard.
     catalog, _ = check_catalog(ROOT)
     text = index_text(catalog)
     assert row_after(text, "### [waves-storms-sediment]", "General")[1] == "1"
-    assert "1 source" in text.split("### [waves-storms-sediment]", 1)[1]
+    block = text.split("### [waves-storms-sediment]", 1)[1].split("### [", 1)[0]
+    assert "General" in block
 
 
 # --- the topic x region matrix -----------------------------------------------------
@@ -1040,13 +1045,14 @@ def test_the_matrix_counts_equal_counts_from_the_catalog_directly():
 def test_the_matrix_counts_a_bare_tagged_source_in_its_topic():
     # noaa_oni is `regions: [global]` and carries bare `waves-storms-sediment`. A matrix
     # counting only sub-topic tags would print a row of zeros for a topic whose notebook
-    # renders a source.
+    # renders a source. Only noaa_oni's own column is asserted: any other count is the
+    # catalog's size, which a gate never asserts (CONTEXT.md, "Gates"). The column is
+    # found by its heading because the matrix has one column per region in use, so a
+    # record tagged to a county or island node shifts every position to its right.
     catalog, _ = check_catalog(ROOT)
-    assert row_after(index_text(catalog), "| topic |", "waves-storms-sediment") == [
-        "waves-storms-sediment",
-        "0",
-        "1",
-    ]
+    row = row_after(index_text(catalog), "| topic |", "waves-storms-sediment")
+    column = matrix_header(catalog).index(region_heading("global", catalog))
+    assert row[column] == "1"
 
 
 def test_the_matrix_lists_every_topic_when_no_region_is_in_use():
