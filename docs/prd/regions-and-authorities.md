@@ -10,9 +10,11 @@ Revised: 2026-09-16, to add slice 16b (#118), the 2016 "Status of the Kelp Beds"
 own source before the county records cite it.
 Revised: 2026-09-16, to add slice 16c (#113) after the owner's triage chose the report over the
 kelp.sccwrp.org home page as what `CONTEXT.md` and the county records cite for consortium coverage.
-Revised: 2026-09-16, to add slices 16d (#122) and 16e (#123), the Census county boundary file and
-what a mainland county node is defined by, after the audit of PR #121 found the 2016 report draws
-no county boundary and never names Santa Barbara County.
+Revised: 2026-09-16, to add slices 16d (#125), 16e (#122) and 16f (#123): the `canopy/boundaries`
+sub-topic, the Census county boundary file, and what `scb.mainland` and a county node are defined
+by, after the audit of PR #121 found the 2016 report draws no county boundary and never names Santa
+Barbara County, and the audit of PR #124 found #107 already asked for the file and that an overlap
+reading would hide island data under a county. #107 closes into #122.
 
 ## Problem
 
@@ -271,8 +273,9 @@ lot the same day; its number places it in the table, not in the order.
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
 | 16b | [#118](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/118) | add the 2016 "Status of the Kelp Beds" report (Ventura, Los Angeles, Orange and San Diego Counties; MBC Applied Environmental Sciences, prepared for CRKSC and RNKSC) as a `FETCHED` source | `add-source`, add path; `src/fetch/<id>.py`; the notebooks step 7 moves, at least `21_canopy` and `00_index` | the PDF and its manifest are held, `21_canopy` shows the record; the report is held before #113 decides whether a county's `defined_by` cites it and before #87 writes one |
 | 16c | [#113](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/113) | `CONTEXT.md` cites `sccwrp_kelp_status_2016`, not the kelp.sccwrp.org home page, for which counties each consortium covers | `CONTEXT.md`, "The region tree": the county level and the consortium paragraph | both places cite the report at section, printed page and PDF page; where the report and the home page differ, the file says it adopts the report and quotes both; the consortium lists are unchanged |
-| 16d | [#122](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/122) | add the Census TIGER/Line 2025 county boundary file (`tl_2025_us_county.zip`) as a `FETCHED` source, the record a mainland county node's `defined_by` cites; `needs-triage` until the owner names its topic, because a county boundary file answers none of the ten questions | `add-source`, add path; `src/fetch/<id>.py`; the notebooks step 7 moves | the zip and its manifest are held; the record says where its seaward extent is defined; the five counties' `GEOID`s are read from the held file |
-| 16e | [#123](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/123) | `CONTEXT.md` says what a mainland county node is defined by: the county polygon in 16d's record at its `GEOID`, islands and their water included, where the county and island branches overlap and an island source tags its island node, never a county | `CONTEXT.md`, "The region tree", level 3 | all five counties, Santa Barbara included, have the same `defined_by` form; the overlap sentence cites the record; the consortium paragraphs are unchanged |
+| 16d | [#125](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/125) | the sub-topic `canopy/boundaries`, the administrative and political boundaries canopy is reported by, because a county boundary file answers none of the ten questions and `CONTEXT.md` says such a source gets a tag in its own PR | `CONTEXT.md`, the sub-topics table; the sub-topic vocabulary in `schema.py`; `21_canopy` and `00_index` regenerated | a fixture tagged `canopy/boundaries` fails before and validates after; `notebook-structure` fails until `21_canopy` is regenerated |
+| 16e | [#122](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/122) | add the Census TIGER/Line 2025 county boundary file (`tl_2025_us_county.zip`) as a `FETCHED` source, the record a mainland county node's `defined_by` cites and #96 joins against; supersedes #107, whose state-over-federal criterion is reversed with the reason recorded | `add-source`, add path; `src/fetch/<id>.py`; `21_canopy` and `00_index` | the zip and its manifest are held; steward and licence quoted from the zip's own metadata; the five `GEOID`s stated from the held attribute table; what the file shows seaward stated as the Bureau's documentation states it, or as a fetch-time observation |
+| 16f | [#123](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/123) | `CONTEXT.md` says the tree partitions the Bight: a county node is its polygon in 16e's record at its `GEOID` less the island nodes; a source tags every node its coverage reaches; `scb.mainland` cites `sccwrp_tr1289`'s Table 1 strata rows | `CONTEXT.md`, "The region tree", levels 2 and 3, and the "regions" vocabulary paragraph | all five counties, Santa Barbara included, have the same `defined_by` form; `scb.mainland` has one; the partition and tagging sentences cite their records; the consortium paragraphs are unchanged |
 | 16 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties with their consortium lists |
 | 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
@@ -285,14 +288,18 @@ legitimate before anything relies on it. Slices 9–14 are the schema, each land
 code together. Slices 15–17 build the region tree, with 16b holding the counties' report before
 slice 16 cites it, and 16a holding the islands' authority before slice 17 cites it. 16b sits above
 16 because it lands first; 16a sits below it because it only has to land before 17. Between 16b
-and 16 sit 16c, 16d and 16e. 16c, #113, triaged on 2026-09-16 when the owner chose the report
-over rewording to the home page, makes `CONTEXT.md` cite the report at printed pages for the
-consortium lists. The audit of PR #121 (F2) then found that the report draws no county boundary and
-never names Santa Barbara County, so it cannot be what a county node's `defined_by` cites: 16d holds
-the Census county file the owner chose on 2026-09-16 over two state layers (both on #5), and 16e
-writes the level-3 sentence that names it and states the islands overlap. Slice 16 then writes its
-five `defined_by` into 16d's record under 16e's sentence. Slice 18 closes #18, and 18a waits on the
-owner's reading in #105, in any order.
+and 16 sit 16c, 16d, 16e and 16f, in that order. 16c, #113, triaged on 2026-09-16 when the owner
+chose the report over rewording to the home page, makes `CONTEXT.md` cite the report at printed
+pages for the consortium lists. The audit of PR #121 (F2) then found that the report draws no county
+boundary and never names Santa Barbara County, so it cannot be what a county node's `defined_by`
+cites. 16d adds the sub-topic the county file is tagged with, because it fits none of the ten
+questions and the Non-goals below otherwise forbid a new tag. 16e holds the Census county file the
+owner chose on 2026-09-16 over two state layers (both on #5); it supersedes #107 in the 6.3b table,
+which asked for the same source for #96's join. 16f writes what `scb.mainland` and a county node are
+defined by, as a partition of the Bight, and the rule that a source tags every node its coverage
+reaches; the audit of PR #124 (F3, F6) is why both sentences are there. Slice 16 then writes its six
+records under 16f's sentences. Slice 18 closes #18, and 18a waits on the owner's reading in #105,
+in any order.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
 county or island node; slice 13 carries its intent with `region` as a list. Its non-goal — "not the
@@ -305,8 +312,8 @@ audit found it was. Filed 2026-09-13:
 
 | # | slice |
 |---|---|
-| [#107](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/107) | the California county boundary layer #96 joins against, as its own source — filed 2026-09-15; the layer must state its offshore extent, since ds3135's polygons run to the state-waters line |
-| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93, #94 and #107** |
+| [#107](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/107) | the California county boundary layer #96 joins against — filed 2026-09-15, **closed 2026-09-16 into #122** (6.3 slice 16e), which holds the Census county file; its offshore-extent criterion is met and its state-over-federal criterion reversed, with the reasons on #107 |
+| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93, #94 and #122** |
 | [#97](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/97) | the 18 island bed records — needs no join; §165.5(k) states the island |
 | [#98](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/98) | the 30 mainland bed records — depends on #96 |
 | [#99](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/99) | `surveyed_by`, `ready-for-human`: no source states it per bed |
@@ -316,7 +323,7 @@ Sites follow once a program's own documents are entered.
 ## Non-goals
 
 No bed records, no derived region table and no join script — 6.3b, and filed there. No sites. No
-`surveyed_by`. No `sources` schema change: #38 stays split across 6.4. No new topics or sub-topics.
+`surveyed_by`. No `sources` schema change: #38 stays split across 6.4. No new topics or sub-topics, except the one sub-topic slice 16d adds for boundary instruments.
 No gate that checks `CONTEXT.md`'s citations resolve — #18 says that is a later slice.
 
 No northern/southern island grouping. If a source later needs it, it arrives with that source and an
