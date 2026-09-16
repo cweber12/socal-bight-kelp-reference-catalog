@@ -987,15 +987,16 @@ def test_a_bare_topic_tag_is_counted_under_general():
 
 
 def test_the_real_catalogs_bare_tag_is_counted_under_general():
-    # The block is bounded at the next topic heading: an unbounded split keeps every
-    # later topic's text, so a count asserted over it can be satisfied by another
-    # topic's line. The count itself is the catalog's size and is not asserted
-    # (CONTEXT.md, "Gates"); the General row above is the guard.
+    # The expected count is computed from the records, never written as a constant, so
+    # the catalog may grow (CONTEXT.md, "Gates"). The premise - that some source still
+    # carries the bare tag - is asserted rather than assumed, because a catalog without
+    # one would satisfy this vacuously. The block is bounded at the next topic heading,
+    # so the row cannot be read out of a later topic's table.
     catalog, _ = check_catalog(ROOT)
-    text = index_text(catalog)
-    assert row_after(text, "### [waves-storms-sediment]", "General")[1] == "1"
-    block = text.split("### [waves-storms-sediment]", 1)[1].split("### [", 1)[0]
-    assert "General" in block
+    bare = [r for r in catalog.records["sources"] if "waves-storms-sediment" in r.data["topics"]]
+    assert bare, "no source carries the bare tag; this test has lost its premise"
+    block = index_text(catalog).split("### [waves-storms-sediment]", 1)[1].split("### [", 1)[0]
+    assert row_after(block, "| sub-topic |", "General")[1] == str(len(bare))
 
 
 # --- the topic x region matrix -----------------------------------------------------
@@ -1045,14 +1046,23 @@ def test_the_matrix_counts_equal_counts_from_the_catalog_directly():
 def test_the_matrix_counts_a_bare_tagged_source_in_its_topic():
     # noaa_oni is `regions: [global]` and carries bare `waves-storms-sediment`. A matrix
     # counting only sub-topic tags would print a row of zeros for a topic whose notebook
-    # renders a source. Only noaa_oni's own column is asserted: any other count is the
-    # catalog's size, which a gate never asserts (CONTEXT.md, "Gates"). The column is
-    # found by its heading because the matrix has one column per region in use, so a
+    # renders a source. The expected count is computed from the records and includes the
+    # bare-tagged ones, so a matrix that dropped them would fall short of it - and no
+    # constant is written down, so the catalog may grow (CONTEXT.md, "Gates"). The column
+    # is found by its heading because the matrix has one column per region in use, so a
     # record tagged to a county or island node shifts every position to its right.
     catalog, _ = check_catalog(ROOT)
+    in_region = [
+        r
+        for r in carrying(catalog, "sources", "waves-storms-sediment")
+        if "global" in r.data["regions"]
+    ]
+    assert any("waves-storms-sediment" in r.data["topics"] for r in in_region), (
+        "no source carries the bare tag in `global`; this test has lost its premise"
+    )
     row = row_after(index_text(catalog), "| topic |", "waves-storms-sediment")
     column = matrix_header(catalog).index(region_heading("global", catalog))
-    assert row[column] == "1"
+    assert row[column] == str(len(in_region))
 
 
 def test_the_matrix_lists_every_topic_when_no_region_is_in_use():
