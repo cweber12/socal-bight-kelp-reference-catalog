@@ -1,7 +1,12 @@
 # PRD — Monitoring sources (milestone 6.3c)
 
-Status: queued; opens when milestone 6.3's Slices table has no open `ready-for-agent` row
+Status: not started — opens when every `ready-for-agent` row of milestone 6.3's table has merged
+(its frozen rows 9–14 excepted, whether or not the exit trigger on #84 has fired); milestone 6.3b
+follows this one, since no row here needs a bed record and several need the region nodes 6.3 delivers
 Created: 2026-09-15
+Revised: 2026-09-15, after the audit of PR #110 found the table carried no routes, one reading
+contradicted `CONTEXT.md`'s definition of `steward`, another contradicted the bare topic tag, and
+four Parking-lot lines the text described as filed were not.
 
 ## Problem
 
@@ -17,7 +22,9 @@ A candidate manifest of 22 items, prepared outside the repo on 2026-09-15 by an 
 the same session. Twenty of the 22 are papers. The papers are the route to the datasets; the
 datasets are the records. This milestone enters those datasets. The manifest itself is not
 committed: `CLAUDE.md` forbids a parser for any external manifest, and records are entered, not
-migrated.
+migrated. The routes it named are carried in the table below, **as leads**: every one is a claim
+the manifest made and nobody in this repo has opened, and `add-source` steps 1 and 2 are where each
+is checked.
 
 ## What the review settled
 
@@ -28,82 +35,98 @@ slice does not re-derive it.
    Bight", and four of its ten questions are about the environment the beds are exposed to. Three of
    the seven records held on 2026-09-15 — `noaa_oni`, `calcofi`, `sio_shore_stations` — observe no
    kelp. The practice is that a source answering one of the ten questions is in scope. The manifest
-   asked for that to be written into the admission sentence; that is a Parking-lot line, not a gate
-   on this milestone.
+   asked for that to be written into the admission sentence; that is a Parking-lot line (filed
+   2026-09-15), not a gate on this milestone.
 2. **A public dataset enters as `FETCHED` on first entry.** The manifest proposed every candidate as
    `PATTERN / NOT HELD` "now" with an upgrade later. `add-source` step 2 says a route that downloads
-   today is `VERIFIED / FETCHED`, and #106 exists because one record went in as a placeholder.
-   No slice here creates a placeholder.
+   today is `VERIFIED / FETCHED`, and #106 exists because one record entered without its bytes
+   while its own `access` steps showed the route had been exercised. No slice here enters a source
+   whose route downloads as anything but `FETCHED`; a portal that does not serve bytes gets the
+   status step 2's table gives it.
 3. **Papers are leads, not records.** `CONTEXT.md` defines `references/` as "a paper or report cited
    by a source or a figure", and where a context paper lives is parked (Parking lot, 2026-09-09).
-   The manifest's fifteen proposed reference records are not filed. The one exception a field
-   needs — `transcribed_from.reference` for a transcribed table — arrives with that table's slice.
-4. **Region tags are `scb` until the nodes exist.** The link check fails on a region with no record.
-   #87 and #88 create the counties and islands; a slice here that lands before them tags `scb` and
-   says in its PR which node it would tag, so the re-tag is a lookup and not a re-read. Two sources
-   state a bound wider than the Bight (the Landsat canopy series and PISCO); how they tag is #105,
-   and a slice that reaches it before #105 is decided stops and says so.
-5. **A source that fits no sub-topic waits for the sub-topic, in its own PR.** `CONTEXT.md`: "never
-   exclude the source for want of a tag". Three sub-topics the manifest could not place are Parking-
-   lot lines: circulation (HF radar, inner-shelf currents), carbonate chemistry (DIC, alkalinity,
-   isotopes) and productivity (chlorophyll). The rows that need them are `needs-triage` until the
-   row exists in `CONTEXT.md` and `schema.py`.
-6. **Records are named by steward, not by host.** Dryad, EDI and BCO-DMO are repositories. The
-   catalog's ids name the steward (`noaa_oni`, `cdfw_ds3135`), with underscores. What "the
-   steward's host" admits when the bytes come from a repository is the parked CalCOFI question
-   (Parking lot, 2026-09-09) and is answered per record in its `access` steps, as `calcofi` does.
+   The manifest's fifteen proposed reference records are not filed; they are listed on the Parking
+   lot (filed 2026-09-15) as evidence for that decision. The one exception a field needs —
+   `transcribed_from.reference` for a transcribed table — arrives with that table's slice (row 16).
+4. **Region tags are `scb` until the nodes exist.** `schema.py`'s link pass rejects a region id with
+   no record. #87 and #88 create the counties and islands; a slice here that lands before them tags
+   `scb` and says in its PR which node it would tag, so the re-tag is a lookup and not a re-read.
+   Two rows (2 and 7) are described by the manifest as spanning beyond the Bight; they tag `scb`,
+   state coverage as the package states it, and are the records #105 may retag if it chooses the
+   containment reading. `ccr_t14_165_5` and `cdfw_ds3135`, both statewide and tagged `scb`, are
+   the precedent.
+5. **A source that fits no sub-topic takes the bare topic tag.** `CONTEXT.md`: a bare tag "places
+   it under *General*", and `noaa_oni`'s bare `waves-storms-sediment` is the precedent. No row here
+   waits on a sub-topic. The manifest's three suggested sub-topics — circulation, carbonate
+   chemistry, productivity — are one Parking-lot line (filed 2026-09-15) as ideas, not blockers:
+   surface currents answer the `recruitment-connectivity` question directly, so `larval-transport`
+   is honest for rows 14 and 15; carbonate chemistry is what `oxygen-ph` already holds for row 16;
+   chlorophyll takes bare `ocean-climate` for row 18.
+6. **`steward` is what `CONTEXT.md` says it is, and ids name the source.** `steward` is "the
+   organisation that publishes or holds it". For a repository deposit that is the repository as the
+   landing page names it — Dryad, the Environmental Data Initiative, BCO-DMO — with the depositing
+   program or authors in `title` and `access` as the page states them. Ids name the source, as the
+   seven held do (`calcofi`, `sio_shore_stations`, `ccr_t14_165_5`), with underscores.
 7. **`ON REQUEST` records wait on an H-id registry.** `human_task: H<n>` has no registry in the
    repo (Parking lot, 2026-09-08). The three study-data candidates are not filed.
-8. **Two items are exclusions; three are not.** A taxonomic review and a California Current study
-   were reviewed and are not admitted, and get `excluded/` records with one-line reasons. A redirect
-   URL and two superseded preprints are the same items as their canonical versions and are not
-   records of any kind.
+8. **Two items are exclusions; three are not.** An `excluded/` record is "an item reviewed and not
+   admitted". Two items were reviewed *as candidate sources* — a dataset or report about the Bight
+   — and are not admitted because neither is about kelp: a taxonomic review of isopods, and a
+   carbonate-system study of the California Current at large. They get records with that one-line
+   reason. The fifteen papers were never candidate sources under reading 3, so they are neither
+   admitted nor excluded. A redirect URL and two superseded preprints are the same items as their
+   canonical versions and are not records of any kind.
 
 ## Solution
 
-One record per dataset, entered through `add-source`, `FETCHED`, in an order that fills the empty
-questions first and lets each program's later datasets copy the fetch shape of its first. Programs
-that expose several datasets get one record per dataset with its own route, as `sio_shore_stations`
-holds five files under one record only because one DOI covers them.
+One record per dataset as its steward publishes it, entered through `add-source`, in an order that
+fills the empty questions first and lets each program's later datasets copy the fetch shape of its
+first. A collection with one landing page is one record whose `access` steps name each file, as
+`sio_shore_stations` names five station files under the collection's page; distinct packages with
+distinct landing pages and DOIs are distinct records, as the four SBC LTER rows are.
 
 ## Slices
 
 Issues are filed on milestone `6.3c Monitoring sources` after this PRD merges, and their numbers
-are added to this table then. The rows are in work order. Every row is a record issue in the shape
+are added to this table then; `docs/agents/issue-tracker.md`'s milestone list gains the name in the
+same change. The rows are in work order. Rows 1–18 are record issues in the shape
 `docs/agents/issue-tracker.md` gives them: `add-source` is the seam, there is no mechanical failing
-test, and the notebooks the record's topics move land in the same PR.
+test, and the notebooks the record's topics move land in the same PR. Rows 19–20 are one issue.
 
-| order | # | source | steward | topics | region today | note |
+The **route** column is the manifest's lead, unopened. A slice opens it at `add-source` step 2 and
+enters what the page states, not what this table says.
+
+| order | # | source | route (lead) | topics | region today | note |
 |---|---|---|---|---|---|---|
-| 1 | — | Channel Islands National Park Kelp Forest Monitoring | National Park Service | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/urchins` | `scb` (islands after #88) | the longest-running diver survey in the Bight; find the program's own data endpoint, not a paper's subset |
-| 2 | — | SBC LTER Landsat kelp canopy, quarterly since 1984 | Santa Barbara Coastal LTER | `canopy/satellite`, `canopy/persistence` | #105 decides | statewide NetCDF; state coverage as the package states it |
-| 3 | — | SBC LTER reef bottom temperature | Santa Barbara Coastal LTER | `ocean-climate/temperature`, `ocean-climate/heatwaves` | `scb` (Santa Barbara after #87) | one record per EDI package, the current version; the version a paper used is that paper's business |
-| 4 | — | SBC LTER annual kelp forest biomass | Santa Barbara Coastal LTER | `bed-state/diver-surveys`, `bed-state/community` | `scb` (Santa Barbara after #87) | |
-| 5 | — | SBC LTER kelp removal: sessile cover | Santa Barbara Coastal LTER | `bed-state/community` | `scb` (Santa Barbara after #87) | an experiment's monitoring; say so in `coverage` as the package states it |
-| 6 | — | SBC LTER kelp removal: invertebrate and algal density | Santa Barbara Coastal LTER | `bed-state/community` | `scb` (Santa Barbara after #87) | |
-| 7 | — | PISCO kelp forest monitoring | PISCO | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/predators` | #105 decides | spans California and Oregon |
-| 8 | — | Giant kelp microsatellite genotypes, 2008 and 2018–19 (Klingbeil et al.) | the depositing authors; Dryad is the host | `recruitment-connectivity/genetics` | `scb` | the topic's first source |
-| 9 | — | Monthly cross-shore biogeochemical transects, La Jolla | BCO-DMO dataset 839175 | `ocean-climate/nutrients`, `ocean-climate/oxygen-ph`, `ocean-climate/temperature`, `ocean-climate/salinity` | `scb` (San Diego after #87) | |
-| 10 | — | NDBC buoy observations, Bight stations | NOAA National Data Buoy Center | `waves-storms-sediment/swell-climate`, `waves-storms-sediment/storms` | `scb` | station-scoped; which stations is the slice's first question, answered from NDBC's own station list |
-| 11 | — | Catalina Marine Society thermograph array | Catalina Marine Society | `ocean-climate/temperature` | `scb` (mainland and Catalina after #87/#88) | the portal must be exercised; the licence is whatever the portal states |
-| 12 | — | Catalina Marine Society Catalina chemistry and current collections | Catalina Marine Society | `ocean-climate/temperature`, `ocean-climate/salinity`, `ocean-climate/oxygen-ph` | `scb` (Catalina after #88) | likely more than one record once the portal's collections are seen; chlorophyll waits on the productivity sub-topic |
-| 13 | — | Channel Islands fish excretion dataset (Shrestha et al.) | the depositing authors; Dryad is the host | `bed-state/community`, `bed-state/mpas` | `scb` (islands after #88) | derived from PISCO surveys; enters after row 7 and cites it |
-| 14 | — | CORDC HFRNet surface currents, Bight subset | Scripps CORDC | *waits on a circulation sub-topic* | `scb` | `needs-triage` until the sub-topic row lands |
-| 15 | — | Inner-shelf flow archive, San Diego (Okun et al.) | the depositing authors; Dryad is the host | *waits on a circulation sub-topic* | `scb` | `needs-triage`; one study's instrument archive, after row 14 |
-| 16 | — | Surface-water DIC isotope time series, Table 1 (Hauksson et al.) | transcribed from the paper | *waits on a carbonate-chemistry sub-topic* | `scb` | `needs-triage`; `TRANSCRIBED`, and the first slice that legitimately creates a reference record |
-| 17 | — | CDFW California marine habitat GIS | California Department of Fish and Wildlife | `substrate/rock-mapping` | `scb` | `needs-triage` until the exact layer and its Bight coverage are identified |
-| 18 | — | NASA Ocean Color chlorophyll | NASA Ocean Biology Processing Group | *waits on a productivity sub-topic* | `global` | `needs-triage`; a global product with no regional bound, as ONI is |
-| 19 | — | exclude: Stebbins & Wetzer 2023, Bight isopod review | — | — | — | `excluded/` record, one-line reason |
-| 20 | — | exclude: Cheresh et al. 2023, California Current corrosive events | — | — | — | `excluded/` record, one-line reason |
+| 1 | — | Channel Islands National Park Kelp Forest Monitoring | none given; find the program's own data endpoint (NPS) | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/urchins` | `scb` (islands after #88) | the manifest calls it the longest-running diver survey in the Bight; enter the program's own statement of its span |
+| 2 | — | SBC LTER Landsat kelp canopy, quarterly since 1984 | EDI package `knb-lter-sbc.74`, https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.74.13 | `canopy/satellite`, `canopy/persistence` | `scb`; #105 may retag | the manifest says statewide NetCDF; state coverage as the package states it |
+| 3 | — | SBC LTER reef bottom temperature | doi:10.6073/pasta/e565d409b63f20c768133c653ccdb2d7 | `ocean-climate/temperature`, `ocean-climate/heatwaves` | `scb` (Santa Barbara after #87) | one record per EDI package, the current version; the version a paper used is that paper's business |
+| 4 | — | SBC LTER annual kelp forest biomass | doi:10.6073/pasta/cb45bf15430ba570828444b13dd8521f | `bed-state/diver-surveys`, `bed-state/community` | `scb` (Santa Barbara after #87) | |
+| 5 | — | SBC LTER kelp removal: sessile cover | doi:10.6073/pasta/1151c1dcf5110432b6d35f7dc00bb834 | `bed-state/community` | `scb` (Santa Barbara after #87) | an experiment's monitoring; `coverage` says so as the package states it |
+| 6 | — | SBC LTER kelp removal: invertebrate and algal density | doi:10.6073/pasta/decb1dcc7b35d2ef401b2dd7d79ea257 | `bed-state/community` | `scb` (Santa Barbara after #87) | |
+| 7 | — | PISCO kelp forest monitoring | data paper doi:10.1002/ecy.3630; the data host is what the paper names | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/predators` | `scb`; #105 may retag | the manifest says California and Oregon; state coverage as the host states it |
+| 8 | — | Giant kelp microsatellite genotypes, 2008 and 2018–19 | doi:10.5061/dryad.nzs7h44v9 | `recruitment-connectivity/genetics` | `scb` | the topic's first source |
+| 9 | — | Monthly cross-shore biogeochemical transects, La Jolla | doi:10.26008/1912/bco-dmo.839175.1 | `ocean-climate/nutrients`, `ocean-climate/oxygen-ph`, `ocean-climate/temperature`, `ocean-climate/salinity` | `scb` (San Diego after #87) | |
+| 10 | — | NDBC buoy observations, Bight stations | none given; NDBC's own station list | `waves-storms-sediment/swell-climate`, `waves-storms-sediment/storms` | `scb` | station-scoped; which stations is the slice's first question, answered from the station list, as `sio_shore_stations` narrowed to Bight stations |
+| 11 | — | Catalina Marine Society thermograph array | https://www.catalinamarinesociety.org/data-portal.html | `ocean-climate/temperature` | `scb` (mainland and Catalina after #87/#88) | the portal must be exercised; tier is what step 2's table gives the route; licence as the portal states it |
+| 12 | — | Catalina Marine Society Catalina chemistry and current collections | same portal | `ocean-climate/temperature`, `ocean-climate/salinity`, `ocean-climate/oxygen-ph`, bare `ocean-climate` for chlorophyll | `scb` (Catalina after #88) | likely more than one record once the portal's collections are seen |
+| 13 | — | Channel Islands fish excretion dataset (Shrestha et al.) | doi:10.5061/dryad.k6djh9wgj | `bed-state/community`, `bed-state/mpas` | `scb` (islands after #88) | the manifest says it derives from PISCO surveys; enters after row 7 and names that record in `access` if the deposit names PISCO |
+| 14 | — | CORDC HFRNet surface currents, Bight subset | https://hfrnet-tds.ucsd.edu/thredds/catalog.html | `recruitment-connectivity/larval-transport` | `scb` | format is what the THREDDS metadata states |
+| 15 | — | Inner-shelf flow archive, San Diego (Okun et al.) | doi:10.5061/dryad.x3ffbg7tk | `recruitment-connectivity/larval-transport` | `scb` (San Diego after #87) | one study's instrument archive; after row 14 |
+| 16 | — | Surface-water DIC isotope time series, Table 1 (Hauksson et al.) | doi:10.1017/RDC.2023.73 | `ocean-climate/oxygen-ph` | `scb` (Orange after #87, if Methods states Newport Beach) | `TRANSCRIBED`; the first slice that legitimately creates a reference record, for `transcribed_from` |
+| 17 | — | CDFW California marine habitat GIS | none given; identify the layer | `substrate/rock-mapping` | `scb` | `needs-triage` until the exact layer and its Bight coverage are identified — a fact question, not a vocabulary one |
+| 18 | — | NASA Ocean Color chlorophyll, MODIS Aqua L3 | doi:10.5067/AQUA/MODIS/L3B/CHL/2018 | bare `ocean-climate` | `global` | a global product; `global` if it states no regional bound, as `noaa_oni` does |
+| 19 | — | exclude: Stebbins & Wetzer 2023, Bight isopod review | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: reviewed as a candidate source, not about kelp |
+| 20 | — | exclude: Cheresh et al. 2023, California Current corrosive events | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: reviewed as a candidate source, a California Current study not bounded to the Bight and not about kelp |
 
-Rows 1–13 are `ready-for-agent` on filing. Rows 14–18 are `needs-triage` and each names what it
-waits on. Rows 19–20 are entry.
+Rows 1–16 and 18 are `ready-for-agent` on filing. Row 17 is `needs-triage` until the layer is
+identified. Rows 19–20 are one `ready-for-agent` issue.
 
-## Found while reviewing, not filed
+## Found while reviewing, not filed as rows
 
 - The CDFW aerial canopy survey shapefiles for 1989, 1999 and 2002–2016, described in
   `CONTEXT.md`'s region tree, are not a record and are not queued anywhere. They belong beside row 2
-  and #82 as `canopy/aerial-surveys`. Filed as a Parking-lot line rather than a row, because the
+  and #82 as `canopy/aerial-surveys`. A Parking-lot line (filed 2026-09-15), not a row, because the
   manifest did not name them and this milestone's rows are the manifest's.
 - CalCOFI appears in the manifest as a lead. It is held as `calcofi`, one station. Whether the record
   widens is a 6.4 re-entry question.
@@ -112,15 +135,15 @@ waits on. Rows 19–20 are entry.
 
 ## Non-goals
 
-No reference records except the one row 16 needs. No `ON REQUEST` records. No sub-topic rows: each
-is a Parking-lot line and its own PR, decided by the owner. No region node, bed or site. No change to
-the admission sentence in `CONTEXT.md`. No lock. No record for a preprint, a redirect URL, or either
-ProQuest item, whose titles could not be established without guessing. Nothing here jumps milestone
-6.3's queue: this milestone opens when that table has no open `ready-for-agent` row.
+No reference records except the one row 16 needs. No `ON REQUEST` records. No sub-topic rows. No
+region node, bed or site. No change to the admission sentence in `CONTEXT.md`. No lock, and no
+decision on pulling the lock forward. No record for a preprint, a redirect URL, or either ProQuest
+item, whose titles could not be established without guessing. Nothing here jumps milestone 6.3's
+queue.
 
 ## Done
 
-Every `ready-for-agent` row merged as a `FETCHED` record with its notebooks; every `needs-triage` row
-either merged after its sub-topic landed or still open with the dependency named; the two exclusions
-in `excluded/`; and no topic notebook renders its question over an empty *sources* count except
-`canyon-dynamics` and `restoration-mitigation`, which this manifest did not reach.
+Every `ready-for-agent` row merged as a record with the tier its route supports, with its notebooks;
+row 17 either merged after its layer was identified or still open with the question named; the two
+exclusions in `excluded/`; and no topic notebook renders its question over an empty *sources* count
+except `canyon-dynamics` and `restoration-mitigation`, which this manifest did not reach.
