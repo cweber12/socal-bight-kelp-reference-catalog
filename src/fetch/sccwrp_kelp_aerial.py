@@ -10,6 +10,10 @@ record of the fetch (CONTEXT.md, "Record format"). Standard library only.
 
 The URLs are http://, not https://: the host's HTTPS certificate expired on 2026-03-25 and
 urllib's default SSL context refuses it, while HTTP serves the same pages with a 200.
+
+Each page must arrive from the URL asked for and carry a sentence the record quotes from it:
+urllib follows redirects silently, and a parked domain or a CDN default page answers 200, so
+without the check a manifest would certify bytes that are not the page.
 """
 
 from __future__ import annotations
@@ -22,15 +26,15 @@ from pathlib import Path
 
 SOURCE_ID = "sccwrp_kelp_aerial"
 FILES = (
-    "http://kelp.sccwrp.org/home.html",
-    "http://kelp.sccwrp.org/reports.html",
+    ("http://kelp.sccwrp.org/home.html", b"Region Nine Kelp Survey Consortium (RNKSC)"),
+    ("http://kelp.sccwrp.org/reports.html", b"Status of the Kelp Beds, 2016."),
 )
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 
-def fetch(url: str, out_dir: Path) -> dict[str, object]:
+def fetch(url: str, marker: bytes, out_dir: Path) -> dict[str, object]:
     """Download one file into out_dir and write its manifest. Returns the manifest."""
     name = url.rsplit("/", 1)[-1]
     request = urllib.request.Request(url, headers={"User-Agent": f"kelpcatalog/{SOURCE_ID}"})
@@ -38,6 +42,11 @@ def fetch(url: str, out_dir: Path) -> dict[str, object]:
         body = response.read()
         http_status = response.status
         headers = response.headers
+        served_url = response.url
+    if served_url != url:
+        raise SystemExit(f"{url} was served from {served_url}")
+    if marker not in body:
+        raise SystemExit(f"{url} did not return the page: {len(body)} bytes without {marker!r}")
     manifest = {
         "url": url,
         "fetched_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
@@ -59,8 +68,8 @@ def fetch(url: str, out_dir: Path) -> dict[str, object]:
 
 
 def main() -> None:
-    for url in FILES:
-        print(json.dumps(fetch(url, OUT_DIR), indent=2))
+    for url, marker in FILES:
+        print(json.dumps(fetch(url, marker, OUT_DIR), indent=2))
 
 
 if __name__ == "__main__":
