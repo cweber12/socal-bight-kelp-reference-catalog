@@ -147,11 +147,11 @@ coverage: >-
   not based on individual kelp patches but rather geographic areas that are delineated by latitude
   and longitude coordinates and extend from the mean high tide to the state waters boundary line.
   Each Administrative Kelp Bed is of a varying length and contains differing amounts of kelp that
-  change depending on growth. …" — that section prints the same four designations, as "Beds are
-  designated as Open (available to harvest by all and leases cannot be issued), Closed (commercial
-  harvest of kelp is prohibited except as edible seaweed), Leasable (Open until an exclusive lease
-  is granted by the Commission and then harvest is only available to the lessee), or Lease Only
-  (Closed until leased) (Table 3-1)." On the coordinates: "The most recent regulation change
+  change depending on growth. Beds are designated as Open (available to harvest by all and leases
+  cannot be issued), Closed (commercial harvest of kelp is prohibited except as edible seaweed),
+  Leasable (Open until an exclusive lease is granted by the Commission and then harvest is only
+  available to the lessee), or Lease Only (Closed until leased) (Table 3-1). …" On the
+  coordinates: "The most recent regulation change
   occurred in 2014, when the Commission updated regulations for the commercial harvest of kelp. The
   amendments (a) updated the Administrative Kelp Bed boundaries from compass headings to latitude
   and longitude coordinates and removed references to antiquated Administrative Kelp Bed maps; …"
