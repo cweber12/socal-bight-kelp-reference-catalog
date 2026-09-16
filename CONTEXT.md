@@ -128,7 +128,7 @@ Every node's `defined_by` names the source that draws the boundary. Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
    Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker
-   2022, SCCWRP Technical Report 1289, Introduction).
+   2022, SCCWRP Technical Report 1289, Methods, Study Design).
 2. `scb.mainland` and `scb.islands` — the Bight program samples the Channel Islands as their own
    stratum; every mainland program states coverage by county.
 3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
