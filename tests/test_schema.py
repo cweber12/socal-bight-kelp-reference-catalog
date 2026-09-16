@@ -12,6 +12,7 @@ mistyped, table-driven over RULES.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -728,6 +729,31 @@ def test_the_islands_are_eight_nodes_under_scb_islands_each_citing_the_regulatio
     # consortium is a county's attribute: non-empty only when parent is scb.mainland.
     for rid in ("scb.islands", *ISLANDS):
         assert not regions[rid].get("consortium"), rid
+
+
+def test_the_island_locators_partition_the_regulation_s_channel_island_beds():
+    # The transcriptions cannot be checked in CI (data/ is git-ignored), but three
+    # internal properties can be, and they catch a swapped name, a widened bed range or a
+    # moved paragraph (audit of PR #117, F2): the nine names are distinct; each island's
+    # `where` quotes its own name; and the eight `where`s' bed numbers partition 101-118
+    # and their paragraph letters partition (A)-(R), the whole of s165.5(k)(2).
+    catalog, _ = check_catalog(ROOT)
+    regions = {rec.id: rec.data for rec in catalog.records["regions"]}
+    nine = ["scb.islands", *ISLANDS]
+    assert len({regions[rid]["name"] for rid in nine}) == len(nine)
+    beds: list[int] = []
+    letters: list[str] = []
+    for rid in ISLANDS:
+        where = regions[rid]["defined_by"]["where"]
+        assert f'"{regions[rid]["name"]}"' in where, rid
+        m = re.search(r"paragraphs? \(([A-Z])\)(?:-\(([A-Z])\))?", where)
+        assert m, rid
+        letters += [chr(c) for c in range(ord(m[1]), ord(m[2] or m[1]) + 1)]
+        m = re.search(r"beds? (\d+)(?:-(\d+))?", where)
+        assert m, rid
+        beds += range(int(m[1]), int(m[2] or m[1]) + 1)
+    assert sorted(beds) == list(range(101, 119)) and len(beds) == 18
+    assert sorted(letters) == [chr(c) for c in range(ord("A"), ord("R") + 1)]
 
 
 def test_the_notebook_region_order_lists_the_eight_islands_by_id():
