@@ -8,6 +8,8 @@ Revised: 2026-09-15, to record the freeze of 2026-09-14 in the Slices table it a
 split of #83 into a regions half (#104) and a frozen beds-and-sites half.
 Revised: 2026-09-16, to add slice 16b (#118), the 2016 "Status of the Kelp Beds" report held as its
 own source before the county records cite it.
+Revised: 2026-09-16, to add slice 16c (#113) after the owner's triage chose the report over the
+kelp.sccwrp.org home page as what `CONTEXT.md` and the county records cite for consortium coverage.
 
 ## Problem
 
@@ -265,6 +267,7 @@ lot the same day; its number places it in the table, not in the order.
 | 14 | [#95](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/95) | `retrieved` on beds and sites | `RULES["beds"]`, `RULES["sites"]`; two schema rows | `retrieved` follows the same `date?` rule it follows on a source |
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
 | 16b | [#118](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/118) | add the 2016 "Status of the Kelp Beds" report (Ventura, Los Angeles, Orange and San Diego Counties; MBC Applied Environmental Sciences, prepared for CRKSC and RNKSC) as a `FETCHED` source | `add-source`, add path; `src/fetch/<id>.py`; the notebooks step 7 moves, at least `21_canopy` and `00_index` | the PDF and its manifest are held, `21_canopy` shows the record; the report is held before #113 decides whether a county's `defined_by` cites it and before #87 writes one |
+| 16c | [#113](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/113) | `CONTEXT.md` cites `sccwrp_kelp_status_2016`, not the kelp.sccwrp.org home page, for which counties each consortium covers | `CONTEXT.md`, "The region tree": the county level and the consortium paragraph | both places cite the report at section, printed page and PDF page; where the report and the home page differ, the file says it adopts the report and quotes both; the consortium lists are unchanged |
 | 16 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties with their consortium lists |
 | 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
@@ -277,9 +280,10 @@ legitimate before anything relies on it. Slices 9–14 are the schema, each land
 code together. Slices 15–17 build the region tree, with 16b holding the counties' report before
 slice 16 cites it, and 16a holding the islands' authority before slice 17 cites it. 16b sits above
 16 because it lands first; 16a sits below it because it only has to land before 17. Between 16b
-and 16 sits #113, which has no row: it is `needs-triage`, and it decides what a county record's
-`defined_by` may cite, so slice 16 waits on the owner's triage of it as well as on 16b. Slice 18
-closes #18, and 18a waits on the owner's reading in #105, in any order.
+and 16 sits 16c, #113: triaged on 2026-09-16, when the owner chose the report over rewording to
+the home page, it makes `CONTEXT.md` cite the report at printed pages, so slice 16 writes its
+`defined_by.where` locators into a record `CONTEXT.md` already cites. Slice 18 closes #18, and 18a
+waits on the owner's reading in #105, in any order.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
 county or island node; slice 13 carries its intent with `region` as a list. Its non-goal — "not the
