@@ -6,6 +6,8 @@ Revised: 2026-09-13, after an audit of the first draft reversed one of its findi
 the decision it was proudest of could not be written against the schema it was proposing.
 Revised: 2026-09-15, to record the freeze of 2026-09-14 in the Slices table it applies to, and the
 split of #83 into a regions half (#104) and a frozen beds-and-sites half.
+Revised: 2026-09-16, to add slice 16b (#118), the 2016 "Status of the Kelp Beds" report held as its
+own source before the county records cite it.
 
 ## Problem
 
@@ -262,6 +264,7 @@ lot the same day; its number places it in the table, not in the order.
 | 13 | [#16](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/16) | `beds.region` is a list | the cross-record link pass; the `beds` row | `[scb.mainland]` fails; two counties validate; an island validates |
 | 14 | [#95](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/95) | `retrieved` on beds and sites | `RULES["beds"]`, `RULES["sites"]`; two schema rows | `retrieved` follows the same `date?` rule it follows on a source |
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
+| 16b | [#118](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/118) | add the 2016 "Status of the Kelp Beds" report (Ventura, Los Angeles, Orange and San Diego Counties; MBC Applied Environmental Sciences, prepared for CRKSC and RNKSC) as a `FETCHED` source | `add-source`, add path; `src/fetch/<id>.py`; two notebooks | the PDF and its manifest are held, `21_canopy` shows the record; the report #113 and #87 cite at a printed page is held before they cite it |
 | 16 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties with their consortium lists |
 | 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
@@ -271,8 +274,9 @@ lot the same day; its number places it in the table, not in the order.
 Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the five authorities, and
 6a gives the region records the field shape they are written in. Slices 7–8 make the derived index
 legitimate before anything relies on it. Slices 9–14 are the schema, each landing `CONTEXT.md` and
-code together. Slices 15–17 build the region tree, with 16a holding the islands' authority before
-slice 17 cites it. Slice 18 closes #18, and 18a waits on the owner's reading in #105, in any order.
+code together. Slices 15–17 build the region tree, with 16b holding the counties' report before
+slice 16 cites it, and 16a holding the islands' authority before slice 17 cites it. 16b sits above
+16 because it lands first; 16a sits below it because it only has to land before 17. Slice 18 closes #18, and 18a waits on the owner's reading in #105, in any order.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
 county or island node; slice 13 carries its intent with `region` as a list. Its non-goal — "not the
