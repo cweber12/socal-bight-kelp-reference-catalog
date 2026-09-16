@@ -153,6 +153,7 @@ def test_unresolved_links_are_named():
     probs = problems_of("unresolved_links")
     assert "regions: 'scb.islands' is not a region record" in probs
     assert "references: 'nobody2020' is not a reference record" in probs
+    assert "defined_by.source: 'nobody_2020' is not a source record" in probs
 
 
 def test_global_is_an_allowed_region_without_a_record():
@@ -608,9 +609,15 @@ def test_region_defined_by_source_must_resolve():
     assert reports(validate(absent, catalog)) == [
         ("defined_by.source", "'nobody' is not a source record")
     ]
-    # A map missing its source half is reported once, by the shape check, not also as a link.
-    half = a_region(defined_by={"where": "Study area"})
-    assert reports(validate(half, catalog)) == [("defined_by", "required: {source, where}")]
+    # A source half that is missing, blank or not a string is reported once, by the shape
+    # check, not also as a link to a record that could never exist (audit of PR #116, F3).
+    for db in (
+        {"where": "Study area"},
+        {"source": "", "where": "x"},
+        {"source": 123, "where": "x"},
+    ):
+        half = a_region(defined_by=db)
+        assert reports(validate(half, catalog)) == [("defined_by", "required: {source, where}")]
 
 
 def test_bed_and_site_defined_by_stay_bare_strings():

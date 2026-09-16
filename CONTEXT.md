@@ -124,9 +124,9 @@ kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, 
 
 ## The region tree
 
-Every node's `defined_by` is `{source, where}`: the `sources/` record that draws the boundary
-and a locator within it (a section, a subsection, a page), the shape `transcribed_from` has.
-Levels:
+Every region record's `defined_by` (levels 1-3, `regions/<id>.md`) is `{source, where}`: the
+`sources/` record that draws the boundary and a locator within it (a section, a subsection, a
+page). Beds and sites (levels 4 and 5) carry the string their own rows describe. Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
    Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker

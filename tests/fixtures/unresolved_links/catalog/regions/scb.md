@@ -2,5 +2,5 @@
 id: scb
 name: Southern California Bight
 parent: null
-defined_by: {source: kelp_surveys, where: "Study area"}
+defined_by: {source: nobody_2020, where: "Study area"}
 ---

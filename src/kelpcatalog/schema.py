@@ -450,8 +450,9 @@ def _link_problems(rec: Record, catalog: Catalog, bad: set[str]) -> list[Problem
         if d.get("parent") is not None:
             check("parent", [str(d["parent"])], "regions")
         db = d.get("defined_by")
-        if isinstance(db, dict) and "source" in db:
-            check("defined_by.source", [str(db["source"])], "sources")
+        src = db.get("source") if isinstance(db, dict) else None
+        if isinstance(src, str) and src.strip():  # else the shape check has reported it
+            check("defined_by.source", [src], "sources")
     if rec.kind == "beds":
         check("region", [str(d.get("region"))], "regions")
     if rec.kind == "sites" and d.get("bed") is not None:
