@@ -9,7 +9,9 @@ Revised: 2026-09-15, after the audit of PR #110 found the table carried no route
 contradicted `CONTEXT.md`'s definition of `steward`, another contradicted the bare topic tag, and
 four Parking-lot lines the text described as filed were not. Revised again the same day after the
 second audit: ids added, `steward` aligned with the seven held records, and the exclusion reason
-made the one reading 1 does not contradict.
+made the one reading 1 does not contradict. Revised 2026-09-16, after the second manifest review:
+row 17 added, NOAA Fisheries Rocky Reefs HAPC GIS, the one item of that review with a route that
+verified on the day; rows 17–20 became 18–21.
 
 ## Problem
 
@@ -65,7 +67,7 @@ slice does not re-derive it.
    Surface currents are an input to the `recruitment-connectivity` question, so `larval-transport`
    is the cataloguer's index for rows 14 and 15 on the same footing as `noaa_oni`'s waves tag;
    carbonate chemistry is what `oxygen-ph` already holds for `calcofi` (`dic1`, `ta1`, `ph1`), so it
-   holds row 16; chlorophyll takes bare `ocean-climate` for row 18.
+   holds row 16; chlorophyll takes bare `ocean-climate` for row 19.
 6. **`steward` is the producer, as the landing page names it; the host goes in `access`.**
    `CONTEXT.md` defines `steward` as "the organisation that publishes or holds it", and the seven
    held records read that as the program or agency that produced and publishes the data:
@@ -97,9 +99,9 @@ distinct landing pages and DOIs are distinct records, as the four SBC LTER rows 
 
 Issues are filed on milestone `6.3c Monitoring sources` after this PRD merges, and their numbers
 are added to this table then; `docs/agents/issue-tracker.md`'s milestone list gains the name in the
-same change. The rows are in work order. Rows 1–18 are record issues in the shape
+same change. The rows are in work order. Rows 1–19 are record issues in the shape
 `docs/agents/issue-tracker.md` gives them: `add-source` is the seam, there is no mechanical failing
-test, and the notebooks the record's topics move land in the same PR. Rows 19–20 are one issue.
+test, and the notebooks the record's topics move land in the same PR. Rows 20–21 are one issue.
 
 The **route** column is the manifest's lead, unopened. A slice opens it at `add-source` step 2 and
 enters what the page states, not what this table says. The **id** column is the proposed id.
@@ -122,13 +124,14 @@ enters what the page states, not what this table says. The **id** column is the 
 | 14 | — | `cordc_hfrnet` | CORDC HFRNet surface currents, Bight subset | https://hfrnet-tds.ucsd.edu/thredds/catalog.html | `recruitment-connectivity/larval-transport` | `scb` | format is what the THREDDS metadata states; the host did not answer from one machine on 2026-09-15, so step 2 may stop |
 | 15 | — | `okun_inner_shelf_flow` | Inner-shelf flow archive, San Diego (Okun et al.) | doi:10.5061/dryad.x3ffbg7tk | `recruitment-connectivity/larval-transport` | `scb` (San Diego after #87) | one study's instrument archive; after row 14 |
 | 16 | — | `hauksson2023_table1` | Surface-water DIC isotope time series, Table 1 (Hauksson et al.) | doi:10.1017/RDC.2023.73 | `ocean-climate/oxygen-ph` | `scb` (Orange after #87, if Methods states Newport Beach) | `TRANSCRIBED`; the first slice that legitimately creates a reference record, for `transcribed_from` |
-| 17 | — | `cdfw_marine_habitat_gis` | CDFW California marine habitat GIS | none given; identify the layer | `substrate/rock-mapping` | `scb` | `needs-triage` until the exact layer and its Bight coverage are identified — a fact question, not a vocabulary one; the id follows the layer's own number once known |
-| 18 | — | `nasa_modis_aqua_chl` | NASA Ocean Color chlorophyll, MODIS Aqua L3 | doi:10.5067/AQUA/MODIS/L3B/CHL/2018 | bare `ocean-climate` | `global` | a global product; `global` if it states no regional bound, as `noaa_oni` does |
-| 19 | — | `stebbins-wetzer-2023` | exclude: Stebbins & Wetzer 2023, Bight isopod review | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a review paper with no dataset behind it |
-| 20 | — | `cheresh-2023` | exclude: Cheresh et al. 2023, California Current corrosive events | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a study paper with no dataset behind it that its host publishes |
+| 17 | — | `noaa_rocky_reefs_hapc` | NOAA Fisheries Rocky Reefs HAPC GIS, West Coast USA | doi:10.25921/2p36-q188, NCEI accession 0313075 | `substrate/rock-mapping` | `scb` | a West Coast product; `coverage` states the bounding box as NCEI prints it; steward is the producer the landing page names (NWFSC) and NCEI the host, per reading 6; the DOI resolved 2026-09-16 to v.2025-06, GeoPackage, CC0; from the 2026-09-16 manifest review, ahead of row 18 because its route needs no triage |
+| 18 | — | `cdfw_marine_habitat_gis` | CDFW California marine habitat GIS | none given; identify the layer | `substrate/rock-mapping` | `scb` | `needs-triage` until the exact layer and its Bight coverage are identified — a fact question, not a vocabulary one; the id follows the layer's own number once known |
+| 19 | — | `nasa_modis_aqua_chl` | NASA Ocean Color chlorophyll, MODIS Aqua L3 | doi:10.5067/AQUA/MODIS/L3B/CHL/2018 | bare `ocean-climate` | `global` | a global product; `global` if it states no regional bound, as `noaa_oni` does |
+| 20 | — | `stebbins-wetzer-2023` | exclude: Stebbins & Wetzer 2023, Bight isopod review | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a review paper with no dataset behind it |
+| 21 | — | `cheresh-2023` | exclude: Cheresh et al. 2023, California Current corrosive events | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a study paper with no dataset behind it that its host publishes |
 
-Rows 1–16 and 18 are `ready-for-agent` on filing. Row 17 is `needs-triage` until the layer is
-identified. Rows 19–20 are one `ready-for-agent` issue.
+Rows 1–17 and 19 are `ready-for-agent` on filing. Row 18 is `needs-triage` until the layer is
+identified. Rows 20–21 are one `ready-for-agent` issue.
 
 ## Found while reviewing, not filed as rows
 
@@ -152,6 +155,6 @@ queue.
 ## Done
 
 Every `ready-for-agent` row merged as a record with the tier its route supports, with its notebooks;
-row 17 either merged after its layer was identified or still open with the question named; the two
+row 18 either merged after its layer was identified or still open with the question named; the two
 exclusions in `excluded/`; and no topic notebook renders its question over an empty *sources* count
 except `canyon-dynamics` and `restoration-mitigation`, which this manifest did not reach.
