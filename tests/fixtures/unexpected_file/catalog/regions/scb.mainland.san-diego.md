@@ -2,6 +2,6 @@
 id: scb.mainland.san-diego
 name: San Diego County
 parent: scb.mainland
-defined_by: "http://kelp.sccwrp.org/ (RNKSC coverage: San Diego and southern Orange Counties)"
+defined_by: {source: kelp_surveys, where: "Coverage"}
 consortium: [RNKSC]
 ---

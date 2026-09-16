@@ -2,5 +2,6 @@
 id: scb
 name: Southern California Bight
 parent: null
-defined_by: "Fixture region: the Bight, so a source tagged scb has a heading to print"
+# Fixture region: the Bight, so a source tagged scb has a heading to print.
+defined_by: {source: shore_temp, where: "Coverage"}
 ---

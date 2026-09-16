@@ -153,6 +153,7 @@ def test_unresolved_links_are_named():
     probs = problems_of("unresolved_links")
     assert "regions: 'scb.islands' is not a region record" in probs
     assert "references: 'nobody2020' is not a reference record" in probs
+    assert "defined_by.source: 'nobody_2020' is not a source record" in probs
 
 
 def test_global_is_an_allowed_region_without_a_record():
@@ -335,7 +336,7 @@ def a_region(**overrides: Any) -> Record:
         "id": "scb.mainland.san-diego",
         "name": "San Diego County",
         "parent": "scb.mainland",
-        "defined_by": "http://kelp.sccwrp.org/",
+        "defined_by": {"source": "kelp_surveys", "where": "Study area"},
     }
     data.update(overrides)
     return Record("regions", f"catalog/regions/{data['id']}.md", data)
@@ -580,6 +581,52 @@ def test_transcribed_from_reference_must_resolve():
     )
 
 
+def test_region_defined_by_is_a_source_and_a_locator():
+    # CONTEXT.md, regions: defined_by* {source, where} - the record that draws the boundary
+    # and where in it. A bare string is the shape #104 retires; a map missing either half
+    # is not a citation.
+    assert validate(a_region()) == []
+    assert reports(validate(a_region(defined_by="http://kelp.sccwrp.org/"))) == [
+        ("defined_by", "expected map")
+    ]
+    assert reports(validate(a_region(defined_by={"source": "kelp_surveys"}))) == [
+        ("defined_by", "required: {source, where}")
+    ]
+    assert reports(validate(a_region(defined_by={"where": "Study area"}))) == [
+        ("defined_by", "required: {source, where}")
+    ]
+    assert reports(validate(a_region(defined_by={"source": "kelp_surveys", "where": ""}))) == [
+        ("defined_by", "required: {source, where}")
+    ]
+
+
+def test_region_defined_by_source_must_resolve():
+    # CONTEXT.md, "Gates": catalog-schema links only to records that exist; the source half
+    # is a link, as transcribed_from.reference is.
+    catalog = valid_catalog()
+    assert validate(a_region(), catalog) == []
+    absent = a_region(defined_by={"source": "nobody", "where": "Study area"})
+    assert reports(validate(absent, catalog)) == [
+        ("defined_by.source", "'nobody' is not a source record")
+    ]
+    # A source half that is missing, blank or not a string is reported once, by the shape
+    # check, not also as a link to a record that could never exist (audit of PR #116, F3).
+    for db in (
+        {"where": "Study area"},
+        {"source": "", "where": "x"},
+        {"source": 123, "where": "x"},
+    ):
+        half = a_region(defined_by=db)
+        assert reports(validate(half, catalog)) == [("defined_by", "required: {source, where}")]
+
+
+def test_bed_and_site_defined_by_stay_bare_strings():
+    # #104 reaches regions only; beds and sites are #83, frozen. Their defined_by is still
+    # the string CONTEXT.md's beds and sites rows describe.
+    assert isinstance(a_bed().data["defined_by"], str) and validate(a_bed()) == []
+    assert isinstance(a_site().data["defined_by"], str) and validate(a_site()) == []
+
+
 # --- every field of every record type, dropped and mistyped ------------------------
 #
 # The same sweep left 88 per-field mutants alive: most fields had no test that omitted
@@ -606,6 +653,7 @@ WRONG_VALUE: dict[str, Any] = {
     "float": "32.69",
     "date": 5,
     "date?": 5,
+    "map": "SCCWRP Tech. Rep. 1289, Methods, Study Design",
     "map?": "reference, table, page",
     "list[str]": "one string, not a list",
     "list[topic]": "bed-state",
