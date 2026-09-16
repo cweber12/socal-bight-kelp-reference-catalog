@@ -690,3 +690,49 @@ def test_every_field_is_typed(kind: str, name: str, typ: str):
     rec = a_valid(kind)
     mistyped = Record(kind, rec.path, {**rec.data, name: WRONG_VALUE[typ]})
     assert (name, f"expected {typ}") in reports(validate(mistyped))
+
+
+# --- the island region nodes (#88) --------------------------------------------------
+
+ROOT = Path(__file__).parents[1]
+
+ISLANDS = (
+    "scb.islands.anacapa",
+    "scb.islands.san-clemente",
+    "scb.islands.san-miguel",
+    "scb.islands.san-nicolas",
+    "scb.islands.santa-barbara",
+    "scb.islands.santa-catalina",
+    "scb.islands.santa-cruz",
+    "scb.islands.santa-rosa",
+)
+
+
+def test_the_islands_are_eight_nodes_under_scb_islands_each_citing_the_regulation():
+    # CONTEXT.md, "The region tree", level 3: eight nodes directly under scb.islands, with
+    # no group level between; CCR Title 14 s165.5(k)(2) prints the island on every island
+    # bed, and the Bight program samples the Channel Islands as their own stratum.
+    catalog, problems = check_catalog(ROOT)
+    assert problems == []
+    regions = {rec.id: rec.data for rec in catalog.records["regions"]}
+    assert regions["scb.islands"]["parent"] == "scb"
+    assert regions["scb.islands"]["defined_by"]["source"] == "sccwrp_tr1289"
+    islands = sorted(rid for rid, d in regions.items() if d["parent"] == "scb.islands")
+    assert tuple(islands) == ISLANDS
+    for rid in ISLANDS:
+        assert regions[rid]["defined_by"]["source"] == "ccr_t14_165_5", rid
+        assert "(k)(2)" in regions[rid]["defined_by"]["where"], rid
+    # The regulation prints "Anacapa Islands" and "Santa Barbara Island"; name is as stated.
+    assert regions["scb.islands.anacapa"]["name"] == "Anacapa Islands"
+    assert regions["scb.islands.santa-barbara"]["name"] == "Santa Barbara Island"
+    # consortium is a county's attribute: non-empty only when parent is scb.mainland.
+    for rid in ("scb.islands", *ISLANDS):
+        assert not regions[rid].get("consortium"), rid
+
+
+def test_the_notebook_region_order_lists_the_eight_islands_by_id():
+    from kelpcatalog.plan import region_sort_key
+
+    catalog, _ = check_catalog(ROOT)
+    ids = [rec.id for rec in catalog.records["regions"] if rec.data["parent"] == "scb.islands"]
+    assert sorted(ids, key=region_sort_key) == sorted(ids) == list(ISLANDS)
