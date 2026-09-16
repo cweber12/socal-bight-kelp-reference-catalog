@@ -11,9 +11,11 @@ record of the fetch (CONTEXT.md, "Record format"). Standard library only.
 The URLs are http://, not https://: the host's HTTPS certificate expired on 2026-03-25 and
 urllib's default SSL context refuses it, while HTTP serves the same pages with a 200.
 
-Each page must arrive from the URL asked for and carry a sentence the record quotes from it:
-urllib follows redirects silently, and a parked domain or a CDN default page answers 200, so
-without the check a manifest would certify bytes that are not the page.
+Each page must arrive from the URL asked for and carry a marker, a fragment of text the record
+quotes from that page, which tells it apart from the other page and from an error or placeholder
+page: urllib follows redirects silently, and a parked domain or a CDN default page answers 200, so
+without the check a manifest would certify bytes that are not the page. The marker confirms which
+page arrived, not that the whole page did.
 """
 
 from __future__ import annotations
