@@ -9,15 +9,23 @@ tier: FETCHED
 access:
   - Open https://wildlife.ca.gov/Conservation/Marine/Kelp, CDFW's "Kelp and Other Marine Algae"
     page
-  - Follow a link labelled "Giant Kelp and Bull Kelp Enhanced Status Report". The page carries
-    three of them, in the paragraph beginning "A detailed summary of CDFW kelp management" and in
-    the giant kelp and bull kelp rows of its species table, and all three point to
-    https://marinespecies.wildlife.ca.gov/kelp/true/
-  - That host serves a React single-page application, the California Marine Species Portal, and
-    needs JavaScript. Every path under it answers HTTP 200 with the same 2,960-byte shell, whose
-    noscript element reads "You need to enable JavaScript to run this app." and which contains no
-    occurrence of "Macrocystis" and none of the report text. /kelp/, /kelp/the-species/,
-    /kelp/management/ and /kelp/true/ each returned that same shell on 2026-09-15
+  - >-
+    Follow a link labelled "Giant Kelp and Bull Kelp Enhanced Status Report". The page carries four
+    of them — in the paragraph beginning "A detailed summary of CDFW kelp management", in the giant
+    kelp and bull kelp rows of its species table, and in the closing paragraph beginning "To learn
+    more about CDFW's management of kelp and other marine algae" — and all four point to
+    https://marinespecies.wildlife.ca.gov/kelp/true/ (2026-09-16)
+  - >-
+    That host serves a React single-page application, the California Marine Species Portal, and
+    needs JavaScript. Every page path under it answers HTTP 200 with the same 2,960-byte shell,
+    whose noscript element reads "You need to enable JavaScript to run this app." and which
+    contains no occurrence of "Macrocystis" and none of the report text. /kelp/,
+    /kelp/the-species/, /kelp/management/, /kelp/true/, /kelp/nonsense-xyz/ and /nope each returned
+    that shell, byte identical, on 2026-09-16. Asset paths are served normally rather than as the
+    shell — /favicon.ico answered 200 with 1,150 bytes, and the bundle named in the next step 200
+    with 58,878 bytes, the same day — but a bundle name that does not exist answers with the shell
+    and not 404: /static/js/nope.js returned the same 2,960 bytes (2026-09-16), so a stale bundle
+    hash in the next step fails by serving the shell rather than by erroring
   - >-
     The report's own routes, and the page number each carries, are a constant in the application
     bundle https://marinespecies.wildlife.ca.gov/static/js/main.976995ce.chunk.js, which the shell
@@ -26,9 +34,10 @@ access:
     Species",VALUE:1},FISHERY:{URL:"/the-fishery/",TITLE:"The
     Fishery",VALUE:2},MANAGEMENT:{URL:"/management/",TITLE:"Management",VALUE:3},MONITORING:{URL:"/monitoring/",TITLE:"Monitoring
     & Essential Fishery Information",VALUE:4},FUTURE:{URL:"/future/",TITLE:"Future Management Needs
-    & Directions",VALUE:5},APPENDIX:{URL:"/appendix/",TITLE:"Appendices",VALUE:6}
-    — so the page number to fetch for a route is its VALUE. "true/", the path the three CDFW links
-    use, is not among them (retrieved 2026-09-15)
+    & Directions",VALUE:5},APPENDIX:{URL:"/appendix/",TITLE:"Appendices",VALUE:6}, …
+    — the constant continues with OVERVIEW, STATEWIDE_SUMMARY and TRANSLATE, which carry a URL and
+    no VALUE. So the page number to fetch for a route is its VALUE. "true/", the path the four
+    CDFW links use, is not among them (retrieved 2026-09-15)
   - The report text is served as JSON, one response per page, from the URL that same bundle builds
     as '"https://".concat(Q.API,"/api/reports/").concat(a,"/").concat(t)', where Q.API is
     "marinespecies-api.wildlife.ca.gov", a is the species path segment, "kelp", and t is the page
@@ -43,19 +52,30 @@ access:
   - No account, key or referrer is required for either host. Both HTTPS certificates verified
     without customisation on 2026-09-15, from curl and from Python 3.13 urllib using its default
     SSL context
-  - In the payload the text quoted in this record sits in speciesESRPage.sections[].content as HTML
-    markup, and the report's own line breaks are newline characters inside it that fall within
-    phrases, as in "compass" newline "headings". The quotations here are that content with the
-    tags removed and each run of whitespace as one space, which is the text the rendered page shows
+  - >-
+    The text quoted in this record comes from four places in the payload: section prose in
+    speciesESRPage.sections[].content, section titles in .sections[].name, figure and table
+    captions in .sections[].figuresAndTables[].caption, and the citation, the version note and the
+    table of contents in .footer. The prose and the captions are HTML markup, and the report's own
+    line breaks are newline characters inside it that fall within phrases, as in "compass" newline
+    "headings", while character entities stand unresolved, the no-break space among them. To
+    reproduce a
+    quotation from any of the four: remove the tags, replacing each with nothing rather than with a
+    space, since markup falls inside words; resolve the character entities; then replace each run
+    of whitespace, the no-break space among it, with one space. That is the text the rendered page
+    shows. The same three steps reproduce the text this record quotes from the HTML pages named in
+    the steps above, where an apostrophe is written as a numeric character reference
 format: >-
   JSON, one response per report page; served as Content-Type application/json; charset=utf-8. Each
   response is an object with the single key speciesESRPage, carrying commonName, scientificName,
   esrPage, hasAppendix, year, status, hasEnhancedStatusReport, profileImageUrl, mfdeSpeciesId, a
-  sections list whose content holds the section text as HTML markup, and a footer holding the
-  report's citation, contributors, acknowledgement, table of contents, list of acronyms, lists of
-  figures, charts and tables, literature cited and related links
+  sections list whose entries carry order, name, sectionId, content as HTML markup,
+  figuresAndTables and powerBiReports, and a footer whose twelve keys are relatedLinks, version,
+  contactUs, citation, contributors, acknowledgement, tableOfContents, listOfAcronyms,
+  listOfFigures, listOfCharts, listOfTables and literatureCited
 license: >-
-  not stated: the report states no licence, copyright or terms. None of the seven JSON payloads
+  not stated: the report grants no licence and states no terms of use. What its landing page does
+  state about rights is a bare copyright line, quoted below. None of the seven JSON payloads
   contains "copyright", "terms of use", "conditions of use", "disclaimer" or "public domain", and
   every occurrence of "licen" in them is a permission to harvest or to trade rather than a
   statement of terms for the report — the "Commercial Kelp Harvesting License" throughout, a
@@ -85,6 +105,16 @@ variables:
     three regions"
   - Table 3-1, "Current number of Administrative Kelp Beds in each status."
   - >-
+    Table 3-2, "Sample of giant kelp restoration projects in California.", whose columns are Date,
+    Location, Organization(s), Method and Citation, the Methods including "Outplant juveniles",
+    "Outplant kelp", "Cull urchins with quicklime", "Remove urchins with suction" and "Artificial
+    reef"
+  - >-
+    Table 3-3, "Bull kelp restoration pilot projects in California.", in the same columns, the
+    Methods including "Purple urchin removal by commercial divers", "Purple urchin culling by
+    recreational divers" and "Purple urchin removal by commercial divers; kelp outplanting at
+    Albion"
+  - >-
     Table 3-4, "Revenues from Commercial Kelp Harvesting Licenses and royalties 2015–2020.
     Royalties includes lease pre-payments. (Calstars and Fi$cal, accessed 07-14-2021)"
 coverage: >-
@@ -102,14 +132,30 @@ coverage: >-
   typically from the low intertidal to 17 meters (56 feet) with maximum depths of 40 meters (131
   feet)." Administrative Kelp Beds: "Commercial kelp harvest is managed through 87 officially
   delineated Administrative Kelp Beds that span the entire California coastline including the
-  Channel Islands."; "The kelp fishery is managed spatially in Administrative Kelp Beds, charted by
+  Channel Islands. Beds have one of four statuses: Open (available to harvest by all and leases
+  cannot be issued), Closed (commercial harvest of kelp is prohibited except as edible seaweed),
+  Leasable (Open until an exclusive lease is granted by the Commission and then harvest is only
+  available to the lessee), or Lease Only (Closed until leased)."; "The kelp fishery is managed
+  spatially in Administrative Kelp Beds, charted by
   the Commission in 1931. Originally, the Administrative Kelp Beds covered only the central and
   Southern California coasts, but in 1995, the northern Beds were established (Collins et al.
   2001). These Beds have additional restrictions, including closures and harvest limits (§165.5,
   Title 14, CCR). Although not completely contiguous, Administrative Kelp Beds span the majority of
   California’s coastline including the Channel Islands (see Figure 3-1 for a map of the
   southernmost Administrative Kelp Beds as an example). Maps for all 87 Administrative Kelp Beds
-  can be found at https://wildlife.ca.gov/Conservation/Marine/Kelp/Commercial-Harvest." Canopy
+  can be found at https://wildlife.ca.gov/Conservation/Marine/Kelp/Commercial-Harvest. The Beds are
+  not based on individual kelp patches but rather geographic areas that are delineated by latitude
+  and longitude coordinates and extend from the mean high tide to the state waters boundary line.
+  Each Administrative Kelp Bed is of a varying length and contains differing amounts of kelp that
+  change depending on growth. …" — that section prints the same four designations, as "Beds are
+  designated as Open (available to harvest by all and leases cannot be issued), Closed (commercial
+  harvest of kelp is prohibited except as edible seaweed), Leasable (Open until an exclusive lease
+  is granted by the Commission and then harvest is only available to the lessee), or Lease Only
+  (Closed until leased) (Table 3-1)." On the coordinates: "The most recent regulation change
+  occurred in 2014, when the Commission updated regulations for the commercial harvest of kelp. The
+  amendments (a) updated the Administrative Kelp Bed boundaries from compass headings to latitude
+  and longitude coordinates and removed references to antiquated Administrative Kelp Bed maps; …"
+  Canopy
   surveys: "The Department collected fishery-independent data on kelp canopy area for most years
   using aerial surveys in 1989, 1999, and annually from 2002–2016, with most data collected by the
   Department and its contractors." and "Shapefiles of these surveys are available for download
@@ -122,14 +168,17 @@ coverage: >-
   al. 2021)."
 coverage_stated_at: >-
   The citation and version are speciesESRPage.footer.citation and .footer.version, present on all
-  seven pages; the top-level sections are .footer.tableOfContents, whose entries carry the page
-  each falls on. Then, on https://marinespecies-api.wildlife.ca.gov/api/reports/kelp/0, sections
-  "0.2." Range and "0.3." Habitat for the range and the depths, and section "0.15." Management for
-  the 87 beds; then .../kelp/3, section "3.1." Past and Current Management for the charting, the
-  1995 northern beds and the maps of all 87; then .../kelp/4, section "4.2.2."
-  Fishery-independent Data Collection for the aerial surveys and the shapefiles; then .../kelp/1,
-  the caption of Figure 1-5 in section "1.2.1." Abundance Estimates, for the satellite series. All
-  retrieved 2026-09-15
+  seven pages. The top-level sections are named in .sections[].name, which prints the numeral, one
+  page per section; .footer.tableOfContents lists the same sections with the page each falls on but
+  without the numeral, as name "The Species" against sectionId "1.". Then, on
+  https://marinespecies-api.wildlife.ca.gov/api/reports/kelp/0, sections "0.2." Range and "0.3."
+  Habitat for the range and the depths, and section "0.15." Management for the 87 beds and the four
+  statuses; then .../kelp/3, section "3.1." Past and Current Management for the charting, the 1995
+  northern beds, the maps of all 87, the geographic areas delineated by coordinates, and the same
+  four as designations, and section "3.1.1.2." Past and Current Stakeholder Involvement for the
+  2014 amendments; then .../kelp/4, section "4.2.2." Fishery-independent Data Collection for the
+  aerial surveys and the shapefiles; then .../kelp/1, the caption of Figure 1-5 in section "1.2.1."
+  Abundance Estimates, for the satellite series. All retrieved 2026-09-15
 retrieved: 2026-09-15
 fetch_script: src/fetch/cdfw_kelp_esr.py
 file: null
@@ -143,7 +192,9 @@ topics:
   - ocean-climate/heatwaves
   - water-quality-harvest/kelp-harvest
   - water-quality-harvest/power-plants
-  - restoration-mitigation
+  - restoration-mitigation/outplanting
+  - restoration-mitigation/urchin-removal
+  - restoration-mitigation/artificial-reefs
 regions:
   - scb
 beds: []
