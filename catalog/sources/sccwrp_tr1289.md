@@ -35,16 +35,19 @@ variables:
   - Benthic Response Index (BRI)
   - California Sediment Quality Objectives Benthic Line of Evidence (SQO BLOE)
   - Multivariate AZTI Marine Biotic Index (M-AMBI)
-  - "sediment chemistry (metals, PAHs, PCBs, and DDTs)"
-  - sediment grainsize
+  - >-
+    "sediment chemistry (metals, PAHs, PCBs, and DDTs)", which the report compared "at the Channel
+    Islands stratum"
+  - >-
+    "sediment grainsize", which the report compared "at the Channel Islands stratum"
   - >-
     "water quality (bottom water temperature, dissolved oxygen, and salinity)", which the report
-    states "were obtained from CalCOFI bottle samples collected near (within 37 km) and at the same
-    depth (+/- 6m) as the benthic samples"
+    compared "at the Channel Islands stratum" and states "were obtained from CalCOFI bottle samples
+    collected near (within 37 km) and at the same depth (+/- 6m) as the benthic samples"
   - >-
     "modelled measures of ocean acidification (pH, aragonite saturation, calcite saturation, and
-    pCO2)", which the report states "were calculated using linear regression models applied to
-    CalCOFI water quality data"
+    pCO2)", which the report compared "at the Channel Islands stratum" and states "were calculated
+    using linear regression models applied to CalCOFI water quality data"
   - >-
     Chlorophyll A, in the caption of Figure 18: "Chlorophyll A, dissolved oxygen (DO), salinity,
     and temperature values in the Channel Islands for each Bight Survey (1998, 2003, 2008, 2013,
@@ -64,13 +67,19 @@ coverage: >-
   "Macrobenthic community composition was assessed for the continental shelf portions of the
   Southern California Bight (6-200 m deep) and embayments. These areas represent approximately 36%
   of the total area of the Southern California Bight." The report presents "the trends in that
-  condition over the last 20 years (1998-2018)".
+  condition over the last 20 years (1998-2018)". It also presents "Aragonite saturation, calcite
+  saturation, partial pressure of CO2, and pH values in the Channel Islands for each Bight Survey
+  (1998, 2003, 2008, 2013, and 2018)" and "Chlorophyll A, dissolved oxygen (DO), salinity, and
+  temperature values in the Channel Islands for each Bight Survey (1998, 2003, 2008, 2013, and
+  2018)".
 coverage_stated_at: >-
   Chapter II, Methods, Study Design, printed page 3 (PDF page 20); then Table 1, printed page 4
   (PDF page 21); then Chapter II, Methods, Sample Processing, printed page 4 (PDF page 21); then
-  the Executive Summary, printed page v (PDF page 7), of
+  the Executive Summary, printed page v (PDF page 7); then the captions of Figures 17 and 18,
+  printed pages 40 and 41 (PDF pages 57 and 58), all of
   https://ftp.sccwrp.org/pub/download/DOCUMENTS/JournalArticles/1289_Bight18BenthicInfauna.pdf,
-  retrieved 2026-09-15
+  retrieved 2026-09-15. The "at the Channel Islands stratum" scope in `variables` is Chapter II,
+  Methods, Data Analysis, printed page 9 (PDF page 26)
 retrieved: 2026-09-15
 fetch_script: src/fetch/sccwrp_tr1289.py
 file: null
