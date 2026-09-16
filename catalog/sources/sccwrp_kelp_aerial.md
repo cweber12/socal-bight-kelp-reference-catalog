@@ -1,7 +1,7 @@
 ---
 id: sccwrp_kelp_aerial
 title: Southern California Bight Regional Aerial Kelp Surveys
-steward: Region Nine Kelp Survey Consortium and Central Region Kelp Survey Consortium
+steward: Southern California Coastal Water Research Project
 url: http://kelp.sccwrp.org/
 doi: null
 status: VERIFIED
@@ -18,12 +18,24 @@ access:
     expired, while HTTP answered 200 with no redirect (2026-09-16)
   - >-
     Follow the menu link "Reports" to http://kelp.sccwrp.org/reports.html. It links each "Status of
-    the Kelp Beds" report as a PDF at a path relative to the host, some with spaces in the file
-    name, sent as %20, as in http://kelp.sccwrp.org/2014_MBC_Final_Combined_Kelp_Survey_Report.pdf;
+    the Kelp Beds" report as a PDF at a path relative to the host. Some file names hold literal
+    spaces, which a client sends as %20, as in the link to
+    http://kelp.sccwrp.org/2013_Status_of_Kelp_Beds_Final%20Report_20140721.pdf;
     all fourteen PDF links on the page answered HTTP 200 with Content-Type application/pdf
     (2026-09-16). This record fetches http://kelp.sccwrp.org/home.html and
     http://kelp.sccwrp.org/reports.html, not the PDFs
   - No account, key or referrer is required
+  - >-
+    No page of the site names the organisation that publishes it. The host is a subdomain of
+    sccwrp.org. The "Meetings" page, http://kelp.sccwrp.org/meeting.html, links two meeting
+    videos: https://vimeo.com/sccwrp/review/177135739/739970ee1d, under the vimeo.com/sccwrp
+    account path, and https://vimeo.com/229723053, for which Vimeo's oEmbed endpoint,
+    https://vimeo.com/api/oembed.json?url=https://vimeo.com/229723053, returns JSON whose
+    author_name is "SCCWRP" and whose author_url, once its escaped slashes are read, is
+    https://vimeo.com/sccwrp; the same endpoint answered 404 for the first video (2026-09-16).
+    The "About Us" page,
+    http://kelp.sccwrp.org/about.html, lists members under "Region Nine Kelp Survey Consortium",
+    "Central Region Kelp Survey Consortium", "Regional Water Boards" and "Project Consultant"
 format: >-
   HTML pages declared as XHTML 1.0 Transitional, charset UTF-8; served as Content-Type text/html.
   The Reports page links PDF files, served as Content-Type application/pdf
@@ -31,8 +43,8 @@ license: >-
   not stated: none of the site's four pages, http://kelp.sccwrp.org/home.html, about.html,
   reports.html and meeting.html, contains "copyright", "licen", "terms", "disclaimer" or "public
   domain", and none has a footer. Their links are the menu, "Home", "About Us", "Reports" and
-  "Meetings", the report PDFs on reports.html, and meeting agenda PDFs and two vimeo.com videos on
-  meeting.html (all retrieved 2026-09-16)
+  "Meetings", the report PDFs on reports.html, and meeting agenda PDFs and the two meeting videos
+  named in access on meeting.html (all retrieved 2026-09-16)
 variables: []
 coverage: >-
   "The status of the giant kelp forests (Macrocystis pyrifera) that occur along most of the
@@ -48,10 +60,10 @@ coverage: >-
   the southern California mainland coast. Although the results of these kelp surveys were reported
   separately for each region prior to 2012, these reports have since been combined into a single
   “Status of the Kelp Beds” report published in July of each year." The Reports page lists "Status
-  of the Kelp Beds, 2016. Ventura, Los Angeles, Orange, and San Diego Counties" and the same title
-  for each year down to 2012, then for each of 2011 and 2010 two reports, "San Diego and Orange
-  Counties" and "Ventura, Los Angeles and Orange Counties", as in "Status of the Kelp Beds, 2011.
-  San Diego and Orange Counties"
+  of the Kelp Beds, 2016. Ventura, Los Angeles, Orange, and San Diego Counties" and that title with
+  the year 2015, 2014, 2013 and 2012 in turn, then for each of 2011 and 2010 two reports, "San
+  Diego and Orange Counties" and "Ventura, Los Angeles and Orange Counties", as in "Status of the
+  Kelp Beds, 2011. San Diego and Orange Counties"
 coverage_stated_at: >-
   The first quoted passage is the whole paragraph beginning "The status of the giant kelp forests",
   where Macrocystis pyrifera is set in an em element whose tags are removed here, and the second is
