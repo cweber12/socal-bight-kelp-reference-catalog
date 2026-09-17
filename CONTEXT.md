@@ -75,21 +75,21 @@ printed page, or extracted from a document by a named script, into `catalog/tabl
 **regions** — the tree below. A source tags each node its stated coverage names as its own extent,
 not each place it mentions: a source about an island tags the island node, not the county; a source
 stating county-wide coverage that includes islands tags the county and the islands it names, a
-county node not holding its islands (level 3 below); a source stating Bight-wide coverage tags `scb`
-and not the islands or counties inside it that its coverage names (`sccwrp_tr1289`); a source whose
-stated bound is wider than the Bight, statewide, nationwide or a species range alike, tags the nodes
-inside the Bight it names as its own extent, and `scb` otherwise, a node named only as a part, group
-or row of that wider extent being a mention (the bed groups of `ccr_t14_165_5`, the county rows of
-`census_tiger_county_2025`); and a source within the Bight whose stated coverage names no node (a
-station list, a coordinate box) tags the smallest node that contains it. A source carrying two or
-more region tags renders under each of them in a topic notebook's sources tables, and each matrix
-counts it once per region it carries: in the index matrix a column per region, in a topic's matrix a
-row per region (`build.py`, `_sources_by_region`, `_matrix`, `_index_matrix`). `global` is allowed
-without a record for sources with no regional bound (ONI).
-`global` is therefore not a node of the tree, and not a region wider than the Bight: it states the
-*absence* of a bound, not a bound that happens to be large. It is also the one region tag with no
-record, so it has no `name` to print; *Notebooks* below gives the heading a notebook prints instead,
-and where in the order it falls.
+county's islands belonging to the island nodes by convention (level 3 below); a source stating
+Bight-wide coverage tags `scb` and not the islands or counties inside it that its coverage names
+(`sccwrp_tr1289`); a source whose stated bound is wider than the Bight, statewide, nationwide or a
+species range alike, tags the nodes inside the Bight it names as its own extent, and `scb`
+otherwise, a node named only as a part, group or row of that wider extent being a mention (the bed
+groups of `ccr_t14_165_5`, the county rows of `census_tiger_county_2025`); and a source within the
+Bight whose stated coverage names no node (a station list, a coordinate box) tags the smallest node
+that contains it. A source carrying two or more region tags renders under each of them in a topic
+notebook's sources tables, and each matrix counts it once per region it carries: in the index matrix
+a column per region, in a topic's matrix a row per region (`build.py`, `_sources_by_region`,
+`_matrix`, `_index_matrix`). `global` is allowed without a record for sources with no regional bound
+(ONI). `global` is therefore not a node of the tree, and not a region wider than the Bight: it
+states the *absence* of a bound, not a bound that happens to be large. It is also the one region tag
+with no record, so it has no `name` to print; *Notebooks* below gives the heading a notebook prints
+instead, and where in the order it falls.
 
 ## Topics: the ten questions
 
