@@ -106,8 +106,10 @@ does not list.
   provenance is `transcribed_from`, not a fetch); `null` when `NOT HELD`.
 - `topics`: tags from `CONTEXT.md` only. **A source that fits no topic is never excluded for it** —
   stop and say so, and adding the topic is its own PR.
-- `regions`: each node its stated coverage names, or the smallest node that contains it when the
-  coverage names no node (`CONTEXT.md`, "Vocabularies", regions, gives the island and county
+- `regions`: each node its stated coverage names as its own extent, not each place it mentions, or
+  the smallest node that contains it when the coverage names no node; a source whose stated bound
+  is wider than the Bight tags the nodes inside the Bight it names as its extent, and `scb` when it
+  names none (`CONTEXT.md`, "Vocabularies", regions, gives the island, county and wider-than-Bight
   cases); `global` for a source with no regional bound.
 
 `catalog/sources/noaa_oni.md` shows all of this: every row present, `file: null` and
