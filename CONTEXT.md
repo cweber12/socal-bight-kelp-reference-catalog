@@ -72,12 +72,19 @@ printed page, or extracted from a document by a named script, into `catalog/tabl
 
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 
-**regions** — the tree below. A source tags the most specific node that covers it; `global` is
-allowed without a record for sources with no regional bound (ONI). `global` is therefore not a node
-of the tree, and not a region wider than the Bight: it states the *absence* of a bound, not a bound
-that happens to be large. It is also the one region tag with no record, so it has no `name` to
-print; *Notebooks* below gives the heading a notebook prints instead, and where in the order it
-falls.
+**regions** — the tree below. A source tags each node its stated coverage names: a source about an
+island tags the island node, not the county; a source stating county-wide coverage that includes
+islands tags the county and the islands it names; a source whose stated coverage names no node (a
+station list, a coordinate box) tags the smallest node that contains it. Which node a source tags
+when its stated bound is wider than the Bight is open on #105; such sources carry `scb` today. A
+source carrying two or more region tags renders under each of them in a topic notebook's sources
+tables, and each matrix counts it once per region it carries: in the index matrix a column per
+region, in a topic's matrix a row per region (`build.py`, `_sources_by_region`, `_matrix`,
+`_index_matrix`). `global` is allowed without a record for sources with no regional bound (ONI).
+`global` is therefore not a node of the tree, and not a region wider than the Bight: it states the
+*absence* of a bound, not a bound that happens to be large. It is also the one region tag with no
+record, so it has no `name` to print; *Notebooks* below gives the heading a notebook prints instead,
+and where in the order it falls.
 
 ## Topics: the ten questions
 
@@ -126,26 +133,40 @@ kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, 
 
 Every region record's `defined_by` (levels 1-3, `regions/<id>.md`) is `{source, where}`: the
 `sources/` record that draws the boundary and a locator within it (a section, a subsection, a
-page). Beds and sites (levels 4 and 5) carry the string their own rows describe. Levels:
+page, or for a data file an attribute value). Beds and sites (levels 4 and 5) carry the string
+their own rows describe. Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
    Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker
    2022, SCCWRP Technical Report 1289, Methods, Study Design).
-2. `scb.mainland` and `scb.islands` — the Bight program samples the Channel Islands as their own
-   stratum; every mainland program states coverage by county.
+2. `scb.mainland` and `scb.islands` — CCR Title 14 §165.5(k) lists its beds in four groups, and
+   `ccr_t14_165_5` quotes all four headings; the two that reach the Bight define these nodes.
+   `scb.mainland` is defined at "(1) Mainland administrative kelp beds U.S./Mexico Border to Pt.
+   Arguello (Total 19.07 square miles)" and `scb.islands` at "(2) Channel Island administrative
+   kelp beds (Total 20.68 square miles)". Group (1) runs north of level 1's Point Conception
+   bound to Pt. Arguello: it adds bed 33, which "extends from Pt. Conception to Espada Bluff"
+   (subsection (k)(1), paragraph (EE)), and bed 34, which "extends from Espada Bluff to Pt.
+   Arguello" (paragraph (FF)). This file keeps the Point Conception bound and records the
+   difference rather than resolving it; #96 scopes the mainland beds to 1–32 on that reading.
+   Every mainland program states coverage by county.
 3. Mainland counties: `scb.mainland.santa-barbara`, `.ventura`, `.los-angeles`, `.orange`,
    `.san-diego` (the Region Nine and Central Region Kelp Survey Consortia's coverage as
-   `sccwrp_kelp_status_2016` states it: "Giant kelp beds have been mapped quarterly off Ventura,
-   Los Angeles, Orange, and San Diego counties for both the Central Region (CRKSC) and Region Nine
-   Kelp Survey Consortiums (RNKSC).", Executive Summary, printed page i (PDF page 8); the first
-   consortium paragraph below gives the extents by county). Islands: eight nodes directly under
-   `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
-   `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group
-   level between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing
-   the island on every island bed, and gathers them under one heading, "Channel Island
-   administrative kelp beds (Total 20.68 square miles)". A finer grouping arrives with the
-   source that draws it. Note `scb.islands.santa-barbara` (the island) and
-   `scb.mainland.santa-barbara` (the county) are distinct nodes; their ids differ by branch.
+   `sccwrp_kelp_status_2016` states it: "Giant kelp beds have been mapped quarterly off Ventura, Los
+   Angeles, Orange, and San Diego counties for both the Central Region (CRKSC) and Region Nine Kelp
+   Survey Consortiums (RNKSC).", Executive Summary, printed page i (PDF page 8); the first
+   consortium paragraph below gives the extents by county). A mainland county node's `defined_by` is
+   `census_tiger_county_2025` at the county's `GEOID` in that file's attribute table, the county's
+   geometry as the file draws it: Santa Barbara 06083, Ventura 06111, Los Angeles 06037, Orange
+   06059 and San Diego 06073, as the record's `coverage` states them from the held `.dbf`; Santa
+   Barbara County has the same form as the other four. The catalog assigns a county's islands and
+   the water around them to the island nodes, by convention and drawing no line. Islands: eight
+   nodes directly under `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
+   `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group level
+   between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing the island on
+   every island bed, and gathers them under one heading, "Channel Island administrative kelp beds
+   (Total 20.68 square miles)". A finer grouping arrives with the source that draws it. Note
+   `scb.islands.santa-barbara` (the island) and `scb.mainland.santa-barbara` (the county) are
+   distinct nodes; their ids differ by branch.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
    https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The beds are
@@ -265,9 +286,10 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 ### regions/<id>.md
 
 `id`* (equals file name), `name`*, `parent`* (region id, or null for `scb`), `defined_by`*
-(`{source, where}`: a source id that exists, and where in that source the boundary is drawn),
-`consortium` (list of `RNKSC` / `CRKSC`, non-empty only when `parent` is `scb.mainland`; `[]`
-where neither consortium covers the county).
+(`{source, where}`: a source id that exists, and where in that source the boundary is drawn — a
+section, a subsection, a page, or for a data file an attribute value), `consortium` (list of
+`RNKSC` / `CRKSC`, non-empty only when `parent` is `scb.mainland`; `[]` where neither consortium
+covers the county).
 
 ### beds/<n>.md
 

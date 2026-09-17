@@ -712,12 +712,13 @@ ISLANDS = (
 def test_the_islands_are_eight_nodes_under_scb_islands_each_citing_the_regulation():
     # CONTEXT.md, "The region tree", level 3: eight nodes directly under scb.islands, with
     # no group level between; CCR Title 14 s165.5(k)(2) prints the island on every island
-    # bed, and the Bight program samples the Channel Islands as their own stratum.
+    # bed, and gathers them under the heading "(2) Channel Island administrative kelp beds",
+    # which is what scb.islands is defined by (#123).
     catalog, problems = check_catalog(ROOT)
     assert problems == []
     regions = {rec.id: rec.data for rec in catalog.records["regions"]}
     assert regions["scb.islands"]["parent"] == "scb"
-    assert regions["scb.islands"]["defined_by"]["source"] == "sccwrp_tr1289"
+    assert regions["scb.islands"]["defined_by"]["source"] == "ccr_t14_165_5"
     islands = sorted(rid for rid, d in regions.items() if d["parent"] == "scb.islands")
     assert tuple(islands) == ISLANDS
     for rid in ISLANDS:

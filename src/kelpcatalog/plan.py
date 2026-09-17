@@ -89,10 +89,10 @@ NOTEBOOK_PATHS: dict[str, str] = {
 # CONTEXT.md lists them, siblings it does not order sorted by id, and `global` last.
 #
 # The sibling lists are transcribed from "The region tree" because they are a fact stated
-# once there and derivable from no record: north to south for the counties, and the
-# stratum split for level 2. The order must hold before the county and island records
-# exist (6.3), so it is a property of the region id alone - which is why this walks the
-# dotted id rather than a loaded catalog.
+# once there and derivable from no record: north to south for the counties, and mainland
+# before islands for level 2, the order the regulation prints its groups (1) and (2). The
+# order must hold before the county and island records exist (6.3), so it is a property of
+# the region id alone - which is why this walks the dotted id rather than a loaded catalog.
 
 ROOT_REGION = "scb"
 NO_REGIONAL_BOUND = "No regional bound"
