@@ -13,18 +13,20 @@ access:
   - Download that file over HTTPS; no account, key or referrer is required
     (HTTP 200, Content-Type application/zip, 83989800 bytes, 2026-09-17)
   - The archive holds seven members, tl_2025_us_county.shp, .shx, .dbf, .prj, .cpg,
-    .shp.iso.xml and .shp.ea.iso.xml; the metadata quoted in this record is in the last
-    two, and the field definitions are in .shp.ea.iso.xml
+    .shp.iso.xml and .shp.ea.iso.xml; the metadata quoted in this record is in .shp.iso.xml,
+    the field definitions in .shp.ea.iso.xml, the projection in .prj and the code page in .cpg
   - The 2025 technical documentation is
     https://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2025/TGRSHP2025_TechDoc.pdf;
     its Appendix I-2 is the record layout of this file
 format: >-
-  "ZIP" (tl_2025_us_county.shp.iso.xml, distributionInfo/distributionFormat); the archive's
-  members are the shapefile tl_2025_us_county.shp with .shx, .dbf, .prj and .cpg ("UTF-8") and
-  the two ISO metadata files tl_2025_us_county.shp.iso.xml and tl_2025_us_county.shp.ea.iso.xml;
+  "ZIP" (tl_2025_us_county.shp.iso.xml,
+  distributionInfo/MD_Distribution/distributionFormat/MD_Format/name); the archive's members
+  are the shapefile tl_2025_us_county.shp with .shx, .dbf, .prj and .cpg ("UTF-8") and the two
+  ISO metadata files tl_2025_us_county.shp.iso.xml and tl_2025_us_county.shp.ea.iso.xml;
   reference system "North American Datum of 1983" ("NAD83"), "urn:ogc:def:crs:EPSG::4269"
-  (the same file, referenceSystemInfo), and the .prj reads GCS_North_American_1983; served as
-  Content-Type application/zip
+  (the same file, referenceSystemInfo/MD_ReferenceSystem/referenceSystemIdentifier/RS_Identifier,
+  its authority title, alternateTitle and code), and the .prj reads GCS_North_American_1983;
+  served as Content-Type application/zip
 license: >-
   "Access constraints: None" and "Use Constraints: The TIGER/Line Shapefile products are not
   copyrighted however TIGER/Line and Census TIGER are registered trademarks of the U.S. Census
@@ -36,8 +38,8 @@ license: >-
   descriptions. Coordinates in the TIGER/Line shapefiles have six implied decimal places, but
   the positional accuracy of these coordinates is not as great as the six decimal places
   suggest." (tl_2025_us_county.shp.iso.xml inside the archive,
-  identificationInfo/resourceConstraints/MD_LegalConstraints/otherConstraints, two
-  CharacterString values, retrieved 2026-09-17)
+  identificationInfo/MD_DataIdentification/resourceConstraints/MD_LegalConstraints/otherConstraints,
+  two CharacterString values, retrieved 2026-09-17)
 variables:
   - "STATEFP: Current state Federal Information Processing Series (FIPS) code"
   - "COUNTYFP: Current county Federal Information Processing Series (FIPS) code"
@@ -68,9 +70,9 @@ variables:
   - "INTPTLON: Current longitude of the internal point"
 coverage: >-
   "The entire area of the United States, Puerto Rico, and the Island Areas is covered by
-  counties or equivalent entities. The boundaries for counties and equivalent entities are
-  mostly as of January 1, 2025, as reported through the Census Bureau's Boundary and Annexation
-  Survey (BAS)."; bounding box westBoundLongitude -178.443593, eastBoundLongitude 146.154418,
+  counties or equivalent entities." and "The boundaries for counties and equivalent entities
+  are mostly as of January 1, 2025, as reported through the Census Bureau's Boundary and
+  Annexation Survey (BAS)."; bounding box westBoundLongitude -178.443593, eastBoundLongitude 146.154418,
   southBoundLatitude -14.601813, northBoundLatitude 71.439786; citation date 2025
   (publication), 2025-10 (creation, lastUpdate). In the copy retrieved 2026-09-17 the header of
   tl_2025_us_county.dbf gives 3235 records, and its rows with STATEFP 06 and NAME Santa Barbara,
@@ -78,12 +80,11 @@ coverage: >-
   and NAMELSAD "Santa Barbara County", "Ventura County", "Los Angeles County", "Orange County"
   and "San Diego County"
 coverage_stated_at: >-
-  tl_2025_us_county.shp.iso.xml inside the archive states the abstract sentences quoted
+  tl_2025_us_county.shp.iso.xml inside the archive states the two abstract sentences quoted
   (identificationInfo/MD_DataIdentification/abstract), the bounding box
-  (identificationInfo/MD_DataIdentification/extent/EX_GeographicBoundingBox) and the citation
-  dates (identificationInfo/MD_DataIdentification/citation/CI_Citation/date); the record count
-  is in the header of tl_2025_us_county.dbf and the five rows are in that table, read with the
-  standard library from the held archive
+  (identificationInfo/MD_DataIdentification/extent/EX_Extent/geographicElement/EX_GeographicBoundingBox)
+  and the citation dates (identificationInfo/MD_DataIdentification/citation/CI_Citation/date);
+  the record count is in the header of tl_2025_us_county.dbf and the five rows are in that table
 retrieved: 2026-09-17
 fetch_script: src/fetch/census_tiger_county_2025.py
 file: null
