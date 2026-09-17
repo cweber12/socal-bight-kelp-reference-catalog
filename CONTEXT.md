@@ -90,10 +90,11 @@ and where in the order it falls.
 
 Three groups, ten topics, each topic a question. The three groups follow how the drivers are
 sorted in NOAA Office of National Marine Sanctuaries, "Kelp forest impacts"
-(sanctuaries.noaa.gov/visit/ecosystems/kelpimpacts.html); California Research Bureau, "Kelp
-forests" brief, 2 April 2026 (library.ca.gov/crb/nexus/briefs/kelp-forests/); and SCCWRP, Bight '08
-Rocky Reef (dataportal.sccwrp.org, page 28ae52ed…), all retrieved 2026-09-07. The questions are
-what a notebook answers.
+(sanctuaries.noaa.gov/visit/ecosystems/kelpimpacts.html) and California Research Bureau, "Kelp
+forests" brief, 2 April 2026 (library.ca.gov/crb/nexus/briefs/kelp-forests/), both retrieved
+2026-09-07, and in `sccwrp_b08_rocky_reef`, at its landing page
+https://bight.sccwrp.org/pages/bight-08-rocky-reef (the record's first access step). The questions
+are what a notebook answers.
 
 | group | topic | question |
 |---|---|---|
@@ -137,8 +138,8 @@ page, or for a data file an attribute value). Beds and sites (levels 4 and 5) ca
 their own rows describe. Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
-   Conception, CA in the north to the US-Mexico border in the south" (Gillett, Enright & Walker
-   2022, SCCWRP Technical Report 1289, Methods, Study Design).
+   Conception, CA in the north to the US-Mexico border in the south" (`sccwrp_tr1289`, Chapter II,
+   Methods, Study Design, printed page 3 (PDF page 20)).
 2. `scb.mainland` and `scb.islands` — CCR Title 14 §165.5(k) lists its beds in four groups, and
    `ccr_t14_165_5` quotes all four headings; the two that reach the Bight define these nodes.
    `scb.mainland` is defined at "(1) Mainland administrative kelp beds U.S./Mexico Border to Pt.
@@ -164,22 +165,25 @@ their own rows describe. Levels:
    `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group level
    between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing the island on
    every island bed, and gathers them under one heading, "Channel Island administrative kelp beds
-   (Total 20.68 square miles)". A finer grouping arrives with the source that draws it. Note
+   (Total 20.68 square miles)" (`ccr_t14_165_5`, subsection (k)(2)). A finer grouping arrives with
+   the source that draws it. Note
    `scb.islands.santa-barbara` (the island) and `scb.mainland.santa-barbara` (the county) are
    distinct nodes; their ids differ by branch.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
-   Islands; CDFW 2021, Giant Kelp and Bull Kelp Enhanced Status Report, Management section,
-   https://marinespecies.wildlife.ca.gov/kelp/management/, retrieved 2026-09-14). The beds are
-   defined by **CCR Title 14 §165.5(k)**, in its own words: "Administrative kelp beds are defined
-   as follows: kelp bed number, designation, area …, and boundary descriptions", and "All
-   geographic coordinates listed use the North American Datum 1983 (NAD83)"
-   (govt.westlaw.com/calregs, document `IE6B507C0DA8311F08F04978BD7C3021A`, retrieved 2026-09-14).
-   The ESR corroborates that the coordinates live in the regulation: the 2014 amendments "updated
-   the Administrative Kelp Bed boundaries from compass headings to latitude and longitude
-   coordinates" (Management §3.1.1.2). The shapefiles under
-   `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are the Department's **canopy surveys**
-   — its Monitoring section offers them as "Shapefiles of these surveys", the aerial surveys of
-   1989, 1999 and annually 2002–2016. Program bed names are `aliases:`.
+   Islands, as `cdfw_kelp_esr` states it: "87 officially delineated Administrative Kelp Beds that
+   span the entire California coastline including the Channel Islands", section "0.15."
+   Management, page 0 (Species-at-a-Glance)). The beds are defined by **CCR Title 14 §165.5(k)**,
+   in its own words: "Administrative kelp beds are defined as follows: kelp bed number,
+   designation, area …, and boundary descriptions", and "All geographic coordinates listed use the
+   North American Datum 1983 (NAD83)" (`ccr_t14_165_5`, subsection (k)). The ESR corroborates that
+   the coordinates live in the regulation: the 2014 amendments "updated the Administrative Kelp
+   Bed boundaries from compass headings to latitude and longitude coordinates" (`cdfw_kelp_esr`,
+   section "3.1.1.2." Past and Current Stakeholder Involvement, page 3 (Management)). The
+   shapefiles under `filelib.wildlife.ca.gov/Public/R7_MR/BIOLOGICAL/Kelp/` are the Department's
+   **canopy surveys** — its Monitoring section offers them as "Shapefiles of these surveys", the
+   aerial surveys of 1989, 1999 and annually 2002–2016 (`cdfw_kelp_esr`, section "4.2.2."
+   Fishery-independent Data Collection, page 4 (Monitoring and Essential Fishery Information)).
+   Program bed names are `aliases:`.
 5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
 
 Consortium is an attribute on a county node, not a level, and it is a **list**. The authority is
@@ -231,9 +235,9 @@ surveys a given **bed** is a bed field, `surveyed_by`, arriving in milestone 6.3
 
 Depth is not a level of the tree. A source's depth range is part of its `coverage`, as the source
 states it. For orientation: CDFW gives giant kelp habitat as "the low intertidal to depths of 25
-meters … with maximum depths of 30 meters" (ESR 2021, Species-at-a-Glance, at the report root
-https://marinespecies.wildlife.ca.gov/kelp/, not the Management section cited above), which sits
-within Bight '18's Inner Shelf stratum, 7–30 m (TR 1289, Table 1).
+meters … with maximum depths of 30 meters" (`cdfw_kelp_esr`, section "0.3." Habitat, page 0
+(Species-at-a-Glance)), which sits within Bight '18's Inner Shelf stratum, 7–30 m
+(`sccwrp_tr1289`, Table 1, printed page 4 (PDF page 21)).
 
 ## Record schemas
 
