@@ -90,11 +90,11 @@ and where in the order it falls.
 
 Three groups, ten topics, each topic a question. The three groups follow how the drivers are
 sorted in NOAA Office of National Marine Sanctuaries, "Kelp forest impacts"
-(sanctuaries.noaa.gov/visit/ecosystems/kelpimpacts.html) and California Research Bureau, "Kelp
-forests" brief, 2 April 2026 (library.ca.gov/crb/nexus/briefs/kelp-forests/), both retrieved
-2026-09-07, and in `sccwrp_b08_rocky_reef`, at its landing page
-https://bight.sccwrp.org/pages/bight-08-rocky-reef (the record's first access step). The questions
-are what a notebook answers.
+(sanctuaries.noaa.gov/visit/ecosystems/kelpimpacts.html); California Research Bureau, "Kelp
+forests" brief, 2 April 2026 (library.ca.gov/crb/nexus/briefs/kelp-forests/); and the Bight '08
+Rocky Reef landing page, the first access step of `sccwrp_b08_rocky_reef`, which gives the route
+to the page and does not state the sorting; all three retrieved 2026-09-07. The questions are
+what a notebook answers.
 
 | group | topic | question |
 |---|---|---|
@@ -164,11 +164,11 @@ their own rows describe. Levels:
    nodes directly under `scb.islands` — `.anacapa`, `.san-clemente`, `.san-miguel`, `.san-nicolas`,
    `.santa-barbara`, `.santa-catalina`, `.santa-cruz`, `.santa-rosa`. There is no group level
    between them and `scb.islands`: CCR Title 14 §165.5(k)(2) names all eight, printing the island on
-   every island bed, and gathers them under one heading, "Channel Island administrative kelp beds
-   (Total 20.68 square miles)" (`ccr_t14_165_5`, subsection (k)(2)). A finer grouping arrives with
-   the source that draws it. Note
-   `scb.islands.santa-barbara` (the island) and `scb.mainland.santa-barbara` (the county) are
-   distinct nodes; their ids differ by branch.
+   every island bed (each island record's `defined_by.where` states the beds and the printed name),
+   and gathers them under one heading, "Channel Island administrative kelp beds (Total 20.68 square
+   miles)" (`ccr_t14_165_5`, subsection (k)(2)). A finer grouping arrives with the source that draws
+   it. Note `scb.islands.santa-barbara` (the island) and `scb.mainland.santa-barbara` (the county)
+   are distinct nodes; their ids differ by branch.
 4. **Beds**, keyed by CDFW Administrative Kelp Bed number (87 statewide including the Channel
    Islands, as `cdfw_kelp_esr` states it: "87 officially delineated Administrative Kelp Beds that
    span the entire California coastline including the Channel Islands", section "0.15."
