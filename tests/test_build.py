@@ -812,9 +812,9 @@ def test_sources_sort_by_id_whatever_order_the_catalog_holds_them_in():
 
 
 def test_a_source_tagging_two_regions_renders_under_each_in_region_order():
-    # This records what the builder does, not a decision: whether a source with two region
-    # tags repeats in every group or renders once is parked on #5, and no current source
-    # carries two. The test is here so #44 cannot commit the opposite by accident.
+    # CONTEXT.md, "Vocabularies", regions: a source with two or more region tags renders
+    # under each of them (#123). No current source carries two; the test is here so #44
+    # cannot commit the opposite by accident.
     temperature = sections(
         build_topic("ocean-climate", a_source_record(regions=["global", "scb"]))
     )["temperature"]

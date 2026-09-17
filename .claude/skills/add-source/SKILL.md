@@ -106,7 +106,9 @@ does not list.
   provenance is `transcribed_from`, not a fetch); `null` when `NOT HELD`.
 - `topics`: tags from `CONTEXT.md` only. **A source that fits no topic is never excluded for it** —
   stop and say so, and adding the topic is its own PR.
-- `regions`: the most specific node that covers it, or `global` for a source with no regional bound.
+- `regions`: each node its stated coverage names, or the smallest node that contains it when the
+  coverage names no node (`CONTEXT.md`, "Vocabularies", regions, gives the island and county
+  cases); `global` for a source with no regional bound.
 
 `catalog/sources/noaa_oni.md` shows all of this: every row present, `file: null` and
 `transcribed_from: null` among them; a licence quoted from the NWS disclaimer two hops out, with the
