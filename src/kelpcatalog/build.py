@@ -255,10 +255,11 @@ def _source_row(topic: str, rec: Record) -> list[str]:
 def _sources_by_region(topic: str, sources: list[Record], catalog: Catalog) -> list[str]:
     """Grouped by region, in the notebook's own region order (#40, plan.region_sort_key).
 
-    A source tagging more than one region renders under each of them and is counted in
-    each matrix column, as CONTEXT.md, "Vocabularies", regions, states (#123); no current
-    source carries two, so nothing observable turns on it yet. A test records it so that
-    #44 cannot commit the opposite by accident.
+    A source tagging more than one region renders under each of them, and each matrix
+    counts it once per region it carries - a row here in _matrix, a column in _index_matrix
+    - as CONTEXT.md, "Vocabularies", regions, states (#123); no current source carries two,
+    so nothing observable turns on it yet. A test records it so that #44 cannot commit the
+    opposite by accident.
     """
     if not sources:
         return [NO_SOURCES]
