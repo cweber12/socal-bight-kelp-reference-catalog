@@ -10,6 +10,16 @@ Revised: 2026-09-16, to add slice 16b (#118), the 2016 "Status of the Kelp Beds"
 own source before the county records cite it.
 Revised: 2026-09-16, to add slice 16c (#113) after the owner's triage chose the report over the
 kelp.sccwrp.org home page as what `CONTEXT.md` and the county records cite for consortium coverage.
+Revised: 2026-09-16, to add slices 16d (#122) and 16e (#123): the Census county boundary file, and
+what `scb.mainland` and a county node are defined by, after the audit of PR #121 found the 2016
+report draws no county boundary and never names Santa Barbara County. Four audits of PR #124 shaped
+the rows: #107 already asked for the file and closes into #122; an overlap reading would have hidden
+island data under a county, and a geometric partition subtracted a shape no record draws, so 16e
+states a convention about tags and cites the regulation for both level-2 nodes; a `canopy/boundaries`
+sub-topic (#125) was filed and closed the same day under the parked standard that a sub-topic waits
+for a second source; the fourth audit moved the five `GEOID`s out of the record's stated coverage and
+into a dated fetch-time observation, and gave the tagging sentence a clause for a source whose
+coverage names no node.
 
 ## Problem
 
@@ -240,7 +250,7 @@ forest, and a program bed such as "Point Loma" — and the plan is to enter the 
 and write the vocabulary from what they state. **The exit trigger is on #84**: after #81 merges, one
 session reads what the five records state about spatial units and rewrites slices 9–14 against that
 before any is labelled ready again. Slices 7 and 8 are not frozen on the vocabulary; they wait on
-order, since nothing needs them before #107 and the bed records exist. Decision 2 was reaffirmed by
+order, since nothing needs them before #122 and the bed records exist. Decision 2 was reaffirmed by
 the owner on 2026-09-15: the bed-to-county key is retrieval machinery held here so that a session
 generating a county-scoped notebook filters through a pinned, gated record rather than computing
 the join itself. Slice 6a is the region half of #83, split out the same day because it does not
@@ -268,11 +278,13 @@ lot the same day; its number places it in the table, not in the order.
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
 | 16b | [#118](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/118) | add the 2016 "Status of the Kelp Beds" report (Ventura, Los Angeles, Orange and San Diego Counties; MBC Applied Environmental Sciences, prepared for CRKSC and RNKSC) as a `FETCHED` source | `add-source`, add path; `src/fetch/<id>.py`; the notebooks step 7 moves, at least `21_canopy` and `00_index` | the PDF and its manifest are held, `21_canopy` shows the record; the report is held before #113 decides whether a county's `defined_by` cites it and before #87 writes one |
 | 16c | [#113](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/113) | `CONTEXT.md` cites `sccwrp_kelp_status_2016`, not the kelp.sccwrp.org home page, for which counties each consortium covers | `CONTEXT.md`, "The region tree": the county level and the consortium paragraph | both places cite the report at section, printed page and PDF page; where the report and the home page differ, the file says it adopts the report and quotes both; the consortium lists are unchanged |
+| 16d | [#122](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/122) | add the Census TIGER/Line 2025 county boundary file (`tl_2025_us_county.zip`) as a `FETCHED` source, the record a mainland county node's `defined_by` cites and #96 joins against; bare tag `canopy`; supersedes #107, whose state-over-federal criterion is reversed with the reason recorded | `add-source`, add path; `src/fetch/<id>.py`; `21_canopy` (General) and `00_index` | the zip and its manifest are held; steward and licence quoted from the zip's own metadata; `coverage` states the file's extent as its metadata states it, then the five Bight counties' `GEOID` and `NAME` rows as a dated fetch-time observation naming the `.dbf`; what the file shows seaward is quoted from the Bureau's documentation into `coverage` if a document states it, and otherwise stays out of the record |
+| 16e | [#123](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/123) | `CONTEXT.md` says what `scb.mainland` and a mainland county node are defined by: both level-2 nodes cite `ccr_t14_165_5`'s "(1) Mainland" and "(2) Channel Island" bed groups, `scb.islands` repointed from the Bight '18 stratum; a county node is its polygon in 16d's record at its `GEOID`, and the catalog assigns a county's islands and their water to the island nodes by convention, drawing no line; a source tags each node its stated coverage names, and a source whose coverage names no node tags the most specific node that contains it, which together replace "the most specific node" | `CONTEXT.md`, "The region tree", levels 2 and 3, the locator gloss, the "regions" vocabulary paragraph and the `regions` schema row; `catalog/regions/scb.islands.md`; `.claude/skills/add-source/SKILL.md`'s `regions` line and `plan.py`'s "stratum split" comment, which transcribe the sentences 16e replaces; the "parked on #5" clause in the `_sources_by_region` docstring and in `tests/test_build.py`'s two-region test comment | all five counties, Santa Barbara included, have the same `defined_by` form; `scb.mainland` and `scb.islands` cite sibling headings of one instrument, and the tree keeps level 1's Point Conception bound, recording that the regulation's group (1) runs past it to Pt. Arguello (beds 33 and 34); the old tagging sentence is gone from the whole repo, not only `CONTEXT.md`; every existing record's `regions` is right under the new sentence and the PR says so per record, with no retag in this PR (`sccwrp_kelp_status_2016`'s four counties go to #87 beside `sccwrp_kelp_aerial`'s); `CONTEXT.md` states that a source with two or more region tags renders under each; no sentence claims more than the rule states; the consortium paragraphs are unchanged |
 | 16 | [#87](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/87) | the mainland region nodes | `catalog/regions/` | `scb.mainland` and five counties with their consortium lists |
 | 16a | [#106](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/106) | re-enter `ccr_t14_165_5` as `FETCHED` | `add-source`, update path; `src/fetch/ccr_t14_165_5.py`; two notebooks | `status: VERIFIED`, `tier: FETCHED`, manifest held; the authority nine region records cite is held before they cite it |
 | 17 | [#88](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/88) | the island region nodes | `catalog/regions/` | `scb.islands` and eight islands, each citing §165.5(k) |
 | 18 | [#18](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/18) | `CONTEXT.md` cites record ids | `CONTEXT.md` | every factual claim names a record that exists |
-| 18a | [#105](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/105) | which region a source tags when its stated bound is wider than the Bight; `needs-triage`, the owner picks the reading | `CONTEXT.md`, "Vocabularies", regions | the rule is one sentence naming its reading, and every existing record's `regions` is right under it |
+| 18a | [#105](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/105) | which region a source tags when its stated bound is wider than the Bight; `needs-triage`, the owner picks the reading | `CONTEXT.md`, "Vocabularies", regions: the wider-than-Bight clause of the sentence 16e writes, after 16e | the clause names its reading inside the sentence 16e wrote, and every existing record's `regions` is right under it |
 
 Slice 1 corrects the one wrong fact that touches no field. Slices 2–6 are the five authorities, and
 6a gives the region records the field shape they are written in. Slices 7–8 make the derived index
@@ -280,10 +292,23 @@ legitimate before anything relies on it. Slices 9–14 are the schema, each land
 code together. Slices 15–17 build the region tree, with 16b holding the counties' report before
 slice 16 cites it, and 16a holding the islands' authority before slice 17 cites it. 16b sits above
 16 because it lands first; 16a sits below it because it only has to land before 17. Between 16b
-and 16 sits 16c, #113: triaged on 2026-09-16, when the owner chose the report over rewording to
-the home page, it makes `CONTEXT.md` cite the report at printed pages, so slice 16 writes its
-`defined_by.where` locators into a record `CONTEXT.md` already cites. Slice 18 closes #18, and 18a
-waits on the owner's reading in #105, in any order.
+and 16 sit 16c, 16d and 16e, in that order. 16c, #113, triaged on 2026-09-16 when the owner chose
+the report over rewording to the home page, makes `CONTEXT.md` cite the report at printed pages for
+the consortium lists. The audit of PR #121 (F2) then found that the report draws no county boundary
+and never names Santa Barbara County, so it cannot be what a county node's `defined_by` cites. 16d
+holds the Census county file the owner chose on 2026-09-16 over two state layers (both on #5); it
+supersedes #107 in the 6.3b table, which asked for the same source for #96's join, and carries the
+bare `canopy` tag because counties are the units the consortium canopy reports are titled by and
+the parked standard says a sub-topic waits for a second source. 16e writes what `scb.mainland` and a
+county node are defined by, citing the regulation's two bed groups for the level-2 nodes and stating
+as a convention, not a geometry, that a county's islands and their water belong to the island
+nodes; it also replaces the "most specific node" tagging sentence with one that names each node a
+source's coverage names, keeping the old rule for a source whose coverage names no node. The four
+audits of PR #124 are why each of those sentences is there. Slice 16 then writes its six records
+under 16e's sentences and retags the two sources whose coverage names counties. Slice 18 closes
+#18. 18a follows 16e, not in any order: #105's seam is the tagging sentence 16e replaces, so 18a is
+re-scoped to the wider-than-Bight clause of the new sentence and waits on the owner's reading in
+#105.
 
 **#16 is rewritten, not closed as filed.** As written it asserted a bed's `region` is a *single*
 county or island node; slice 13 carries its intent with `region` as a list. Its non-goal — "not the
@@ -296,8 +321,8 @@ audit found it was. Filed 2026-09-13:
 
 | # | slice |
 |---|---|
-| [#107](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/107) | the California county boundary layer #96 joins against, as its own source — filed 2026-09-15; the layer must state its offshore extent, since ds3135's polygons run to the state-waters line |
-| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93, #94 and #107** |
+| [#107](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/107) | the California county boundary layer #96 joins against — filed 2026-09-15, **closed 2026-09-16 into #122** (6.3 slice 16d), which holds the Census county file; its offshore-extent criterion is met and its state-over-federal criterion reversed, with the reasons on #107 |
+| [#96](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/96) | the derived bed-region table and its join script — **blocked on #93, #94 and #122** |
 | [#97](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/97) | the 18 island bed records — needs no join; §165.5(k) states the island |
 | [#98](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/98) | the 30 mainland bed records — depends on #96 |
 | [#99](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/99) | `surveyed_by`, `ready-for-human`: no source states it per bed |
