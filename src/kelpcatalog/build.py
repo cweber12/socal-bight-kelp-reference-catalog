@@ -257,9 +257,9 @@ def _sources_by_region(topic: str, sources: list[Record], catalog: Catalog) -> l
 
     A source tagging more than one region renders under each of them, and each matrix
     counts it once per region it carries - a row here in _matrix, a column in _index_matrix
-    - as CONTEXT.md, "Vocabularies", regions, states (#123); no current source carries two,
-    so nothing observable turns on it yet. A test records it so that #44 cannot commit the
-    opposite by accident.
+    - as CONTEXT.md, "Vocabularies", regions, states (#123). The first sources carrying more
+    than one tag are the two SCCWRP consortium records, each tagging four county nodes
+    (#87); a test fixes the behaviour independently of them.
     """
     if not sources:
         return [NO_SOURCES]

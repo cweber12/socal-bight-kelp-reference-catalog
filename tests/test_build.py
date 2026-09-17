@@ -813,8 +813,8 @@ def test_sources_sort_by_id_whatever_order_the_catalog_holds_them_in():
 
 def test_a_source_tagging_two_regions_renders_under_each_in_region_order():
     # CONTEXT.md, "Vocabularies", regions: a source with two or more region tags renders
-    # under each of them (#123). No current source carries two; the test is here so #44
-    # cannot commit the opposite by accident.
+    # under each of them (#123). The live catalog's first such sources are the two SCCWRP
+    # consortium records (#87); this test fixes the behaviour on a fixture, not on them.
     temperature = sections(
         build_topic("ocean-climate", a_source_record(regions=["global", "scb"]))
     )["temperature"]

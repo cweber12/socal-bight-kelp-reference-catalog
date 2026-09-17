@@ -111,7 +111,10 @@ topics:
   - water-quality-harvest/kelp-harvest
   - restoration-mitigation/urchin-removal
 regions:
-  - scb
+  - scb.mainland.ventura
+  - scb.mainland.los-angeles
+  - scb.mainland.orange
+  - scb.mainland.san-diego
 beds: []
 sites: []
 references: []
