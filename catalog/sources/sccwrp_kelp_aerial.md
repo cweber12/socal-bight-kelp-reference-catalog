@@ -79,7 +79,10 @@ topics:
   - canopy/aerial-surveys
   - water-quality-harvest/discharges-outfalls
 regions:
-  - scb
+  - scb.mainland.ventura
+  - scb.mainland.los-angeles
+  - scb.mainland.orange
+  - scb.mainland.san-diego
 beds: []
 sites: []
 references: []
