@@ -1,8 +1,8 @@
 # PRD — Monitoring sources (milestone 6.3c)
 
 Status: active — opened by the owner on 2026-09-17, when every `ready-for-agent` row of milestone
-6.3's table had merged (PR #130 was the last; its frozen rows 9–14 stay open there, whether or not
-the exit trigger on #84 has fired); milestone 6.3b follows this one, since no row here needs a bed
+6.3's table had merged (PR #130 was the last; its `needs-triage` rows 7–14 stay open there, 9–14
+frozen whether or not the exit trigger on #84 has fired); milestone 6.3b follows this one, since no row here needs a bed
 record and the region nodes 6.3 delivered let each row tag its county or island on entry rather
 than in a re-tag pass
 Created: 2026-09-15
@@ -16,7 +16,9 @@ verified on the day; rows 17–20 became 18–21. In the same revision, after th
 reading 4, the Problem paragraph, the Slices intro, the row's note and Done rewritten to stay true
 of the row, and the review's other lead recorded under "Found while reviewing". Revised
 2026-09-17, on filing: the status line, the issue numbers in the Slices table, the Slices intro's
-tense, and one sentence on reading 4 recording the reading #105 chose.
+tense, the line under the table, and reading 4 extended to record the reading #105 chose; and
+2026-09-18, after the audit of PR #151, reading 4 rewritten to quote the clause rather than
+paraphrase it, and the status line's count of open 6.3 rows corrected.
 
 ## Problem
 
@@ -59,18 +61,20 @@ slice does not re-derive it.
    The manifest's fifteen proposed reference records are not filed; they are listed on the Parking
    lot (filed 2026-09-15) as evidence for that decision. The one exception a field needs —
    `transcribed_from.reference` for a transcribed table — arrives with that table's slice (row 16).
-4. **Region tags are `scb` until the nodes exist.** `schema.py`'s link pass rejects a region id with
-   no record. #87 and #88 create the counties and islands; a slice here that lands before them tags
-   `scb` and says in its PR which node it would tag, so the re-tag is a lookup and not a re-read.
-   Rows 2 and 7 are described by the manifest as spanning beyond the Bight, and row 17's host
-   states a bound from Washington to south of the border; the three tag `scb`, state coverage as
-   the package states it, and are the records #105 may retag if it chooses the containment
-   reading. `ccr_t14_165_5` and `cdfw_ds3135`, both statewide and tagged `scb`, are the precedent.
-   Since then #117 and #128 created the island and county nodes, and #105 chose the inclusion
-   reading (PR #130, 2026-09-17): a source whose stated bound is wider than the Bight tags the nodes
-   inside the Bight it names as its own extent, and `scb` otherwise, so rows 2, 7 and 17 tag `scb`
-   unless their landing page states a Bight node as their own extent, and every other row tags its
-   node on entry.
+4. **Region tags follow the tagging sentence, and the nodes exist.** As written on 2026-09-15 this
+   reading was "Region tags are `scb` until the nodes exist": `schema.py`'s link pass rejects a
+   region id with no record, #87 and #88 were to create the counties and islands, and a slice
+   landing before them was to tag `scb` and say in its PR which node it would tag. Rows 2 and 7
+   are described by the manifest as spanning beyond the Bight, and row 17's host states a bound
+   from Washington to south of the border; the three were the records #105 might retag if it chose
+   the containment reading, with `ccr_t14_165_5` and `cdfw_ds3135`, both statewide and tagged
+   `scb`, as the precedent. Since then #117 and #128 created the island and county nodes, so the
+   "after #87" and "after #88" conditions in the **region today** column are met, and #105 chose
+   the inclusion reading (PR #130, 2026-09-17), which `CONTEXT.md` "Vocabularies", regions, states:
+   a source whose stated bound is wider than the Bight "tags the nodes inside the Bight it names as
+   its own extent, and `scb` otherwise, a node named only as a part, group or row of that wider
+   extent being a mention". Rows 2, 7 and 17 tag by that clause; each source row tags under the
+   tagging sentence as its stated bound falls, and its PR says which clause decided it.
 5. **A source that fits no sub-topic takes the bare topic tag.** `CONTEXT.md`: a bare tag "places
    it under *General*", and `noaa_oni`'s bare `waves-storms-sediment` is the precedent. No row here
    waits on a sub-topic. The manifest's three suggested sub-topics — circulation, carbonate
