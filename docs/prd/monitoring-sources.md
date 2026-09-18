@@ -2,9 +2,9 @@
 
 Status: active — opened by the owner on 2026-09-17, when every `ready-for-agent` row of milestone
 6.3's table had merged (PR #130 was the last; its `needs-triage` rows 7–14 stay open there, 9–14
-frozen whether or not the exit trigger on #84 has fired); milestone 6.3b follows this one, since no row here needs a bed
-record and the region nodes 6.3 delivered let each row tag its county or island on entry rather
-than in a re-tag pass
+frozen whether or not the exit trigger on #84 has fired); milestone 6.3b follows this one, since
+no row here needs a bed record and the region nodes 6.3 delivered let each row tag its county or
+island on entry rather than in a re-tag pass
 Created: 2026-09-15
 Revised: 2026-09-15, after the audit of PR #110 found the table carried no routes, one reading
 contradicted `CONTEXT.md`'s definition of `steward`, another contradicted the bare topic tag, and
