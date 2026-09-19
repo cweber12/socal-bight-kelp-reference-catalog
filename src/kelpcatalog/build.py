@@ -82,7 +82,10 @@ KERNEL = {"display_name": "Python 3", "language": "python", "name": "python3"}
 # rewrite every id - and so every byte of the file - on a rebuild that changed no record.
 # The prefix keeps a derived id from ever colliding with a hand-authored cell's, and the
 # two families ("subtopic-" and the fixed names) keep a sub-topic called "general" from
-# colliding with the General section.
+# colliding with the General section. An id names the section, not its heading, so it
+# survives a rename: NOT_HELD_ID stayed `kelpcatalog-not-held` when the heading became
+# "How to get these", because changing it would relocate every figure cell `_merge` keeps
+# beside that section and rewrite every notebook for no change a reader can see.
 ID_PREFIX = "kelpcatalog-"
 OVERVIEW_ID = f"{ID_PREFIX}overview"
 GENERAL_ID = f"{ID_PREFIX}general"
@@ -92,7 +95,7 @@ REVIEWED_ID = f"{ID_PREFIX}reviewed"
 # The three sections CONTEXT.md names in prose; the sub-topic sections are headed by the
 # tag itself, which is the only name CONTEXT.md gives them.
 GENERAL = "General"
-NOT_HELD = "Not held"
+NOT_HELD = "How to get these"
 REVIEWED = "Reviewed and not included"
 
 # --- the coverage column -----------------------------------------------------------

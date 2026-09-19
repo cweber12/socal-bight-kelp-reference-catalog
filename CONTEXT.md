@@ -375,7 +375,13 @@ Each topic notebook has the same shape, generated from the records:
    status · tier · coverage · link) grouped by region, in the region order below; the references
    tagged to the sub-topic; then any figures;
 3. *General* — sources tagged with the bare topic;
-4. *Not held* — `NOT HELD` and `ON REQUEST` sources for the topic, with their `human_task`;
+4. *How to get these* — `NOT HELD` and `ON REQUEST` sources for the topic, with their
+   `human_task`. `NOT HELD` is a tier and `ON REQUEST` a status, so the section is a union across
+   two vocabularies and its members have no one property in common: `sbc_lter_landsat_canopy`
+   holds nothing and its route works, `cinp_kfm` holds nothing and has no route a stranger can
+   take, and an `ON REQUEST` record whose bytes are held here would render beside them. The
+   heading points the reader at what the section is for — the route, the `human_task`, the ask —
+   because no statement about what the catalog lacks is true of all three;
 5. *Reviewed and not included* — exclusions tagged with the topic.
 
 **The region order.** Groups run in the tree's own order, traversed depth-first — a node, then all

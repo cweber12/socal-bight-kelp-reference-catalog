@@ -47,7 +47,7 @@ OCEAN_CLIMATE_SECTIONS = [
     "heatwaves",
     "oxygen-ph",
     "General",
-    "Not held",
+    "How to get these",
     "Reviewed and not included",
 ]
 
@@ -168,7 +168,7 @@ def test_every_topic_has_every_section_even_with_no_sources(topic: str):
     assert headings(nb) == [
         *TOPICS[topic],
         "General",
-        "Not held",
+        "How to get these",
         "Reviewed and not included",
     ]
 
@@ -301,7 +301,7 @@ def test_a_reference_of_another_topic_renders_nowhere():
 
 
 def test_not_held_and_on_request_sources_carry_their_human_task():
-    not_held = sections(build_topic("ocean-climate", a_catalog()))["Not held"]
+    not_held = sections(build_topic("ocean-climate", a_catalog()))["How to get these"]
     assert "ask_first" in not_held
     assert "H1" in not_held
 
@@ -318,7 +318,7 @@ def test_a_not_held_source_also_appears_in_its_subtopic_table():
 
 
 def test_a_held_source_is_not_in_the_not_held_section():
-    not_held = sections(build_topic("ocean-climate", a_catalog()))["Not held"]
+    not_held = sections(build_topic("ocean-climate", a_catalog()))["How to get these"]
     assert "shore_temp" not in not_held
 
 
@@ -508,7 +508,7 @@ def test_every_topic_builds_from_the_real_catalog():
         assert headings(nb) == [
             *TOPICS[topic],
             "General",
-            "Not held",
+            "How to get these",
             "Reviewed and not included",
         ]
 
@@ -546,7 +546,7 @@ def test_a_not_held_source_with_no_human_task_renders_an_empty_cell():
             },
         )
     ]
-    not_held = sections(build_topic("ocean-climate", catalog))["Not held"]
+    not_held = sections(build_topic("ocean-climate", catalog))["How to get these"]
     row = next(ln for ln in not_held.splitlines() if ln.startswith("| [no_task]"))
     assert [c.strip() for c in row.strip("|").split("|")][5] == "—"
 
@@ -576,7 +576,7 @@ def test_an_on_request_source_lands_in_not_held_whatever_its_tier():
         )
     ]
     body = sections(build_topic("ocean-climate", catalog))
-    assert "asked_and_got" in body["Not held"]
+    assert "asked_and_got" in body["How to get these"]
     assert "asked_and_got" in body["heatwaves"]
 
 

@@ -43,7 +43,7 @@ OCEAN_CLIMATE_SECTIONS = [
     "## heatwaves",
     "## oxygen-ph",
     "## General",
-    "## Not held",
+    "## How to get these",
     "## Reviewed and not included",
 ]
 
