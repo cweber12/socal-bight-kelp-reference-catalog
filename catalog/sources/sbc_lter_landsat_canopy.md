@@ -6,7 +6,7 @@ title: >-
 steward: Santa Barbara Coastal LTER
 url: https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.74.34
 doi: 10.6073/pasta/8d67f78530eadd77aefd85e66f5643de
-status: PATTERN
+status: VERIFIED
 tier: NOT HELD
 access:
   - >-

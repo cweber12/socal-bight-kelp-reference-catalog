@@ -62,9 +62,9 @@ slice does not re-derive it.
    re-released quarterly, against 112,852,772 bytes in `data/` across all eleven fetched sources on
    2026-09-19, and no service subsetting it by its own variables, the test `CONTEXT.md` states (a
    Range request over its bytes is not one, and row 2's `access` records that such a request
-   answers). `sbc_lter_landsat_canopy` still reads `PATTERN` here; the record and the schema follow
-   in the PR stacked on the one that amended this reading. A portal that does not serve bytes gets
-   the status step 2's table gives it.
+   answers). `sbc_lter_landsat_canopy` reads `VERIFIED / NOT HELD` on that clause, entered as
+   `PATTERN` in #153 and corrected once the vocabulary and the schema allowed the pairing. A portal
+   that does not serve bytes gets the status step 2's table gives it.
 3. **Papers are leads, not records.** `CONTEXT.md` defines `references/` as "a paper or report cited
    by a source or a figure", and where a context paper lives is parked (Parking lot, 2026-09-09).
    The manifest's fifteen proposed reference records are not filed; they are listed on the Parking

@@ -247,7 +247,7 @@ def test_catalog_ids_helper():
 
 # --- rules CONTEXT.md states, one test each ----------------------------------------
 #
-# Each of the seven below is a record that validate() accepted before this section
+# Each of the nine below is a record that validate() accepted before this section
 # existed. CONTEXT.md is the authority, so accepting them was the bug. The records are
 # built inline rather than as fixtures: with no catalog, validate() runs every rule
 # except the link checks, so one wrong field yields exactly one problem.
@@ -384,29 +384,37 @@ def test_transcribed_file_must_be_under_catalog_tables():
     ]
 
 
-VERIFIED_BY_TIER = ("status", "VERIFIED requires tier FETCHED or TRANSCRIBED; tier is NOT HELD")
+HOLDS_CONTENT = "status", "PATTERN cannot hold content; tier is {}"
 
 
-@pytest.mark.parametrize("status", [s for s in STATUS if s != "VERIFIED"])
-def test_not_held_admits_every_status_but_verified(status: str):
-    # CONTEXT.md, tier: NOT HELD is "nothing local", so its status is one of the three
-    # that do not claim the route was exercised.
+@pytest.mark.parametrize("status", STATUS)
+def test_not_held_admits_every_status(status: str):
+    # CONTEXT.md, "Vocabularies": "Holding nothing excludes nothing, because a route can be
+    # exercised without its bytes being kept, so a NOT HELD record carries whichever of the
+    # four its own access steps support" - the sentence runs on to say that PATTERN there
+    # means nobody here has tried the route. VERIFIED is among the four:
+    # sbc_lter_landsat_canopy exercised its route by reading enough of the entity to show
+    # that it opens.
     assert validate(a_source_of(status, "NOT HELD")) == []
 
 
-def test_verified_status_requires_fetched_or_transcribed_tier():
-    # CONTEXT.md, status: VERIFIED means the route was exercised - fetched on the
-    # retrieved date, or a printed page in hand. A NOT HELD record holds nothing and
-    # names no fetch, so nothing here could have verified it.
-    assert validate(a_source_of("VERIFIED", "FETCHED")) == []
-    assert validate(a_source_of("VERIFIED", "TRANSCRIBED")) == []
-    # Stated from the status end: VERIFIED on a record that holds nothing.
-    assert reports(validate(a_source(status="VERIFIED"))) == [VERIFIED_BY_TIER]
-    # And from the tier end: NOT HELD on a record that claims VERIFIED. One constraint,
-    # so one problem, and it names both fields.
-    assert reports(
-        validate(a_transcribed_source(tier="NOT HELD", file=None, transcribed_from=None))
-    ) == [VERIFIED_BY_TIER]
+@pytest.mark.parametrize("tier", ["FETCHED", "TRANSCRIBED"])
+@pytest.mark.parametrize("status", [s for s in STATUS if s != "PATTERN"])
+def test_held_content_admits_every_status_but_pattern(status: str, tier: str):
+    # CONTEXT.md, "Vocabularies": holding content excludes PATTERN and nothing else - it
+    # does "not compel VERIFIED, because NOT PUBLIC and ON REQUEST state what a stranger
+    # faces whatever is held here".
+    assert validate(a_source_of(status, tier)) == []
+
+
+@pytest.mark.parametrize("tier", ["FETCHED", "TRANSCRIBED"])
+def test_pattern_cannot_hold_content(tier: str):
+    # CONTEXT.md, "Vocabularies": "Holding content means the route was exercised, so
+    # FETCHED and TRANSCRIBED exclude PATTERN" - the sentence goes on to say they do not
+    # compel VERIFIED, which test_held_content_admits_every_status_but_pattern covers. One
+    # constraint, so one problem, and it names both fields.
+    field, message = HOLDS_CONTENT
+    assert reports(validate(a_source_of("PATTERN", tier))) == [(field, message.format(tier))]
 
 
 def test_region_consortium_is_a_list_of_consortia():
