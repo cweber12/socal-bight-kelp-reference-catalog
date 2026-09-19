@@ -136,7 +136,7 @@ def _topic_problems(path: str, notebook: NotebookNode, topic: str) -> list[Probl
     # written out because "obviously it matches" is how a gate acquires a traceback.
     # Reaching this line means every section of one list is in the other and `found` holds
     # no duplicate, so the two can differ only by a duplicate in `expected` - a sub-topic
-    # named exactly `General`, `Not held` or `Reviewed and not included`. `expected` puts
+    # named exactly `General`, `How to get these` or `Reviewed and not included`. `expected` puts
     # sub-topics *before* those three, so that duplicate always lands in the interior, and
     # `found` is then never a prefix of `expected`: some index disagrees, and `next` finds
     # it. A sub-topic list that could append to the end would break the argument, not the
