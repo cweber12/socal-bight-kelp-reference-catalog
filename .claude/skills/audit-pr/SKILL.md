@@ -78,6 +78,14 @@ the same topic, and whether they can ever disagree."
 
 Keep the pointers, keep the claims, cut the conclusions.
 
+**Then check what is left asserted.** *Claims to re-run* is allowed to be uncertain — that is what
+re-running is for. The rest is asserted as fact, and the parts of it the repo can settle are the
+header's counts, the governing clause's quotation, and every sentence anywhere in it that names a
+file, a line, an issue, a count or a commit. Check each of those against the thing itself before
+writing it, and quote from the file rather than from your memory of it; the bullets that report a
+conversation cannot be checked that way, so mark what is the owner's word and keep it separate from
+what is the repo's.
+
 ## 3. Dispatch, and stay off the checkout
 
 ```
