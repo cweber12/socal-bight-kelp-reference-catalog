@@ -247,7 +247,7 @@ def test_catalog_ids_helper():
 
 # --- rules CONTEXT.md states, one test each ----------------------------------------
 #
-# Each of the seven below is a record that validate() accepted before this section
+# Each of the nine below is a record that validate() accepted before this section
 # existed. CONTEXT.md is the authority, so accepting them was the bug. The records are
 # built inline rather than as fixtures: with no catalog, validate() runs every rule
 # except the link checks, so one wrong field yields exactly one problem.
@@ -391,8 +391,10 @@ HOLDS_CONTENT = "status", "PATTERN cannot hold content; tier is {}"
 def test_not_held_admits_every_status(status: str):
     # CONTEXT.md, "Vocabularies": "Holding nothing excludes nothing, because a route can be
     # exercised without its bytes being kept, so a NOT HELD record carries whichever of the
-    # four its own access steps support." VERIFIED among them: sbc_lter_landsat_canopy
-    # exercised its route by reading enough of the entity to show that it opens.
+    # four its own access steps support" - the sentence runs on to say that PATTERN there
+    # means nobody here has tried the route. VERIFIED is among the four:
+    # sbc_lter_landsat_canopy exercised its route by reading enough of the entity to show
+    # that it opens.
     assert validate(a_source_of(status, "NOT HELD")) == []
 
 
@@ -408,8 +410,9 @@ def test_held_content_admits_every_status_but_pattern(status: str, tier: str):
 @pytest.mark.parametrize("tier", ["FETCHED", "TRANSCRIBED"])
 def test_pattern_cannot_hold_content(tier: str):
     # CONTEXT.md, "Vocabularies": "Holding content means the route was exercised, so
-    # FETCHED and TRANSCRIBED exclude PATTERN." One constraint, so one problem, and it
-    # names both fields.
+    # FETCHED and TRANSCRIBED exclude PATTERN" - the sentence goes on to say they do not
+    # compel VERIFIED, which test_held_content_admits_every_status_but_pattern covers. One
+    # constraint, so one problem, and it names both fields.
     field, message = HOLDS_CONTENT
     assert reports(validate(a_source_of("PATTERN", tier))) == [(field, message.format(tier))]
 
