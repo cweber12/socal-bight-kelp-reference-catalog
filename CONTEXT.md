@@ -59,16 +59,52 @@ into `data/` by hand.
 ## Vocabularies
 
 **status** — whether the route to the source is known to work.
-`VERIFIED` (the route was exercised: bytes fetched on the `retrieved` date, or a printed page
-transcribed, per `transcribed_from`) · `PATTERN` (route documented but not exercised) ·
-`NOT PUBLIC` · `ON REQUEST`. Status and tier are not independent: only a fetch or a printed page in
-hand can have exercised the route, so `VERIFIED` requires a `tier` of `FETCHED` or `TRANSCRIBED`;
-equivalently, a `NOT HELD` record's status is `PATTERN`, `NOT PUBLIC` or `ON REQUEST`.
+`VERIFIED` (the route was exercised, and `access` states what was received and when) · `PATTERN`
+(route documented but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+
+A route is exercised three ways. Its bytes were taken. Or a printed page was in hand and its values
+typed, per `transcribed_from`. Or — only where the entity is disproportionate to hold, so that the
+record keeps nothing and says so with the entity's size — enough of the entity itself answered to
+show that it opens: `sbc_lter_landsat_canopy` records its first 64 bytes arriving beside its byte
+count, its checksum and its access policy. The third way is the exception: an entity a record could
+hold is fetched, not probed. A landing page answering is not the source answering, and a document
+describing the source is not the source.
+
+Status and tier are independent, with one exception. Holding content means the route was
+exercised, so `FETCHED` and `TRANSCRIBED` exclude `PATTERN` — but they do not compel `VERIFIED`,
+because `NOT PUBLIC` and `ON REQUEST` state what a stranger faces whatever is held here. Holding
+nothing excludes nothing, because a route can be exercised without its bytes being kept, so a
+`NOT HELD` record carries whichever of the four its own `access` steps support; `PATTERN` there
+means nobody here has tried the route, not that nothing was kept.
 
 **tier** — how the local content, if any, came to exist.
-`FETCHED` (bytes retrieved unmodified from the steward's host) · `TRANSCRIBED` (values typed from a
-printed page, or extracted from a document by a named script, into `catalog/tables/`) · `NOT HELD`
-(nothing local; the record describes the source and how to ask).
+`FETCHED` (bytes retrieved unmodified from one of the three routes below) · `TRANSCRIBED` (values
+typed from a printed page, or extracted from a document by a named script, into `catalog/tables/`)
+· `NOT HELD` (nothing local; the record describes the source and how to ask).
+
+`FETCHED`'s route is one of three, and nothing else. A host the steward runs, or that a body
+constituting it runs: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest
+Fisheries Science Center", which the steward's own data usage policy lists among its participating
+agencies. A route the steward names as where the source is to be had: `sio_shore_stations`' Data
+Access page names the UC San Diego Library Digital Collections, and `ccr_t14_165_5`'s steward links
+the Barclays Official California Code of Regulations as the route to the text. Or a service that
+serves that same object under the identifier one of those two issued it, a replica or a proxy
+included: `sbc_lter_landsat_canopy` records DataONE serving the PASTA object under its PASTA
+identifier, with a `DataONE-Proxy` header naming it — that record holds nothing, so the limb is
+stated from a route it documents rather than from bytes it keeps. Anyone else's copy of the same
+content is not a route, however faithful.
+
+Subsetting is a question about a single file, and only about a single file. Which of the files a
+publisher offers a record holds is not subsetting at all, and needs no licence here: a record holds
+what its `coverage` and `access` say it holds, and says which of the offered files those are
+(`sio_shore_stations` holds five of ten station objects, `sccwrp_kelp_status_2016` the report and
+not its appendices, `sccwrp_kelp_aerial` two pages and not the PDFs behind them).
+
+Within one file, a subset is `FETCHED` when the publisher's own service selected it by the data's
+own variables and served the result whole, so that what is held is every byte of what that service
+returned: `calcofi` asks ERDDAP for one station by `sta_id`. A slice of a file's bytes is not,
+whoever asked for it — a Range request is transport rather than a query, and what it yields is a
+fragment of a file rather than a file. Nor is a subset this repo computed from a file it fetched.
 
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 
