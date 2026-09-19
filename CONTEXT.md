@@ -59,10 +59,14 @@ into `data/` by hand.
 ## Vocabularies
 
 **status** — whether the route to the source is known to work.
-`VERIFIED` (the route was exercised: bytes of the source itself were received, and `access` states
-what was received and when — the whole file, a printed page in hand, or, where the record keeps
-nothing, enough of the entity to show that it opens; a landing page answering is not the source
-answering) · `PATTERN` (route documented but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+`VERIFIED` (the route was exercised, and `access` states what was received and when) · `PATTERN`
+(route documented but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+
+A route is exercised three ways. Its bytes were taken. Or a printed page was in hand and its values
+typed, per `transcribed_from`. Or, where the record keeps nothing, enough of the entity itself
+answered to show that it opens: `sbc_lter_landsat_canopy` records the entity's first 64 bytes
+arriving beside its byte count, its checksum and its access policy. A landing page answering is not
+the source answering, and a document describing the source is not the source.
 
 Status and tier are independent, with one exception. Holding content means the route was
 exercised, so `FETCHED` and `TRANSCRIBED` exclude `PATTERN` — but they do not compel `VERIFIED`,
@@ -77,14 +81,22 @@ deposits with, serves) · `TRANSCRIBED` (values typed from a printed page, or ex
 document by a named script, into `catalog/tables/`) · `NOT HELD` (nothing local; the record
 describes the source and how to ask).
 
-`FETCHED`'s route is the steward's own or one it publishes through, never a third party's copy of
-the same content: `calcofi`'s bytes come from an ERDDAP on a NOAA host, NOAA Southwest Fisheries
-Science Center being one of the participating agencies the steward's own data usage policy names,
-and `sio_shore_stations`' come from the UC San Diego Library Digital Collections, which its Data
-Access page names as where the data are available. A subset is `FETCHED` when a route the publisher
-serves produced it — `calcofi` asks ERDDAP for one station through that server's own `sta_id`
-constraint, so the bytes held are the ones the server sent — and is not when this repo computed it
-from a larger file.
+`FETCHED`'s route is one of three, and nothing else. A host the steward runs, or that a body
+constituting it runs: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest
+Fisheries Science Center", which the steward's own data usage policy lists among its participating
+agencies. A route the steward names as where the source is to be had: `sio_shore_stations`' Data
+Access page names the UC San Diego Library Digital Collections, and `ccr_t14_165_5`'s steward links
+the Barclays Official California Code of Regulations as the route to the text. Or a service that
+serves that same object under the identifier one of those two issued it, a replica or a proxy
+included: `sbc_lter_landsat_canopy` records DataONE serving the PASTA object under its PASTA
+identifier, with a `DataONE-Proxy` header naming it. Anyone else's copy of the same content is not
+a route, however faithful.
+
+A subset is `FETCHED` when the publisher's own service selected it by the data's own variables and
+served the result whole: `calcofi` asks ERDDAP for one station by `sta_id` and holds every byte of
+the two files that server returned. A slice of a larger file's bytes is not, whoever asked for it
+— a Range request is transport rather than a query, and what it yields is a fragment of a file
+rather than a file. Nor is a subset this repo computed from a larger file.
 
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 

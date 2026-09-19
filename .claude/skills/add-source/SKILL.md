@@ -70,11 +70,21 @@ What you find decides `status`, and it is a fact either way:
 |---|---|---|
 | the file downloads / the page opens and you take the bytes | `VERIFIED` | `FETCHED` |
 | you have the printed page in hand and type its values | `VERIFIED` | `TRANSCRIBED` |
+| the entity answers, but holding it is disproportionate | `VERIFIED` | `NOT HELD` |
 | the route is documented but you did not exercise it | `PATTERN` | `NOT HELD` |
 | it needs a login or an account you do not have | `NOT PUBLIC` | `NOT HELD` |
 | it arrives only by asking a person | `ON REQUEST` | `NOT HELD` |
 
-`VERIFIED` requires a `tier` of `FETCHED` or `TRANSCRIBED` — nothing else has exercised the route.
+Row 3 is the exception, not the default. A route that downloads enters `FETCHED`; only an entity
+disproportionate to hold enters `VERIFIED` / `NOT HELD`, and then you read enough of the entity
+itself to show that the route opens — its byte count, its checksum if the host states one, and a
+few bytes of its body — and the record states all of that, with the size and the route
+(`docs/prd/monitoring-sources.md`, reading 2). A landing page answering is not the source
+answering.
+
+Status and tier are otherwise independent (`CONTEXT.md`, *Vocabularies*): holding content excludes
+`PATTERN`, and holding nothing excludes nothing — rows 3 to 6 above all hold nothing, and which
+applies is what the access steps support.
 
 **STOP if the URL is dead or resolves to something other than the source.** There is no route to
 record, and guessing one is a fact the source does not state.

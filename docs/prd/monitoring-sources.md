@@ -59,9 +59,12 @@ slice does not re-derive it.
    whose route downloads as anything but `FETCHED`, unless the entity is disproportionate to hold,
    and then the record states its size, the route and what was received, and enters
    `VERIFIED / NOT HELD`. Row 2 is the one such entity the milestone has met: 2,430,814,959 bytes
-   re-released quarterly, against 108 MB in `data/` for all eleven fetched sources on 2026-09-19,
-   and no route the publisher serves that subsets it. A portal that does not serve bytes gets the
-   status step 2's table gives it.
+   re-released quarterly, against 112,852,772 bytes in `data/` across all eleven fetched sources on
+   2026-09-19, and no service subsetting it by its own variables, the test `CONTEXT.md` states (a
+   Range request over its bytes is not one, and row 2's `access` records that such a request
+   answers). `sbc_lter_landsat_canopy` still reads `PATTERN` here; the record and the schema follow
+   in the PR stacked on the one that amended this reading. A portal that does not serve bytes gets
+   the status step 2's table gives it.
 3. **Papers are leads, not records.** `CONTEXT.md` defines `references/` as "a paper or report cited
    by a source or a figure", and where a context paper lives is parked (Parking lot, 2026-09-09).
    The manifest's fifteen proposed reference records are not filed; they are listed on the Parking
