@@ -49,12 +49,30 @@ catalog/
   regions/<id>.md          a node of the region tree
   beds/<n>.md              a CDFW Administrative Kelp Bed
   sites/<id>.md            a monitoring program's named station
+  human-tasks/<id>.md      what a person must ask for to obtain a source, and where it says so
   tables/<id>.csv          transcribed tables; each has a source record with tier TRANSCRIBED
   data-lock.json           every fetched file's url, sha256 and bytes (arrives with the lock gate)
 ```
 
 `data/` is git-ignored and reproducible from `src/fetch/` plus the lock. Nothing is ever written
-into `data/` by hand.
+into `data/` by hand. A file a person carried in — saved from a browser, downloaded under an
+institutional login, sent by an author — is therefore not held, and no tier holds it: `FETCHED` is
+a fetch from one of the three routes *Vocabularies* gives it, run by the script `fetch_script`
+names, and a hand's copy is neither; `TRANSCRIBED` holds values in `catalog/tables/` and not the
+file they came from; `NOT HELD` holds nothing. The line is drawn at how the bytes arrived, not at
+who else could reach them — *Vocabularies* settles that second question, and this one does not
+re-open it.
+
+The record of such a source holds no such file, so its tier is `NOT HELD` unless values out of it
+are transcribed, and its status is whatever *Vocabularies* allows a record of that tier. It carries
+a `human_task` where the source states an ask, and `null` where it states none: `cinp_kfm` is
+`human_task: null` because its host offers a log-in and states no request.
+
+Where values out of such a file are wanted here, they enter `catalog/tables/` as `TRANSCRIBED`, and
+only where the file is a document a `references/` record can cite, because `transcribed_from` names
+a reference, a table and a page and that reference must itself validate. A file with no such
+citation stays outside the catalog; writing a citation it does not have would be a fact the source
+does not state.
 
 ## Vocabularies
 
@@ -310,7 +328,7 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `beds` | list of bed ids | |
 | `sites` | list of site ids | |
 | `references` | list of citekeys | |
-| `human_task` | str or null | an `H<n>` id when the source arrives only through a person |
+| `human_task` | str or null | a `human-tasks/` id where the source states an ask; null otherwise |
 
 ### references/<citekey>.md
 
@@ -347,6 +365,23 @@ island region id), `aliases` (program names for the same bed), `defined_by`* (th
 `id`* (`<program>.<site>`, equals file name), `program`*, `name`* (as the program names it),
 `bed`* (bed id or null), `lat`*, `lon`* (from the program), `defined_by`* (the program's document).
 
+### human-tasks/<id>.md
+
+| field | type | where from |
+|---|---|---|
+| `id`* | str, `^H\d+$`, equals file name | chosen on entry, never changed |
+| `ask`* | list of str | numbered steps a stranger can follow to make the request, as the source states them |
+| `contact` | str or null | whom the source says to ask, verbatim; null where it names nobody |
+| `stated_at`* | `{source, where}` | a source id that exists, and where in it the ask is stated |
+
+An entry holds the standing instruction and nothing about an attempt made from here. A date the
+source states — a window in which requests are answered, a cut-off — belongs in `ask` like any
+other step; the date an ask was sent, the reply, and what to chase do not, because they are the
+state of one attempt rather than something a stranger repeating it would reproduce, and *What is
+not a record* excludes them. A source names its entry through `human_task`, the only field pointing
+here, and one entry may serve several sources. An entry exists for a source that has a record: a
+candidate nobody has entered yet is tracker state, not an entry here.
+
 ## Notebooks
 
 Notebooks are how the catalog is read and shared. A notebook never holds a fact: it renders
@@ -354,7 +389,8 @@ records. One notebook per topic, in a folder per group, plus an index:
 
 ```text
 notebooks/
-  00_index.ipynb                     group → topic → sub-topic counts; topic × region matrix
+  00_index.ipynb                     group → topic → sub-topic counts; topic × region matrix;
+                                     How to get these — every record section 4 shows, gathered
   1_physical_environment/            11_ocean_climate  12_canyon_dynamics
                                      13_waves_storms_sediment  14_substrate
   2_kelp_and_community/              21_canopy  22_bed_state
@@ -413,6 +449,15 @@ running; a source is not "in" until the notebooks that show it are refreshed in 
 
 There is no notebook per region. The by-region view is the grouping inside each topic notebook
 and the matrix in the index.
+
+The index closes with its own *How to get these*, carrying the same heading as section 4 of a topic
+notebook because it selects records by the same test — a `NOT HELD` tier or an `ON REQUEST` status
+— and so shows the same records, gathered across the ten topics instead of split between them. One
+row each, with the topics the record is tagged to and, where `human_task` is not null, the
+`catalog/human-tasks/` entry it names. The per-topic sections stay, because a reader inside a topic
+needs the part that belongs to it; this one is for a reader whose next step is to obtain something,
+and who would otherwise read ten lists. It is empty only when no record carries that tier or that
+status.
 
 ## Gates
 
