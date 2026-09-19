@@ -49,23 +49,35 @@ access:
     https://cn.dataone.org/cn/v2/meta/ plus the same percent-encoded identifier, states checksum
     algorithm "SHA-1" and value 30850463aabbdd70d7dfd2affd6cb03ad11eec83, formatId
     "https://eml.ecoinformatics.org/eml-2.2.0" and originMemberNode "urn:node:LTER"; the SHA-1 of
-    the 25,932 bytes served equals that value. Every value this record states from the EML is
-    stated in those bytes (2026-09-18)
+    the 25,932 bytes served equals that value. That system metadata states an accessPolicy whose
+    second allow block is subject "public" with permission "read" (2026-09-18)
   - >-
     https://cite.edirepository.org/cite/knb-lter-sbc.74.34?style=RAW answers HTTP 200 and states
     'version': '34', 'pubdate': '2026-08-04', 'doi':
     'doi:10.6073/pasta/8d67f78530eadd77aefd85e66f5643de', 'publisher': 'Environmental Data
-    Initiative' and authors Bell, Tom W; Cavanaugh, Kyle C; Siegel, David A. The same service
-    answers HTTP 400 for knb-lter-sbc.74.35 and knb-lter-sbc.74.36, and HTTP 200 for
-    knb-lter-sbc.74.12 through knb-lter-sbc.74.34, each stating its own 'version', 'pubdate' and
-    'doi' (2026-09-18)
+    Initiative' and authors Bell, Tom W; Cavanaugh, Kyle C; Siegel, David A. Asked for each of
+    knb-lter-sbc.74.1 through knb-lter-sbc.74.39 in turn, the same service answers HTTP 200 for
+    .10 through .34, each stating its own 'version', 'pubdate' and 'doi', and HTTP 400 for .1
+    through .9 and for .35 through .39 (2026-09-19)
   - >-
-    No file was fetched and nothing of this source is held here: the one data entity is reachable
-    only through the landing page above, and that page was not passed. See status and format
+    The data entity is served by the DataONE member node EDI replicates to. A GET on
+    https://gmn.lternet.edu/mn/v2/object/ followed by the percent-encoded identifier
+    https://pasta.lternet.edu/package/data/eml/knb-lter-sbc/74/34/c2bea785267fa434c40a22e2239bb337,
+    and a GET on https://cn.dataone.org/cn/v2/resolve/ followed by the same percent-encoded
+    identifier, each answered HTTP 200 over an anonymous request with Content-Length 2430814959,
+    Content-Disposition attachment; filename="LandsatKelpBiomass_2026_Q2_withmetadata.nc",
+    DataONE-Checksum "SHA-1,82c55e2ab5d1b1b8742ab6e546f81d1599f96fa6" and DataONE-Proxy
+    https://pasta.lternet.edu/package/data/eml/knb-lter-sbc/74/34/c2bea785267fa434c40a22e2239bb337.
+    A Range request for the first 64 bytes of each returned a body beginning with the eight bytes
+    89 48 44 46 0d 0a 1a 0a (2026-09-19)
+  - >-
+    No file was fetched and nothing of this source is held here. Only the 64-byte ranges named in
+    the step above were read; the 2430814959-byte entity was not retrieved. See status and format
 format: >-
   The EML lists one otherEntity, entityName "Satellite kelp biomass since 1984", whose physical
-  states objectName "LandsatKelpBiomass_2026_Q2_withmetadata.nc", size 2430814959 and formatName
-  "NetCDF", distributed at
+  states objectName "LandsatKelpBiomass_2026_Q2_withmetadata.nc", size 2430814959 with unit
+  "byte", an authentication of method "MD5" whose value is 2be218c2ae22e8f4505ee8c3abe3a6ee, and
+  formatName "NetCDF", distributed at
   https://pasta.lternet.edu/package/data/eml/knb-lter-sbc/74/34/c2bea785267fa434c40a22e2239bb337.
   Its entityDescription reads "Canopy area (m2) of bull kelp (Nereocystis luetkeana) and giant kelp
   (Macrocystis pyrifera) and wet biomass (kg) of giant kelp from Landsat 5, 7 and 8 imagery, along
@@ -117,7 +129,7 @@ coverage: >-
   and the mission length of each sensor (TM: 1984 – 2011, ETM+: 1999 – present, OLI: 2013 –
   present)." and the sensors as "derived from Landsat 5 Thematic Mapper (TM), Landsat 7 Enhanced
   Thematic Mapper Plus (ETM+), Landsat 8 Operational Land Imager (OLI), and Landsat 9 Operational
-  Land Imager 2 satellite imagery". The dataset's keywordSets name "Anacapa Island", "San Clemente
+  Land Imager 2 satellite imagery". The dataset's place keywords name "Anacapa Island", "San Clemente
   Island", "San Miguel Island", "San Nicolas Island", "Santa Barbara Channel Islands", "Santa
   Barbara County", "Santa Barbara Island", "Santa Catalina Island", "Santa Cruz Island" and "Santa
   Rosa Island"
@@ -127,8 +139,9 @@ coverage_stated_at: >-
   https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/74/34: the dataset's coverage element
   states the geographicDescription, the boundingCoordinates and the temporalCoverage; the dataset's
   abstract element states the two pixel-extent sentences, the repeat-cycle sentence and the sensor
-  clause; and the dataset's eight keywordSet elements state the place keywords (retrieved
-  2026-09-18)
+  clause; and the dataset's keywordSet whose keywordThesaurus is "Santa Barbara Coastal LTER
+  Places", in which every keyword carries keywordType "place", states the place keywords
+  (retrieved 2026-09-18)
 retrieved: null
 fetch_script: null
 file: null
