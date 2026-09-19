@@ -415,10 +415,11 @@ def _sections(topic: str, catalog: Catalog) -> list[tuple[str, str]]:
 # --- the index ---------------------------------------------------------------------
 #
 # CONTEXT.md, "Notebooks": `00_index.ipynb  group -> topic -> sub-topic counts; topic x
-# region matrix`. Both halves read the catalog the topic notebooks read, so a source
-# carrying a bare topic tag is counted here where its notebook renders it - under
-# General - and a sub-topic breakdown without a General row would drop it. That is the
-# defect #59 fixed in section 1's own matrix, one level up.
+# region matrix; How to get these - every record section 4 shows, gathered`. The first
+# two halves are built here; the third is not built yet. Both of the two read the catalog
+# the topic notebooks read, so a source carrying a bare topic tag is counted here where
+# its notebook renders it - under General - and a sub-topic breakdown without a General
+# row would drop it. That is the defect #59 fixed in section 1's own matrix, one level up.
 #
 # The index's headings are the keys themselves - `physical-environment`, `ocean-climate`
 # - as a topic notebook's are. CONTEXT.md's ten-questions table prints a group's name in
