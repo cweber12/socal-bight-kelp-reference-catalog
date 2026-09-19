@@ -78,6 +78,16 @@ the same topic, and whether they can ever disagree."
 
 Keep the pointers, keep the claims, cut the conclusions.
 
+**Then check what is left asserted.** *Claims to re-run* is allowed to be uncertain — that is what
+re-running is for. The rest is asserted as fact, and the parts of it the repo can settle are the
+header's counts, the governing clause's quotation, and every bullet that names a file, an issue, a
+count or a commit. Check each of those against the thing itself before writing it, and quote from
+the file rather than from your memory of it; the bullets that report a conversation cannot be
+checked that way, so mark what is the owner's word and keep it separate from what is the repo's.
+One brief on 2026-09-19 carried two false assertions outside its claims list, two lines apart —
+"every other pointer field resolves inside `catalog/`" when six of seven do, and "the six items"
+where the PRD says three — and each cost the auditor budget it should have spent on the diff.
+
 ## 3. Dispatch, and stay off the checkout
 
 ```
