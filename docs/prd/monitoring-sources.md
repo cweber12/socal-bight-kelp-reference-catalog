@@ -95,8 +95,10 @@ slice does not re-derive it.
 6. **`steward` is the producer, as the landing page names it; the host goes in `access`.**
    `CONTEXT.md` defines `steward` as "the organisation that publishes or holds it", and the seven
    held records read that as the program or agency that produced and publishes the data:
-   `sio_shore_stations` is a UC San Diego Library deposit whose steward is the Shore Stations
-   Program, and `calcofi`'s bytes come from a NOAA host while its steward is CalCOFI. So an EDI
+   `sio_shore_stations` is a UC San Diego Library deposit whose steward is `Scripps Institution of
+   Oceanography, UC San Diego`, the institution the Shore Stations Program belongs to rather than
+   the library holding the deposit, and `calcofi`'s bytes come from a NOAA host while its steward
+   is CalCOFI. So an EDI
    package's steward is Santa Barbara Coastal LTER and a Dryad deposit's is the depositing program
    or institution the page names, with the repository in `access` and `url`. Ids name the source,
    as the seven held do (`calcofi`, `sio_shore_stations`, `cdfw_ds3135`), with underscores; the
