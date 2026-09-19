@@ -18,7 +18,9 @@ of the row, and the review's other lead recorded under "Found while reviewing". 
 2026-09-17, on filing: the status line, the issue numbers in the Slices table, the Slices intro's
 tense, the line under the table, and reading 4 extended to record the reading #105 chose; and
 2026-09-18, after the audit of PR #151, reading 4 rewritten to quote the clause rather than
-paraphrase it, and the status line's count of open 6.3 rows corrected.
+paraphrase it, and the status line's count of open 6.3 rows corrected. Revised 2026-09-19, after
+the acquisition grill: reading 2 gained the proportionality clause, which overturns #106's "the fix
+is to hold the bytes" at a size #106 never faced.
 
 ## Problem
 
@@ -54,7 +56,11 @@ slice does not re-derive it.
    `PATTERN / NOT HELD` "now" with an upgrade later. `add-source` step 2 says a route that downloads
    today is `VERIFIED / FETCHED`, and #106 exists because one record entered without its bytes
    while its own `access` steps showed the route had been exercised. No slice here enters a source
-   whose route downloads as anything but `FETCHED`; a portal that does not serve bytes gets the
+   whose route downloads as anything but `FETCHED`, unless the entity is disproportionate to hold,
+   and then the record states its size, the route and what was received, and enters
+   `VERIFIED / NOT HELD`. Row 2 is the one such entity the milestone has met: 2,430,814,959 bytes
+   re-released quarterly, against 108 MB in `data/` for all eleven fetched sources on 2026-09-19,
+   and no route the publisher serves that subsets it. A portal that does not serve bytes gets the
    status step 2's table gives it.
 3. **Papers are leads, not records.** `CONTEXT.md` defines `references/` as "a paper or report cited
    by a source or a figure", and where a context paper lives is parked (Parking lot, 2026-09-09).

@@ -59,16 +59,32 @@ into `data/` by hand.
 ## Vocabularies
 
 **status** — whether the route to the source is known to work.
-`VERIFIED` (the route was exercised: bytes fetched on the `retrieved` date, or a printed page
-transcribed, per `transcribed_from`) · `PATTERN` (route documented but not exercised) ·
-`NOT PUBLIC` · `ON REQUEST`. Status and tier are not independent: only a fetch or a printed page in
-hand can have exercised the route, so `VERIFIED` requires a `tier` of `FETCHED` or `TRANSCRIBED`;
-equivalently, a `NOT HELD` record's status is `PATTERN`, `NOT PUBLIC` or `ON REQUEST`.
+`VERIFIED` (the route was exercised: bytes of the source itself were received, and `access` states
+what was received and when — the whole file, a printed page in hand, or, where the record keeps
+nothing, enough of the entity to show that it opens; a landing page answering is not the source
+answering) · `PATTERN` (route documented but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
+
+Status and tier are independent, with one exception. Holding content means the route was
+exercised, so `FETCHED` and `TRANSCRIBED` exclude `PATTERN` — but they do not compel `VERIFIED`,
+because `NOT PUBLIC` and `ON REQUEST` state what a stranger faces whatever is held here. Holding
+nothing excludes nothing, because a route can be exercised without its bytes being kept, so a
+`NOT HELD` record carries whichever of the four its own `access` steps support; `PATTERN` there
+means nobody here has tried the route, not that nothing was kept.
 
 **tier** — how the local content, if any, came to exist.
-`FETCHED` (bytes retrieved unmodified from the steward's host) · `TRANSCRIBED` (values typed from a
-printed page, or extracted from a document by a named script, into `catalog/tables/`) · `NOT HELD`
-(nothing local; the record describes the source and how to ask).
+`FETCHED` (bytes retrieved unmodified from a route the steward, or the publisher or repository it
+deposits with, serves) · `TRANSCRIBED` (values typed from a printed page, or extracted from a
+document by a named script, into `catalog/tables/`) · `NOT HELD` (nothing local; the record
+describes the source and how to ask).
+
+`FETCHED`'s route is the steward's own or one it publishes through, never a third party's copy of
+the same content: `calcofi`'s bytes come from an ERDDAP on a NOAA host, NOAA Southwest Fisheries
+Science Center being one of the participating agencies the steward's own data usage policy names,
+and `sio_shore_stations`' come from the UC San Diego Library Digital Collections, which its Data
+Access page names as where the data are available. A subset is `FETCHED` when a route the publisher
+serves produced it — `calcofi` asks ERDDAP for one station through that server's own `sta_id`
+constraint, so the bytes held are the ones the server sent — and is not when this repo computed it
+from a larger file.
 
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 
