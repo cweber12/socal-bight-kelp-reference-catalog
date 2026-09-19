@@ -33,6 +33,13 @@ fits one PR; if you cannot state the failing test, stop and ask. Ideas go in the
 issue as one-line comments, never as new issues; the only issues an agent opens on its own are
 found-in-flight bugs under rule 3.
 
+A design or grill session that settles more than one `CONTEXT.md` rule ends in decisions and
+issues, not in text: the issues carry the seam, the failing test where there is one, and the
+non-goals, and the text is drafted against them by whoever picks them up. The owner files them, or
+asks for them by name — the sentence above still holds, and an agent opening them on its own is
+the thing it forbids. On 2026-09-19 a grill's decisions went straight to four PRs, none of which
+closed an issue or had one filed for it.
+
 ## In-flight bugs
 
 When you find a bug while implementing an issue, apply the first rule that fits and say which in the
@@ -65,6 +72,32 @@ PR body:
 
 Split work only when it earns its keep. A rename is its own slice. Do not add fields, gates,
 directories or dependencies an open issue does not ask for; put the idea in the Parking lot.
+
+## Changing a rule in `CONTEXT.md`
+
+`gate.py` does read `CONTEXT.md` — `lint` walks it for fenced Python — but **no row checks a rule
+in it**: a mutation sweep on 2026-09-19 flipped "one of three" to "one of four" in the `FETCHED`
+routes, and it survived a full `gate.py`. Review is the only check on a rule, so an audit is where
+a mistake surfaces instead of a failing test. Each practice below comes from a defect that reached
+one.
+
+- **One rule per PR.** #154 and #158 carried three rules each, and every audit they got blocked
+  them — five rounds between the two.
+- **Point at a rule rather than restating it.** A second copy of a *rule* drifts from the first
+  and no gate compares them. A rationale is different: the authority records several on purpose,
+  including the three reasons `global` sorts last. #158's drafts restated `CONTEXT.md` sentences
+  instead of naming them and contradicted them; what settled it was "its status is whatever
+  *Vocabularies* allows a record of that tier".
+- **Re-read the section cold before a second edit to a file this session already changed.** #158
+  collided with `CONTEXT.md` text the same session had written, in all three of its audit rounds.
+- **Grep every restatement outside the file.** Grep the repo outside `CONTEXT.md` and
+  `Claude outputs/` for the sentence's distinctive phrases, not the whole sentence; nothing
+  compares a transcription to `CONTEXT.md`. The audit of PR #154 found its first draft leaving
+  `.claude/skills/add-source/SKILL.md` stating the rule that PR removed — the file a record entry
+  actually reads.
+- **Before writing "every", "any", "no" or "only", name the set and count it from the repo.** The
+  audits of 2026-09-19 blocked on this in a record's `access` steps (#153) and in `CONTEXT.md`
+  rules (#154, #158).
 
 ## Agent skills
 
