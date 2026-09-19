@@ -12,9 +12,9 @@ only.
 
 A 200 is not enough. A host that answers an error or a challenge page with status 200 would
 be hashed and manifested as a VERIFIED fetch with nothing to reveal it, and CONTEXT.md
-counts a route exercised, where a record holds a file, only when "its bytes were taken".
-ZIP_MAGIC is the four-byte local file header a non-empty zip starts with (PK, then 0x03
-0x04), which is what the served Content-Type claims. The 300-second timeout is what
+counts a route exercised, for a record whose tier is FETCHED, only when "its bytes were
+taken". ZIP_MAGIC is the four-byte local file header a non-empty zip starts with (PK, then
+0x03 0x04), which is what the served Content-Type claims. The 300-second timeout is what
 sio_shore_stations.py and sccwrp_b08_rocky_reef.py use for files this size; noaa_oni.py's
 120 is the outlier.
 """
