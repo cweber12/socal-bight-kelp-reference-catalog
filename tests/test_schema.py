@@ -463,12 +463,12 @@ def test_a_citation_says_where_it_is_printed():
     assert reports(validate(a_source(citation=5))) == [("citation", "expected str?")]
 
 
-@pytest.mark.parametrize("name", ["version", "citation", "citation_stated_at", "license_stated_at"])
+@pytest.mark.parametrize("name", ["citation", "citation_stated_at", "license_stated_at"])
 def test_the_fields_38_adds_take_null(name: str):
-    # CONTEXT.md, sources: each of the four is "str or null", and in `version` and `citation`
-    # null is a value with a meaning - the source states none. The fields are named here, not
-    # read from RULES: the typed sweep below cannot tell "str?" from "str", and a list built
-    # from RULES would drop the field with its "?".
+    # CONTEXT.md, sources: each of the three is "str or null", and in `citation` null is a
+    # value with a meaning - the source prints none. The fields are named here, not read from
+    # RULES: the typed sweep below cannot tell "str?" from "str", and a list built from RULES
+    # would drop the field with its "?".
     assert validate(a_source(**{name: None})) == []
 
 

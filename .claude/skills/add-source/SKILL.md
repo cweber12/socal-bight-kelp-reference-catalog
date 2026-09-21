@@ -15,7 +15,8 @@ which step, what it found, and what you have written so far, then wait. Never sk
 make a step pass by widening the schema or by writing a value the source does not state.
 
 `noaa_oni` is the worked example throughout: `catalog/sources/noaa_oni.md` and
-`src/fetch/noaa_oni.py` on `main` are what a finished run of this skill produces.
+`src/fetch/noaa_oni.py` on `main` are what a finished run of this skill produced before #38 added
+three fields to the table; step 3 names them and says what the record still lacks.
 
 ## 0. Read first, then branch
 
@@ -101,17 +102,17 @@ does not list.
 
 - Every value comes from the page or the file itself. No commentary, no computed numbers, no
   judgement of quality, no note about how the record came to be.
-- `version`, `citation` and `citation_stated_at`: `CONTEXT.md`'s `sources` table says which version
-  and which citation are the record's. Quote the citation character for character, and never
-  compose one from a template or from metadata fields such as authors, year and title: a citation
-  the source does not print is `null`. `null` in these fields says the source states none, so look
-  before you write it.
+- `citation` and `citation_stated_at`: the `citation` row of `CONTEXT.md`'s `sources` table says
+  which citation is the record's, how it is quoted and what is never one. `null` says the source
+  prints none, so look before you write it.
 - `license`: the licence text verbatim as published. Look in this order and stop at the first that
   states terms: the file itself, its landing page, then a terms/licence/disclaimer page that landing
-  page links from its own footer. Quote it in `license` and say where you read it in
-  `license_stated_at`, never inside `license`. Never substitute a licence name you inferred:
-  "public domain (US federal government work)" is a conclusion, not published text. `"not stated"`
-  only when none of those states terms, and `license_stated_at` then says where you looked.
+  page links from its own footer. Quote it in `license`; where you read it goes in
+  `license_stated_at`, as that row of the table says. When `license` quotes several places, name
+  each in `license_stated_at` in the order `license` quotes them, as for `coverage_stated_at`
+  below. Never substitute a licence name you inferred: "public domain (US federal government
+  work)" is a conclusion, not published text. `"not stated"` only when none of those states terms,
+  and `license_stated_at` then says where you looked.
 - `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
@@ -129,12 +130,12 @@ does not list.
   gives the island, county, Bight-wide and wider-than-Bight cases); `global` for a source with no
   regional bound.
 
-`catalog/sources/noaa_oni.md` shows all of this but the four fields #38 adds — `version`,
-`citation`, `citation_stated_at` and `license_stated_at` — which it was entered before and does not
-yet carry: `file: null` and `transcribed_from: null` among its rows; a licence quoted from the NWS
-disclaimer two hops out, with the footer it was reached through, still inside `license` until #38
-moves it; and a `coverage_stated_at` naming the landing page, then the file, in the order
-`coverage` uses them.
+`catalog/sources/noaa_oni.md` shows all of this but the three fields #38 adds — `citation`,
+`citation_stated_at` and `license_stated_at` — which it was entered before and does not yet carry:
+`file: null` and `transcribed_from: null` among its rows; a licence quoted from the NWS disclaimer
+two hops out, with the footer it was reached through, still inside `license` until #38 moves it;
+and a `coverage_stated_at` naming the landing page, then the file, in the order `coverage` uses
+them.
 
 ## 4. If `tier` is `FETCHED`: write and run `src/fetch/<id>.py`
 

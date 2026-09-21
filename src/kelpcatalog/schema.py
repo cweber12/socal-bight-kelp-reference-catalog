@@ -174,7 +174,6 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "steward": (True, "str"),
         "url": (True, "str?"),
         "doi": (False, "str?"),
-        "version": (False, "str?"),
         "citation": (False, "str?"),
         "citation_stated_at": (False, "str?"),
         "status": (True, "str"),
