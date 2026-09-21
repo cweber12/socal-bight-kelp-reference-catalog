@@ -447,29 +447,13 @@ def test_human_task_is_an_h_number():
     assert reports(validate(a_source(human_task="2"))) == [("human_task", r"does not match ^H\d+$")]
 
 
-def test_a_citation_says_where_it_is_printed():
-    # CONTEXT.md, sources: citation_stated_at ... required when `citation` is not null
-    citation = (
-        "Pondella, D., J. Williams, J. Claisse, R. Schaffner, K. Ritter and K. Schiff. 2011. "
-        "Southern California Bight 2008 Regional Monitoring Program: Volume V. Rocky Reefs. "
-        "Southern California Coastal Water Research Project, Costa Mesa, CA."
-    )
-    unplaced = ("citation_stated_at", "required when citation is not null")
-    assert validate(a_source(citation=citation, citation_stated_at="printed page ii")) == []
-    assert validate(a_source(citation=None, citation_stated_at=None)) == []
-    assert reports(validate(a_source(citation=citation))) == [unplaced]
-    assert reports(validate(a_source(citation=citation, citation_stated_at=None))) == [unplaced]
-    # a mistyped citation is reported once, as mistyped, and not again as unplaced
-    assert reports(validate(a_source(citation=5))) == [("citation", "expected str?")]
-
-
-@pytest.mark.parametrize("name", ["citation", "citation_stated_at", "license_stated_at"])
-def test_the_fields_38_adds_take_null(name: str):
-    # CONTEXT.md, sources: each of the three is "str or null", and in `citation` null is a
-    # value with a meaning - the source prints none. The fields are named here, not read from
-    # RULES: the typed sweep below cannot tell "str?" from "str", and a list built from RULES
-    # would drop the field with its "?".
-    assert validate(a_source(**{name: None})) == []
+def test_license_stated_at_is_a_place_or_null():
+    # CONTEXT.md, sources: license_stated_at is "str or null". The field is named here, not read
+    # from RULES: the typed sweep below cannot tell "str?" from "str", and a list built from
+    # RULES would drop the field with its "?".
+    stated_at = "NWS Disclaimer, https://www.weather.gov/disclaimer"
+    assert validate(a_source(license_stated_at=stated_at)) == []
+    assert validate(a_source(license_stated_at=None)) == []
 
 
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])

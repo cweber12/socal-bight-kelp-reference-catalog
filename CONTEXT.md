@@ -311,14 +311,12 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `steward`* | str | the organisation that publishes or holds it |
 | `url`* | str or null | the landing page or direct file |
 | `doi` | str or null | |
-| `citation` | str or null | the citation the source prints for what `url` or `doi` names, verbatim as the source shows it to a reader, markup removed by the steps `cdfw_kelp_esr`'s `access` gives, and in the style the source gives when none is asked for; null where it prints none. Not one the source prints for a part of that (a station, a file, an appendix) or for another work, and not one assembled here from a template or from separate fields such as authors, year and title |
-| `citation_stated_at` | str or null | where it is printed; required when `citation` is not null |
 | `status`* | status vocabulary | |
 | `tier`* | tier vocabulary | |
 | `access`* | list of str | numbered steps a stranger can follow |
 | `format` | str or null | as the source describes its files |
 | `license`* | str | the licence text as published, verbatim; "not stated" if absent |
-| `license_stated_at` | str or null | the place or places the licence was read or, when `license` is "not stated", was looked for; that text goes here and not inside `license` |
+| `license_stated_at` | str or null | the place or places the licence was read or, when `license` is "not stated", was looked for |
 | `variables`* | list of str | as the source lists them; empty list if NOT HELD |
 | `coverage` | str or null | as the source states it |
 | `coverage_stated_at` | str or null | the page or file where it is stated |
