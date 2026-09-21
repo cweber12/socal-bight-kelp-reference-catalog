@@ -174,11 +174,15 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "steward": (True, "str"),
         "url": (True, "str?"),
         "doi": (False, "str?"),
+        "version": (False, "str?"),
+        "citation": (False, "str?"),
+        "citation_stated_at": (False, "str?"),
         "status": (True, "str"),
         "tier": (True, "str"),
         "access": (True, "list[str]"),
         "format": (False, "str?"),
         "license": (True, "str"),
+        "license_stated_at": (False, "str?"),
         "variables": (True, "list[str]"),
         "coverage": (False, "str?"),
         "coverage_stated_at": (False, "str?"),
@@ -333,6 +337,10 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
         task = d.get("human_task")
         if "human_task" not in bad and isinstance(task, str) and not HUMAN_TASK_RE.match(task):
             out.append(Problem(p, "human_task", f"does not match {HUMAN_TASK_RE.pattern}"))
+        # CONTEXT.md, sources: a citation is quoted from somewhere, and the record says where.
+        unplaced = d.get("citation") is not None and d.get("citation_stated_at") is None
+        if unplaced and "citation" not in bad:
+            out.append(Problem(p, "citation_stated_at", "required when citation is not null"))
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "defined_by" not in bad:

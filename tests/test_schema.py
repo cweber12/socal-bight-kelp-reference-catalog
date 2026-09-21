@@ -447,6 +447,31 @@ def test_human_task_is_an_h_number():
     assert reports(validate(a_source(human_task="2"))) == [("human_task", r"does not match ^H\d+$")]
 
 
+def test_a_citation_says_where_it_is_printed():
+    # CONTEXT.md, sources: citation_stated_at ... required when `citation` is not null
+    citation = (
+        "Pondella, D., J. Williams, J. Claisse, R. Schaffner, K. Ritter and K. Schiff. 2011. "
+        "Southern California Bight 2008 Regional Monitoring Program: Volume V. Rocky Reefs. "
+        "Southern California Coastal Water Research Project, Costa Mesa, CA."
+    )
+    unplaced = ("citation_stated_at", "required when citation is not null")
+    assert validate(a_source(citation=citation, citation_stated_at="printed page ii")) == []
+    assert validate(a_source(citation=None, citation_stated_at=None)) == []
+    assert reports(validate(a_source(citation=citation))) == [unplaced]
+    assert reports(validate(a_source(citation=citation, citation_stated_at=None))) == [unplaced]
+    # a mistyped citation is reported once, as mistyped, and not again as unplaced
+    assert reports(validate(a_source(citation=5))) == [("citation", "expected str?")]
+
+
+@pytest.mark.parametrize("name", ["version", "citation", "citation_stated_at", "license_stated_at"])
+def test_the_fields_38_adds_take_null(name: str):
+    # CONTEXT.md, sources: each of the four is "str or null", and in `version` and `citation`
+    # null is a value with a meaning - the source states none. The fields are named here, not
+    # read from RULES: the typed sweep below cannot tell "str?" from "str", and a list built
+    # from RULES would drop the field with its "?".
+    assert validate(a_source(**{name: None})) == []
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)

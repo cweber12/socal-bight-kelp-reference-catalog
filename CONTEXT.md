@@ -311,11 +311,15 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `steward`* | str | the organisation that publishes or holds it |
 | `url`* | str or null | the landing page or direct file |
 | `doi` | str or null | |
+| `version` | str or null | the version the source states for what `url` or `doi` names, as it states it; null where it states none |
+| `citation` | str or null | the citation the source prints for what `url` or `doi` names, verbatim, in the form it shows by default; null where it prints none. One it prints for a part of that (a station, a file, an appendix) or for another work is not this field's |
+| `citation_stated_at` | str or null | where it is printed; required when `citation` is not null. It may say that parts print their own, and where |
 | `status`* | status vocabulary | |
 | `tier`* | tier vocabulary | |
 | `access`* | list of str | numbered steps a stranger can follow |
 | `format` | str or null | as the source describes its files |
 | `license`* | str | the licence text as published, verbatim; "not stated" if absent |
+| `license_stated_at` | str or null | where the licence was read or, when `license` is "not stated", where it was looked for |
 | `variables`* | list of str | as the source lists them; empty list if NOT HELD |
 | `coverage` | str or null | as the source states it |
 | `coverage_stated_at` | str or null | the page or file where it is stated |

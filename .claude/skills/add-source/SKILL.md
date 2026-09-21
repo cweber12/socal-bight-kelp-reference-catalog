@@ -101,12 +101,17 @@ does not list.
 
 - Every value comes from the page or the file itself. No commentary, no computed numbers, no
   judgement of quality, no note about how the record came to be.
+- `version`, `citation` and `citation_stated_at`: `CONTEXT.md`'s `sources` table says which version
+  and which citation are the record's. Quote the citation character for character, and never
+  compose one from a template or from metadata fields such as authors, year and title: a citation
+  the source does not print is `null`. `null` in these fields says the source states none, so look
+  before you write it.
 - `license`: the licence text verbatim as published. Look in this order and stop at the first that
   states terms: the file itself, its landing page, then a terms/licence/disclaimer page that landing
-  page links from its own footer. Quote it, then say where you found it — inside the same value,
-  since the schema has no second field for it. Never substitute a licence name you inferred:
+  page links from its own footer. Quote it in `license` and say where you read it in
+  `license_stated_at`, never inside `license`. Never substitute a licence name you inferred:
   "public domain (US federal government work)" is a conclusion, not published text. `"not stated"`
-  only when none of those states terms.
+  only when none of those states terms, and `license_stated_at` then says where you looked.
 - `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
@@ -124,10 +129,12 @@ does not list.
   gives the island, county, Bight-wide and wider-than-Bight cases); `global` for a source with no
   regional bound.
 
-`catalog/sources/noaa_oni.md` shows all of this: every row present, `file: null` and
-`transcribed_from: null` among them; a licence quoted from the NWS disclaimer two hops out, with the
-footer it was reached through; and a `coverage_stated_at` naming the landing page, then the file, in
-the order `coverage` uses them.
+`catalog/sources/noaa_oni.md` shows all of this but the four fields #38 adds — `version`,
+`citation`, `citation_stated_at` and `license_stated_at` — which it was entered before and does not
+yet carry: `file: null` and `transcribed_from: null` among its rows; a licence quoted from the NWS
+disclaimer two hops out, with the footer it was reached through, still inside `license` until #38
+moves it; and a `coverage_stated_at` naming the landing page, then the file, in the order
+`coverage` uses them.
 
 ## 4. If `tier` is `FETCHED`: write and run `src/fetch/<id>.py`
 
@@ -201,11 +208,11 @@ bug: report it instead of working around it (`CLAUDE.md`, "In-flight bugs").
 Then two checks no gate makes. Both feed step 8.
 
 - **Byte-diff every quoted string against the source.** Take each quoted string in the record —
-  title, licence, `coverage`, `format`, any phrase in quotation marks — back to the live page or
-  file it came from and compare it character for character. A curly quote straightened, a hyphen
-  dropped, a line break turned into a space: each is a value the source does not state. Correct
-  the record to what the source states today; if the source itself has changed since you drafted
-  the record, say so in the step-8 report.
+  title, `citation`, licence, `coverage`, `format`, any phrase in quotation marks — back to the
+  live page or file it came from and compare it character for character. A curly quote
+  straightened, a hyphen dropped, a line break turned into a space: each is a value the source
+  does not state. Correct the record to what the source states today; if the source itself has
+  changed since you drafted the record, say so in the step-8 report.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
