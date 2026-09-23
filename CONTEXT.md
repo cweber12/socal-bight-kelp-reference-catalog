@@ -362,6 +362,7 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `regions`* | list of region ids or `global`, ≥ 1 | |
 | `beds` | list of bed ids | |
 | `sites` | list of site ids | |
+| `site_key` | list of `{file, column?, lat_column?, lon_column?}`, no other key | where the source's own data keys its sites: one entry per file `fetch_script` stores that keys its rows by site, so non-empty only when FETCHED; `file` that file, by the name the script stores it under; `column` the column that carries the site key, or `{file}` alone where the file itself is one site's; `lat_column` and `lon_column`, together or neither, only where that file carries the coordinates of its sites; each column name as the source's own metadata spells it (an EML `attributeName`, an ERDDAP variable, a README). Absent or empty says nothing about the source |
 | `references` | list of citekeys | |
 | `human_task` | str or null | a `human-tasks/` id where the source states an ask; null otherwise |
 

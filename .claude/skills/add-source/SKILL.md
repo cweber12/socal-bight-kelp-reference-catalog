@@ -130,6 +130,10 @@ does not list.
   names no node tags the smallest node that contains it (`CONTEXT.md`, "Vocabularies", regions,
   gives the island, county, Bight-wide and wider-than-Bight cases); `global` for a source with no
   regional bound.
+- `site_key`: as the `site_key` row of the table says, `file` being the name your step-4 script
+  stored the file under and every column name spelled as the source's own metadata spells it, never
+  a name you chose; `[]` where no held file keys its rows by site, or the way it does has no place
+  in the shape.
 
 `catalog/sources/noaa_oni.md` shows all of this but `license_stated_at`, which it was entered
 before and does not yet carry: `file: null` and `transcribed_from: null` among its rows; a licence

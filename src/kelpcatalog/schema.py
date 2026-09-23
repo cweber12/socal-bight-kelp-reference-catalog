@@ -174,7 +174,8 @@ class Catalog:
 # --- field rules -------------------------------------------------------------------
 #
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
-# "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]".
+# "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
+# "list[site_key]".
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -201,6 +202,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "regions": (True, "list[str]"),
         "beds": (False, "list[str]"),
         "sites": (False, "list[str]"),
+        "site_key": (False, "list[site_key]"),
         "references": (False, "list[str]"),
         "human_task": (False, "str?"),
     },
@@ -256,6 +258,10 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
 # CONTEXT.md, sites: defined_by is exactly one of {source, where} or {reference, where} -
 # the document that prints the coordinates, resolved into sources/ or references/.
 SITE_DEFINED_BY_LIMBS = ("source", "reference")
+# CONTEXT.md, sources: a site_key entry is {file, column?, lat_column?, lon_column?}, the
+# two coordinate columns together or neither.
+SITE_KEY_KEYS = ("file", "column", "lat_column", "lon_column")
+SITE_KEY_COORDS = ("lat_column", "lon_column")
 
 
 def _is_date(value: Any) -> bool:
@@ -286,6 +292,8 @@ def _type_ok(value: Any, kind: str) -> bool:
         return isinstance(value, list) and all(
             isinstance(e, dict) and {"id", "as_printed", "where"} <= set(e) for e in value
         )
+    if base == "list[site_key]":
+        return isinstance(value, list) and all(isinstance(e, dict) for e in value)
     return False
 
 
@@ -352,6 +360,8 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
         task = d.get("human_task")
         if "human_task" not in bad and isinstance(task, str) and not HUMAN_TASK_RE.match(task):
             out.append(Problem(p, "human_task", f"does not match {HUMAN_TASK_RE.pattern}"))
+        if "site_key" not in bad:
+            out += _site_key_problems(rec)
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "defined_by" not in bad:
@@ -380,6 +390,30 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             why = topic_problem(t)
             if why:
                 out.append(Problem(p, "topics", why))
+    return out
+
+
+def _site_key_problems(rec: Record) -> list[Problem]:
+    """The shape of each site_key entry (CONTEXT.md, sources): `file`, a non-empty string;
+    `column`, `lat_column` and `lon_column` optional, the last two together; no other key.
+    A key written as an explicit null is absent, as in a site's defined_by. Each entry is
+    reported by its index. Whether `file` names a held file is the lock's question
+    (milestone 6.5), not this one's; whether the record's tier holds one is _tier_problems'."""
+    p = rec.path
+    out: list[Problem] = []
+    for i, raw in enumerate(rec.data.get("site_key") or []):
+        at = f"site_key[{i}]"
+        entry = {k: v for k, v in raw.items() if v is not None}
+        if "file" not in entry:
+            out.append(Problem(p, f"{at}.file", "required field is missing"))
+        for k, v in entry.items():
+            if k not in SITE_KEY_KEYS:
+                why = "unknown key; CONTEXT.md lists the allowed ones"
+                out.append(Problem(p, f"{at}.{k}", why))
+            elif not _type_ok(v, "str"):
+                out.append(Problem(p, f"{at}.{k}", "expected str"))
+        if sum(k in entry for k in SITE_KEY_COORDS) == 1:
+            out.append(Problem(p, at, "lat_column and lon_column come together"))
     return out
 
 
@@ -474,7 +508,11 @@ def _tier_problems(rec: Record, root: Path | None, bad: set[str]) -> list[Proble
         out += _derived_from_problems(rec, root)
         if d.get("topics"):
             out.append(Problem(p, "topics", "must be [] when tier is DERIVED"))
-    elif tier == "NOT HELD":
+    if tier != "FETCHED" and d.get("site_key"):
+        # CONTEXT.md, sources: site_key names files fetch_script stores, so only a FETCHED
+        # record has one to name.
+        out.append(Problem(p, "site_key", "non-empty only when tier is FETCHED"))
+    if tier == "NOT HELD":
         if d.get("retrieved") is not None:
             out.append(Problem(p, "retrieved", "must be null when tier is NOT HELD"))
         if d.get("fetch_script"):
