@@ -143,10 +143,26 @@ def test_invalid_bed_status_and_region():
     assert "region: 'scb.mainland.san-diego' is not a region record" in probs
 
 
-def test_invalid_site_lat_type_and_bed():
+def test_invalid_site_reports_each_problem_once():
+    # CONTEXT.md, sites: bed is not a field; lat and lon are str, as printed; defined_by's
+    # reference is a references/ record; retrieved is a date or null (#174).
     probs = problems_of("invalid_site")
-    assert "lat: expected float" in probs
-    assert "bed: '3' is not a bed record" in probs
+    assert "bed: unknown field; CONTEXT.md lists the allowed ones" in probs
+    assert "lat: expected str" in probs
+    assert "defined_by.reference: 'nobody2020' is not a reference record" in probs
+    assert "retrieved: expected date?" in probs
+    assert len(probs) == 4, probs
+
+
+def test_site_coordinates_load_byte_for_byte_as_printed():
+    # CONTEXT.md, sites: lat*, lon* are str, as printed - DMS glyphs included. The fixture
+    # carries the glyphs klingbeil's Table 2 prints (#176), so this reads the file through
+    # load_catalog rather than a literal through parse_record.
+    catalog, problems = check_catalog(FIXTURES / "valid")
+    assert problems == []
+    site = next(r for r in catalog.records["sites"] if r.id == "leichter2023.point-loma")
+    assert site.data["lat"] == "32°41’24”N"
+    assert site.data["lon"] == "117°16’12”W"
 
 
 # --- cross-record rules ------------------------------------------------------------
@@ -418,10 +434,12 @@ def a_site(**overrides: Any) -> Record:
         "id": "leichter2023.point-loma",
         "program": "leichter2023",
         "name": "Point Loma mooring",
-        "bed": None,
-        "lat": 32.69,
-        "lon": -117.27,
-        "defined_by": "10.3389/fmars.2023.1007789",
+        "key": "PL",
+        "lat": "32.69",
+        "lon": "-117.27",
+        "datum": None,
+        "defined_by": {"source": "kelp_surveys", "where": "Table 1"},
+        "retrieved": None,
     }
     data.update(overrides)
     return Record("sites", f"catalog/sites/{data['id']}.md", data)
@@ -528,6 +546,98 @@ def test_site_id_is_program_dot_site(bad: str):
     assert reports(validate(a_site(id=bad))) == [
         ("id", "must be <program>.<site>, both parts non-empty")
     ]
+
+
+def test_site_required_fields_are_pinned():
+    # CONTEXT.md, sites: the starred rows. Stated as a literal because the sweep at the end
+    # of this file is parametrised over RULES: a field flipped to optional would drop its
+    # own case, not fail it (PR #185 F5; audit of PR #186, F5).
+    required = tuple(name for name, (req, _) in RULES["sites"].items() if req)
+    assert required == ("id", "program", "name", "key", "lat", "lon", "defined_by")
+
+
+def test_site_carries_no_bed():
+    # CONTEXT.md, sites: the schema has no bed field (#174) - everything computed from a
+    # site's coordinates lives in the derived site-region table, never on the record.
+    assert reports(validate(a_site(bed=None))) == [
+        ("bed", "unknown field; CONTEXT.md lists the allowed ones")
+    ]
+
+
+def test_site_lat_and_lon_are_strings_as_printed():
+    # CONTEXT.md, sites: lat*, lon* are str, as the document prints them. A float is what
+    # the value looks like once converted, and converting it is kept off the record.
+    assert validate(a_site(lat="34.400275", lon="-119.842")) == []
+    assert validate(a_site(lat="34°2’34.56”N", lon="119° 50’ 31.2” W")) == []
+    assert reports(validate(a_site(lat=32.69))) == [("lat", "expected str")]
+    assert reports(validate(a_site(lon=-117.27))) == [("lon", "expected str")]
+
+
+def test_site_defined_by_names_exactly_one_document():
+    # CONTEXT.md, sites: defined_by* is exactly one of {source, where} or {reference, where}
+    # - the document that prints the coordinates. A bare string is the old shape.
+    assert validate(a_site(defined_by={"reference": "klingbeil2022", "where": "Table 2"})) == []
+    assert reports(validate(a_site(defined_by="10.3389/fmars.2023.1007789"))) == [
+        ("defined_by", "expected map")
+    ]
+    both = {"source": "kelp_surveys", "reference": "klingbeil2022", "where": "Table 2"}
+    assert reports(validate(a_site(defined_by=both))) == [
+        ("defined_by", "names both source and reference; exactly one")
+    ]
+    assert reports(validate(a_site(defined_by={"where": "Table 2"}))) == [
+        ("defined_by", "names neither source nor reference; exactly one")
+    ]
+    # A limb written as an explicit null is absent, the way the fixtures write datum and
+    # retrieved: it neither counts as named nor is looked up (audit of PR #186, F3).
+    one_null = {"source": None, "reference": "klingbeil2022", "where": "Table 2"}
+    assert validate(a_site(defined_by=one_null)) == []
+    assert reports(validate(a_site(defined_by={"source": None, "where": "Table 2"}))) == [
+        ("defined_by", "names neither source nor reference; exactly one")
+    ]
+    for db in ({"source": "kelp_surveys"}, {"source": "kelp_surveys", "where": ""}):
+        assert reports(validate(a_site(defined_by=db))) == [("defined_by.where", "expected str")]
+    assert reports(validate(a_site(defined_by={"reference": "", "where": "Table 2"}))) == [
+        ("defined_by.reference", "expected str")
+    ]
+
+
+def test_site_defined_by_must_resolve():
+    # CONTEXT.md, "Gates": catalog-schema links only to records that exist. Each limb
+    # resolves into its own directory: source into sources/, reference into references/.
+    catalog = valid_catalog()
+    assert validate(a_site(defined_by={"source": "kelp_surveys", "where": "x"}), catalog) == []
+    assert validate(a_site(defined_by={"reference": "konotchick2012", "where": "x"}), catalog) == []
+    assert reports(validate(a_site(defined_by={"source": "nobody", "where": "x"}), catalog)) == [
+        ("defined_by.source", "'nobody' is not a source record")
+    ]
+    absent = {"reference": "nobody2020", "where": "x"}
+    assert reports(validate(a_site(defined_by=absent), catalog)) == [
+        ("defined_by.reference", "'nobody2020' is not a reference record")
+    ]
+    # A source citekey is not a reference, and the reverse; the limb names the directory.
+    crossed = {"reference": "kelp_surveys", "where": "x"}
+    assert reports(validate(a_site(defined_by=crossed), catalog)) == [
+        ("defined_by.reference", "'kelp_surveys' is not a reference record")
+    ]
+
+
+def test_site_retrieved_is_a_date_or_null():
+    # CONTEXT.md, sites: retrieved is date or null - the rule it follows on a source (#95's
+    # site half, moved here by #174). Optional: the table marks it with no `*`.
+    assert validate(a_site(retrieved="2026-09-23")) == []
+    assert validate(a_site(retrieved=None)) == []
+    dropped = {k: v for k, v in a_site().data.items() if k != "retrieved"}
+    assert validate(Record("sites", "catalog/sites/leichter2023.point-loma.md", dropped)) == []
+    assert reports(validate(a_site(retrieved="not-a-date"))) == [("retrieved", "expected date?")]
+
+
+def test_site_datum_is_a_string_or_null():
+    # CONTEXT.md, sites: datum is str or null, where the program states one. Named here
+    # for the same reason as license_stated_at: the sweep cannot tell "str?" from "str".
+    assert validate(a_site(datum="WGS84")) == []
+    assert validate(a_site(datum=None)) == []
+    dropped = {k: v for k, v in a_site().data.items() if k != "datum"}
+    assert validate(Record("sites", "catalog/sites/leichter2023.point-loma.md", dropped)) == []
 
 
 def test_bed_id_is_its_cdfw_bed_number():
@@ -832,11 +942,10 @@ def test_region_defined_by_source_must_resolve():
         assert reports(validate(half, catalog)) == [("defined_by", "required: {source, where}")]
 
 
-def test_bed_and_site_defined_by_stay_bare_strings():
-    # #104 reaches regions only; beds and sites are #83, frozen. Their defined_by is still
-    # the string CONTEXT.md's beds and sites rows describe.
+def test_bed_defined_by_stays_a_bare_string():
+    # #104 reached regions and #174 sites; beds are #83, frozen. A bed's defined_by is
+    # still the string CONTEXT.md's beds row describes.
     assert isinstance(a_bed().data["defined_by"], str) and validate(a_bed()) == []
-    assert isinstance(a_site().data["defined_by"], str) and validate(a_site()) == []
 
 
 # --- every field of every record type, dropped and mistyped ------------------------

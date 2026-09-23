@@ -238,16 +238,24 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "aliases": (False, "list[str]"),
         "defined_by": (True, "str"),
     },
+    # CONTEXT.md, sites: lat and lon are str, as the document prints them - converting
+    # them is kept off the record; key is the identifier as the program's data spells it;
+    # no bed field - the region a site falls in is computed, so a DERIVED table's (#174).
     "sites": {
         "id": (True, "str"),
         "program": (True, "str"),
         "name": (True, "str"),
-        "bed": (True, "str?"),
-        "lat": (True, "float"),
-        "lon": (True, "float"),
-        "defined_by": (True, "str"),
+        "key": (True, "str"),
+        "lat": (True, "str"),
+        "lon": (True, "str"),
+        "datum": (False, "str?"),
+        "defined_by": (True, "map"),
+        "retrieved": (False, "date?"),
     },
 }
+# CONTEXT.md, sites: defined_by is exactly one of {source, where} or {reference, where} -
+# the document that prints the coordinates, resolved into sources/ or references/.
+SITE_DEFINED_BY_LIMBS = ("source", "reference")
 
 
 def _is_date(value: Any) -> bool:
@@ -348,11 +356,13 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "defined_by" not in bad:
         # CONTEXT.md, regions: defined_by {source, where} - the record that draws the
-        # boundary and a locator within it, the shape transcribed_from has. Beds and
-        # sites still carry a string here (#83).
+        # boundary and a locator within it, the shape transcribed_from has. Beds still
+        # carry a string here (#83).
         db = d["defined_by"]
         if not all(isinstance(db.get(k), str) and db[k].strip() for k in ("source", "where")):
             out.append(Problem(p, "defined_by", "required: {source, where}"))
+    if rec.kind == "sites" and "defined_by" not in bad:
+        out += _site_defined_by_problems(rec)
     if rec.kind == "regions" and "consortium" not in bad:
         con = d.get("consortium") or []
         for c in con:
@@ -370,6 +380,36 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             why = topic_problem(t)
             if why:
                 out.append(Problem(p, "topics", why))
+    return out
+
+
+def _site_defined_by_named(db: dict[str, Any]) -> list[str]:
+    """Which of source and reference a site's defined_by names. A key written as an
+    explicit null is absent, as the fixtures write datum and retrieved."""
+    return [k for k in SITE_DEFINED_BY_LIMBS if db.get(k) is not None]
+
+
+def _site_defined_by_limb(db: dict[str, Any]) -> str | None:
+    """The one limb a site's defined_by names, or None when it names both or neither."""
+    named = _site_defined_by_named(db)
+    return named[0] if len(named) == 1 else None
+
+
+def _site_defined_by_problems(rec: Record) -> list[Problem]:
+    """The shape of a site's defined_by (CONTEXT.md, sites): exactly one of {source, where}
+    or {reference, where}. Naming both, or neither, is one problem each; a limb or a
+    `where` that is not a non-empty string is reported by its own name. Whether the
+    limb resolves is the link pass's question."""
+    db, p = rec.data["defined_by"], rec.path
+    named = _site_defined_by_named(db)
+    if len(named) == 2:
+        return [Problem(p, "defined_by", "names both source and reference; exactly one")]
+    if not named:
+        return [Problem(p, "defined_by", "names neither source nor reference; exactly one")]
+    out: list[Problem] = []
+    for k in (named[0], "where"):
+        if not _type_ok(db.get(k), "str"):
+            out.append(Problem(p, f"defined_by.{k}", "expected str"))
     return out
 
 
@@ -515,8 +555,13 @@ def _link_problems(rec: Record, catalog: Catalog, bad: set[str]) -> list[Problem
             check("defined_by.source", [src], "sources")
     if rec.kind == "beds":
         check("region", [str(d.get("region"))], "regions")
-    if rec.kind == "sites" and d.get("bed") is not None:
-        check("bed", [str(d["bed"])], "beds")
+    if rec.kind == "sites" and "defined_by" not in bad:
+        # Each limb resolves into its own directory; a limb the shape check reported
+        # (not a non-empty string, or not exactly one named) is not looked up.
+        db = d["defined_by"]
+        limb = _site_defined_by_limb(db)
+        if limb is not None and _type_ok(db[limb], "str"):
+            check(f"defined_by.{limb}", [db[limb]], f"{limb}s")
     if rec.kind == "references" and not (d.get("doi") or d.get("url")):
         out.append(Problem(p, "doi", "a reference needs a doi or a url"))
     return out
