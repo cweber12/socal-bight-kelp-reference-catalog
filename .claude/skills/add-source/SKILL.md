@@ -107,6 +107,7 @@ does not list.
 
 - Every value comes from the page or the file itself. No commentary, no computed numbers, no
   judgement of quality, no note about how the record came to be.
+- `citations`: as the `citations` row of the table says; `[]` where you enter none.
 - `license`: the licence text verbatim as published. Look in this order and stop at the first that
   states terms: the file itself, its landing page, then a terms/licence/disclaimer page that landing
   page links from its own footer. Quote it in `license`; where you read it goes in

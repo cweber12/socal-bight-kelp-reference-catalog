@@ -344,6 +344,7 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `steward`* | str | the organisation that publishes or holds it |
 | `url`* | str or null | the landing page or direct file |
 | `doi` | str or null | |
+| `citations` | list of `{as_printed, stated_at}`, each a str, no other key | the citations the source prints, in a page or document it serves, for what `url` or `doi` names, whether or not the page shows it — not one for a part of that (a station, a file, an appendix), nor for another work; `as_printed` the text as printed there; `stated_at` the place and, where the page or document carries markup or an encoding, or its text comes out only by a tool, the steps by which the text was taken out. Where it prints more than one that differ, none is chosen over another and a non-empty list holds each; the same text printed in more than one place is one entry, `stated_at` naming each place. Absent or empty means none entered, not that the source prints none |
 | `status`* | status vocabulary | |
 | `tier`* | tier vocabulary | |
 | `access`* | list of str | numbered steps a stranger can follow |
