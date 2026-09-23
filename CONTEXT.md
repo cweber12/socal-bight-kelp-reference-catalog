@@ -56,7 +56,8 @@ catalog/
   beds/<n>.md              a CDFW Administrative Kelp Bed
   sites/<id>.md            a monitoring program's named station
   human-tasks/<id>.md      what a person must ask for to obtain a source, and where it says so
-  tables/<id>.csv          transcribed tables; each has a source record with tier TRANSCRIBED
+  tables/<id>.csv          transcribed and derived tables; each has a source record whose tier
+                           is TRANSCRIBED or DERIVED
   data-lock.json           every fetched file's url, sha256 and bytes (arrives with the lock gate)
 ```
 
@@ -65,9 +66,10 @@ into `data/` by hand. A file a person carried in — saved from a browser, downl
 institutional login, sent by an author — is therefore not held, and no tier holds it: `FETCHED` is
 a fetch from one of the three routes *Vocabularies* gives it, run by the script `fetch_script`
 names, and a hand's copy is neither; `TRANSCRIBED` holds values in `catalog/tables/` and not the
-file they came from; `NOT HELD` holds nothing. The line is drawn at how the bytes arrived, not at
-who else could reach them — *Vocabularies* settles that second question, and this one does not
-re-open it.
+file they came from; `DERIVED` holds a table its script wrote from inputs the catalog already
+names, which a hand's copy is not; `NOT HELD` holds nothing. The line is drawn at how the bytes
+arrived, not at who else could reach them — *Vocabularies* settles that second question, and this
+one does not re-open it.
 
 The record of such a source holds no such file, so its tier is `NOT HELD` unless values out of it
 are transcribed, and its status is whatever *Vocabularies* allows a record of that tier. It carries
@@ -86,25 +88,29 @@ does not state.
 `VERIFIED` (the route was exercised, and `access` states what was received and when) · `PATTERN`
 (route documented but not exercised) · `NOT PUBLIC` · `ON REQUEST`.
 
-A route is exercised three ways. Its bytes were taken. Or a printed page was in hand and its values
-typed, per `transcribed_from`. Or — only where the entity is disproportionate to hold, so that the
-record keeps nothing and says so with the entity's size — enough of the entity itself answered to
-show that it opens: `sbc_lter_landsat_canopy` records its first 64 bytes arriving beside its byte
-count, its checksum and its access policy. The third way is the exception: an entity a record could
-hold is fetched, not probed. A landing page answering is not the source answering, and a document
+A route is exercised four ways. Its bytes were taken. Or a printed page was in hand and its values
+typed, per `transcribed_from`. Or a committed script was run over catalogued inputs and wrote the
+table the record names, per `derived_from`, `access` stating what the run wrote and when. Or —
+only where the entity is disproportionate to hold, so that the record keeps nothing and says so
+with the entity's size — enough of the entity itself answered to show that it opens:
+`sbc_lter_landsat_canopy` records its first 64 bytes arriving beside its byte count, its checksum
+and its access policy. The fourth way is the exception: an entity a record could hold is fetched,
+not probed. A landing page answering is not the source answering, and a document
 describing the source is not the source.
 
 Status and tier are independent, with one exception. Holding content means the route was
-exercised, so `FETCHED` and `TRANSCRIBED` exclude `PATTERN` — but they do not compel `VERIFIED`,
-because `NOT PUBLIC` and `ON REQUEST` state what a stranger faces whatever is held here. Holding
-nothing excludes nothing, because a route can be exercised without its bytes being kept, so a
-`NOT HELD` record carries whichever of the four its own `access` steps support; `PATTERN` there
-means nobody here has tried the route, not that nothing was kept.
+exercised, so `FETCHED`, `TRANSCRIBED` and `DERIVED` exclude `PATTERN` — but they do not compel
+`VERIFIED`, because `NOT PUBLIC` and `ON REQUEST` state what a stranger faces whatever is held
+here. Holding nothing excludes nothing, because a route can be exercised without its bytes being
+kept, so a `NOT HELD` record carries whichever of the four its own `access` steps support;
+`PATTERN` there means nobody here has tried the route, not that nothing was kept.
 
 **tier** — how the local content, if any, came to exist.
 `FETCHED` (bytes retrieved unmodified from one of the three routes below) · `TRANSCRIBED` (values
 typed from a printed page, or extracted from a document by a named script, into `catalog/tables/`)
-· `NOT HELD` (nothing local; the record describes the source and how to ask).
+· `DERIVED` (a table of keys under `catalog/tables/` that a committed script computed from inputs
+the catalog already holds: the index the table of *The rule* admits, never the finding it
+excludes) · `NOT HELD` (nothing local; the record describes the source and how to ask).
 
 `FETCHED`'s route is one of three, and nothing else. A host the steward runs, or that a body
 constituting it runs: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest
@@ -130,6 +136,25 @@ returned: `calcofi` asks ERDDAP for one station by `sta_id`. A slice of a file's
 whoever asked for it — a Range request is transport rather than a query, and what it yields is a
 fragment of a file rather than a file. Nor is a subset this repo computed from a file it fetched.
 
+`DERIVED`, the tier of the index the table of *The rule* admits and never of the finding it
+excludes, records its provenance in `derived_from`: the script that wrote the `file`, the inputs
+it ran over, and the parameters that change its answer — for a spatial join, the predicate, the
+CRS and the tolerance (#96). An input is one of three kinds: a source record, named by id; a
+record directory, named as `catalog/sites/`; or a held file that a source record's field locates,
+which enters the list as that record's id, because the file has no id of its own, and the script
+states which of that record's held files it read. So `inputs` holds source ids and record
+directories, and an input that is neither is a problem. A source named as an input holds content
+— `FETCHED`, `TRANSCRIBED` or `DERIVED` — because the script reads what the record holds, and a
+`NOT HELD` record holds nothing to read. "Pinned", in that row, means as committed beside the
+table: the record or the directory at the commit that carries the CSV, and for a source's held
+bytes what its `retrieved` and `fetch_script` describe, until `data-lock.json` arrives with the
+lock gate and states their checksums. Holding a computed table means its script was run, so the
+exception above reaches `DERIVED`: `PATTERN` is excluded and nothing is compelled. A `DERIVED`
+record's `topics` is `[]`, because a table of keys answers none of the ten questions: it renders
+in no topic notebook and moves `00_index` alone, whose count of sources reaches every record in
+`sources/` and whose matrix lists the record's region tags among its columns and counts it under
+no topic. Its `variables` are the columns of the CSV.
+
 **topics** — see *Topics: the ten questions* below. A tag is `<topic>` or `<topic>/<sub-topic>`.
 
 **regions** — the tree below. A source tags each node its stated coverage names as its own extent,
@@ -145,7 +170,8 @@ Bight whose stated coverage names no node (a station list, a coordinate box) tag
 that contains it. A source carrying two or more region tags renders under each of them in a topic
 notebook's sources tables, and each matrix counts it once per region it carries: in the index matrix
 a column per region, in a topic's matrix a row per region (`build.py`, `_sources_by_region`,
-`_matrix`, `_index_matrix`). `global` is allowed without a record for sources with no regional bound
+`_matrix`, `_index_matrix`); a `DERIVED` record, carrying no topic, renders in none and is counted
+in none (*tier*, above). `global` is allowed without a record for sources with no regional bound
 (ONI). `global` is therefore not a node of the tree, and not a region wider than the Bight: it
 states the *absence* of a bound, not a bound that happens to be large. It is also the one region tag
 with no record, so it has no `name` to print; *Notebooks* below gives the heading a notebook prints
@@ -193,7 +219,8 @@ number of tags across any topics.
 
 **Topics do not decide what is admitted.** Admission is by scope — an authoritative source about
 kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, an entry in
-`schema.py`, a notebook section) in its own PR; never exclude the source for want of a tag.
+`schema.py`, a notebook section) in its own PR; never exclude the source for want of a tag. A
+`DERIVED` record is the one source that carries no tag, by the rule under *tier* above.
 
 ## The region tree
 
@@ -323,14 +350,15 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `format` | str or null | as the source describes its files |
 | `license`* | str | the licence text as published, verbatim; "not stated" if absent |
 | `license_stated_at` | str or null | the place or places the licence was read or, when `license` is "not stated", was looked for |
-| `variables`* | list of str | as the source lists them; empty list if NOT HELD |
+| `variables`* | list of str | as the source lists them; the CSV's columns when DERIVED; empty list if NOT HELD |
 | `coverage` | str or null | as the source states it |
 | `coverage_stated_at` | str or null | the page or file where it is stated |
 | `retrieved`* | date or null | required non-null when FETCHED; null when NOT HELD |
 | `fetch_script` | path | required when FETCHED; must exist in the repo |
-| `file` | path | required when TRANSCRIBED; a file under `catalog/tables/` |
+| `file` | path | required when TRANSCRIBED or DERIVED; a file under `catalog/tables/` |
 | `transcribed_from` | `{reference, table, page}` | required when TRANSCRIBED |
-| `topics`* | list of topic tags (`<topic>` or `<topic>/<sub-topic>`), ≥ 1 | |
+| `derived_from` | `{inputs, script, parameters}` | required when DERIVED: `inputs` source ids and record directories, ≥ 1; `script` a path that exists in the repo; `parameters` a mapping |
+| `topics`* | list of topic tags (`<topic>` or `<topic>/<sub-topic>`), ≥ 1; `[]` when DERIVED | |
 | `regions`* | list of region ids or `global`, ≥ 1 | |
 | `beds` | list of bed ids | |
 | `sites` | list of site ids | |

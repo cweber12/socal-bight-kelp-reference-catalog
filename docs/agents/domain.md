@@ -31,7 +31,7 @@ right and the code is a bug** — change the code, not the document, unless a hu
     │   ├── regions/        a node of the region tree
     │   ├── beds/           a CDFW Administrative Kelp Bed
     │   ├── sites/          a monitoring program's named station
-    │   └── tables/         transcribed tables as CSV
+    │   └── tables/         transcribed and derived tables as CSV
     ├── notebooks/          generated from the records: 00_index plus one per topic in a folder per group
     ├── docs/
     │   ├── agents/         this file and its siblings

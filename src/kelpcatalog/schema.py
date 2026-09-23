@@ -27,13 +27,22 @@ import yaml
 
 KINDS = ("sources", "references", "excluded", "regions", "beds", "sites")
 # Every directory under catalog/ and the one extension its files carry: records are
-# markdown, and catalog/tables/ holds the transcribed CSVs (CONTEXT.md, "Record format").
-# .gitkeep is how git holds an empty one, so it is not a stray.
+# markdown, and catalog/tables/ holds the transcribed and derived CSVs (CONTEXT.md,
+# "Record format"). .gitkeep is how git holds an empty one, so it is not a stray.
 RECORD_DIRS: dict[str, str] = {**dict.fromkeys(KINDS, ".md"), "tables": ".csv"}
 KEEP_FILE = ".gitkeep"
 
 STATUS = ("VERIFIED", "PATTERN", "NOT PUBLIC", "ON REQUEST")
-TIER = ("FETCHED", "TRANSCRIBED", "NOT HELD")
+TIER = ("FETCHED", "TRANSCRIBED", "DERIVED", "NOT HELD")
+# CONTEXT.md, "Vocabularies": "Holding content means the route was exercised", so these
+# three exclude PATTERN; NOT HELD, holding nothing, excludes nothing.
+HELD_TIERS = ("FETCHED", "TRANSCRIBED", "DERIVED")
+# CONTEXT.md, "Record format": the tiers whose record names a file under catalog/tables/,
+# and so require `file`. #17's reverse check reads this set rather than naming a tier.
+TABLE_TIERS = ("TRANSCRIBED", "DERIVED")
+# CONTEXT.md, sources: derived_from {inputs, script, parameters}, DERIVED's provenance,
+# the shape transcribed_from has for the other tier that writes a table.
+DERIVED_FROM_KEYS = ("inputs", "script", "parameters")
 BED_STATUS = ("Open", "Closed", "Leasable", "Lease Only")
 CONSORTIUM = ("RNKSC", "CRKSC")
 # Topics and their sub-topics, in notebook order. CONTEXT.md "Topics" is the authority;
@@ -116,8 +125,8 @@ CITEKEY_RE = re.compile(r"^[a-z][a-z0-9]*\d{4}[a-z]?$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 HUMAN_TASK_RE = re.compile(r"^H\d+$")
 
-# Transcribed values live in one place, so a record cannot point at data/ (git-ignored)
-# or at a file outside the catalog.
+# Tables live in one place, so a record cannot point at data/ (git-ignored) or at a
+# file outside the catalog.
 TABLES_DIR = "catalog/tables/"
 
 FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n?(.*)\Z", re.S)
@@ -187,6 +196,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "fetch_script": (False, "str?"),
         "file": (False, "str?"),
         "transcribed_from": (False, "map?"),
+        "derived_from": (False, "map?"),
         "topics": (True, "list[topic]"),
         "regions": (True, "list[str]"),
         "beds": (False, "list[str]"),
@@ -351,7 +361,10 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
         if con and "parent" not in bad and d.get("parent") != MAINLAND_REGION:
             out.append(Problem(p, "consortium", f"non-empty only when parent is {MAINLAND_REGION}"))
     if "topics" in d and "topics" not in bad:
-        if not d["topics"] and RULES[rec.kind]["topics"][0]:
+        # CONTEXT.md, sources: topics >= 1, and [] when DERIVED - a join key answers none
+        # of the ten questions. _tier_problems reports a DERIVED record that carries one.
+        required = RULES[rec.kind]["topics"][0] and d.get("tier") != "DERIVED"
+        if not d["topics"] and required:
             out.append(Problem(p, "topics", "at least one topic"))
         for t in d["topics"]:
             why = topic_problem(t)
@@ -390,11 +403,18 @@ def _tier_problems(rec: Record, root: Path | None, bad: set[str]) -> list[Proble
     out: list[Problem] = []
     tier = d.get("tier")
     # CONTEXT.md, "Vocabularies": status and tier are independent but for one exception -
-    # "Holding content means the route was exercised, so FETCHED and TRANSCRIBED exclude
-    # PATTERN". The converse does not hold: holding nothing excludes nothing, because a
-    # route can be exercised without its bytes being kept.
-    if tier in ("FETCHED", "TRANSCRIBED") and d.get("status") == "PATTERN":
+    # "Holding content means the route was exercised, so FETCHED, TRANSCRIBED and DERIVED
+    # exclude PATTERN". The converse does not hold: holding nothing excludes nothing,
+    # because a route can be exercised without its bytes being kept.
+    if tier in HELD_TIERS and d.get("status") == "PATTERN":
         out.append(Problem(p, "status", f"PATTERN cannot hold content; tier is {tier}"))
+    if tier in TABLE_TIERS:
+        if not d.get("file"):
+            out.append(Problem(p, "file", f"required when tier is {tier} (catalog/tables/...)"))
+        elif not str(d["file"]).replace("\\", "/").startswith(TABLES_DIR):
+            out.append(Problem(p, "file", f"must be a file under {TABLES_DIR}"))
+        elif root is not None and not (root / str(d["file"])).exists():
+            out.append(Problem(p, "file", f"{d['file']} does not exist in the repo"))
     if tier == "FETCHED":
         for f in ("url", "retrieved", "fetch_script"):
             if not d.get(f):
@@ -410,17 +430,38 @@ def _tier_problems(rec: Record, root: Path | None, bad: set[str]) -> list[Proble
                     p, "transcribed_from", "required: {reference, table, page} when TRANSCRIBED"
                 )
             )
-        if not d.get("file"):
-            out.append(Problem(p, "file", "required when tier is TRANSCRIBED (catalog/tables/...)"))
-        elif not str(d["file"]).replace("\\", "/").startswith(TABLES_DIR):
-            out.append(Problem(p, "file", f"must be a file under {TABLES_DIR}"))
-        elif root is not None and not (root / str(d["file"])).exists():
-            out.append(Problem(p, "file", f"{d['file']} does not exist in the repo"))
+    elif tier == "DERIVED" and "derived_from" not in bad:
+        out += _derived_from_problems(rec, root)
+        if d.get("topics"):
+            out.append(Problem(p, "topics", "must be [] when tier is DERIVED"))
     elif tier == "NOT HELD":
         if d.get("retrieved") is not None:
             out.append(Problem(p, "retrieved", "must be null when tier is NOT HELD"))
         if d.get("fetch_script"):
             out.append(Problem(p, "fetch_script", "must be absent when tier is NOT HELD"))
+    return out
+
+
+def _derived_from_problems(rec: Record, root: Path | None) -> list[Problem]:
+    """The shape of a DERIVED record's provenance (CONTEXT.md, sources, `derived_from`):
+    inputs, a non-empty list of names; script, a path that exists in the repo;
+    parameters, a mapping. Whether each input resolves is the link pass's question."""
+    d, p = rec.data, rec.path
+    df = d.get("derived_from")
+    if not isinstance(df, dict) or not set(DERIVED_FROM_KEYS) <= set(df):
+        return [Problem(p, "derived_from", "required: {inputs, script, parameters} when DERIVED")]
+    out: list[Problem] = []
+    if not _type_ok(df["inputs"], "list[str]"):
+        out.append(Problem(p, "derived_from.inputs", "expected list[str]"))
+    elif not df["inputs"]:
+        out.append(Problem(p, "derived_from.inputs", "at least one input"))
+    script = df["script"]
+    if not _type_ok(script, "str"):
+        out.append(Problem(p, "derived_from.script", "expected str"))
+    elif root is not None and not (root / script).exists():
+        out.append(Problem(p, "derived_from.script", f"{script} does not exist in the repo"))
+    if not _type_ok(df["parameters"], "map"):
+        out.append(Problem(p, "derived_from.parameters", "expected map"))
     return out
 
 
@@ -446,6 +487,25 @@ def _link_problems(rec: Record, catalog: Catalog, bad: set[str]) -> list[Problem
         tf = d.get("transcribed_from")
         if isinstance(tf, dict) and "reference" in tf:
             check("transcribed_from.reference", [str(tf["reference"])], "references")
+        df = d.get("derived_from")
+        if isinstance(df, dict) and _type_ok(df.get("inputs"), "list[str]"):
+            # CONTEXT.md, "Vocabularies", tier: an input is a source record or a record
+            # directory; a held file enters the list as the id of the record whose field
+            # names it. So the set is source ids plus catalog/<kind>/ for every kind.
+            directories = {f"catalog/{kind}/" for kind in KINDS}
+            # "A source named as an input holds content": the script reads what the record
+            # holds, and a NOT HELD record holds nothing to read.
+            tier_of = {r.id: r.data.get("tier") for r in catalog.records["sources"]}
+            for v in df["inputs"]:
+                if v in directories:
+                    continue
+                if v not in tier_of:
+                    why = f"{v!r} is neither a source record nor a record directory"
+                elif tier_of[v] not in HELD_TIERS:
+                    why = f"{v!r} holds nothing to read; its tier is {tier_of[v]}"
+                else:
+                    continue
+                out.append(Problem(p, "derived_from.inputs", why))
     if rec.kind == "regions":
         if d.get("parent") is not None:
             check("parent", [str(d["parent"])], "regions")
@@ -513,7 +573,7 @@ def load_catalog(root: Path) -> tuple[Catalog, list[Problem]]:
                 )
                 continue
             if dirname not in KINDS:
-                continue  # catalog/tables/ holds transcribed values, not records
+                continue  # catalog/tables/ holds tables, not records
             rec, probs = parse_record(path.read_text(encoding="utf-8"), dirname, rel)
             problems += probs
             if rec is not None:
