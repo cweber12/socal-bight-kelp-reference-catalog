@@ -226,8 +226,8 @@ kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, 
 
 Every region record's `defined_by` (levels 1-3, `regions/<id>.md`) is `{source, where}`: the
 `sources/` record that draws the boundary and a locator within it (a section, a subsection, a
-page, or for a data file an attribute value). Beds and sites (levels 4 and 5) carry the string
-their own rows describe. Levels:
+page, or for a data file an attribute value). A bed's (level 4) and a site's (level 5) are what
+their own rows below describe. Levels:
 
 1. `scb` — the Southern California Bight, taken as the Bight '18 survey area, "from Point
    Conception, CA in the north to the US-Mexico border in the south" (`sccwrp_tr1289`, Chapter II,
@@ -276,7 +276,7 @@ their own rows describe. Levels:
    aerial surveys of 1989, 1999 and annually 2002–2016 (`cdfw_kelp_esr`, section "4.2.2."
    Fishery-independent Data Collection, page 4 (Monitoring and Essential Fishery Information)).
    Program bed names are `aliases:`.
-5. **Sites**, a program's named station, with lat/lon from the program and the bed it falls in.
+5. **Sites**, a program's named station, as `sites/<id>.md` holds it.
 
 Consortium is an attribute on a county node, not a level, and it is a **list**. The authority is
 `sccwrp_kelp_status_2016`, the 2016 "Status of the Kelp Beds" report, which states each
@@ -397,8 +397,19 @@ island region id), `aliases` (program names for the same bed), `defined_by`* (th
 
 ### sites/<id>.md
 
-`id`* (`<program>.<site>`, equals file name), `program`*, `name`* (as the program names it),
-`bed`* (bed id or null), `lat`*, `lon`* (from the program), `defined_by`* (the program's document).
+A site holds what the program states. The region its coordinates fall in is computed, and so is a
+`DERIVED` table's (*tier*, above; #177), not the record's; the record has no field for it.
+
+| field | type | where from |
+|---|---|---|
+| `id`* | `<program>.<site>`, equals file name | chosen on entry |
+| `program`* | str | the `<program>` half of `id` |
+| `name`* | str | as the program names it |
+| `key`* | str | the identifier exactly as the document that defines the site spells it — the program's own data, or the table that prints it (`ABUR`, `093.3 028.0`); `id` is lowercase and cannot carry it |
+| `lat`*, `lon`* | str | as the document prints them (`"34.400275"`, `"34°2’34.56”N"`), glyphs and spaces included; converting them is the computation the sentence above keeps off the record |
+| `datum` | str or null | where the program states one |
+| `defined_by`* | exactly one of `{source, where}` or `{reference, where}` | the document that prints the coordinates — a source id that exists, or a `references/` citekey where that document is a paper — and where in it |
+| `retrieved` | date or null | |
 
 ### human-tasks/<id>.md
 
