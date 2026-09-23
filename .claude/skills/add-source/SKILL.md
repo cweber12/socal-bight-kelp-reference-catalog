@@ -136,11 +136,12 @@ does not list.
   a name you chose; `[]` where no held file keys its rows by site, or the way it does has no place
   in the shape.
 
-`catalog/sources/noaa_oni.md` shows all of this but `license_stated_at`, which it was entered
-before and does not yet carry: `file: null` and `transcribed_from: null` among its rows; a licence
-quoted from the NWS disclaimer two hops out, with the footer it was reached through, still inside
-`license` until #38 moves it; and a `coverage_stated_at` naming the landing page, then the file, in
-the order `coverage` uses them.
+`catalog/sources/noaa_oni.md` shows all of this but `citations`, `derived_from`,
+`license_stated_at` and `site_key`, which it was entered before and does not yet carry:
+`file: null` and `transcribed_from: null` among its rows; a licence quoted from the NWS
+disclaimer two hops out, with the footer it was reached through, still inside `license` until #38
+moves it; and a `coverage_stated_at` naming the landing page, then the file, in the order
+`coverage` uses them.
 
 ## 4. If `tier` is `FETCHED`: write and run `src/fetch/<id>.py`
 
