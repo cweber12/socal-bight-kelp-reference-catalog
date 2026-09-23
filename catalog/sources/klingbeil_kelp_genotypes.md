@@ -156,7 +156,17 @@ regions:
   - scb
   - scb.islands.santa-catalina
 beds: []
-sites: []
+sites:
+  - klingbeil.lca-08
+  - klingbeil.lca-18
+  - klingbeil.cib-08
+  - klingbeil.cib-19
+  - klingbeil.cir-08
+  - klingbeil.cir-19
+  - klingbeil.ciq-08
+  - klingbeil.ciq-19
+  - klingbeil.cbd-08
+  - klingbeil.cbd-18
 references: []
 human_task: null
 ---
