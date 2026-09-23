@@ -19,7 +19,18 @@ from typing import Any
 import pytest
 
 from kelpcatalog import check_catalog, parse_record, split_topic, topic_problem, validate
-from kelpcatalog.schema import GROUPS, KINDS, RULES, STATUS, TIER, TOPICS, Catalog, Record
+from kelpcatalog.schema import (
+    GROUPS,
+    HELD_TIERS,
+    KINDS,
+    RULES,
+    STATUS,
+    TABLE_TIERS,
+    TIER,
+    TOPICS,
+    Catalog,
+    Record,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -298,15 +309,61 @@ def a_fetched_source(**overrides: Any) -> Record:
     return a_source(**(fetched | overrides))
 
 
+def a_derived_source(**overrides: Any) -> Record:
+    """A DERIVED source that validates: a table a committed script wrote from catalogued
+    inputs (CONTEXT.md, "Vocabularies", tier). The script and the first input exist in
+    tests/fixtures/valid, so it also validates against valid_catalog()."""
+    derived: dict[str, Any] = {
+        "status": "VERIFIED",
+        "tier": "DERIVED",
+        "access": [
+            "Run src/derive/bed_region.py; it wrote catalog/tables/bed_region.csv, 1 row, "
+            "2026-09-22"
+        ],
+        "variables": ["bed", "region"],
+        "file": "catalog/tables/bed_region.csv",
+        "derived_from": {
+            "inputs": ["noaa_oni", "catalog/sites/"],
+            "script": "src/derive/bed_region.py",
+            "parameters": {"predicate": "intersects", "crs": "EPSG:3310", "tolerance": 0},
+        },
+        "topics": [],
+    }
+    return a_source(**(derived | overrides))
+
+
+def derived_from(**overrides: Any) -> dict[str, Any]:
+    """a_derived_source()'s provenance map with one key changed or, for None, dropped."""
+    base: dict[str, Any] = dict(a_derived_source().data["derived_from"])
+    for key, value in overrides.items():
+        if value is None:
+            del base[key]
+        else:
+            base[key] = value
+    return base
+
+
+SOURCE_OF_TIER = {
+    "FETCHED": a_fetched_source,
+    "TRANSCRIBED": a_transcribed_source,
+    "DERIVED": a_derived_source,
+    "NOT HELD": a_source,
+}
+
+
 def a_source_of(status: str, tier: str) -> Record:
     """A source whose tier-specific fields are all in order, so the status/tier
     pairing is the only thing left that can be wrong."""
-    builders = {
-        "FETCHED": a_fetched_source,
-        "TRANSCRIBED": a_transcribed_source,
-        "NOT HELD": a_source,
-    }
-    return builders[tier](status=status, tier=tier)
+    return SOURCE_OF_TIER[tier](status=status, tier=tier)
+
+
+def test_every_tier_has_a_builder():
+    # A fifth tier arrives with a fixture, or the parametrised tests below skip it. The two
+    # sets are stated as literals because the tests over them are parametrised over them:
+    # a member dropped from the constant would drop its cases, not fail them (PR #185, F5).
+    assert set(SOURCE_OF_TIER) == set(TIER)
+    assert HELD_TIERS == ("FETCHED", "TRANSCRIBED", "DERIVED")
+    assert TABLE_TIERS == ("TRANSCRIBED", "DERIVED")
 
 
 def a_reference(**overrides: Any) -> Record:
@@ -376,10 +433,17 @@ def test_source_needs_at_least_one_region():
     assert reports(validate(a_source(regions=[]))) == [("regions", "at least one region")]
 
 
-def test_transcribed_file_must_be_under_catalog_tables():
-    # CONTEXT.md, sources: file ... a file under `catalog/tables/`
-    assert validate(a_transcribed_source()) == []
-    assert reports(validate(a_transcribed_source(file="data/tables/x.csv"))) == [
+@pytest.mark.parametrize("tier", TABLE_TIERS)
+def test_a_table_writing_tier_needs_a_file_under_catalog_tables(tier: str):
+    # CONTEXT.md, sources: file ... required when TRANSCRIBED or DERIVED; a file under
+    # `catalog/tables/`. The two tiers that write a table there are one set (#17 reads
+    # it for the reverse check), so one test over the set.
+    build = SOURCE_OF_TIER[tier]
+    assert validate(build()) == []
+    assert reports(validate(build(file=None))) == [
+        ("file", f"required when tier is {tier} (catalog/tables/...)")
+    ]
+    assert reports(validate(build(file="data/tables/x.csv"))) == [
         ("file", "must be a file under catalog/tables/")
     ]
 
@@ -398,21 +462,22 @@ def test_not_held_admits_every_status(status: str):
     assert validate(a_source_of(status, "NOT HELD")) == []
 
 
-@pytest.mark.parametrize("tier", ["FETCHED", "TRANSCRIBED"])
+@pytest.mark.parametrize("tier", HELD_TIERS)
 @pytest.mark.parametrize("status", [s for s in STATUS if s != "PATTERN"])
 def test_held_content_admits_every_status_but_pattern(status: str, tier: str):
     # CONTEXT.md, "Vocabularies": holding content excludes PATTERN and nothing else - it
     # does "not compel VERIFIED, because NOT PUBLIC and ON REQUEST state what a stranger
-    # faces whatever is held here".
+    # faces whatever is held here". DERIVED holds content too - the route to a derived
+    # table is running its script - so #94 put it in the same exception and no other.
     assert validate(a_source_of(status, tier)) == []
 
 
-@pytest.mark.parametrize("tier", ["FETCHED", "TRANSCRIBED"])
+@pytest.mark.parametrize("tier", HELD_TIERS)
 def test_pattern_cannot_hold_content(tier: str):
     # CONTEXT.md, "Vocabularies": "Holding content means the route was exercised, so
-    # FETCHED and TRANSCRIBED exclude PATTERN" - the sentence goes on to say they do not
-    # compel VERIFIED, which test_held_content_admits_every_status_but_pattern covers. One
-    # constraint, so one problem, and it names both fields.
+    # FETCHED, TRANSCRIBED and DERIVED exclude PATTERN" - the sentence goes on to say they
+    # do not compel VERIFIED, which test_held_content_admits_every_status_but_pattern
+    # covers. One constraint, so one problem, and it names both fields.
     field, message = HOLDS_CONTENT
     assert reports(validate(a_source_of("PATTERN", tier))) == [(field, message.format(tier))]
 
@@ -486,7 +551,7 @@ def test_unexpected_file_under_a_record_directory_is_reported():
 
 def test_gitkeep_and_transcribed_tables_are_not_unexpected():
     # .gitkeep holds an empty record directory in git, and catalog/tables/ holds the
-    # transcribed CSVs by design; neither is a stray. The equality above says they are
+    # transcribed and derived CSVs by design; neither is a stray. The equality above says they are
     # silent - this says the fixture still contains them to be silent about.
     tree = FIXTURES / "unexpected_file"
     assert (tree / "catalog" / "beds" / ".gitkeep").is_file()
@@ -513,8 +578,8 @@ def valid_catalog() -> Catalog:
 
 
 def test_tier_must_come_from_the_vocabulary():
-    # CONTEXT.md, "Vocabularies": tier is FETCHED, TRANSCRIBED or NOT HELD. status had
-    # this test from the start; tier did not, so 'FETCHD' validated.
+    # CONTEXT.md, "Vocabularies": tier is FETCHED, TRANSCRIBED, DERIVED or NOT HELD.
+    # status had this test from the start; tier did not, so 'FETCHD' validated.
     assert validate(a_source(tier="NOT HELD")) == []
     assert reports(validate(a_source(tier="FETCHD"))) == [("tier", f"must be one of {TIER}")]
 
@@ -538,15 +603,16 @@ def test_fetch_script_must_exist_in_the_repo():
     )
 
 
-def test_transcribed_file_must_exist_in_the_repo():
-    # CONTEXT.md, sources: file ... required when TRANSCRIBED; a file under
+@pytest.mark.parametrize("tier", TABLE_TIERS)
+def test_a_table_writing_tier_s_file_must_exist_in_the_repo(tier: str):
+    # CONTEXT.md, sources: file ... required when TRANSCRIBED or DERIVED; a file under
     # catalog/tables/. That the path is under catalog/tables/ has a test above; that
     # the file is actually there had none.
     catalog = valid_catalog()
-    held = a_transcribed_source(file="catalog/tables/parnell2005_table1.csv")
-    assert validate(held, catalog) == []
+    build = SOURCE_OF_TIER[tier]
+    assert validate(build(file="catalog/tables/parnell2005_table1.csv"), catalog) == []
     assert ("file", "catalog/tables/nope.csv does not exist in the repo") in reports(
-        validate(a_transcribed_source(file="catalog/tables/nope.csv"), catalog)
+        validate(build(file="catalog/tables/nope.csv"), catalog)
     )
 
 
@@ -597,6 +663,134 @@ def test_transcribed_from_reference_must_resolve():
     assert ("transcribed_from.reference", "'nobody2020' is not a reference record") in reports(
         validate(absent, catalog)
     )
+
+
+# --- the DERIVED tier (#94) ---------------------------------------------------------
+#
+# CONTEXT.md, "Vocabularies", tier: DERIVED is a table under catalog/tables/ that a
+# committed script wrote from inputs the catalog already holds. Its provenance is one
+# map, derived_from {inputs, script, parameters}, the shape transcribed_from has for
+# the other tier that writes a table there.
+
+DERIVED_FROM_REQUIRED = ("derived_from", "required: {inputs, script, parameters} when DERIVED")
+
+
+def test_derived_source_validates_end_to_end():
+    # tests/fixtures/valid holds one: the record, the CSV it names and the script.
+    catalog = valid_catalog()
+    rec = next(r for r in catalog.records["sources"] if r.data["tier"] == "DERIVED")
+    assert rec.data["derived_from"]["script"] == "src/derive/bed_region.py"
+    assert rec.data["topics"] == []
+    assert validate(rec, catalog) == []
+
+
+def test_derived_source_needs_its_provenance_map():
+    # #94: "a DERIVED record with no script is a problem". The script lives in the map,
+    # and a map missing any of its three keys is reported once, as the map.
+    assert validate(a_derived_source()) == []
+    assert reports(validate(a_derived_source(derived_from=None))) == [DERIVED_FROM_REQUIRED]
+    for key in ("inputs", "script", "parameters"):
+        dropped = a_derived_source(derived_from=derived_from(**{key: None}))
+        assert reports(validate(dropped)) == [DERIVED_FROM_REQUIRED], key
+
+
+def test_derived_from_is_not_required_of_the_other_tiers():
+    # The map is DERIVED's; a FETCHED or TRANSCRIBED record carries it as null, as
+    # noaa_oni carries transcribed_from.
+    for tier in TIER:
+        if tier != "DERIVED":
+            assert validate(SOURCE_OF_TIER[tier](derived_from=None)) == [], tier
+
+
+def test_derived_script_must_exist_in_the_repo():
+    # CONTEXT.md, sources: derived_from ... script, a path that exists in the repo. The
+    # same rule fetch_script has: a script nobody committed reproduces nothing.
+    catalog = valid_catalog()
+    assert validate(a_derived_source(), catalog) == []
+    nope = a_derived_source(derived_from=derived_from(script="src/derive/nope.py"))
+    assert reports(validate(nope, catalog)) == [
+        ("derived_from.script", "src/derive/nope.py does not exist in the repo")
+    ]
+    assert reports(validate(a_derived_source(derived_from=derived_from(script=5)))) == [
+        ("derived_from.script", "expected str")
+    ]
+
+
+def test_derived_inputs_resolve_to_a_source_or_a_record_directory():
+    # #94, amended 2026-09-22: an input is a source record, a record directory, or a
+    # held file a source record's field names; one that resolves to none of the three
+    # is a problem. The third kind enters the list as its record's id - the file has no
+    # id of its own - so the list holds source ids and record directories.
+    catalog = valid_catalog()
+    for inputs in (
+        ["noaa_oni"],
+        ["catalog/sites/"],
+        ["parnell2005_table1"],
+        ["bed_region"],
+        ["noaa_oni", "catalog/sites/", "parnell2005_table1"],
+        *([f"catalog/{kind}/"] for kind in KINDS),
+    ):
+        rec = a_derived_source(derived_from=derived_from(inputs=inputs))
+        assert validate(rec, catalog) == [], inputs
+    unresolved = "'{}' is neither a source record nor a record directory"
+    for bad in ("nobody", "catalog/tables/", "data/raw/noaa_oni/", "sites"):
+        rec = a_derived_source(derived_from=derived_from(inputs=["noaa_oni", bad]))
+        assert reports(validate(rec, catalog)) == [
+            ("derived_from.inputs", unresolved.format(bad))
+        ], bad
+
+
+def test_derived_inputs_named_by_id_hold_content():
+    # CONTEXT.md, tier: "A source named as an input holds content ... a NOT HELD record holds
+    # nothing to read." kelp_surveys in the valid fixture is NOT HELD / NOT PUBLIC; a hand-
+    # carried file entered that way must not come back in as a script's input (#185, F4).
+    catalog = valid_catalog()
+    rec = a_derived_source(derived_from=derived_from(inputs=["kelp_surveys"]))
+    assert reports(validate(rec, catalog)) == [
+        ("derived_from.inputs", "'kelp_surveys' holds nothing to read; its tier is NOT HELD")
+    ]
+
+
+def test_derived_inputs_are_a_non_empty_list_of_strings():
+    # "a deterministic index over pinned catalogued inputs": an index over nothing is
+    # not one, and an input that is not a name resolves to nothing.
+    assert reports(validate(a_derived_source(derived_from=derived_from(inputs=[])))) == [
+        ("derived_from.inputs", "at least one input")
+    ]
+    for wrong in ("noaa_oni", [""], [{"source": "noaa_oni"}]):
+        rec = a_derived_source(derived_from=derived_from(inputs=wrong))
+        assert reports(validate(rec)) == [("derived_from.inputs", "expected list[str]")], wrong
+
+
+def test_derived_parameters_are_a_mapping():
+    # "with the parameters that change its answer recorded": a mapping, named
+    # parameter to value. An empty one states that the script has none.
+    assert validate(a_derived_source(derived_from=derived_from(parameters={}))) == []
+    rec = a_derived_source(derived_from=derived_from(parameters="intersects, EPSG:3310"))
+    assert reports(validate(rec)) == [("derived_from.parameters", "expected map")]
+
+
+def test_derived_source_carries_no_topics():
+    # CONTEXT.md, sources: topics ... >= 1; [] when DERIVED. A join key answers none of
+    # the ten questions, so it renders in no topic notebook; tagging one would place a
+    # table of keys under a question it does not answer.
+    assert validate(a_derived_source(topics=[])) == []
+    assert reports(validate(a_derived_source(topics=["canopy"]))) == [
+        ("topics", "must be [] when tier is DERIVED")
+    ]
+    # The >= 1 rule stands for every other tier.
+    for tier in TIER:
+        if tier != "DERIVED":
+            rec = SOURCE_OF_TIER[tier](topics=[])
+            assert reports(validate(rec)) == [("topics", "at least one topic")], tier
+
+
+def test_derived_source_needs_no_transcribed_from():
+    # CONTEXT.md, sources: transcribed_from ... required when TRANSCRIBED - and only
+    # then. Its reference link-checks into references/, which a computed table has no
+    # business naming (#94, "Why not TRANSCRIBED").
+    assert "transcribed_from" not in a_derived_source().data
+    assert validate(a_derived_source(transcribed_from=None)) == []
 
 
 def test_region_defined_by_is_a_source_and_a_locator():

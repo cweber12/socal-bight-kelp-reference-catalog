@@ -87,6 +87,11 @@ Status and tier are otherwise independent (`CONTEXT.md`, *Vocabularies*): holdin
 `PATTERN`, and holding nothing excludes nothing — rows 3 to 6 above all hold nothing, and which
 applies is what the access steps support.
 
+The fourth tier, `DERIVED`, has no row here because nothing in step 2 produces it: its table is
+written by a committed script over inputs already in the catalog, not fetched or typed, and its
+record arrives with that script in the issue that asks for the table (`CONTEXT.md`, *Vocabularies*,
+tier). This skill does not enter one.
+
 **STOP if the URL is dead or resolves to something other than the source.** There is no route to
 record, and guessing one is a fact the source does not state.
 
