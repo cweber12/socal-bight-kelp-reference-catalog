@@ -29,6 +29,12 @@ What that admits and excludes:
 | a fact anyone repeating the fetch would see ("returns 401 without a bearer token, 2026-09-04") | drafts, correspondence, to-do notes |
 | an equation exactly as a paper prints it, with page or equation number | an equation adjusted, clipped or extended here |
 | a one-line reason a reviewed item was excluded | paragraphs about why |
+| a deterministic index over pinned catalogued inputs, computed by a committed script, with the parameters that change its answer recorded | a finding computed from catalogued inputs, however deterministic the arithmetic: per-bed canopy area summed from `Shape_Area` is a summary statistic and stays out |
+
+Where a computation is involved, the line is drawn at what the result states, not at whether
+arithmetic produced it. An index says where to look, and re-running its script on its inputs
+reproduces it as repeating a fetch reproduces a file; a finding says what was found, and computing
+one here is the analysis *What is not a record* sends to a separate repo.
 
 Figures follow the same rule: a notebook may load a catalogued file by id, apply an equation as a
 cited reference prints it, and plot; every mark on the figure traces to a record or a printed
