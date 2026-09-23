@@ -15,7 +15,8 @@ which step, what it found, and what you have written so far, then wait. Never sk
 make a step pass by widening the schema or by writing a value the source does not state.
 
 `noaa_oni` is the worked example throughout: `catalog/sources/noaa_oni.md` and
-`src/fetch/noaa_oni.py` on `main` are what a finished run of this skill produces.
+`src/fetch/noaa_oni.py` on `main` are what a finished run of this skill produced before #38 added
+`license_stated_at` to the table; step 3 says what the record still lacks.
 
 ## 0. Read first, then branch
 
@@ -103,10 +104,11 @@ does not list.
   judgement of quality, no note about how the record came to be.
 - `license`: the licence text verbatim as published. Look in this order and stop at the first that
   states terms: the file itself, its landing page, then a terms/licence/disclaimer page that landing
-  page links from its own footer. Quote it, then say where you found it — inside the same value,
-  since the schema has no second field for it. Never substitute a licence name you inferred:
-  "public domain (US federal government work)" is a conclusion, not published text. `"not stated"`
-  only when none of those states terms.
+  page links from its own footer. Quote it in `license`; where you read it goes in
+  `license_stated_at`, as that row of the table says. Never substitute a licence name you
+  inferred: "public domain (US federal government work)" is a conclusion, not published text.
+  `"not stated"` only when none of those states terms, and `license_stated_at` then says where you
+  looked.
 - `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
@@ -124,9 +126,10 @@ does not list.
   gives the island, county, Bight-wide and wider-than-Bight cases); `global` for a source with no
   regional bound.
 
-`catalog/sources/noaa_oni.md` shows all of this: every row present, `file: null` and
-`transcribed_from: null` among them; a licence quoted from the NWS disclaimer two hops out, with the
-footer it was reached through; and a `coverage_stated_at` naming the landing page, then the file, in
+`catalog/sources/noaa_oni.md` shows all of this but `license_stated_at`, which it was entered
+before and does not yet carry: `file: null` and `transcribed_from: null` among its rows; a licence
+quoted from the NWS disclaimer two hops out, with the footer it was reached through, still inside
+`license` until #38 moves it; and a `coverage_stated_at` naming the landing page, then the file, in
 the order `coverage` uses them.
 
 ## 4. If `tier` is `FETCHED`: write and run `src/fetch/<id>.py`

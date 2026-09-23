@@ -179,6 +179,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "access": (True, "list[str]"),
         "format": (False, "str?"),
         "license": (True, "str"),
+        "license_stated_at": (False, "str?"),
         "variables": (True, "list[str]"),
         "coverage": (False, "str?"),
         "coverage_stated_at": (False, "str?"),

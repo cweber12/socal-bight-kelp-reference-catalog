@@ -447,6 +447,15 @@ def test_human_task_is_an_h_number():
     assert reports(validate(a_source(human_task="2"))) == [("human_task", r"does not match ^H\d+$")]
 
 
+def test_license_stated_at_is_a_place_or_null():
+    # CONTEXT.md, sources: license_stated_at is "str or null". The field is named here, not read
+    # from RULES: the typed sweep below cannot tell "str?" from "str", and a list built from
+    # RULES would drop the field with its "?".
+    stated_at = "NWS Disclaimer, https://www.weather.gov/disclaimer"
+    assert validate(a_source(license_stated_at=stated_at)) == []
+    assert validate(a_source(license_stated_at=None)) == []
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)

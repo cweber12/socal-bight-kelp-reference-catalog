@@ -316,6 +316,7 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `access`* | list of str | numbered steps a stranger can follow |
 | `format` | str or null | as the source describes its files |
 | `license`* | str | the licence text as published, verbatim; "not stated" if absent |
+| `license_stated_at` | str or null | the place or places the licence was read or, when `license` is "not stated", was looked for |
 | `variables`* | list of str | as the source lists them; empty list if NOT HELD |
 | `coverage` | str or null | as the source states it |
 | `coverage_stated_at` | str or null | the page or file where it is stated |
