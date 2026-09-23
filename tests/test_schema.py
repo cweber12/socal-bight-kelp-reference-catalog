@@ -539,6 +539,105 @@ def test_license_stated_at_is_a_place_or_null():
     assert validate(a_source(license_stated_at=None)) == []
 
 
+# --- site_key: where a source's own data keys its sites (#175) ---------------------
+#
+# CONTEXT.md, sources: site_key is a list of {file, column?, lat_column?, lon_column?},
+# every value as the source's own metadata names it. The shape is checked here and
+# nothing else: whether `file` names a held file is the lock's question (6.5), and no
+# record carries the field yet (#175's non-goal).
+
+SITE_KEY_SHAPES = {
+    "file": [{"file": "bb4003017c_1_1.zip"}],
+    "column": [{"file": "Bottom_temp_all_years_20260129.csv", "column": "SITE"}],
+    "column+coords": [
+        {
+            "file": "PISCO_kelpforest_site_table.1.11.csv",
+            "column": "site",
+            "lat_column": "latitude",
+            "lon_column": "longitude",
+        }
+    ],
+    "coords": [{"file": "stations.csv", "lat_column": "lat", "lon_column": "lon"}],
+}
+
+
+@pytest.mark.parametrize("value", SITE_KEY_SHAPES.values(), ids=SITE_KEY_SHAPES.keys())
+def test_site_key_admits_each_shape_the_row_describes(value: list[dict[str, str]]):
+    # {file} alone is the same shape with three absent keys, not a shape of its own.
+    assert validate(a_fetched_source(site_key=value)) == []
+
+
+def test_site_key_absent_or_empty_says_nothing():
+    # CONTEXT.md, sources: "Absent or empty says nothing about the source" - both validate,
+    # as `sites: []` does, whatever the tier. No fixture carries site_key, so each
+    # fixture's own validation is the absent case.
+    for tier, build in SOURCE_OF_TIER.items():
+        assert "site_key" not in build().data and validate(build()) == [], tier
+        assert validate(build(site_key=[])) == [], tier
+
+
+def test_site_key_is_non_empty_only_when_fetched():
+    # CONTEXT.md, sources: one entry per file fetch_script stores that keys its rows by site,
+    # "so non-empty only when FETCHED" - a NOT HELD record holds no file to name, and a table under
+    # catalog/tables/ is the record's `file`, not one fetch_script stores.
+    entry = [{"file": "Bottom_temp_all_years_20260129.csv", "column": "SITE"}]
+    for tier, build in SOURCE_OF_TIER.items():
+        expected = (
+            [] if tier == "FETCHED" else [("site_key", "non-empty only when tier is FETCHED")]
+        )
+        assert reports(validate(build(site_key=entry))) == expected, tier
+
+
+def test_site_key_null_inside_an_entry_is_absent():
+    # add-source step 3 writes null for a scalar that does not apply, and a site's defined_by
+    # reads an explicit null as absent; an entry does the same, so a fill can show every key.
+    entry = {"file": "a.csv", "column": "SITE", "lat_column": None, "lon_column": None}
+    assert validate(a_fetched_source(site_key=[entry])) == []
+    assert reports(validate(a_fetched_source(site_key=[{"file": None}]))) == [
+        ("site_key[0].file", "required field is missing")
+    ]
+
+
+def test_site_key_entry_must_be_a_mapping():
+    # A bare string names a column and not the file it is a column of.
+    assert reports(validate(a_fetched_source(site_key=["SITE"]))) == [
+        ("site_key", "expected list[site_key]")
+    ]
+
+
+def test_site_key_entry_needs_a_file():
+    # The second entry is the one reported, by its index.
+    entries = [{"file": "sites.csv"}, {"column": "SITE"}]
+    assert reports(validate(a_fetched_source(site_key=entries))) == [
+        ("site_key[1].file", "required field is missing")
+    ]
+
+
+@pytest.mark.parametrize("half", ["lat_column", "lon_column"])
+def test_site_key_lat_and_lon_columns_come_together(half: str):
+    # A coordinate is a pair; one column of it locates nothing.
+    entry = {"file": "sites.csv", half: "x"}
+    assert reports(validate(a_fetched_source(site_key=[entry]))) == [
+        ("site_key[0]", "lat_column and lon_column come together")
+    ]
+
+
+def test_site_key_entry_names_only_the_keys_the_row_lists():
+    # The record-level "unknown field" problem, one level down: a key the row does not list
+    # would otherwise pass silently, a misspelt lon_column among them.
+    entry = {"file": "sites.csv", "station_column": "site"}
+    assert reports(validate(a_fetched_source(site_key=[entry]))) == [
+        ("site_key[0].station_column", "unknown key; CONTEXT.md lists the allowed ones")
+    ]
+
+
+def test_site_key_values_are_non_empty_strings():
+    entry = {"file": "sites.csv", "column": ""}
+    assert reports(validate(a_fetched_source(site_key=[entry]))) == [
+        ("site_key[0].column", "expected str")
+    ]
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)
@@ -979,6 +1078,7 @@ WRONG_VALUE: dict[str, Any] = {
     "list[str]": "one string, not a list",
     "list[topic]": "bed-state",
     "list[eq]": ["not a mapping"],
+    "list[site_key]": ["SITE"],
 }
 
 FIELD_RULES = [(k, n, r, t) for k, fields in RULES.items() for n, (r, t) in fields.items()]
