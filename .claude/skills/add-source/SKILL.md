@@ -115,7 +115,9 @@ does not list.
   inferred: "public domain (US federal government work)" is a conclusion, not published text.
   `"not stated"` only when none of those states terms, and `license_stated_at` then says where you
   looked.
-- `variables`: as the source lists them; `[]` when `tier` is `NOT HELD`.
+- `variables`: one map per column, as the `variables` row of the table says. The 15 records
+  that list any carry the bare-string form instead, `noaa_oni` below among them, and #182
+  retires it: a record entered now is born as maps.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
   `coverage`. A span read off a file's first and last rows is a fact of the copy you fetched: date

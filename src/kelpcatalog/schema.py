@@ -175,7 +175,7 @@ class Catalog:
 #
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
 # "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
-# "list[site_key]", "list[cite]".
+# "list[site_key]", "list[cite]", "list[variable]".
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -191,7 +191,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "format": (False, "str?"),
         "license": (True, "str"),
         "license_stated_at": (False, "str?"),
-        "variables": (True, "list[str]"),
+        "variables": (True, "list[variable]"),
         "coverage": (False, "str?"),
         "coverage_stated_at": (False, "str?"),
         "retrieved": (True, "date?"),
@@ -266,6 +266,11 @@ SITE_KEY_KEYS = ("file", "column", "lat_column", "lon_column")
 SITE_KEY_COORDS = ("lat_column", "lon_column")
 # CONTEXT.md, sources: a citations entry is {as_printed, stated_at}, no other key.
 CITE_KEYS = ("as_printed", "stated_at")
+# CONTEXT.md, sources: a variables entry is {name, description, unit, file?}, no other
+# key. The three below are on every entry; `file` is the optional fourth. `name` is the
+# one of the four that is never null - a column the source names nowhere is no entry.
+VARIABLE_KEYS = ("name", "description", "unit")
+VARIABLE_NULLABLE_KEYS = ("description", "unit")
 
 
 def _is_date(value: Any) -> bool:
@@ -298,6 +303,16 @@ def _type_ok(value: Any, kind: str) -> bool:
         )
     if base in ("list[site_key]", "list[cite]"):
         return isinstance(value, list) and all(isinstance(e, dict) for e in value)
+    if base == "list[variable]":
+        # CONTEXT.md, sources: an entry is a {name, description, unit, file?} map or,
+        # until #182, a str; one form to a list. A mixed list is the half-migrated
+        # record, and it fails here, at the field, rather than per entry. The empty
+        # list satisfies the first of the two, which is what NOT HELD carries.
+        if not isinstance(value, list):
+            return False
+        if all(isinstance(e, str) and e.strip() for e in value):
+            return True
+        return all(isinstance(e, dict) for e in value)
     return False
 
 
@@ -368,6 +383,8 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             out += _site_key_problems(rec)
         if "citations" not in bad:
             out += _cite_problems(rec)
+        if "variables" not in bad:
+            out += _variables_problems(rec)
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "defined_by" not in bad:
@@ -439,6 +456,38 @@ def _cite_problems(rec: Record) -> list[Problem]:
             if k not in CITE_KEYS:
                 why = "unknown key; CONTEXT.md lists the allowed ones"
                 out.append(Problem(p, f"{at}.{k}", why))
+            elif not _type_ok(v, "str"):
+                out.append(Problem(p, f"{at}.{k}", "expected str"))
+    return out
+
+
+def _variables_problems(rec: Record) -> list[Problem]:
+    """The shape of each variables entry that is a map (CONTEXT.md, sources): `name`,
+    `description` and `unit` present, `name` a non-empty string and the other two that or
+    null; `file` optional, a list of non-empty strings, an explicit null being absent as it
+    is in site_key; no other key. Each entry is reported by its index. A str entry is the
+    form #182 retires and has no shape to check; a list that mixes the two forms never
+    reaches here, because _type_ok rejects it. Whether a description or a unit is what the
+    source states for that column is review's question, not this one's."""
+    p = rec.path
+    out: list[Problem] = []
+    for i, entry in enumerate(rec.data.get("variables") or []):
+        if not isinstance(entry, dict):
+            continue
+        at = f"variables[{i}]"
+        for k in VARIABLE_KEYS:
+            if k not in entry:
+                out.append(Problem(p, f"{at}.{k}", "required field is missing"))
+        for k, v in entry.items():
+            if k not in VARIABLE_KEYS + ("file",):
+                why = "unknown key; CONTEXT.md lists the allowed ones"
+                out.append(Problem(p, f"{at}.{k}", why))
+            elif k == "file":
+                if v is not None and not _type_ok(v, "list[str]"):
+                    out.append(Problem(p, f"{at}.{k}", "expected list[str]"))
+            elif k in VARIABLE_NULLABLE_KEYS:
+                if not _type_ok(v, "str?"):
+                    out.append(Problem(p, f"{at}.{k}", "expected str?"))
             elif not _type_ok(v, "str"):
                 out.append(Problem(p, f"{at}.{k}", "expected str"))
     return out
