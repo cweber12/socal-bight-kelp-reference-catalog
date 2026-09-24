@@ -26,8 +26,10 @@ import nbformat
 import pytest
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_output
 
+from kelpcatalog.build import build_index, build_topic, write_notebook
 from kelpcatalog.generate import NOTEBOOKS_DIR, generate, main
 from kelpcatalog.plan import INDEX_PATH, NOTEBOOK_PATHS
+from kelpcatalog.schema import TOPICS, check_catalog
 
 ROOT = Path(__file__).parents[1]
 FIXTURE = Path(__file__).parent / "fixtures" / "notebook"
@@ -113,6 +115,43 @@ def test_regenerating_the_real_catalog_leaves_every_file_byte_identical(tmp_path
     before = tree(tmp_path)
     generate(ROOT, into=tmp_path)
     assert tree(tmp_path) == before
+
+
+def _the_eleven_from(catalog, into: Path) -> dict[str, bytes]:
+    """The eleven built straight from a catalog in memory, as generate() builds them.
+
+    `existing=None` throughout: nothing is merged over, so the bytes are the builders'
+    own and the two runs below differ only in the records they were given.
+    """
+    write_notebook(build_index(catalog, existing=None), into / INDEX_PATH)
+    for topic in TOPICS:
+        write_notebook(build_topic(topic, catalog, existing=None), into / NOTEBOOK_PATHS[topic])
+    return tree(into)
+
+
+def _as_maps(entry: object) -> object:
+    """One string entry in the shape #90 gives it: the string is the column's name, and
+    the source states no description and no unit for it here."""
+    return {"name": entry, "description": None, "unit": None} if isinstance(entry, str) else entry
+
+
+def test_expanding_every_variables_entry_to_a_map_changes_no_notebook_byte(tmp_path: Path):
+    # #90's fourth failing test: build.py renders no `variables`, so the migration rows of
+    # docs/prd/re-entry.md move no notebook (its settled point 2). Asserted at the byte
+    # level against the real catalog, which carries 369 string entries across 19 records on
+    # main at 95dbac3, rather than by grepping the builders for the field name.
+    catalog, problems = check_catalog(ROOT)
+    assert problems == []
+    strings = _the_eleven_from(catalog, tmp_path / "strings")
+
+    moved = 0
+    for rec in catalog.records["sources"]:
+        before = rec.data["variables"]
+        rec.data["variables"] = [_as_maps(e) for e in before]
+        moved += sum(1 for e in rec.data["variables"] if isinstance(e, dict))
+    assert moved, "no entry was expanded, so the two builds are the same records"
+
+    assert _the_eleven_from(catalog, tmp_path / "maps") == strings
 
 
 @pytest.mark.parametrize("path", sorted(THE_ELEVEN))

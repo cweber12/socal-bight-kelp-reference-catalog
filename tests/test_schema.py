@@ -812,6 +812,194 @@ def test_citations_values_are_non_empty_strings(key: str):
     ]
 
 
+# --- variables: the named columns or fields of a source's data files (#90) ----------
+#
+# CONTEXT.md, sources: an entry is {name, description, unit, file?}, no other key, and
+# until #182 an entry may be a str instead, one form to a list. The shape is checked here
+# and nothing else: whether a `description` or a `unit` is what the source states for that
+# column is the audit's question, and no record carries a map yet (#90's non-goal).
+#
+# The fixture is FETCHED throughout, because the row gives NOT HELD the empty list: a
+# field's default fixture may be the tier that cannot carry it (PR #189, F2). No gate ties
+# `variables` to the tier today, and adding one is not this slice's.
+
+# The three keys every entry carries, as a literal: the tests below parametrize over this
+# tuple, and a member dropped from the constant would drop its cases, not fail them (PR
+# #185, F5). `file` is the fourth key and the optional one, so it is not in here.
+VARIABLE_KEYS = ("name", "description", "unit")
+# The two the row lets a record write as null, where the source states none.
+VARIABLE_NULLABLE_KEYS = ("description", "unit")
+
+A_VARIABLE = {"name": "temp_c", "description": "Water temperature", "unit": "degree Celsius"}
+
+# Entries drafted from two records' own text - the two cases the Parking lot left S1 to
+# settle (#5 issuecomment-5805925619 and its correction, issuecomment-5806181504). Neither
+# is committed to a record. `description` is null in both because neither record's own text
+# states one; which text a description quotes is the migration's question (rows M4, M5 and
+# M8 of docs/prd/re-entry.md), not this slice's.
+
+# catalog/sources/pisco_kelp_forest.md:104-106 states the 76 names as the union of seven
+# tables' attributeNames and `size`'s unit as "number" in one table and "centimeter" in
+# another. One statement per entry, each `file` naming the file that states it - one `unit`
+# per entry cannot hold both.
+PISCO_SIZE_VARIABLES = [
+    {
+        "name": "size",
+        "description": None,
+        "unit": "number",
+        "file": ["PISCO_kelpforest_swath.1.11.csv"],
+    },
+    {
+        "name": "size",
+        "description": None,
+        "unit": "centimeter",
+        "file": ["PISCO_kelpforest_sizefreq.1.11.csv"],
+    },
+]
+
+# catalog/sources/calcofi.md:52-56 states that five columns - time, latitude, longitude,
+# cst_cnt and sta_id - appear in both of its files. Each is one entry whose `file` names
+# both, stated once. The units are the two files' unit rows, which that cell says each file
+# carries; the two that state none are null. The file names are the names src/fetch's
+# script stored them under.
+CALCOFI_FILES = [
+    "siocalcofiHydroCast_d677_9801_7f83.csv",
+    "siocalcofiHydroBottle_d677_9801_7f83.csv",
+]
+CALCOFI_SHARED_VARIABLES = [
+    {"name": "time", "description": None, "unit": "UTC", "file": CALCOFI_FILES},
+    {"name": "latitude", "description": None, "unit": "degrees_north", "file": CALCOFI_FILES},
+    {"name": "longitude", "description": None, "unit": "degrees_east", "file": CALCOFI_FILES},
+    {"name": "cst_cnt", "description": None, "unit": None, "file": CALCOFI_FILES},
+    {"name": "sta_id", "description": None, "unit": None, "file": CALCOFI_FILES},
+]
+DRAFTED_VARIABLES = {
+    "pisco_kelp_forest": PISCO_SIZE_VARIABLES,
+    "calcofi": CALCOFI_SHARED_VARIABLES,
+}
+
+
+@pytest.mark.parametrize("entries", DRAFTED_VARIABLES.values(), ids=DRAFTED_VARIABLES.keys())
+def test_variables_admit_the_entries_drafted_from_two_records(entries: list[dict[str, Any]]):
+    # A cell is checked against the records it will admit (PR #186, F1). Both records are
+    # FETCHED; the drafts are in the PR body and in no record.
+    assert validate(a_fetched_source(variables=entries)) == []
+
+
+def test_variables_entry_must_be_a_mapping_or_a_string():
+    # Until #182 both forms validate, and one list holds one of them: a list that mixes
+    # them is the half-migrated record, and it fails at the field rather than per entry.
+    assert validate(a_fetched_source(variables=["campus", "method"])) == []
+    assert validate(a_fetched_source(variables=[A_VARIABLE])) == []
+    # A blank string names no column, as `list[str]` has it everywhere else in the table.
+    assert reports(validate(a_fetched_source(variables=["campus", "  "]))) == [
+        ("variables", "expected list[variable]")
+    ]
+    assert reports(validate(a_fetched_source(variables=["campus", A_VARIABLE]))) == [
+        ("variables", "expected list[variable]")
+    ]
+    assert reports(validate(a_fetched_source(variables=[A_VARIABLE, "campus"]))) == [
+        ("variables", "expected list[variable]")
+    ]
+
+
+def test_variables_string_entries_and_the_empty_list_validate_on_every_tier():
+    # #90, Done when: "existing string-shaped records still validate". The empty list is
+    # what the row gives NOT HELD and what four records carry on main.
+    for tier, build in SOURCE_OF_TIER.items():
+        assert validate(build(variables=["campus", "method"])) == [], tier
+        assert validate(build(variables=[])) == [], tier
+
+
+def test_the_derived_fixture_keeps_its_two_string_entries():
+    # The row's "the CSV's columns when DERIVED" is unchanged by this slice, and the
+    # fixture that carries it is the one a later migration would move.
+    assert a_derived_source().data["variables"] == ["bed", "region"]
+    assert validate(a_derived_source()) == []
+
+
+def test_the_string_shaped_records_in_the_catalog_still_validate():
+    # The catalog itself, not a fixture. The string-shaped records are counted rather than
+    # pinned to a number, so a record migrated under #182's rows does not fail this test.
+    # On main at 95dbac3 all 19 sources are string-shaped, 369 entries in all, 4 of them
+    # the empty list.
+    catalog, problems = check_catalog(ROOT)
+    assert problems == []
+    string_shaped = [
+        rec
+        for rec in catalog.records["sources"]
+        if all(isinstance(e, str) for e in rec.data["variables"])
+    ]
+    assert string_shaped, "no string-shaped record left for this test to check"
+    for rec in string_shaped:
+        assert validate(rec, catalog) == [], rec.path
+
+
+@pytest.mark.parametrize("key", VARIABLE_KEYS)
+def test_variables_entry_needs_each_of_the_three_keys(key: str):
+    # The second entry is the one reported, by its index. null is allowed for two of the
+    # three; absent is allowed for none of them.
+    entries = [A_VARIABLE, {k: v for k, v in A_VARIABLE.items() if k != key}]
+    assert reports(validate(a_fetched_source(variables=entries))) == [
+        (f"variables[1].{key}", "required field is missing")
+    ]
+
+
+def test_variables_entry_names_only_the_keys_the_row_lists():
+    # The record-level "unknown field" problem, one level down: a key the row does not
+    # list would otherwise pass silently. `units` is the plural a record could reach for.
+    entry = {**A_VARIABLE, "units": "cm"}
+    assert reports(validate(a_fetched_source(variables=[entry]))) == [
+        ("variables[0].units", "unknown key; CONTEXT.md lists the allowed ones")
+    ]
+
+
+@pytest.mark.parametrize("value", [None, ""])
+def test_variables_name_is_never_null_or_blank(value: Any):
+    # The row: a column the source names nowhere is no entry (#90, Decision; #5
+    # issuecomment-5761453102, klingbeil's two unnamed columns), so `name` has no null.
+    entry = {**A_VARIABLE, "name": value}
+    assert reports(validate(a_fetched_source(variables=[entry]))) == [
+        ("variables[0].name", "expected str")
+    ]
+
+
+@pytest.mark.parametrize("key", VARIABLE_NULLABLE_KEYS)
+def test_variables_description_and_unit_may_be_null(key: str):
+    # "null where it states none" - the row's answer to the non-goal "do not invent
+    # descriptions or units".
+    assert validate(a_fetched_source(variables=[{**A_VARIABLE, key: None}])) == []
+
+
+@pytest.mark.parametrize("key", VARIABLE_NULLABLE_KEYS)
+def test_variables_description_and_unit_are_not_blank_strings(key: str):
+    # A blank string is neither what the source states nor the null that says it states
+    # none.
+    assert reports(validate(a_fetched_source(variables=[{**A_VARIABLE, key: ""}]))) == [
+        (f"variables[0].{key}", "expected str?")
+    ]
+
+
+def test_variables_file_is_a_list_of_file_names():
+    # The row: `file` names the files an entry is stated for. A bare string is the shape a
+    # record reaches for when only one file states it; the list is what a shared column
+    # needs, so there is one form here too.
+    entry = {**A_VARIABLE, "file": "siocalcofiHydroCast_d677_9801_7f83.csv"}
+    assert reports(validate(a_fetched_source(variables=[entry]))) == [
+        ("variables[0].file", "expected list[str]")
+    ]
+    assert reports(validate(a_fetched_source(variables=[{**A_VARIABLE, "file": [""]}]))) == [
+        ("variables[0].file", "expected list[str]")
+    ]
+
+
+def test_variables_file_is_optional():
+    # `file` is the one optional key: absent and an explicit null both say the entry names
+    # no file, as a key written as null is absent in site_key and in a site's defined_by.
+    assert validate(a_fetched_source(variables=[A_VARIABLE])) == []
+    assert validate(a_fetched_source(variables=[{**A_VARIABLE, "file": None}])) == []
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)
@@ -1255,6 +1443,8 @@ WRONG_VALUE: dict[str, Any] = {
     "list[eq]": ["not a mapping"],
     "list[site_key]": ["SITE"],
     "list[cite]": ["A. Author. 2020. A title."],
+    # A half-migrated record: one form to a list (CONTEXT.md, sources, `variables`).
+    "list[variable]": ["campus", {"name": "method", "description": None, "unit": None}],
 }
 
 FIELD_RULES = [(k, n, r, t) for k, fields in RULES.items() for n, (r, t) in fields.items()]
