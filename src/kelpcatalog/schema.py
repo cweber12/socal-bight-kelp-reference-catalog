@@ -175,7 +175,7 @@ class Catalog:
 #
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
 # "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
-# "list[site_key]".
+# "list[site_key]", "list[cite]".
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -184,6 +184,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "steward": (True, "str"),
         "url": (True, "str?"),
         "doi": (False, "str?"),
+        "citations": (False, "list[cite]"),
         "status": (True, "str"),
         "tier": (True, "str"),
         "access": (True, "list[str]"),
@@ -263,6 +264,8 @@ SITE_DEFINED_BY_LIMBS = ("source", "reference")
 # two coordinate columns together or neither.
 SITE_KEY_KEYS = ("file", "column", "lat_column", "lon_column")
 SITE_KEY_COORDS = ("lat_column", "lon_column")
+# CONTEXT.md, sources: a citations entry is {as_printed, stated_at}, no other key.
+CITE_KEYS = ("as_printed", "stated_at")
 
 
 def _is_date(value: Any) -> bool:
@@ -293,7 +296,7 @@ def _type_ok(value: Any, kind: str) -> bool:
         return isinstance(value, list) and all(
             isinstance(e, dict) and {"id", "as_printed", "where"} <= set(e) for e in value
         )
-    if base == "list[site_key]":
+    if base in ("list[site_key]", "list[cite]"):
         return isinstance(value, list) and all(isinstance(e, dict) for e in value)
     return False
 
@@ -363,6 +366,8 @@ def _vocab_problems(rec: Record, bad: set[str]) -> list[Problem]:
             out.append(Problem(p, "human_task", f"does not match {HUMAN_TASK_RE.pattern}"))
         if "site_key" not in bad:
             out += _site_key_problems(rec)
+        if "citations" not in bad:
+            out += _cite_problems(rec)
     if rec.kind == "beds" and "status" not in bad and d.get("status") not in BED_STATUS:
         out.append(Problem(p, "status", f"must be one of {BED_STATUS}"))
     if rec.kind == "regions" and "defined_by" not in bad:
@@ -415,6 +420,27 @@ def _site_key_problems(rec: Record) -> list[Problem]:
                 out.append(Problem(p, f"{at}.{k}", "expected str"))
         if sum(k in entry for k in SITE_KEY_COORDS) == 1:
             out.append(Problem(p, at, "lat_column and lon_column come together"))
+    return out
+
+
+def _cite_problems(rec: Record) -> list[Problem]:
+    """The shape of each citations entry (CONTEXT.md, sources): `as_printed` and
+    `stated_at`, each a non-empty string; no other key. Each entry is reported by its
+    index. Whether `as_printed` is the text as the source prints it is review's question,
+    not this one's, and the row names no tier, so no tier condition is here."""
+    p = rec.path
+    out: list[Problem] = []
+    for i, entry in enumerate(rec.data.get("citations") or []):
+        at = f"citations[{i}]"
+        for k in CITE_KEYS:
+            if k not in entry:
+                out.append(Problem(p, f"{at}.{k}", "required field is missing"))
+        for k, v in entry.items():
+            if k not in CITE_KEYS:
+                why = "unknown key; CONTEXT.md lists the allowed ones"
+                out.append(Problem(p, f"{at}.{k}", why))
+            elif not _type_ok(v, "str"):
+                out.append(Problem(p, f"{at}.{k}", "expected str"))
     return out
 
 

@@ -638,6 +638,180 @@ def test_site_key_values_are_non_empty_strings():
     ]
 
 
+# --- citations: the citations a source prints for itself (#180) --------------------
+#
+# CONTEXT.md, sources: citations is a list of {as_printed, stated_at}, no other key, and
+# the row names no tier. The shape is checked here and nothing else: whether an entry is
+# the text as the source prints it is the audit's question, and no record carries
+# the field yet (#180's non-goal).
+
+# The two keys, as a literal: the tests below parametrize over this tuple, and a member
+# dropped from the constant would drop its cases, not fail them (PR #185, F5).
+CITE_KEYS = ("as_printed", "stated_at")
+
+A_CITATION = {
+    "as_printed": "Gillett, D.J., W. Enright, and J.B. Walker. 2022. A title.",
+    "stated_at": "Foreword, printed page ii",
+}
+
+# Entries drafted from real sources, one per kind of bytes the catalog holds - HTML,
+# JSON inside HTML, JSON, PDF - by the steps each stated_at names (PR #191's body,
+# "Entries the cell admits"). None is committed to a record. cinp_kfm is NOT HELD: its
+# profile prints two that differ for what url and doi name, and the list holds each.
+IRMA_STEPS = (
+    "in the JSON literal the HTML of https://irma.nps.gov/DataStore/Reference/Profile/2318436 "
+    "passes to NPSDataStoreReferenceCoreModel.modelSerialize(...), its JSON string escapes "
+    "decoded, each <a> element removed with the <img> inside it and nothing put in its place, "
+    "and each run of whitespace replaced by one space (retrieved 2026-09-23)"
+)
+CINP_KFM_CITATIONS = [
+    {
+        "as_printed": (
+            "Gabara SS and Others. 2026. Kelp Forest Monitoring at Channel Islands National "
+            "Park (CHIS) by the Mediterranean Coast Inventory and Monitoring Network (MEDN) "
+            "1982-2025 : Data Package. National Park Service. Fort Collins CO "
+            "https://doi.org/10.57830/2318436"
+        ),
+        "stated_at": f"DisplayCitation {IRMA_STEPS}",
+    },
+    {
+        "as_printed": (
+            "Gabara SS , Chan KM , Whitaker S, Kushner D, Joshua S, Pandori LL , Woods DJ . "
+            "2026. Kelp Forest Monitoring at Channel Islands National Park (CHIS) by the "
+            "Mediterranean Coast Inventory and Monitoring Network (MEDN) 1982-2025 : Data "
+            "Package. National Park Service. Fort Collins CO https://doi.org/10.57830/2318436"
+        ),
+        "stated_at": f"AllContactsDisplayCitation {IRMA_STEPS}",
+    },
+]
+SIO_CITATIONS = [
+    {
+        "as_printed": (
+            "Carter, Melissa L.; Flick, Reinhard E.; Terrill, Eric; Beckhaus, Elena C.; Martin, "
+            "Kayla; Fey, Connie L.; Walker, Patricia W.; Largier, John L.; McGowan, John A. "
+            "(2022). Shore Stations Program Data Archive: Current and historical coastal ocean "
+            "temperature and salinity measurements from California stations. UC San Diego "
+            "Library Digital Collections. https://doi.org/10.6075/J0S75GHD"
+        ),
+        "stated_at": (
+            "the Cite This Work field of https://library.ucsd.edu/dc/collection/bb4719748r, the "
+            "text of its one <p> with the <a> element's tags removed and its text kept, and "
+            "leading and trailing whitespace trimmed (retrieved 2026-09-23)"
+        ),
+    },
+]
+KLINGBEIL_CITATIONS = [
+    {
+        "as_printed": (
+            "Alberto, Filipe (2023). Macrocystis pyrifera before (2008) and after (2018-19) "
+            "microsatellite data in Structure format [Dataset]. Dryad. "
+            "https://doi.org/10.5061/dryad.nzs7h44v9"
+        ),
+        "stated_at": (
+            'the <p id="dataset-citation"> in the HTML of '
+            "https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9, the <a> element's tags "
+            "removed and its text kept; and the body parameter of the same page's one mailto: "
+            "share link, percent-decoded, between its 'Citation: ' label and its "
+            "'Abstract: ' tail (retrieved 2026-09-23)"
+        ),
+    },
+]
+CDFW_KELP_ESR_CITATIONS = [
+    {
+        "as_printed": (
+            "California Department of Fish and Wildlife. 2021. Giant Kelp and Bull Kelp, "
+            "Macrocystis pyrifera and Nereocystis luetkeana, Enhanced Status Report."
+        ),
+        "stated_at": (
+            "footer.citation in each of the seven held payloads, one and the same value in "
+            "each, by the three steps the record's access states: the tags removed with "
+            "nothing put in their place, the character entities resolved, each run of "
+            "whitespace replaced by one space (held copy retrieved 2026-09-15)"
+        ),
+    },
+]
+SCCWRP_TR1289_CITATIONS = [
+    {
+        "as_printed": (
+            "Gillett, D.J., W. Enright, and J.B. Walker. 2022. Southern California Bight 2018 "
+            "Regional Monitoring Program: Volume III. Benthic Infauna. Technical Report 1289. "
+            "Southern California Coastal Water Research Project. Costa Mesa, CA."
+        ),
+        "stated_at": (
+            'Foreword, printed page iii (PDF page 5), under "The proper citation for this '
+            'report is:", its three lines joined with one space (held copy retrieved '
+            "2026-09-15)"
+        ),
+    },
+]
+DRAFTED_CITATIONS = {
+    "cinp_kfm": (a_source, CINP_KFM_CITATIONS),
+    "sio_shore_stations": (a_fetched_source, SIO_CITATIONS),
+    "klingbeil_kelp_genotypes": (a_fetched_source, KLINGBEIL_CITATIONS),
+    "cdfw_kelp_esr": (a_fetched_source, CDFW_KELP_ESR_CITATIONS),
+    "sccwrp_tr1289": (a_fetched_source, SCCWRP_TR1289_CITATIONS),
+}
+
+
+@pytest.mark.parametrize("build, entries", DRAFTED_CITATIONS.values(), ids=DRAFTED_CITATIONS.keys())
+def test_citations_admit_the_entries_drafted_from_real_sources(
+    build: Any, entries: list[dict[str, str]]
+):
+    # A cell is checked against the records it will admit (PR #186, F1), on a fixture of
+    # each record's own tier.
+    assert validate(build(citations=entries)) == []
+
+
+def test_citations_absent_or_empty_validate_on_every_tier():
+    # CONTEXT.md, sources: "Absent or empty means none entered" - both validate, whatever
+    # the tier. No fixture carries citations, so each fixture's own validation is the
+    # absent case.
+    for tier, build in SOURCE_OF_TIER.items():
+        assert "citations" not in build().data and validate(build()) == [], tier
+        assert validate(build(citations=[])) == [], tier
+
+
+def test_citations_are_admitted_on_every_tier():
+    # The row names no tier, unlike site_key's: a NOT HELD profile prints a citation as
+    # readily as a held file does (cinp_kfm), so a tier condition would be a rule the row
+    # lacks.
+    for tier, build in SOURCE_OF_TIER.items():
+        assert validate(build(citations=[A_CITATION])) == [], tier
+
+
+def test_citations_entry_must_be_a_mapping():
+    # A bare string is a citation with nowhere it was printed.
+    assert reports(validate(a_source(citations=[A_CITATION["as_printed"]]))) == [
+        ("citations", "expected list[cite]")
+    ]
+
+
+@pytest.mark.parametrize("key", CITE_KEYS)
+def test_citations_entry_needs_each_key(key: str):
+    # The second entry is the one reported, by its index.
+    entries = [A_CITATION, {k: v for k, v in A_CITATION.items() if k != key}]
+    assert reports(validate(a_source(citations=entries))) == [
+        (f"citations[1].{key}", "required field is missing")
+    ]
+
+
+def test_citations_entry_names_only_the_keys_the_row_lists():
+    # The record-level "unknown field" problem, one level down: a key the row does not
+    # list would otherwise pass silently.
+    entry = {**A_CITATION, "style": "ESIP"}
+    assert reports(validate(a_source(citations=[entry]))) == [
+        ("citations[0].style", "unknown key; CONTEXT.md lists the allowed ones")
+    ]
+
+
+@pytest.mark.parametrize("key", CITE_KEYS)
+def test_citations_values_are_non_empty_strings(key: str):
+    entry = {**A_CITATION, key: ""}
+    assert reports(validate(a_source(citations=[entry]))) == [
+        (f"citations[0].{key}", "expected str")
+    ]
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)
@@ -1080,6 +1254,7 @@ WRONG_VALUE: dict[str, Any] = {
     "list[topic]": "bed-state",
     "list[eq]": ["not a mapping"],
     "list[site_key]": ["SITE"],
+    "list[cite]": ["A. Author. 2020. A title."],
 }
 
 FIELD_RULES = [(k, n, r, t) for k, fields in RULES.items() for n, (r, t) in fields.items()]
