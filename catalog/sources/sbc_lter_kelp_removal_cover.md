@@ -192,7 +192,12 @@ topics:
 regions:
   - scb.mainland.santa-barbara
 beds: []
-sites: []
+sites:
+  - sbc_lter.aque
+  - sbc_lter.carp
+  - sbc_lter.mohk
+  - sbc_lter.napl
+  - sbc_lter.ivee
 references: []
 human_task: null
 ---

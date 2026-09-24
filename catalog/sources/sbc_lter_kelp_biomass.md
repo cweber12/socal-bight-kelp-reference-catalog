@@ -196,7 +196,18 @@ regions:
   - scb
   - scb.islands.santa-cruz
 beds: []
-sites: []
+sites:
+  - sbc_lter.abur
+  - sbc_lter.ahnd
+  - sbc_lter.aque
+  - sbc_lter.bull
+  - sbc_lter.carp
+  - sbc_lter.golb
+  - sbc_lter.ivee
+  - sbc_lter.mohk
+  - sbc_lter.napl
+  - sbc_lter.scdi
+  - sbc_lter.sctw
 references: []
 human_task: null
 ---
