@@ -891,6 +891,10 @@ def test_variables_entry_must_be_a_mapping_or_a_string():
     # them is the half-migrated record, and it fails at the field rather than per entry.
     assert validate(a_fetched_source(variables=["campus", "method"])) == []
     assert validate(a_fetched_source(variables=[A_VARIABLE])) == []
+    # A blank string names no column, as `list[str]` has it everywhere else in the table.
+    assert reports(validate(a_fetched_source(variables=["campus", "  "]))) == [
+        ("variables", "expected list[variable]")
+    ]
     assert reports(validate(a_fetched_source(variables=["campus", A_VARIABLE]))) == [
         ("variables", "expected list[variable]")
     ]
