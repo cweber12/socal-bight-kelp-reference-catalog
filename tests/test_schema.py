@@ -830,8 +830,9 @@ def test_site_required_fields_are_pinned():
 
 
 def test_site_carries_no_bed():
-    # CONTEXT.md, sites: the schema has no bed field (#174) - everything computed from a
-    # site's coordinates lives in the derived site-region table, never on the record.
+    # CONTEXT.md, sites: the schema has no bed field (#174); the region a site's
+    # coordinates fall in is computed, a DERIVED table's (#177), and the record has no
+    # field for it.
     assert reports(validate(a_site(bed=None))) == [
         ("bed", "unknown field; CONTEXT.md lists the allowed ones")
     ]

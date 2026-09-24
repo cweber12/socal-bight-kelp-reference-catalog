@@ -190,10 +190,13 @@ behind a fetch that did not happen.
 
 ## 5. If a field needs a reference: draft `catalog/references/<citekey>.md`
 
-Add a reference only when a field needs it — `transcribed_from.reference` — or when a figure that
-already exists applies it. Otherwise `references: []`. Judge that against the figures committed
-today: step 7 regenerates markdown and writes no figure cell, so a figure that would cite the paper
-arrives in its own change and brings whatever it cites with it.
+The fields that take a citekey (`CONTEXT.md`, the `sources/<id>.md` and `sites/<id>.md` tables)
+are a source's `transcribed_from.reference`, a source's `references`, and a site's
+`defined_by.reference`. This skill writes no site, so here a reference arrives through the first
+two: draft one when `transcribed_from.reference` needs it, or when a figure that already exists
+applies it. Otherwise `references: []`. Judge that against the figures committed today: step 7
+regenerates markdown and writes no figure cell, so a figure that would cite the paper arrives in
+its own change and brings whatever it cites with it.
 
 `citekey` is first author's surname + year and equals the file name, and a reference needs a `doi`
 or a `url`. Only equations an existing figure applies go in `equations`, each

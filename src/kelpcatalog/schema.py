@@ -241,9 +241,10 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "aliases": (False, "list[str]"),
         "defined_by": (True, "str"),
     },
-    # CONTEXT.md, sites: lat and lon are str, as the document prints them - converting
-    # them is kept off the record; key is the identifier as the program's data spells it;
-    # no bed field - the region a site falls in is computed, so a DERIVED table's (#174).
+    # CONTEXT.md, "sites/<id>.md": key is str, spelled as that table's `key` row says; lat
+    # and lon are str, as the document prints them - converting them is kept off the
+    # record; no region field - the region a site falls in is computed, so a DERIVED
+    # table's (#177).
     "sites": {
         "id": (True, "str"),
         "program": (True, "str"),
