@@ -1,6 +1,10 @@
 # PRD — Regions and authorities (milestone 6.3)
 
-Status: active
+Status: not active — 6.3c is (`docs/prd/monitoring-sources.md`, its status line). Every
+`ready-for-agent` row of the Slices table below has merged, rows 7 and 8 last as PRs #184 and #185
+on 2026-09-23; six `needs-triage` rows stay open, 9–14, frozen on #84's exit trigger, and rows 9
+and 14 were narrowed to beds on 2026-09-22. Milestone 6.3b's beds track is frozen with them; its
+sites track runs beside 6.3c, its last row excepted, for the reasons its own section below gives.
 Created: 2026-09-12
 Revised: 2026-09-13, after an audit of the first draft reversed one of its findings and showed that
 the decision it was proudest of could not be written against the schema it was proposing.
@@ -20,6 +24,9 @@ sub-topic (#125) was filed and closed the same day under the parked standard tha
 for a second source; the fourth audit moved the five `GEOID`s out of the record's stated coverage and
 into a dated fetch-time observation, and gave the tagging sentence a clause for a source whose
 coverage names no node.
+Revised: 2026-09-24, to give milestone 6.3b a sites track beside its beds track (#173), to correct
+the status line now that 6.3c is the active milestone, and to say on rows 9 and 14 that both were
+narrowed to beds on 2026-09-22.
 
 ## Problem
 
@@ -269,12 +276,12 @@ lot the same day; its number places it in the table, not in the order.
 | 6a | [#104](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/104) | `regions.defined_by` becomes `{source, where}` | `RULES["regions"]`; the link pass; the `regions` row; `catalog/regions/scb.md` | a bare-string `defined_by` on a region fails; `scb.md` cites `sccwrp_tr1289`; a bed's bare string still validates |
 | 7 | [#93](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/93) | "The rule" excludes analysis, not computation | `CONTEXT.md`, "The rule" and its table | the admitted column names a deterministic index; the excluded column still names findings |
 | 8 | [#94](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/94) | a `DERIVED` tier | `TIER` and `_tier_problems` in `schema.py`; **five** `CONTEXT.md` lines, including the `tables/` provenance rule | a `DERIVED` record without a script is a problem; `transcribed_from` is not required of it; #17 admits the tier |
-| 9 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` on beds and sites (regions: slice 6a); *frozen* | `RULES` for `beds`/`sites`; the twelve bed fixtures | a bare-string `defined_by` on a bed or site fails; the PR says whether a bed's authority is the regulation, a layer, or both |
+| 9 | [#83](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/83) | `defined_by` becomes `{source, where}` on beds and sites (regions: slice 6a); *frozen* — **narrowed to beds only on 2026-09-22** (#83, "Narrowed"), so read "beds" for "beds and sites" in this row too; the sites half merged in PR #186 (#174), in 6.3b's sites track | `RULES` for `beds`/`sites`; the twelve bed fixtures | a bare-string `defined_by` on a bed or site fails; the PR says whether a bed's authority is the regulation, a layer, or both |
 | 10 | [#84](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/84) | `beds.name` becomes `beds.extent` | `RULES["beds"]`; fixtures; `a_bed()`; the `beds` row | a bed carrying `name` fails; beds 105/106's form validates |
 | 11 | [#85](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/85) | drop `beds.aliases` | `RULES["beds"]`; the `beds` row; eleven fixtures | a bed carrying `aliases` fails as unknown |
 | 12 | [#92](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/92) | which authority `status` quotes | `BED_STATUS`; `_vocab_problems`; the `beds` row | the chosen vocabulary is in both files, and the PR says which and why |
 | 13 | [#16](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/16) | `beds.region` is a list | the cross-record link pass; the `beds` row | `[scb.mainland]` fails; two counties validate; an island validates |
-| 14 | [#95](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/95) | `retrieved` on beds and sites | `RULES["beds"]`, `RULES["sites"]`; two schema rows | `retrieved` follows the same `date?` rule it follows on a source |
+| 14 | [#95](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/95) | `retrieved` on beds and sites — **narrowed to beds only on 2026-09-22** (#95, "Narrowed"), so read "beds" for "beds and sites" in this row too; the sites half merged in PR #186 (#174) | `RULES["beds"]`, `RULES["sites"]`; two schema rows | `retrieved` follows the same `date?` rule it follows on a source |
 | 15 | [#86](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/86) | flatten the island level | `SIBLING_ORDER`; the tree *and* the region-order paragraph; `region_sort_key`'s docstring | the eight sort by id; **no test or fixture names `scb.islands.northern` or `.southern`** |
 | 16b | [#118](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/118) | add the 2016 "Status of the Kelp Beds" report (Ventura, Los Angeles, Orange and San Diego Counties; MBC Applied Environmental Sciences, prepared for CRKSC and RNKSC) as a `FETCHED` source | `add-source`, add path; `src/fetch/<id>.py`; the notebooks step 7 moves, at least `21_canopy` and `00_index` | the PDF and its manifest are held, `21_canopy` shows the record; the report is held before #113 decides whether a county's `defined_by` cites it and before #87 writes one |
 | 16c | [#113](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/113) | `CONTEXT.md` cites `sccwrp_kelp_status_2016`, not the kelp.sccwrp.org home page, for which counties each consortium covers | `CONTEXT.md`, "The region tree": the county level and the consortium paragraph | both places cite the report at section, printed page and PDF page; where the report and the home page differ, the file says it adopts the report and quotes both; the consortium lists are unchanged |
@@ -297,8 +304,8 @@ the report over rewording to the home page, makes `CONTEXT.md` cite the report a
 the consortium lists. The audit of PR #121 (F2) then found that the report draws no county boundary
 and never names Santa Barbara County, so it cannot be what a county node's `defined_by` cites. 16d
 holds the Census county file the owner chose on 2026-09-16 over two state layers (both on #5); it
-supersedes #107 in the 6.3b table, which asked for the same source for #96's join, and carries the
-bare `canopy` tag because counties are the units the consortium canopy reports are titled by and
+supersedes #107 in the 6.3b beds table, which asked for the same source for #96's join, and carries
+the bare `canopy` tag because counties are the units the consortium canopy reports are titled by and
 the parked standard says a sub-topic waits for a second source. 16e writes what `scb.mainland` and a
 county node are defined by, citing the regulation's two bed groups for the level-2 nodes and stating
 as a convention, not a geometry, that a county's islands and their water belong to the island
@@ -317,7 +324,13 @@ county or island node; slice 13 carries its intent with `region` as a list. Its 
 ## Milestone 6.3b
 
 Scheduled here so decision 2 is carried by a slice rather than by an intention, which is what the
-audit found it was. Filed 2026-09-13:
+audit found it was. Two tracks: beds, filed 2026-09-13 and frozen with slices 9–14 on #84's exit
+trigger; and sites, which the grill of 2026-09-21/22 carved out and #173 schedules here.
+
+### Beds track
+
+Filed 2026-09-13. Frozen on #84's exit trigger (#173, Goal), as slices 9–14 of the table above are
+(**Freeze, 2026-09-14**); #173 changes no row of it.
 
 | # | slice |
 |---|---|
@@ -327,7 +340,54 @@ audit found it was. Filed 2026-09-13:
 | [#98](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/98) | the 30 mainland bed records — depends on #96 |
 | [#99](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/99) | `surveyed_by`, `ready-for-human`: no source states it per bed |
 
-Sites follow once a program's own documents are entered.
+### Sites track
+
+**This track runs beside milestone 6.3c, which is active**, and it is the one place in this file
+where "one milestone is active at a time" bends. **For rows 1–4** it bends because every record
+they touch was entered by a row that has merged: no open 6.3c row edits any of them, and none of
+rows 1–4 moves a notebook. Rows 1 and 2 changed the schema and no record under `catalog/`. Row 3
+filled `sites:` on `klingbeil_kelp_genotypes`, which 6.3c's own row 8 had entered with an empty
+`sites:` list, and changed nothing else in that file. Row 4 fills it on six more: the four
+`sbc_lter` packages as 6.3c's rows 3–6, while `sio_shore_stations` and `calcofi` predate the
+milestone. Two open 6.3c rows name one of the seven as a precedent (#140 for `sio_shore_stations`,
+#146 for `calcofi`); neither edits it. And nothing renders sites, so a site record moves no
+notebook; PR #187 moved `00_index` and `24_recruitment_connectivity` for the `references/` record
+it added beside its ten sites, the notebook #176's seam said to check.
+
+**Row 5 is the exception, and this section does not cover it.** Its `DERIVED` source record
+moves `00_index` (`CONTEXT.md`, the `DERIVED` tier — #94 settled that such a record counts
+there, which is the condition #177's Non-goals had left open), and so does every open 6.3c row
+that enters a source record — rows 20–21, #150, enter `excluded/` records, which the index does
+not count. Row 5 stays `needs-triage`; whether it waits for 6.3c or runs beside it is the
+owner's call at that triage.
+
+Which reading of "one milestone is active at a time" any of this leaves is still an open question on
+the Parking lot (#5 issuecomment-5686055147), as `docs/prd/re-entry.md`'s status line also records.
+
+Rows are in work order, blockers named per row:
+
+| order | # | slice |
+|---|---|---|
+| 1 | [#174](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/174) | what a site record holds — the `sites/<id>.md` schema; **merged**, PR #186 |
+| 2 | [#175](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/175) | `site_key` on sources, where a source's own data keys its sites — **merged**, PR #189 |
+| 3 | [#176](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/176) | `references/klingbeil2022` and the ten klingbeil site records — **merged**, PR #187 |
+| 4 | [#195](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/195), [#196](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/196), [#197](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/197) | the site records of three programs, one issue each: eleven `sbc_lter`, five `sio_shore_stations`, one `calcofi` — filed 2026-09-24 on the owner's word once the row above had merged; blocked on nothing; `ready-for-agent` |
+| 5 | [#177](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/177) | the derived site-region table and its join script — the five blockers it names have all closed, but two of its three expected results name `sbc_lter` sites (#177, "Failing test"), so it follows #195 in practice; `needs-triage` |
+
+The decisions these rows rest on, each pointing at the issue that carries it:
+
+- No record is retagged; a station-list source reaches its county or island through the join
+  instead — #177, Goal and Non-goals. That the tagging sentence itself stays, rather than becoming
+  a `CONTEXT.md` rule PR, is parked — #5 issuecomment-5788964109, its last two lines.
+- A region view lists such a source under that node by joining through sites, grouped by how it
+  reached the node — #178 (milestone 6.6), Shape.
+- A site whose coordinates a *document* states is a hand-entered record — #174, the `defined_by`
+  row it added; a site a *held table* states is reached through `site_key` — #175, Goal.
+- The join tests `cdfw_ds3135`'s island bed polygons first and `census_tiger_county_2025`'s counties
+  second, with the program-stated island names as the check — #177, "Method, in order" and its
+  failing test.
+- `cinp_kfm` gets no sites — #177, Non-goals; the record is `NOT HELD`, so the
+  `chis_kelp_forest_site_info.csv` it names is not held either.
 
 ## Non-goals
 

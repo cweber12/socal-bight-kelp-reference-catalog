@@ -1,10 +1,13 @@
 # PRD — Monitoring sources (milestone 6.3c)
 
 Status: active — opened by the owner on 2026-09-17, when every `ready-for-agent` row of milestone
-6.3's table had merged (PR #130 was the last; its `needs-triage` rows 7–14 stay open there, 9–14
-frozen whether or not the exit trigger on #84 has fired); milestone 6.3b follows this one, since
-no row here needs a bed record and the region nodes 6.3 delivered let each row tag its county or
-island on entry rather than in a re-tag pass
+6.3's table had merged (PR #130 was the last then; rows 7–14 were its open `needs-triage` rows,
+and 7 and 8 have since merged as PRs #184 and #185, leaving 9–14, frozen whether or not the exit
+trigger on #84 has fired); milestone 6.3b's **beds** track follows this one, since no row here
+needs a bed record and the region nodes 6.3 delivered let each row here tag its county or island on
+entry rather than in a re-tag pass, while its **sites** track does not wait and runs beside this
+milestone except its last row, whose schedule is the owner's call, for the reasons
+`docs/prd/regions-and-authorities.md` gives in its Sites track section
 Created: 2026-09-15
 Revised: 2026-09-15, after the audit of PR #110 found the table carried no routes, one reading
 contradicted `CONTEXT.md`'s definition of `steward`, another contradicted the bare topic tag, and
@@ -20,7 +23,10 @@ tense, the line under the table, and reading 4 extended to record the reading #1
 2026-09-18, after the audit of PR #151, reading 4 rewritten to quote the clause rather than
 paraphrase it, and the status line's count of open 6.3 rows corrected. Revised 2026-09-19, after
 the acquisition grill: reading 2 gained the proportionality clause, which overturns #106's "the fix
-is to hold the bytes" at a size #106 never faced.
+is to hold the bytes" at a size #106 never faced. Revised 2026-09-24, on #173: the status line says
+that 6.3b's sites track runs beside this milestone, its last row excepted, while its beds track
+follows, and its account of
+milestone 6.3's open rows is corrected — rows 7 and 8 have merged since 2026-09-17.
 
 ## Problem
 
