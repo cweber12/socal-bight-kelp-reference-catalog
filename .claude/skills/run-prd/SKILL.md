@@ -289,7 +289,7 @@ git worktree add -b catalog/add-<id> .claude/worktrees/catalog-add-<id> origin/m
 - **`.claude/worktrees/` is git-ignored** (`.gitignore`, "Agent worktrees"), so the nested checkout
   stays out of the controller's `git status` and out of the file set `ruff` walks.
 
-Four mechanical facts about running this repo's commands from a worktree, each read from the file
+Five mechanical facts about running this repo's commands from a worktree, each read from the file
 named rather than from habit:
 
 - **The interpreter is the controller's checkout's.** `.venv/` is git-ignored, so a worktree has
@@ -308,6 +308,18 @@ named rather than from habit:
   "Record issues", lists the record, a fetch script or a table, a reference record and the
   notebooks. Not harmless for a row that changes the generator, and step 5 stops before one gets
   here.
+- **The row's own fetch un-skips `notebook-fresh`, and the cell it then runs wants another source's
+  bytes.** That row skips only while `data/` is absent — `skip_reason` returns its reason unless
+  `(root / DATA_DIR).is_dir()` (`src/kelpcatalog/fresh.py:343`) — and a fresh worktree has no
+  `data/` at all. So the moment a `FETCHED` row's script writes `data/raw/<id>/`, the row stops
+  skipping and executes the committed figure cells, and today that is one cell loading one source:
+  `notebooks/1_physical_environment/11_ocean_climate.ipynb`'s `load("noaa_oni")`, the only `load(`
+  in the eleven notebooks. The worktree therefore also needs `data/raw/noaa_oni/`, which its own
+  committed script writes — `<interpreter> src/fetch/noaa_oni.py` from the worktree root. Running a
+  committed fetch script is not writing into `data/` by hand and stages nothing, `data/` being
+  git-ignored and per-tree. Measured on #141, whose topic is `ocean-climate`, so the notebook it
+  moves is the notebook that carries the figure; the general form is every source a committed figure
+  cell loads.
 
 ## 7. Dispatch the row
 

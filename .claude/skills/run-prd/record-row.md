@@ -55,6 +55,15 @@ want the worktree root:
 `data/` is git-ignored and per-tree, so your fetch lands in this worktree's `data/raw/<id>/`, and
 that copy is what your manifest hashes.
 
+**Your fetch also un-skips a gate row.** `notebook-fresh` skips while `data/` is absent
+(`skip_reason`, `src/kelpcatalog/fresh.py:343`), and a fresh worktree has none — so the moment your
+script writes `data/raw/<id>/`, that row stops skipping and executes the committed figure cells.
+Today that is one cell loading one source, `load("noaa_oni")` in
+`notebooks/1_physical_environment/11_ocean_climate.ipynb`, so the worktree also needs
+`data/raw/noaa_oni/`: run `<interpreter> src/fetch/noaa_oni.py` from the worktree root before the
+gate, and say in your report that you did. Running a committed fetch script is not writing into
+`data/` by hand and stages nothing.
+
 ## Stay inside the worktree
 
 Touch no file outside it. Do not `git -C` the controller's checkout, do not `git switch`, and do
