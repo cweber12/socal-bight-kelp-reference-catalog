@@ -22,7 +22,7 @@ Skip it only when the owner says to.
 
 ## 1. Assemble the brief
 
-Write it to `Claude outputs/prompt-audit-pr<N>-<slug>.md`, four parts:
+Write it to `Claude outputs/prompt-audit-pr<N>-<slug>.md`, six parts:
 
 **Header.** PR number, repo, the local checkout path, branch, commits, open-and-unmerged state, and
 the `git diff main..<branch>` command that shows it. How many files, split into what kind. Then the
@@ -43,6 +43,13 @@ CONTEXT.md asks for, and is every count right?" is a question; "is the code good
 them from where this slice had to decide something `CONTEXT.md` did not settle, and from the gap
 between what the tests construct and what a user will do. Name what to check against what — the
 catalog directly, not the PR's own tests.
+
+**One standing question, added to those two or three rather than counted among them.** `CLAUDE.md`,
+under "Changing a rule in `CONTEXT.md`", names the words this applies to. Where the diff adds
+one of them, ask the auditor to name the set and count it from the repo. That section states the
+practice for an author; this asks it of a reader who did not write the sentence, and the audits
+that section cites are where the practice came from. Ask for the count, never whether the
+quantifier reads correctly — phrased that way it returns the author's confidence.
 
 **Claims to re-run.** Every assertion in your PR body, flat, as things to re-run rather than facts:
 counts, byte-identity, "the gate is green", coverage figures. Put the one you are least sure of in
