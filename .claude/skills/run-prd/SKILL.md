@@ -301,7 +301,9 @@ named rather than from habit:
   tree's `catalog/` and writes that tree's `notebooks/`.
 - **The code it runs is not the worktree's.** `pip install -e` wrote an absolute path to the
   controller's checkout's `src/` into the venv, so `kelpcatalog` imports from there whatever tree
-  you stand in (`.claude/skills/audit-pr/SKILL.md`, step 3, where it was measured). Harmless for a
+  you stand in. `audit-pr` measured it (`.claude/skills/audit-pr/SKILL.md`, step 3) and the file is
+  readable: `.venv/Lib/site-packages/__editable__.kelpcatalog-0.1.0.pth` holds that one path.
+  Harmless for a
   record row, whose seam names no file under `src/kelpcatalog/` — `docs/agents/issue-tracker.md`,
   "Record issues", lists the record, a fetch script or a table, a reference record and the
   notebooks. Not harmless for a row that changes the generator, and step 5 stops before one gets
@@ -385,7 +387,9 @@ PRs"):
 
 - commit subject `catalog: add <id>`, `catalog` being the type for record changes, the body saying
   why, passed with `-F` from a file
-- `git push -u origin catalog/add-<id>`
+- `git push -u origin catalog/add-<id>`, where `-u` is load-bearing: step 6's
+  `git worktree add -b … origin/main` leaves the new branch *tracking `origin/main`*, which it says
+  as it runs, and `-u` repoints it at the row's own remote branch
 - `gh pr create --base main --head catalog/add-<id> --title "catalog: add <id>" --body-file <path>`,
   the body carrying `Closes #<N>` and the `gate.py` output (`CLAUDE.md`, "Running things": paste it
   into the PR)
