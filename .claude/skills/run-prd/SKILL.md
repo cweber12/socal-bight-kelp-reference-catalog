@@ -360,7 +360,15 @@ git -C .claude/worktrees/catalog-add-<id> status --short
 - **`NEEDS_CONTEXT`** — a question the repo does not settle, with the readings it found. **Answer
   nothing.** The row was dispatched to make the row's judgements, and a controller answering the one
   the agent could not has widened the schema by proxy while holding less of the evidence. Ledger the
-  question and the readings, and stop for the owner.
+  question and the readings, put them to the owner with what each would cost, and stop.
+
+  **When the owner rules, resume the same agent with the ruling**, and ledger the ruling first so
+  the record's PR body can cite a ruling rather than a preference. Two things belong in that resume
+  besides the ruling: what the controller checked and could not reproduce, so the agent's own
+  measurement is the one in play rather than silently contested; and anything the controller found
+  *already settled in the repo*, which is not part of the ruling and is what stops a second question
+  on ground a record or a Parking-lot entry already covers. The resume is not a retry of an
+  unchanged dispatch — the input changed, and what changed is the ruling.
 - **`BLOCKED`** — an `add-source` STOP fired: a dead route, a duplicate record, a topic that does
   not exist, a gate contradicting `CONTEXT.md`. Ledger which step stopped and what it found, and
   stop the run.
@@ -420,7 +428,9 @@ able to tell them apart:
 
 1. **dispatched** — the issue, the branch, the worktree path, the `origin/main` commit it was cut
    from, and the brief's path
-2. **reported** — the report word, and for anything but `DONE` what it said
+2. **reported** — the report word, and for anything but `DONE` what it said. A row that reported
+   `NEEDS_CONTEXT` and was then ruled on adds a fifth write between this one and the next, the
+   ruling, because the resume it authorises is the thing a later reader will want the authority for
 3. **PR opened** — the number and the files it touches
 4. **CI settled** — the three checks green and that the run stopped for review, or red and what it
    was
