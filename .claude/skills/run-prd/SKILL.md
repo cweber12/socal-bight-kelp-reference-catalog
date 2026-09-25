@@ -1,20 +1,21 @@
 ---
 name: run-prd
-description: Use when driving one milestone's PRD as a run in the SoCal Bight kelp reference catalog. Invoked as /run-prd docs/prd/<slug>.md. Derives that PRD's work order from its tables of rows, recovers each row's state from GitHub, and writes the order to the ledger. It reads only — it dispatches nothing, branches nothing and merges nothing.
+description: Use when driving one milestone's PRD as a run in the SoCal Bight kelp reference catalog. Invoked as /run-prd docs/prd/<slug>.md. Derives that PRD's work order from its tables of rows, recovers each row's state from GitHub, writes the order to the ledger, then dispatches its first entry when that entry is a record row and carries it to an open PR with CI green. It stops before review: it audits nothing and merges nothing.
 disable-model-invocation: true
 ---
 
 # run-prd
 
-Derive **one** PRD's work order and write it down where compaction cannot reach it. A controller's
-first job is to know the order. Here that order is the PRD's **Slices** table, and which row is next
-follows from it: `CLAUDE.md`, "How work is tracked", and `docs/agents/issue-tracker.md`,
-"Conventions".
+Derive **one** PRD's work order, write it down where compaction cannot reach it, and work its first
+entry. A controller's first job is to know the order. Here that order is the PRD's **Slices** table,
+and which row is next follows from it: `CLAUDE.md`, "How work is tracked", and
+`docs/agents/issue-tracker.md`, "Conventions".
 
-This is the controller's read-only half. It dispatches nothing — no agent, no branch, no worktree,
-no PR, no merge. Dispatching a record row is #228, review and merge are #229, a code row is #230.
+Steps 1–4 derive the order and write it down. Steps 5–9 carry its first entry from a branch to an
+open PR with CI green, and stop there: review and merge are #229, and a row whose seam is not
+`add-source` is #230 — step 5 stops on one.
 
-Do the four steps **1–4 in order**. **Stop at the first one that cannot be answered from the repo
+Do the nine steps **1–9 in order**. **Stop at the first one that cannot be answered from the repo
 and the tracker**: say which step, what it found, and what you have derived so far, then wait. Never
 make a step pass by picking between two readings of a rule — a stop here is cheap and a wrong order
 is not.
@@ -149,16 +150,16 @@ gh issue comment <the ledger thread> --body-file <path>
 
 **One thread per run, named in its own first comment, and it does not move.** The thread is the
 issue of the order's first entry *as first derived*, and the comment says so in a line a resume can
-read: `ledger thread: #<N>`. #228's per-row transitions continue that same thread. Write the order
-before doing anything else with it, so the order is fixed and auditable rather than re-derived
-silently on every resume.
+read: `ledger thread: #<N>`. The per-row transitions of steps 5–9 continue that same thread. Write
+the order before doing anything else with it, so the order is fixed and auditable rather than
+re-derived silently on every resume.
 
-The thread has to be named because it would otherwise move. Once #228 merges the first entry, that
-issue closes and the next resume's first entry is a different issue with an empty thread, so a run
-of nine rows would leave nine unlinked threads and each resume would read the wrong one. A resume
-therefore finds the thread by reading the order's issues for the most recent `ledger thread:`
-comment — including the closed ones, which is the other reason step 3 lists `--state all` — and
-keeps using it even after it has closed.
+The thread has to be named because it would otherwise move. Once the first entry merges — which is
+#229's, not this skill's — that issue closes and the next resume's first entry is a different issue
+with an empty thread, so a run of nine rows would leave nine unlinked threads and each resume would
+read the wrong one. A resume therefore finds the thread by reading the order's issues for the most
+recent `ledger thread:` comment — including the closed ones, which is the other reason step 3 lists
+`--state all` — and keeps using it even after it has closed.
 
 **An empty order has no thread.** Where no row of the file is both open and `ready-for-agent`, post
 nothing and report that instead, with the rows that were ruled out and why. `docs/prd/scaffold.md`
@@ -178,8 +179,8 @@ states about its own blockers or its place in the queue, and the row's own inlin
 that disagrees with GitHub. The blockers go in because a first entry can be the one the table calls
 blocked: `re-entry.md`'s order today is #38 then #17, and #38's `blocked on` cell reads
 "M1–M15, for the required flag" — fifteen rows whose `#` cells all say `to file` — while #17's
-reads "nothing". What a blocked first entry means for dispatch is #228's, not this half's; naming
-it is this half's.
+reads "nothing". What a blocked first entry means for dispatch is step 5's; naming it is this
+step's.
 
 Above those lines goes the commit the PRD was last changed in, so a mid-run edit to a table is
 visible rather than silent:
@@ -188,8 +189,8 @@ visible rather than silent:
 git log -1 --format=%H -- docs/prd/<slug>.md
 ```
 
-Then report: the order as posted, the comment's URL, and the two lists below. The report ends the
-run — this half does not go on to work the first entry.
+Then report: the order as posted, the comment's URL, and the two lists in the section below. Then
+step 5, with the order's first entry.
 
 ## What the order leaves out, and says so out loud
 
@@ -208,10 +209,229 @@ run — this half does not go on to work the first entry.
   looks at 6.3b, which is where the one real stranger is. Measured 2026-09-25: #201, open,
   `ready-for-agent`, on 6.3b, named by no row in any of the five files.
 
+## 5. Take the first entry, and check that it is a record row
+
+The order's first entry is what steps 5–9 work — not the first `ready-for-agent` row of the table,
+because step 3 already left out everything that is not open and `ready-for-agent` and step 4 wrote
+the result down.
+
+**The predicate: the row's seam is `add-source`.** The same predicate decides auto-merge
+eligibility, and `CLAUDE.md`, "Auto-merge in a declared PRD run", is where it is written down — as
+the sentence a PRD's preamble carries above the rows it governs. Read it there: the consequence
+differs (eligibility there, dispatch here) and the test does not, so a second account of the test
+would be a copy that can drift. `docs/prd/monitoring-sources.md` carries the sentence itself,
+between its Slices intro and its table.
+
+**Read the seam from the issue, not from the table.** `monitoring-sources.md`'s `## Slices` has no
+seam column at all — step 2's table of the nine — so the table cannot answer, while the issue's
+`## Seam` section can, in the shape `docs/agents/issue-tracker.md`, "Record issues", gives it.
+**Take the seam from that section's first sentence.** A later sentence in the same section may name
+`add-source` while the seam is something else: #150's `## Seam` names
+`catalog/excluded/stebbins-wetzer-2023.md` and `catalog/excluded/cheresh-2023.md`, then says
+"`add-source` walks sources, not exclusions; its step 1 … and step 6 … apply as written". A grep for
+the string selects that row; a reader does not.
+
+Measured 2026-09-25 over the nine entries of `monitoring-sources.md`'s order: eight are record rows
+— #141, #142, #143, #144, #145, #147 and #149 open "`add-source`, add path", and #146 opens
+"`add-source`, transcribed path" — and #150, the ninth, is not one.
+
+**STOP if the first entry is not a record row.** A code row is #230 and nothing here works one. Say
+which entry, quote the seam you read, and wait.
+
+**STOP if the row or its issue states a blocker that is not closed.** Two places state one and both
+are read: the row's own cell where its table has that column (`re-entry.md`'s Part three has
+`blocked on`), and the issue's `## Blocked by` section. Where a blocker names an issue the tracker
+settles it, and step 3's listing already holds the state — #143's row says "enters after row 7",
+which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no issue nothing settles
+it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fifteen rows whose `#` cells
+all say `to file`, so that file's order stops here at its first entry. #141's `## Blocked by` reads
+"None; can start immediately."
+
+**A note is not a blocker.** #144's row says "the host did not answer from one machine on
+2026-09-15, so step 2 may stop" — a fact about the route, which `add-source` step 2 is where it
+lands, not this step.
+
+**One row per run**, and the reason is mechanical rather than a limit on ambition: two source-record
+rows collide in `notebooks/00_index.ipynb`, which counts sources and references, so the second
+cannot branch from a `main` the first has not merged into. Measured 2026-09-25: of the 22
+`catalog: add` commits on `main` after `notebooks/00_index.ipynb` existed (`5438219`, #61,
+2026-09-10), **20 moved it**; the two that did not — `24111f6` (#117, region nodes) and `668cb22`
+(#215, site records) — add no source record. Merging is #229's, so a run ends after one row until it
+lands.
+
+## 6. Branch a worktree, and leave the checkout you are standing in alone
+
+The controller goes on reading the tracker and the PRD while the row is built, and `add-source`
+step 0 branches before it writes anything. Both want the same `HEAD`, so the row gets its own
+checkout.
+
+```sh
+git worktree list                                    # first, always
+git fetch origin
+git worktree add -b catalog/add-<id> .claude/worktrees/catalog-add-<id> origin/main
+```
+
+- **`git worktree list` first.** A directory under `.claude/worktrees/` the listing does not name is
+  not a worktree. Measured 2026-09-25: `.claude/worktrees/docs-prd-noaa-hapc-row` existed and
+  `git worktree list` returned only the main checkout. **STOP** on one rather than reusing it or
+  removing it — removing it is the owner's, and #5 carries it.
+- **`origin/main` after a fetch**, never the local `main`: `main` is protected and the row's PR
+  merges into its tip, so a branch cut from a stale local `main` opens a PR whose diff is not the
+  row's.
+- **The branch name is `add-source` step 0's**, `catalog/add-<id>`, with `<id>` the row's proposed
+  id — which that skill's step 3 may still change, and if it does the branch keeps the name it was
+  cut with. The directory name flattens the slash and nothing reads it.
+- **`.claude/worktrees/` is git-ignored** (`.gitignore`, "Agent worktrees"), so the nested checkout
+  stays out of the controller's `git status` and out of the file set `ruff` walks.
+
+Four mechanical facts about running this repo's commands from a worktree, each read from the file
+named rather than from habit:
+
+- **The interpreter is the controller's checkout's.** `.venv/` is git-ignored, so a worktree has
+  none and every command takes an absolute path to that one.
+- **`gate.py` gates the worktree.** `ROOT = Path(__file__).parent` (`gate.py:24`), so the
+  worktree's own copy roots at the worktree.
+- **`python -m kelpcatalog.generate` renders the tree it is run from.** `main()` takes
+  `root = Path.cwd()` (`src/kelpcatalog/generate.py:74`), so from the worktree root it reads that
+  tree's `catalog/` and writes that tree's `notebooks/`.
+- **The code it runs is not the worktree's.** `pip install -e` wrote an absolute path to the
+  controller's checkout's `src/` into the venv, so `kelpcatalog` imports from there whatever tree
+  you stand in (`.claude/skills/audit-pr/SKILL.md`, step 3, where it was measured). Harmless for a
+  record row, whose seam names no file under `src/kelpcatalog/` — `docs/agents/issue-tracker.md`,
+  "Record issues", lists the record, a fetch script or a table, a reference record and the
+  notebooks. Not harmless for a row that changes the generator, and step 5 stops before one gets
+  here.
+
+## 7. Dispatch the row
+
+```
+Agent(subagent_type="general-purpose", prompt=<the six things below>, description="Record row #<N>")
+```
+
+**`general-purpose` pointed at the brief** — not a new agent type, and never the brief pasted into
+the prompt. The brief is `.claude/skills/run-prd/record-row.md`, the dispatch names its path, and
+the agent reads it from disk. `audit-pr` gives the reason for pointing rather than pasting: "Two
+copies drift, and the copy you paste is the one you were about to edit in your own favour"
+(`.claude/skills/audit-pr/SKILL.md`, step 3). The path is the **controller's checkout's**, because
+the row's branch was cut from `origin/main` and carries only what `main` carries.
+
+The prompt carries six things:
+
+1. the brief's absolute path, and to read it in full, first, and follow it
+2. the issue number, with the `gh issue view` form to read it (`docs/agents/issue-tracker.md`,
+   "Read")
+3. the worktree's absolute path and the branch it is already on
+4. the interpreter's absolute path
+5. the PRD file and the row's `order` cell, so the agent reads the readings the row does not
+   re-derive
+6. the four report words, named and not explained — the brief explains them
+
+**It carries no field values.** The controller has not opened the source, and a controller that
+drafts `status`, `coverage` or `regions` has made the row's judgements for it while holding none of
+the evidence. The PRD's route column is a lead and `add-source` step 2 opens it
+(`docs/prd/monitoring-sources.md`, the paragraph above its table).
+
+**One row per dispatch and never two at once**, for step 5's collision.
+
+## 8. Read the report, and rule on it
+
+Four outcomes. Verify each from the worktree rather than from the report — a report is a claim, and
+`git` and the gate settle it:
+
+```sh
+git -C .claude/worktrees/catalog-add-<id> status --short
+<interpreter> gate.py                                      # run from the worktree root
+```
+
+- **`DONE`** — the eight steps passed and step 8 printed. Check that `git status --short` shows the
+  row's seam and nothing else, that the gate you ran yourself is green, and that the notebooks which
+  moved are the ones the record's topics name (`add-source` step 7 states that set and says the add
+  path's is exact). Then step 9.
+- **`DONE_WITH_CONCERNS`** — the same, plus something wanting a reader's ruling rather than another
+  step. Rule on each concern, carry it into the PR body in the agent's own words, and ledger it.
+  Then step 9.
+- **`NEEDS_CONTEXT`** — a question the repo does not settle, with the readings it found. **Answer
+  nothing.** The row was dispatched to make the row's judgements, and a controller answering the one
+  the agent could not has widened the schema by proxy while holding less of the evidence. Ledger the
+  question and the readings, and stop for the owner.
+- **`BLOCKED`** — an `add-source` STOP fired: a dead route, a duplicate record, a topic that does
+  not exist, a gate contradicting `CONTEXT.md`. Ledger which step stopped and what it found, and
+  stop the run.
+
+**Never retry unchanged.** A STOP is a fact about the source, and the same brief over the same
+source returns the same fact. Where the report is unusable — no step-8 output, files outside the
+seam, a report word the message below it contradicts — that is a finding about the brief or the
+prompt rather than about the row: fix it on the controller's own branch, say in the ledger that you
+did, and dispatch the corrected one. Three things are not retries of an unchanged dispatch: a resume
+(step 9), a CI failure diagnosed from its own log (step 9), and a dispatch after the brief changed.
+
+## 9. Resume for the commit and the PR, gate on CI, then stop
+
+**Resume the agent that did the work** — `SendMessage`, not a fresh agent and not the controller
+committing on its behalf. Its context holds the record, the manifest, the gate output and the
+notebooks that moved, and the commit body has to state them; a controller writing that body from the
+report writes a second copy of facts it did not observe. This is the opposite of `audit-pr`'s "send
+it nothing until it reports", for the opposite reason: there the silence buys the auditor's
+independence, here the row has already reported and the review the resume acts on is the
+controller's own.
+
+Name the forms in the resume so the agent does not re-derive them (`CLAUDE.md`, "Branches, commits,
+PRs"):
+
+- commit subject `catalog: add <id>`, `catalog` being the type for record changes, the body saying
+  why, passed with `-F` from a file
+- `git push -u origin catalog/add-<id>`
+- `gh pr create --base main --head catalog/add-<id> --title "catalog: add <id>" --body-file <path>`,
+  the body carrying `Closes #<N>` and the `gate.py` output (`CLAUDE.md`, "Running things": paste it
+  into the PR)
+
+Then the CI gate, which is the controller's and not the agent's:
+
+```sh
+gh pr checks <PR> --watch
+```
+
+**All three checks green.** `.github/workflows/ci.yml` runs `gate (ubuntu-latest)`,
+`gate (windows-latest)` and `lint` on every pull request — `CLAUDE.md`, "Running things", names the
+same three as "`gate.py` (Ubuntu and Windows), `ruff check` and `ruff format --check`", the last two
+being the `lint` job's steps. A red check is diagnosed, not retried: read that job's own output and
+resume the agent with it. **STOP if the fix is not in the row's own seam** — a record row that needs
+`src/kelpcatalog/`, `gate.py` or `CONTEXT.md` changed to go green is a bug or a rule question, and
+`CLAUDE.md`'s in-flight rules route it.
+
+**Then stop.** The PR is open and green and it is not ready: `CLAUDE.md`, "Branches, commits, PRs",
+says a PR is ready when it has been audited, and both the audit and the merge are #229 — until that
+lands the owner runs `/audit-pr <PR>` by hand, as today. Report the PR, the worktree it was built in
+and that you left it there for #229, and the ledger comments.
+
+## The ledger, per row
+
+Four writes per row, each its own comment, because a resume arriving between two of them has to be
+able to tell them apart:
+
+1. **dispatched** — the issue, the branch, the worktree path, the `origin/main` commit it was cut
+   from, and the brief's path
+2. **reported** — the report word, and for anything but `DONE` what it said
+3. **PR opened** — the number and the files it touches
+4. **CI settled** — the three checks green and that the run stopped for review, or red and what it
+   was
+
+Four is a judgement about what a resume needs rather than a measurement. On
+`monitoring-sources.md` it would come to 32 over the whole file — its order has nine entries and
+eight of them are record rows, and step 5 stops the run at the ninth — spread over as many runs as
+#229 takes merges to allow. Each is
+`gh issue comment <thread> --body-file <path>` (`docs/agents/issue-tracker.md`, "Commands"), and
+`<thread>` is the one step 4 named in its own first comment — **not the row's own issue**, which is
+the same only for the first entry.
+
 ## Non-goals
 
-No dispatch and nothing written to the checkout: no agent, no branch, no worktree, no PR, no merge
-(#228, #229, #230). No change to any PRD or to any table in one — the controller adapts to the repo,
-not the reverse (#222, Non-goals). No new label: run state lives in the ledger, and the label
-vocabulary is `docs/agents/triage-labels.md`'s. No work order from `gh issue list --search`. No
-change to `CONTEXT.md`. And no code that parses a table: step 2 is a reading, not a parse.
+No audit and no merge (#229): the PR step 9 opens is not ready, and nothing here runs `/audit-pr` or
+`gh pr merge`. No code row (#230) — step 5 stops on one. No parallel dispatch, for step 5's
+collision, and #222's non-goals already exclude fan-out. No second row in one run. No change to
+`.claude/skills/add-source/SKILL.md`, whose step-8 stop is what step 8 here reads. No change to any
+PRD or to any table in one — the controller adapts to the repo, not the reverse (#222, Non-goals).
+No new label: run state lives in the ledger, and the label vocabulary is
+`docs/agents/triage-labels.md`'s. No work order from `gh issue list --search`. No writing into
+`data/`. No change to `CONTEXT.md`. And no code that parses a table: step 2 is a reading, not a
+parse.
