@@ -38,7 +38,10 @@ right and the code is a bug** — change the code, not the document, unless a hu
     │   └── prd/<slug>.md   one PRD per milestone
     ├── .claude/
     │   ├── skills/         add-source (walks one record in), audit-pr (commissions the audit)
-    │   └── agents/         pr-auditor, the audit method
+    │   ├── agents/         pr-auditor, the audit method
+    │   ├── hooks/          advise.py and advise.sh, the two advisory PostToolUse checks
+    │   ├── settings.json   declares those two hooks on Edit and Write
+    │   └── worktrees/      git-ignored; where an agent's worktree checkouts go
     ├── gate.py             the one command that runs every gate
     ├── src/fetch/<id>.py   one script per FETCHED source; writes data/raw/<id>/ and its manifests
     ├── src/kelpcatalog/
