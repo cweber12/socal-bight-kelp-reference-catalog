@@ -74,6 +74,14 @@ PR body:
   `.venv/Scripts/python -m kelpcatalog.generate` and commit every notebook it moves
   (`CONTEXT.md`, "Notebooks").
 - Never write a parser for any external manifest or prose file. Records are entered, not migrated.
+- **A merge ends the unit of work.** Report, then stop: do not create the next branch, pick up the
+  next issue, or begin the next slice. A PR that merged unattended under "Auto-merge in a declared
+  PRD run" is exempt from the stop and not from the report.
+- **Before stopping, write the next session's start prompt**, self-contained: issue numbers, file
+  paths and acceptance criteria inline rather than referenced, so the next session does not
+  re-derive them. Self-contained is not asserted — a claim it makes about the repo is one the next
+  session acts on without re-checking, so the counting practice under "Changing a rule in
+  `CONTEXT.md`" binds it too.
 
 ## Auto-merge in a declared PRD run
 
