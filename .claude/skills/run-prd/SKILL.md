@@ -137,6 +137,10 @@ The order goes on the **first entry's issue** — the row the run would work nex
 transitions continue that same thread. Write it before doing anything else with the order, so the
 order is fixed and auditable rather than re-derived silently on every resume.
 
+**An empty order has no thread.** Where no row of the file is both open and `ready-for-agent`, post
+nothing and report that instead, with the rows that were ruled out and why. `docs/prd/scaffold.md`
+and `docs/prd/topic-notebooks.md` are both `Status: done` and reach this, so it is not a corner.
+
 **STOP before posting if more than one of the file's tables has an open `ready-for-agent` row.**
 Nothing in this repo orders between two tables in one file, and that gap is parked twice: #5
 issuecomment-5823293391 ("two tables on one milestone is two orders with nothing ordering between
@@ -146,9 +150,9 @@ this — `monitoring-sources.md` has one table, and of `regions-and-authorities.
 Sites track has an open `ready-for-agent` row.
 
 The comment carries one line per entry, in order: the table the row came from, the row's `order`
-cell, the issue, the label GitHub gives it, and the row's own inline state wherever that disagrees
-with GitHub. Above those lines, the commit the PRD was last changed in, so a mid-run edit to a table
-is visible rather than silent:
+cell, the issue, the label GitHub gives it, whether an open PR already closes it, and the row's own
+inline state wherever that disagrees with GitHub. Above those lines, the commit the PRD was last
+changed in, so a mid-run edit to a table is visible rather than silent:
 
 ```sh
 git log -1 --format=%H -- docs/prd/<slug>.md
