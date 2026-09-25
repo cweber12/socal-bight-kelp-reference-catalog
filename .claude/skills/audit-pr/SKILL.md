@@ -44,6 +44,13 @@ them from where this slice had to decide something `CONTEXT.md` did not settle, 
 between what the tests construct and what a user will do. Name what to check against what — the
 catalog directly, not the PR's own tests.
 
+**One standing question, added to those two or three rather than counted among them.** `CLAUDE.md`,
+under "Changing a rule in `CONTEXT.md`", names the words this applies to. Where the diff adds
+one of them, ask the auditor to name the set and count it from the repo. That section states the
+practice for an author; this asks it of a reader who did not write the sentence, and the audits
+that section cites are where the practice came from. Ask for the count, never whether the
+quantifier reads correctly — phrased that way it returns the author's confidence.
+
 **Claims to re-run.** Every assertion in your PR body, flat, as things to re-run rather than facts:
 counts, byte-identity, "the gate is green", coverage figures. Put the one you are least sure of in
 the list, unmarked. This section is why the auditor can trust nothing and still move fast.
