@@ -59,6 +59,11 @@ PR body:
 - Commit and PR-title format: `<type>(<scope>): <imperative subject ≤ 72 chars>`, body says why,
   `Closes #N`. Types: `feat fix docs test ci chore refactor`, and `catalog` for record changes
   (`catalog: add noaa_oni`). Add `Co-Authored-By:` for yourself.
+- Multi-line content is written to a file with an editor tool, never built with a heredoc; the
+  command then reads the file — `--body-file` for a `gh` issue or PR body or comment, `-F` for a
+  commit message, a path for a script. Measured here: a heredoc piped to `python -` decodes with the
+  console codepage and mangles `·`, `…` and `—`, and an escape written in a heredoc lands as a raw
+  byte — `\x03` became byte 003, which `cat` and `git diff` both render as nothing.
 - A PR is ready when it has been audited, unless the owner says to skip. The `audit-pr` skill
   commissions the audit in a context that never watched the PR being written, and relays what it
   found; which findings to act on is the owner's call, not the author's.

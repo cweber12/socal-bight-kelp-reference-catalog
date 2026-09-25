@@ -6,17 +6,20 @@ repo from `git remote -v` when run inside a clone.
 
 ## Commands
 
-- **Create**: `gh issue create --title "..." --body "..."` (heredoc for multi-line bodies)
+- **Create**: `gh issue create --title "..." --body-file <path>`; `--body "..."` only where the body
+  is one line (`CLAUDE.md`, "Branches, commits, PRs")
 - **Read**: `gh issue view <number> --json title,body,comments --jq '.title, .body, .comments[].body'`.
   Not `--comments`: that switch *replaces* the body with the comments, and on an issue with no
   comments it returns zero bytes with exit 0 (measured on gh 2.92.0, non-TTY, 2026-09-15).
 - **List**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] |
   {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'`, with `--label`
   and `--milestone` filters
-- **Comment**: `gh issue comment <number> --body "..."`
+- **Comment**: `gh issue comment <number> --body-file <path>`, and `--body "..."` for one line, on
+  the same rule as **Create**
 - **Label**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Milestone**: `gh issue edit <number> --milestone "6.2 Topic notebooks"`
-- **Close**: `gh issue close <number> --comment "..."`
+- **Close**: `gh issue close <number> --comment "..."` — this subcommand takes `--comment` and no
+  `--body-file` (gh 2.92.0), so a multi-line closing note is a **Comment** first, then a bare close
 - **Milestones themselves**: `gh api "repos/{owner}/{repo}/milestones?state=all"` — `gh` has no
   `milestone` subcommand, and without `state=all` the endpoint hides closed milestones.
 
