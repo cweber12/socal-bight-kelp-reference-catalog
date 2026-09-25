@@ -22,7 +22,7 @@ Skip it only when the owner says to.
 
 ## 1. Assemble the brief
 
-Write it to `Claude outputs/prompt-audit-pr<N>-<slug>.md`, four parts:
+Write it to `Claude outputs/prompt-audit-pr<N>-<slug>.md`, six parts:
 
 **Header.** PR number, repo, the local checkout path, branch, commits, open-and-unmerged state, and
 the `git diff main..<branch>` command that shows it. How many files, split into what kind. Then the
