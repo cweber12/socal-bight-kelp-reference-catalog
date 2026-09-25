@@ -23,6 +23,10 @@ htmlcov/
 # Agent scratch: session notes and review drafts, not repo documents.
 Claude outputs/
 
+# Agent worktrees: git worktree checkouts made in this clone, branch or detached.
+# Ignoring them also keeps a nested checkout's Python out of the lint gate's file set.
+.claude/worktrees/
+
 # OS
 Thumbs.db
 desktop.ini
