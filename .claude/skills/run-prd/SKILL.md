@@ -271,10 +271,15 @@ git fetch origin
 git worktree add -b catalog/add-<id> .claude/worktrees/catalog-add-<id> origin/main
 ```
 
-- **`git worktree list` first.** A directory under `.claude/worktrees/` the listing does not name is
-  not a worktree. Measured 2026-09-25: `.claude/worktrees/docs-prd-noaa-hapc-row` existed and
-  `git worktree list` returned only the main checkout. **STOP** on one rather than reusing it or
-  removing it — removing it is the owner's, and #5 carries it.
+- **`git worktree list` first, and read it against the path this row needs.** A directory under
+  `.claude/worktrees/` that the listing does not name is not a worktree. **STOP when it is that
+  path**: `git worktree add` will not write into a non-empty directory, and neither reusing a stray
+  checkout nor removing one is the controller's call — removing it is the owner's. A stray at any
+  other path is **reported and is not a stop**; it belongs to no row of this run. Measured on the
+  first live run of these steps, 2026-09-25: `.claude/worktrees/docs-prd-noaa-hapc-row` existed,
+  empty, while `git worktree list` returned only the main checkout, and the path this row needed was
+  `.claude/worktrees/catalog-add-cms_thermograph_array`, so the run reported the stray and went on.
+  #5 carries its removal.
 - **`origin/main` after a fetch**, never the local `main`: `main` is protected and the row's PR
   merges into its tip, so a branch cut from a stale local `main` opens a PR whose diff is not the
   row's.
