@@ -75,6 +75,49 @@ PR body:
   (`CONTEXT.md`, "Notebooks").
 - Never write a parser for any external manifest or prose file. Records are entered, not migrated.
 
+## Auto-merge in a declared PRD run
+
+Merging is the owner's, except inside a run of a PRD whose preamble carries the declaration below.
+There a PR may merge unattended when **both** halves hold: the row is declared eligible **and** its
+diff satisfies the allowlist. A declaration is made before the work and the diff is the only fact
+available after it, so neither half stands in for the other. Outside such a run nothing here
+applies.
+
+- **The declaration is by seam**, one sentence in the preamble above the rows it governs — *a row
+  whose seam is `add-source` is auto-merge eligible; every other row is not* — pointing here
+  rather than transcribing the patterns. A PRD that does not carry the sentence declares nothing,
+  and a row it does not declare is ineligible.
+- **The allowlist is five patterns**: `catalog/sources/*.md`, `catalog/sites/*.md`,
+  `catalog/references/*.md`, `notebooks/**`, and `src/fetch/<id>.py` whose basename matches a
+  source record id added in the same diff. That fifth pattern is derived from the diff rather than
+  a bare wildcard because the id match is what ties a fetch script to the record it fetches.
+  `notebooks/**` is a bare wildcard and holds executable code of its own — a figure cell, which
+  `CONTEXT.md`, "Notebooks", says is never generated and never touched — so what stands behind it
+  is that file's "Gates" rows: `lint` over notebook code cells, `figure-provenance`,
+  `notebook-structure`, `notebook-outputs`, and `notebook-fresh` where that row's own scope lets
+  it run. Every other path is outside. `catalog/regions/` is out because every commit in this
+  repo's history that added a region record changed code beside it — three, `b12b4e7`, `24111f6`
+  and `0b40a82`; `catalog/beds/`, `catalog/excluded/` and `catalog/tables/` are out because a
+  directory's first record establishes a shape rather than repeating one, and none of the three
+  has one yet.
+- **A multi-record row is eligible** when the diff's record ids are the ones the row names.
+- **The audit runs per row.** Auto-merge neither batches it across rows nor stands in for one, and
+  who may say to skip it is unchanged ("Branches, commits, PRs"). Paths are what the allowlist
+  checks and content is what the audit checks, and a clipped quotation or a widened universal in a
+  record's `access` steps lives entirely inside the allowlist.
+- **Three conditions stop an unattended merge, and each stops it differently.** A diff outside the
+  allowlist hands the PR to the owner. CI red on either OS blocks eligibility until it is green.
+  An audit finding whose premise the agent judges shared by the rows not yet built halts the run.
+  That judgement is additional to the ruling "Branches, commits, PRs" requires, and it is a
+  judgement rather than a consequence of the finding's severity — in a repetitive run every row is
+  built from the same premise, so one row's finding is evidence about the rows not yet built. The
+  recorded justification names the premise either way, which is what makes a wrong call visible in
+  the report below.
+- **Report after five consecutive auto-merges**, naming the union of fields entered across the
+  batch. An auditor reads one PR, so an error the run makes on every row can pass each audit and
+  be visible only as a pattern; the report shows the pattern rather than merely pausing. Five is a
+  judgment about how much unseen work is tolerable, not a measurement.
+
 ## Scope guards
 
 Split work only when it earns its keep. A rename is its own slice. Do not add fields, gates,

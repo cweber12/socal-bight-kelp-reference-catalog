@@ -364,6 +364,9 @@ owner's call at that triage.
 Which reading of "one milestone is active at a time" any of this leaves is still an open question on
 the Parking lot (#5 issuecomment-5686055147), as `docs/prd/re-entry.md`'s status line also records.
 
+A row whose seam is `add-source` is auto-merge eligible; every other row is not (`CLAUDE.md`,
+"Auto-merge in a declared PRD run").
+
 Rows are in work order, blockers named per row:
 
 | order | # | slice |
