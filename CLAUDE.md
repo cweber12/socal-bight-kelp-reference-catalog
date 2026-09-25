@@ -66,7 +66,9 @@ PR body:
   byte — `\x03` became byte 003, which `cat` and `git diff` both render as nothing.
 - A PR is ready when it has been audited, unless the owner says to skip. The `audit-pr` skill
   commissions the audit in a context that never watched the PR being written, and relays what it
-  found; which findings to act on is the owner's call, not the author's.
+  found. The agent that commissioned the audit then rules on every finding, including one the
+  auditor's blocking call names, and records why wherever it routes that finding — not only in the
+  session that ruled. It does not wait for the owner to accept the ruling.
 - Never write into `data/`. Never add a record by hand when the `add-source` skill exists — use it.
 - A record and the notebooks that show it land in one PR: after the gate, run
   `.venv/Scripts/python -m kelpcatalog.generate` and commit every notebook it moves

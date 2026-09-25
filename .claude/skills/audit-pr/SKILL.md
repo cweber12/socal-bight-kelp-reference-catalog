@@ -1,6 +1,6 @@
 ---
 name: audit-pr
-description: Use when a PR you opened in this repo is ready for review, and whenever asked to audit or double-check one. Invoked as /audit-pr <number>. Commissions the pr-auditor agent in a fresh context: assembles the brief, dispatches it, relays what it found. The last step of every PR.
+description: Use when a PR you opened in this repo is ready for review, and whenever asked to audit or double-check one. Invoked as /audit-pr <number>. Commissions the pr-auditor agent in a fresh context: assembles the brief, dispatches it, relays what it found, and rules on each finding. The last step of every PR.
 ---
 
 # audit-pr
@@ -147,19 +147,20 @@ gate.py` and `pytest` are unaffected: `gate.py` puts its own `src/` at `sys.path
 `pyproject.toml` sets `pythonpath = ["src"]`, and both beat the `.pth`. Audit the branch in this
 checkout; borrow a worktree for a number, not for a verdict.
 
-## 4. Relay it, and stop
+## 4. Relay it, rule on it, record why
 
 Write nothing of your own into the report file — it is the auditor's.
 
 Relay the ranked findings in the auditor's words, its blocking call, and the report's path. Then
-**stop**. The next move is the owner's: which findings to act on is a judgement about this repo's
-direction, not about whether the code is right.
+rule on each one, under the rule `CLAUDE.md` states in "Branches, commits, PRs". Which findings to
+act on is a judgement about this repo's direction, not about whether the code is right — and you are
+the reader least able to tell those apart, which is why the ruling is recorded and not merely made.
 
 If you disagree with a finding, say so as disagreement, after the finding and marked as yours.
-Relaying a finding you have already argued away is how an audit becomes a formality.
+Relaying a finding you have already argued away is how an audit becomes a formality — and since you
+now rule on it as well as relay it, the marking is what separates the ruling from the relay.
 
-**Then file what the owner decides not to fix here.** The auditor opens no issue, so a finding left
+**Then file what you rule not to fix here.** The auditor opens no issue, so a finding left
 unacted is yours to route or it is lost: `CLAUDE.md`'s in-flight rule 3 for a defect in a file this
 PR does not touch, and a one-line comment on the pinned Parking-lot issue for anything that is a
-choice rather than a defect. Say in the relay which findings you will file and where, so the owner
-can redirect you before you do.
+choice rather than a defect. Say in the relay which findings you will file and where.
