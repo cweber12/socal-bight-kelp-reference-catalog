@@ -215,21 +215,52 @@ The order's first entry is what steps 5–9 work — not the first `ready-for-ag
 because step 3 already left out everything that is not open and `ready-for-agent` and step 4 wrote
 the result down.
 
-**The predicate: the row's seam is `add-source`.** The same predicate decides auto-merge
-eligibility, and `CLAUDE.md`, "Auto-merge in a declared PRD run", is where it is written down — as
-the sentence a PRD's preamble carries above the rows it governs. Read it there: the consequence
-differs (eligibility there, dispatch here) and the test does not, so a second account of the test
-would be a copy that can drift. `docs/prd/monitoring-sources.md` carries the sentence itself,
-between its Slices intro and its table.
+**First, read what steps 3 and 4 already know about this row.** A run is resumed far more often
+than it is started — steps 5–9 stop after one row, so every row after the first begins as a resume —
+and both facts a resume needs are already in hand: step 3's `gh pr list` read, "an open PR whose
+body closes a row's issue means that row is in progress", and step 4's thread. **Consume them here,
+or the ledger is written and never read.**
+
+- **An open PR closes the first entry's issue** → the run is a resume and there is nothing to
+  dispatch. Report the PR, the thread's last write, and stop: what is left of that row is the audit
+  and the merge, and both are #229's. **Never dispatch a row that has an open PR.** Step 6 does not
+  catch it — `git worktree add` merely errors on the existing directory, and once that worktree is
+  removed, which #5 says is the owner's to do, nothing would stop a second branch and a second PR
+  for one issue.
+- **The thread's last write is `dispatched`, with no `reported` after it** → a dispatch was lost, to
+  compaction or a crashed agent. This is the one case where dispatching the same row again is right,
+  and the ledger says so before it happens rather than after.
+- **The thread's last write is `reported` or `ruled`** → the row is mid-flight. Re-enter at step 8
+  or step 9 with the worktree the `dispatched` write names; do not cut a second one.
+- **No thread, no open PR** → a fresh row. Go on.
+
+**The predicate: the row's seam is `add-source`.** `CLAUDE.md`, "Auto-merge in a declared PRD run",
+writes that seam test out once, as the sentence a PRD's preamble carries above the rows it governs,
+and this step reuses the test rather than restating it. **The two rules are not the same rule,
+though.** Auto-merge eligibility needs the seam test *and* the declaration — "A PRD that does not
+carry the sentence declares nothing" — while dispatch needs only the seam: a record row is still a
+record row in a PRD that declares nothing, and steps 5–9 open a PR and stop, which is what every row
+gets anyway. Measured 2026-09-25, two of the five files under `docs/prd/` carry the sentence,
+`monitoring-sources.md` and `regions-and-authorities.md`; the other three carry nothing, and nothing
+in this step turns on which do.
 
 **Read the seam from the issue, not from the table.** `monitoring-sources.md`'s `## Slices` has no
 seam column at all — step 2's table of the nine — so the table cannot answer, while the issue's
-`## Seam` section can, in the shape `docs/agents/issue-tracker.md`, "Record issues", gives it.
-**Take the seam from that section's first sentence.** A later sentence in the same section may name
-`add-source` while the seam is something else: #150's `## Seam` names
-`catalog/excluded/stebbins-wetzer-2023.md` and `catalog/excluded/cheresh-2023.md`, then says
-"`add-source` walks sources, not exclusions; its step 1 … and step 6 … apply as written". A grep for
-the string selects that row; a reader does not.
+`## Seam` section can, that section being what `docs/agents/issue-tracker.md`, "Record issues",
+requires a record issue to carry.
+
+**Take the seam from that section's first sentence** — and know what that rule rests on. The same
+document gives the Seam bullet's content as a **list of paths**, and nowhere says the section opens
+by naming the seam, so the first-sentence rule is a reading of how these issues were actually filed
+rather than a shape that document states. Measured 2026-09-25 it returns the right
+answer on all thirteen issues in play — the ten of 6.3c, and the Sites track's #196, #197 and #201 —
+and a future record issue filed to the document's own shape instead would be stopped here as not a
+record row, which is the safe direction and still a stop the owner has to clear.
+
+What the rule is for: a later sentence in the same section may name `add-source` while the seam is
+something else. #150's `## Seam` names `catalog/excluded/stebbins-wetzer-2023.md` and
+`catalog/excluded/cheresh-2023.md`, then says "`add-source` walks sources, not exclusions; its
+step 1 … and step 6 … apply as written". A grep for the string selects that row; a reader does not.
 
 Measured 2026-09-25 over the nine entries of `monitoring-sources.md`'s order: eight are record rows
 — #141, #142, #143, #144, #145, #147 and #149 open "`add-source`, add path", and #146 opens
@@ -246,6 +277,11 @@ which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no iss
 it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fifteen rows whose `#` cells
 all say `to file`, so that file's order stops here at its first entry. #141's `## Blocked by` reads
 "None; can start immediately."
+
+**A row may state its own exit from a blocker, and then the blocker does not stop it.** #145's
+`## Blocked by` names #144 and adds "If row 14 closes at step 2, this row starts anyway" — so #144
+being open is not on its own a reason to stop #145. Read the exit before applying the rule above: a
+blocker naming an open issue stops the row only where the row states no exit from it.
 
 **A note is not a blocker.** #144's row says "the host did not answer from one machine on
 2026-09-15, so step 2 may stop" — a fact about the route, which `add-source` step 2 is where it
@@ -308,18 +344,22 @@ named rather than from habit:
   "Record issues", lists the record, a fetch script or a table, a reference record and the
   notebooks. Not harmless for a row that changes the generator, and step 5 stops before one gets
   here.
-- **The row's own fetch un-skips `notebook-fresh`, and the cell it then runs wants another source's
-  bytes.** That row skips only while `data/` is absent — `skip_reason` returns its reason unless
-  `(root / DATA_DIR).is_dir()` (`src/kelpcatalog/fresh.py:343`) — and a fresh worktree has no
-  `data/` at all. So the moment a `FETCHED` row's script writes `data/raw/<id>/`, the row stops
-  skipping and executes the committed figure cells, and today that is one cell loading one source:
+- **A `FETCHED` row's own fetch un-skips two gate rows, and the cell they then run wants another
+  source's bytes.** `notebook-fresh` skips only while `data/` is absent — `skip_reason` returns its
+  reason unless `(root / DATA_DIR).is_dir()` (`src/kelpcatalog/fresh.py:343`) — and the `unit` row
+  carries the same check behind the same guard (`tests/test_fresh.py:43` and `:545`,
+  `test_the_committed_notebooks_re_execute_to_what_they_carry`). A fresh worktree has no `data/` at
+  all, so both skip. The moment a `FETCHED` row's script writes `data/raw/<id>/`, **both** stop
+  skipping and execute the committed figure cells, and today that is one cell loading one source:
   `notebooks/1_physical_environment/11_ocean_climate.ipynb`'s `load("noaa_oni")`, the only `load(`
-  in the eleven notebooks. The worktree therefore also needs `data/raw/noaa_oni/`, which its own
-  committed script writes — `<interpreter> src/fetch/noaa_oni.py` from the worktree root. Running a
-  committed fetch script is not writing into `data/` by hand and stages nothing, `data/` being
-  git-ignored and per-tree. Measured on #141, whose topic is `ocean-climate`, so the notebook it
-  moves is the notebook that carries the figure; the general form is every source a committed figure
-  cell loads.
+  in the eleven notebooks. The worktree therefore also needs `data/raw/noaa_oni/`, which that
+  source's own committed script writes. Running a committed fetch script is not writing into `data/`
+  by hand and stages nothing, `data/` being git-ignored and per-tree. **Measured in the live
+  worktree on 2026-09-25**: with `data/raw/cms_thermograph_array/` present and `data/raw/noaa_oni`
+  moved away, `gate.py` gives 5/7 with `unit` and `notebook-fresh` both red — so a partial `data/`
+  is worse than no `data/`, which is the whole of why this bullet exists. A `TRANSCRIBED` row runs
+  no fetch, so it leaves `data/` absent and both rows skipping, and it must not be sent to create
+  one. The general form is every source a committed figure cell loads.
 
 ## 7. Dispatch the row
 
@@ -355,11 +395,13 @@ the evidence. The PRD's route column is a lead and `add-source` step 2 opens it
 ## 8. Read the report, and rule on it
 
 Four outcomes. Verify each from the worktree rather than from the report — a report is a claim, and
-`git` and the gate settle it:
+`git` and the gate settle it. **Give both commands the worktree's path explicitly**: `gate.py` roots
+at its own file, so the copy you invoke decides the tree it gates, and invoking the controller's own
+`gate.py` returns a green that is about the controller's checkout.
 
 ```sh
 git -C .claude/worktrees/catalog-add-<id> status --short
-<interpreter> gate.py                                      # run from the worktree root
+<interpreter> .claude/worktrees/catalog-add-<id>/gate.py
 ```
 
 - **`DONE`** — the eight steps passed and step 8 printed. Check that `git status --short` shows the
@@ -426,7 +468,11 @@ same three as "`gate.py` (Ubuntu and Windows), `ruff check` and `ruff format --c
 being the `lint` job's steps. A red check is diagnosed, not retried: read that job's own output and
 resume the agent with it. **STOP if the fix is not in the row's own seam** — a record row that needs
 `src/kelpcatalog/`, `gate.py` or `CONTEXT.md` changed to go green is a bug or a rule question, and
-`CLAUDE.md`'s in-flight rules route it.
+`CLAUDE.md`'s in-flight rules route it. **One thing is not that**, and it is the failure step 6's
+fifth fact describes: a red `unit` or `notebook-fresh` traceable to a `data/raw/<other id>/` the
+worktree lacks is missing bytes, not a bug, and the fix is to run that source's own committed
+script. CI never sees it — the runners have no `data/` at all, so both rows skip there — so it is a
+local red only, and routing it to the in-flight rules would file a bug that does not exist.
 
 **Then stop.** The PR is open and green and it is not ready: `CLAUDE.md`, "Branches, commits, PRs",
 says a PR is ready when it has been audited, and both the audit and the merge are #229 — until that
@@ -435,8 +481,9 @@ and that you left it there for #229, and the ledger comments.
 
 ## The ledger, per row
 
-Four writes per row, each its own comment, because a resume arriving between two of them has to be
-able to tell them apart:
+**Four writes for a row that goes straight through, and one more for each extra report and each
+ruling** — each its own comment, because a resume arriving between two of them has to be able to
+tell them apart. The four:
 
 1. **dispatched** — the issue, the branch, the worktree path, the `origin/main` commit it was cut
    from, and the brief's path
@@ -447,10 +494,19 @@ able to tell them apart:
 4. **CI settled** — the three checks green and that the run stopped for review, or red and what it
    was
 
+**A write happens at the transition, not afterwards, and a row owes four plus one per extra
+report plus one for a ruling.** Count them before starting the row. The first live run got this
+wrong in both directions and is the reason the sentence is here: its `PR opened` and `CI settled`
+writes went up one second apart, three minutes after the PR was created and after CI had finished,
+so the window those two exist to distinguish never existed in the thread; and its second report,
+`DONE_WITH_CONCERNS` after a `NEEDS_CONTEXT` and a ruling, got no write of its own and was folded
+into `PR opened`. A resume reading that thread cannot tell `ruled` from `ruled and resumed, report
+pending`.
+
 Four is a judgement about what a resume needs rather than a measurement. On
-`monitoring-sources.md` it would come to 32 over the whole file — its order has nine entries and
-eight of them are record rows, and step 5 stops the run at the ninth — spread over as many runs as
-#229 takes merges to allow. Each is
+`monitoring-sources.md` it would come to 32 over the whole file before any extra reports or rulings
+— its order has nine entries and eight of them are record rows, and step 5 stops the run at the
+ninth — spread over as many runs as #229 takes merges to allow. Each is
 `gh issue comment <thread> --body-file <path>` (`docs/agents/issue-tracker.md`, "Commands"), and
 `<thread>` is the one step 4 named in its own first comment — **not the row's own issue**, which is
 the same only for the first entry.

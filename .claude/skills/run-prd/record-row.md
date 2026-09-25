@@ -32,37 +32,54 @@ after this would be written into it.
 ## Step 0 is already half done
 
 `add-source` step 0 reads `CONTEXT.md` and then branches. **Read, but do not branch.** The worktree
-you are standing in is already on the branch that step names, `catalog/add-<id>`, because the
-controller cut it with `git worktree add -b`. A second `git switch -c` would branch off your own
-branch, and the PR would diff against the wrong base. Every other step of `add-source` is exactly
-as written.
+you are standing in is already on the branch that step names — `catalog/add-<id>`, or whatever name
+it was cut with if `add-source` step 3 then changes the id, which the controller's step 6 allows —
+because the controller cut it with `git worktree add -b`. Running `git switch -c` anyway is not
+dangerous, it is pointless, and knowing which matters: with the name already taken it prints
+`fatal: a branch named '…' already exists` and changes nothing, and with a new name it would branch
+at the same commit, so `main..<it>` would be the identical diff. The state step 0 wants already
+holds, which is why the step's other half — reading `CONTEXT.md` — is the half that is still yours.
+Every other step of `add-source` is exactly as written.
 
 ## The interpreter, and what a worktree changes about running things
 
 The worktree has no `.venv/`: `.venv/` is git-ignored and belongs to the controller's checkout. So
-the dispatch gives you an absolute path to that interpreter, and it goes everywhere `add-source`
-writes `.venv/Scripts/python`. Three of its commands care where you run them from, and all three
-want the worktree root:
+the dispatch gives you an absolute path to that interpreter, and it stands in for
+`.venv/Scripts/python` everywhere `add-source` writes it — four lines, its `:176`, `:177`, `:211`
+and `:238`, plus the second `gate.py` run its step 7 asks for in prose and the one this file adds
+below.
+**Two of those are `ruff`, not `python`**: run them as `<interpreter> -m ruff check …` and
+`<interpreter> -m ruff format …`, which is what `gate.py`'s own `lint` row does, so the single path
+the dispatch gave you covers every one of them rather than leaving you to find `ruff.exe`.
 
-- `<interpreter> gate.py` — `gate.py` roots at its own file (`ROOT = Path(__file__).parent`,
-  `gate.py:24`), so the worktree's own copy gates the worktree.
-- `<interpreter> -m kelpcatalog.generate` — it roots at the current directory
-  (`root = Path.cwd()`, `src/kelpcatalog/generate.py:74`), so from the worktree root it reads this
-  tree's `catalog/` and writes this tree's `notebooks/`. From anywhere else it renders another tree
-  and says nothing about it.
-- `<interpreter> src/fetch/<id>.py`, and the two `ruff` commands of `add-source` step 4.
+**Exactly one of them depends on the directory you are standing in. The rest depend on which copy
+you invoke**, which is the easier mistake to make and the harder one to see:
+
+- `<interpreter> -m kelpcatalog.generate` takes `root = Path.cwd()`
+  (`src/kelpcatalog/generate.py:74`), so it renders whatever tree you are standing in. **Run it from
+  the worktree root and nowhere else**; from anywhere else it renders another tree and says nothing
+  about it.
+- `gate.py` and every fetch script root at their own file instead — `ROOT = Path(__file__).parent`
+  (`gate.py:24`), whose subprocesses then run with `cwd=ROOT` (`gate.py:42`), and
+  `Path(__file__).resolve().parents[2]` in all 19 scripts under `src/fetch/` on `main`. Your
+  directory is therefore irrelevant to them and their path is everything: run **this worktree's**
+  `gate.py` and **this worktree's** `src/fetch/<id>.py`, never the controller's copies, which would
+  gate and fill the controller's checkout while reporting nothing amiss.
 
 `data/` is git-ignored and per-tree, so your fetch lands in this worktree's `data/raw/<id>/`, and
 that copy is what your manifest hashes.
 
-**Your fetch also un-skips a gate row.** `notebook-fresh` skips while `data/` is absent
-(`skip_reason`, `src/kelpcatalog/fresh.py:343`), and a fresh worktree has none — so the moment your
-script writes `data/raw/<id>/`, that row stops skipping and executes the committed figure cells.
-Today that is one cell loading one source, `load("noaa_oni")` in
-`notebooks/1_physical_environment/11_ocean_climate.ipynb`, so the worktree also needs
-`data/raw/noaa_oni/`: run `<interpreter> src/fetch/noaa_oni.py` from the worktree root before the
-gate, and say in your report that you did. Running a committed fetch script is not writing into
-`data/` by hand and stages nothing.
+**If your tier is `FETCHED`, your own fetch un-skips two gate rows.** `notebook-fresh` skips while
+`data/` is absent (`skip_reason`, `src/kelpcatalog/fresh.py:343`), and the `unit` row carries the
+same check behind the same guard (`tests/test_fresh.py:43`, `:545`); a fresh worktree has no
+`data/`, so both skip. The moment your script writes `data/raw/<id>/`, both stop skipping and
+execute the committed figure cells — today one cell loading one source, `load("noaa_oni")` in
+`notebooks/1_physical_environment/11_ocean_climate.ipynb`. So the worktree also needs
+`data/raw/noaa_oni/`: run that source's own committed script before the gate, and say in your report
+that you did. Running a committed fetch script is not writing into `data/` by hand and stages
+nothing. **If your tier is not `FETCHED`** — `TRANSCRIBED` writes no `data/` — then leave `data/`
+absent: both rows skip, and creating `data/` would turn on two checks your row has nothing to do
+with.
 
 ## Stay inside the worktree
 
@@ -129,8 +146,11 @@ in-flight rules route it rather than a patch on this branch.
 
 ## Non-goals
 
-One row. No other source — a second is a second row and a second run of `add-source`. No change to
+**`add-source`'s own Non-goals apply unchanged, and this file does not restate them** — a second
+copy of a rule drifts from the first and nothing compares them (`CLAUDE.md`, "Changing a rule in
+`CONTEXT.md`"). Read them there.
+
+What the dispatch adds, which that file has no reason to say: one row, and one only. No change to
 `CONTEXT.md`, to `src/kelpcatalog/`, to `gate.py`, to any PRD, to any other record, or to anything
-under `.claude/`. No hand-edited notebook or index page: `add-source` step 7 regenerates both. No
-writing into `data/` by hand and no `git add` of it. No new dependency. No parser for any external
-manifest or prose file — records are entered, not migrated. No audit and no merge.
+under `.claude/` — including this file and the skill that dispatched you. No audit and no merge:
+both are arranged outside this brief, and neither is the controller's either.
