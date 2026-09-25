@@ -152,14 +152,15 @@ checkout; borrow a worktree for a number, not for a verdict.
 Write nothing of your own into the report file — it is the auditor's.
 
 Relay the ranked findings in the auditor's words, its blocking call, and the report's path. Then
-rule on each one, under the rule `CLAUDE.md` states in "Branches, commits, PRs": you rule on every
-finding and record why, where the finding is, without waiting for the owner.
+rule on each one, under the rule `CLAUDE.md` states in "Branches, commits, PRs". Which findings to
+act on is a judgement about this repo's direction, not about whether the code is right — and you are
+the reader least able to tell those apart, which is why the ruling is recorded and not merely made.
 
 If you disagree with a finding, say so as disagreement, after the finding and marked as yours.
 Relaying a finding you have already argued away is how an audit becomes a formality — and since you
-also rule on it, that marking is what keeps the two acts separable by a reader.
+now rule on it as well as relay it, the marking is what separates the ruling from the relay.
 
 **Then file what you rule not to fix here.** The auditor opens no issue, so a finding left
 unacted is yours to route or it is lost: `CLAUDE.md`'s in-flight rule 3 for a defect in a file this
 PR does not touch, and a one-line comment on the pinned Parking-lot issue for anything that is a
-choice rather than a defect. Say in the relay which findings you filed and where.
+choice rather than a defect. Say in the relay which findings you will file and where.
