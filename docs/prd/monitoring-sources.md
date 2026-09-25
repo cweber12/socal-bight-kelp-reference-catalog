@@ -136,6 +136,9 @@ with rows 20–21 sharing one, and their numbers are in the `#` column; the mile
 seam, there is no mechanical failing test, and the notebooks the record's topics move land in the
 same PR. Rows 20–21 are one issue.
 
+A row whose seam is `add-source` is auto-merge eligible; every other row is not (`CLAUDE.md`,
+"Auto-merge in a declared PRD run").
+
 The **route** column is the manifest's lead, unopened, except row 17, whose route was opened on
 2026-09-16 and whose note says what the page stated that day. A slice opens every route at
 `add-source` step 2 and enters what the page states, not what this table says; a note's dated facts
