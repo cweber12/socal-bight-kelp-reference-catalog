@@ -84,8 +84,9 @@ the same mutant reports "caught" and "survived" across runs:
 
 A sweep over behaviour alone misses the **transcriptions** — the strings this repo copies out of
 `CONTEXT.md` by hand, in `plan.py` and `build.py`. Mutate a transcribed string, a folder name, a
-quoted question, not only control flow. Write the harness with a file and run it by path; a
-heredoc piped to `python -` decodes with the console codepage here and mangles `·`, `…` and `—`.
+quoted question, not only control flow. Write the harness with a file and run it by path, never a
+heredoc piped to `python -` (`CLAUDE.md`, "Branches, commits, PRs", for what a heredoc does to this
+repo's prose).
 
 A surviving mutant marks a choice nothing pins. Report it as that, and check the Parking lot
 before calling it new.
