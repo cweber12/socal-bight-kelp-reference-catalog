@@ -26,8 +26,8 @@ Do not guess which PRD was meant, and do not run against more than one.
 
 ## 1. Read the PRD once, whole
 
-Read the file rather than searching it. A search returns a row and loses the intro that governs it,
-and the intro is where this repo keeps the freezes, the declarations and the exceptions.
+Read the file rather than searching it. A search returns a row and loses the prose that governs it,
+and that prose is where this repo keeps the freezes, the declarations and the exceptions.
 
 - **The `Status:` line.** It begins on line 3 in all five files under `docs/prd/` today and wraps
   over several lines. **Report it; do not rule on it.** A file whose status says "not active" can
@@ -58,7 +58,7 @@ and the intro is where this repo keeps the freezes, the declarations and the exc
 | `regions-and-authorities.md` | Sites track | order, #, slice | 3 |
 | `re-entry.md` | Part one: the schema queue | order, #, slice, seam, note | 5 |
 | `re-entry.md` | Part two: the migration rows | order, #, id, `variables` today, held, fills, note | 7 |
-| `re-entry.md` | Part three: the closers | order, #, slice, blocked on, note | 5 |
+| `re-entry.md` | Part three: the closers, and the row outside the queue | order, #, slice, blocked on, note | 5 |
 | `scaffold.md` | `## Slices` | #, slice, seam, done when | 4 |
 | `topic-notebooks.md` | `## Slices` | order, #, slice, seam, done when | 5 |
 
@@ -87,8 +87,10 @@ on, so a claim here can be contradicted by opening that row.
   about its own place rather than dropping it or moving it.
 - **An issue cell can name several issues, and two rows can share one issue.** The Sites track's row
   4 names #195, #196 and #197. `monitoring-sources.md`'s rows 20 and 21 both name #150. So the
-  derived order is a list of issues: row 4 contributes three entries, and #150 one entry that says
-  it carries two rows.
+  derived order is a list of issues rather than of rows: a cell naming three contributes up to three
+  entries, one per issue step 3 leaves in, and #150 contributes one entry that says it carries two
+  rows. Row 4 contributes two today, not three, because #195 has closed — which is what the
+  staleness bullet below records.
 - **A `#N` anywhere but the `#` column is not that row's issue.** The Beds track's `#96` row says
   "blocked on #93, #94 and #122" in its slice cell; Part one's S2 says "after [#179](…)" in its
   note. Take the row's issue from the `#` cell's own markdown link, `[#131](…/issues/131)`, which is
@@ -142,7 +144,7 @@ Write the comment to a file and pass it with `--body-file` (`CLAUDE.md`, "Branch
 `docs/agents/issue-tracker.md`, "Commands"):
 
 ```sh
-gh issue comment <the first entry's issue> --body-file <path>
+gh issue comment <the ledger thread> --body-file <path>
 ```
 
 **One thread per run, named in its own first comment, and it does not move.** The thread is the
