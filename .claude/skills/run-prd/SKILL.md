@@ -157,9 +157,15 @@ re-derived silently on every resume.
 The thread has to be named because it would otherwise move. Once the first entry merges — which is
 #229's, not this skill's — that issue closes and the next resume's first entry is a different issue
 with an empty thread, so a run of nine rows would leave nine unlinked threads and each resume would
-read the wrong one. A resume therefore finds the thread by reading the order's issues for the most
-recent `ledger thread:` comment — including the closed ones, which is the other reason step 3 lists
-`--state all` — and keeps using it even after it has closed.
+read the wrong one. A resume therefore finds the thread by reading **every issue the file's rows
+name**, closed ones included, for the most recent `ledger thread:` comment — which is the other
+reason step 3 lists `--state all` — and keeps using that thread even after it has closed.
+
+**Not the issues left in the order**, which is the trap: step 3 drops a `CLOSED` issue from the
+order, so once the first entry merges the thread's own issue is no longer in it. A resume reading
+only the order would find no `ledger thread:` line, conclude the run was fresh, and open a second
+thread on the new first entry — the failure the paragraph above exists to prevent, arrived at by
+obeying it too narrowly.
 
 **An empty order has no thread.** Where no row of the file is both open and `ready-for-agent`, post
 nothing and report that instead, with the rows that were ruled out and why. `docs/prd/scaffold.md`
