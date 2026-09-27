@@ -21,13 +21,16 @@ Content-Disposition gives it, and its manifest is manifest_<that name>.json. A r
 without one is refused.
 
 The zip is assembled when it is asked for: on 2026-09-27 two requests about four minutes
-apart were each served 56,245,597 bytes with two different SHA-256s, each member's
-modification time the minute of its request. The zip's own SHA-256 is therefore a fact of
-one fetch, and the host states neither a size nor a digest for it. What the host does
-state is a size and a SHA-256 for each file of the version, at
-https://datadryad.org/api/v2/versions/328111/files; FILES holds them as that listing gave
-them on 2026-09-27. Whatever the status and the headers say, the zip must hold the members
-FILES names and no others, each with that size and that digest, or it is not kept. The
+apart were each served 56,245,597 bytes with two different SHA-256s, and a third, about
+half an hour later, 56,245,347 bytes, each member's modification time the minute of its
+request. The zip's own size and SHA-256 are therefore facts of one fetch, and the host
+states neither for it. What the host does state is a size and a SHA-256 for each file of
+the version, at https://datadryad.org/api/v2/versions/328111/files; FILES holds them as
+that listing gave them on 2026-09-27. Whatever the status and the headers say, the zip must
+hold the members FILES names and no others, each with that size and that digest, or it is
+not kept. Because the zip's own digest cannot be pinned, the file around the members is
+checked too: it must begin with a local file header (the bytes 50 4B 03 04), carry no
+bytes before its first member, and carry no archive comment, or it is not kept. The
 members are read from the zip to be hashed and are not written out: what is held is the
 zip as served.
 """
@@ -67,15 +70,32 @@ FILES = (
     ),
 )
 CHUNK = 1 << 20
+LOCAL_HEADER = b"PK\x03\x04"
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 
+def check_container(path: Path, archive: zipfile.ZipFile) -> None:
+    """Raise unless the zip at path is nothing but its members: it begins with a local file
+    header, no bytes stand before its first member, and it carries no archive comment."""
+    with path.open("rb") as raw:
+        head = raw.read(len(LOCAL_HEADER))
+    if head != LOCAL_HEADER:
+        raise RuntimeError(f"{URL} served a file beginning {head!r}, not a local file header")
+    first = min((info.header_offset for info in archive.infolist()), default=None)
+    if first != 0:
+        raise RuntimeError(f"{URL} served {first} bytes before the zip's first member")
+    if archive.comment:
+        raise RuntimeError(f"{URL} served an archive comment of {len(archive.comment)} bytes")
+
+
 def check_members(path: Path) -> None:
-    """Raise unless the zip at path holds exactly the members FILES states."""
+    """Raise unless the zip at path is nothing but its members (check_container) and holds
+    exactly the members FILES states."""
     stated = {name: (sha256, size) for name, sha256, size in FILES}
     with zipfile.ZipFile(path) as archive:
+        check_container(path, archive)
         names = archive.namelist()
         if sorted(names) != sorted(stated):
             raise RuntimeError(f"{URL} served members {names}, where Dryad lists {list(stated)}")

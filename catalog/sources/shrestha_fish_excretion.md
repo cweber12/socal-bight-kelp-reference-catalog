@@ -1,7 +1,7 @@
 ---
 id: shrestha_fish_excretion
 title: Marine Protection and Environmental Forcing Influence Fish-Derived Nutrient Cycling in Kelp Forests
-steward: San Jose State University; University of California, Santa Barbara
+steward: Moss Landing Marine Laboratories
 url: https://datadryad.org/dataset/doi:10.5061/dryad.k6djh9wgj
 doi: 10.5061/dryad.k6djh9wgj
 citations:
@@ -66,6 +66,7 @@ access:
   - >-
     The API gives a download link to each file, to the dataset and to the version. Without a token
     https://datadryad.org/api/v2/files/3627768/download,
+    https://datadryad.org/api/v2/files/3627769/download,
     https://datadryad.org/api/v2/files/3627770/download,
     https://datadryad.org/api/v2/files/3627774/download and
     https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.k6djh9wgj/download each answered
@@ -79,12 +80,15 @@ access:
     Run src/fetch/shrestha_fish_excretion.py, which sends the User-Agent
     "kelpcatalog/shrestha_fish_excretion", requests
     https://datadryad.org/api/v2/versions/328111/download, stores the body under its
-    Content-Disposition filename, and keeps it only when the zip holds the four members the files
-    listing names and no other, each with the size and the SHA-256 that listing states; no account,
-    key or referrer is required. The zip held is 56,245,597 bytes. The zip is assembled on request:
-    an earlier request that day was also served 56,245,597 bytes, with a different SHA-256, and in
-    each of the two zips every member's modification time was the minute of its own request and
-    every member had the size and the SHA-256 the listing states (HTTP 200, 2026-09-27)
+    Content-Disposition filename, and keeps it only when the file begins with the zip local file
+    header signature, the bytes 50 4B 03 04, carries no bytes before its first member and no
+    archive comment, and holds the four members the files listing names and no other, each with
+    the size and the SHA-256 that listing states; no account, key or referrer is required. The zip
+    held is 56,245,347 bytes. The zip is assembled on request: two earlier requests that day were
+    each served 56,245,597 bytes, their SHA-256s differing from each other and from the held zip's,
+    and in each of the three zips every member's modification time was the minute of its own
+    request and every member had the size and the SHA-256 the listing states (HTTP 200,
+    2026-09-27)
 format: >-
   The files listing named in access states four files, each with status "created" and digestType
   "sha-256": path "README.md", size 5724, mimeType "text/markdown", digest
@@ -97,34 +101,38 @@ format: >-
   1431e380bbad779149a733920a43a2d97a852e5de47bacc5305bc661f4c4efcb. This record holds the zip the
   version's download link serves, doi_10_5061_dryad_k6djh9wgj__v20241112.zip, whose four members are
   those files. In the copy retrieved 2026-09-27 each of the three CSVs decodes as UTF-8 behind a
-  byte-order mark, ends its lines with CR LF, and is a comma-separated header line over data rows,
-  none of them ragged: 139,277 rows of 32 fields in Shrestha_fish_excr_data_Channel_Islands_all.csv,
-  111,946 of 32 in Shrestha_fish_excr_data_Channel_Islands_longterm_sites.csv and 53 of 17 in
+  byte-order mark, ends every line but its last with CR LF, its last line having no terminator, and
+  is a comma-separated header line over data rows, none of them ragged: 139,277 rows of 32 fields in
+  Shrestha_fish_excr_data_Channel_Islands_all.csv, 111,946 of 32 in
+  Shrestha_fish_excr_data_Channel_Islands_longterm_sites.csv and 53 of 17 in
   Shrestha_Fish_length-weight_conversion_table.csv. The two excretion files' header lines are
-  byte-identical. README.md states one list headed "##### Variables" after the description of
-  Shrestha_fish_excr_data_Channel_Islands_longterm_sites.csv, and none after that of
-  Shrestha_fish_excr_data_Channel_Islands_all.csv, and a second after that of
-  Shrestha_Fish_length-weight_conversion_table.csv; each item is a line beginning with an asterisk
-  and a space, then a name, a space, a hyphen, a space and a description, the space after the hyphen
-  being U+00A0 in some items, and two items, "Notes" and "MLPA_region", carry a name alone. The
-  second list's 17 names are the conversion table's header line, in its order. The first list names
-  30 columns and the excretion header line 32, and 22 of the list's names are spelled otherwise than
-  the header line spells any column: this record reads "Year", "Month", "Day", "Site", "Side",
-  "Zone", "Transect", "Classcode", "fish_tl.cm", "estimated.wt.g", "Count", "Transect area",
-  "density.indiv.m.2", "Family", "Genus", "Species", "Notes", "MPA_Status", "Reserve",
-  "MLPA_region", "Region" and "Subregion" as the columns the header line spells "year", "month",
-  "day", "SITE", "SIDE", "zone", "transect", "classcode", "fish_tl..cm.", "estimated.wt..g.",
-  "count", "transect area (m2)", "density.indiv.m.2.", "family", "genus", "species", "notes",
-  "MPA_STATUS", "RESERVE", "MLPA_REGN", "REGION" and "SUBREGION", and the other eight as spelled
-  alike, and so enters each column under the header line's spelling with the description README.md
-  states for it. The header line's "SITE_SIDE" and "level.in.the.water.column" are named in no list
-  and are entered with description null. A reading that took the list's spellings as the names would
-  enter 22 names no held file's header line spells. README.md states no unit apart from the words of
-  a description, as "Fish total length in cm" does, so every entry reads unit: null; "genus" and
-  "species" are each two entries, as the two lists describe them differently. The two excretion
-  files key their rows by SITE, which README.md describes as "Location of the survey"; their
-  LAT_WGS84 and LON_WGS84 values differ between rows of one SITE value in the copy retrieved
-  2026-09-27, so site_key names no coordinate columns
+  byte-identical. README.md states a list headed "##### Variables" under the heading "#### File:
+  Shrestha_fish_excr_data_Channel_Islands_longterm_sites.csv", none under "#### File:
+  Shrestha_fish_excr_data_Channel_Islands_all.csv", and a second under "#### File:
+  Shrestha_fish_length-weight_conversion_table.csv", which spells with a lower-case "fish" the
+  member the zip names Shrestha_Fish_length-weight_conversion_table.csv. Each item is a line
+  beginning with an asterisk and a space, then a name, a space, a hyphen, a space and a description,
+  the space after the hyphen being U+00A0 in some items, and two items, "Notes" and "MLPA_region",
+  carry a name alone. The second list's 17 names are the conversion table's header line, in its
+  order. The first list names 30 columns and the excretion header line 32. This record enters every
+  column README.md names under README.md's spelling, with the description README.md states for it,
+  reading README.md as the source's metadata for its column names. 22 of the first list's names are
+  spelled otherwise than the header line spells the column this record reads each as naming: "Year",
+  "Month", "Day", "Site", "Side", "Zone", "Transect", "Classcode", "fish_tl.cm", "estimated.wt.g",
+  "Count", "Transect area", "density.indiv.m.2", "Family", "Genus", "Species", "Notes",
+  "MPA_Status", "Reserve", "MLPA_region", "Region" and "Subregion", where the header line spells
+  "year", "month", "day", "SITE", "SIDE", "zone", "transect", "classcode", "fish_tl..cm.",
+  "estimated.wt..g.", "count", "transect area (m2)", "density.indiv.m.2.", "family", "genus",
+  "species", "notes", "MPA_STATUS", "RESERVE", "MLPA_REGN", "REGION" and "SUBREGION"; the other
+  eight are spelled alike in both. The header line alone names "SITE_SIDE" and
+  "level.in.the.water.column", which no list names, so they are entered under the header line's
+  spelling with description null. A reading that took the header line's spellings as the names would
+  enter those 22 columns under the header line's spellings instead. README.md states no unit apart
+  from the words of a description, as "Fish total length in cm" does, so every entry reads unit:
+  null; "Family" is two entries, as the two lists describe it differently. The two excretion files
+  key their rows by the column README.md names "Site" and describes as "Location of the survey",
+  which their header line spells "SITE"; their LAT_WGS84 and LON_WGS84 values differ between rows of
+  one Site value in the copy retrieved 2026-09-27, so site_key names no coordinate columns
 license: >-
   "Public domain", under the heading "License:" and linked to
   https://creativecommons.org/publicdomain/zero/1.0/ with the label "CC0 (opens in new window)", in
@@ -144,85 +152,85 @@ license_stated_at: >-
   https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.k6djh9wgj, state the SPDX identifier
   (retrieved 2026-09-27)
 variables:
-  - name: "year"
+  - name: "Year"
     description: "Year of the survey"
     unit: null
-  - name: "month"
+  - name: "Month"
     description: "Month of the survey"
     unit: null
-  - name: "day"
+  - name: "Day"
     description: "day of the survey"
     unit: null
-  - name: "SITE"
+  - name: "Site"
     description: "Location of the survey"
     unit: null
-  - name: "SIDE"
+  - name: "Side"
     description: "Sites can be split into two or three areas to stratify the sampling. W = west, Cen = central, E = East"
     unit: null
   - name: "SITE_SIDE"
     description: null
     unit: null
-  - name: "zone"
+  - name: "Zone"
     description: "Location of the visual transects from the outer (deep) to inner (shallow) areas of each kelp bed / site. Outer - deepest (20 m), Outmid - next deepest (15 m), Inmid - next deepest (10 m), Inner - shallowest (5 m)"
     unit: null
   - name: "level.in.the.water.column"
     description: null
     unit: null
-  - name: "transect"
+  - name: "Transect"
     description: "ID number of each transect in a particular zone per side of a site"
     unit: null
-  - name: "classcode"
+  - name: "Classcode"
     description: "Fish species ID code (first letter of genus and first three letters of the species name)"
     unit: null
-  - name: "fish_tl..cm."
+  - name: "fish_tl.cm"
     description: "Fish total length in cm"
     unit: null
-  - name: "estimated.wt..g."
+  - name: "estimated.wt.g"
     description: "Fish weight estimated from published Length-Weight relationships for each species"
     unit: null
   - name: "EXCR_IND"
     description: "Estimated ammonium excretion per individual per hour, using species-specific relationships between body size and excretion"
     unit: null
-  - name: "count"
+  - name: "Count"
     description: "The number of fish per species per size class counted on that transect"
     unit: null
-  - name: "transect area (m2)"
+  - name: "Transect area"
     description: "area of each fish transect is 60 m2 (30 x 2 m)"
     unit: null
   - name: "EXCR_M2"
     description: "Estimated ammonium excretion per fish of that body size and species observed on the transect per unit area (m2)"
     unit: null
-  - name: "density.indiv.m.2."
+  - name: "density.indiv.m.2"
     description: "The density of fish per m2 of rocky reef habitat"
     unit: null
-  - name: "family"
+  - name: "Family"
     description: "Taxonomic family for that fish species"
     unit: null
-  - name: "genus"
+  - name: "Genus"
     description: "Taxonomic grouping at genus level"
     unit: null
-  - name: "species"
+  - name: "Species"
     description: "Taxonomic grouping at species level"
     unit: null
-  - name: "notes"
+  - name: "Notes"
     description: null
     unit: null
   - name: "MPAGroup"
     description: "Name of the Marine Protected Area (if any) associated with that site"
     unit: null
-  - name: "MPA_STATUS"
+  - name: "MPA_Status"
     description: "Whether the site is a reference area (open to fishing), SMR (state marine reserve and fully no-take), or SMCA (state marine conservation area that may allow take of some species)"
     unit: null
-  - name: "RESERVE"
+  - name: "Reserve"
     description: "whether a site is IN or OUT of an MPA of any kind"
     unit: null
-  - name: "MLPA_REGN"
+  - name: "MLPA_region"
     description: null
     unit: null
-  - name: "REGION"
+  - name: "Region"
     description: "location in the greater Southern California Bight"
     unit: null
-  - name: "SUBREGION"
+  - name: "Subregion"
     description: "Island where the site is located. ANA - Anacapa Island, SCI - Santa Cruz Island, SRI - Santa Rosa Island, SMI - San Miguel Island"
     unit: null
   - name: "LAT_WGS84"
@@ -346,15 +354,12 @@ topics:
   - bed-state/community
   - bed-state/mpas
 regions:
-  - scb.islands.anacapa
-  - scb.islands.san-miguel
-  - scb.islands.santa-cruz
-  - scb.islands.santa-rosa
+  - scb.islands
 beds: []
 sites: []
 site_key:
   - file: doi_10_5061_dryad_k6djh9wgj__v20241112.zip
-    column: SITE
+    column: Site
 references: []
 human_task: null
 ---
