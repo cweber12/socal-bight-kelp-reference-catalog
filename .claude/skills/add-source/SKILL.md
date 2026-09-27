@@ -217,7 +217,7 @@ relaxing a rule, never by deleting the field it complains about.
 **STOP if the gate is wrong** — if it contradicts `CONTEXT.md`. `CONTEXT.md` wins and the code is a
 bug: report it instead of working around it (`CLAUDE.md`, "In-flight bugs").
 
-Then two checks no gate makes. Both feed step 8.
+Then the checks no gate makes, below. Each of them feeds step 8.
 
 - **Byte-diff every quoted string against the source.** Take each quoted string in the record —
   title, licence, `coverage`, `format`, any phrase in quotation marks — back to the live page or
@@ -228,6 +228,38 @@ Then two checks no gate makes. Both feed step 8.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
+- **Count every unquoted claim, and write down what counted it.** The byte-diff above takes its
+  targets from what the source stated; nothing takes a count or a universal you wrote in your own
+  words back to the document. Sweep for those by hand:
+
+  1. **Extract.** A sentence here is a clause of a folded value, as `.` or `;` ends it. Take each
+     one that sits *outside* quotation marks and carries either a **number word** — digits or
+     letters, cardinal or ordinal, with no upper bound — or one of *every, any, no, only, all,
+     always, never, none, each, exactly, both, either, whole, entire*. That list is the four
+     `CLAUDE.md` names under "Changing a rule in `CONTEXT.md`", plus the words that rule misses
+     (its own lead anecdote, a surviving "one of three"/"one of four", is a count word and outside
+     its four), plus four this step adds on its own: *both, either, whole, entire*.
+
+     **Which fields:** the ones whose "where from" in `CONTEXT.md`'s sources table describes what
+     *you* write rather than what the source states — today `access`, `format`, `coverage`,
+     `coverage_stated_at`, `license_stated_at`, each `variables[].description` and each
+     `citations[].stated_at`. Read that column rather than trusting this list: a field added to the
+     table later belongs in the sweep as soon as its gloss is yours. `title` holds the source's own
+     words, and so does `license` wherever it carries published licence text — but where `license`
+     opens `not stated` and goes on in your words about where you looked, that continuation is
+     yours: sweep it.
+  2. **Name the set and count it.** One row per sentence, in the step-8 report: *where* · *the
+     sentence* · *the set, counted — the command and its result*. A row whose third cell holds no
+     command and no answer is not finished. A set you cannot name from the record is itself the
+     finding: enumerate its members, or drop the universal. A reader cannot check what you cannot
+     name, and a repeater reproduces only what you named.
+  3. **A redirect is a string.** Where `access` states a `Location`, compare the Location, character
+     for character. A re-probe that matches the status code has checked nothing about it.
+
+  **Re-run all of this after any edit to the record**, and re-count every number in the commit
+  message and the PR body from the committed file, not from your draft. A fix that adds or removes a
+  file, a URL or a variable changes the counts in sentences you are not editing, and squash lands
+  the commit message.
 
 ## 7. Refresh the notebooks the source appears in
 
@@ -285,9 +317,9 @@ Stage the record, any reference record, the fetch script and every notebook that
 ## 8. Show and stop
 
 Print, in full: the record and any reference record; the manifest of every file fetched; the gate
-output verbatim; the
-result of the two step-6 checks — which quoted strings you diffed and against what, and that every
-URL the script fetches is in `access`; and the notebooks step 7 moved. Then **stop**. Do not commit
+output verbatim; the result of each step-6 check — which quoted strings you diffed and against what,
+that every URL the script fetches is in `access`, and the unquoted-claim table, one row per sentence
+with the command that counted its set; and the notebooks step 7 moved. Then **stop**. Do not commit
 and do not open a PR. Wait to be told.
 
 ## Non-goals

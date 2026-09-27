@@ -103,11 +103,11 @@ matters in a tool call you made along the way. **Its first line is one of four w
 
 **`DONE_WITH_CONCERNS`** — the eight steps passed, and something needs a reader's ruling rather
 than another step. One line per concern, above step 8's full output. What belongs here: a quoted
-string you could not byte-diff against the source (step 6), a page that changed between your draft
-and your check, a `license` of `"not stated"` and where you looked, a `coverage` read off a file's
-own first and last rows rather than stated by the source, a fetch date later than the date you
-wrote down in step 2. A concern is a fact, not a worry: say what the source states and what it does
-not.
+string you could not byte-diff against the source (step 6), a count or universal in your own prose
+whose set you could not name (step 6), a page that changed between your draft and your check, a
+`license` of `"not stated"` and where you looked, a `coverage` read off a file's own first and
+last rows rather than stated by the source, a fetch date later than the date you wrote down in
+step 2. A concern is a fact, not a worry: say what the source states and what it does not.
 
 **`NEEDS_CONTEXT`** — a question the repo does not settle, and you have stopped at the step it
 arose in. State the question, both readings, which field each would fill and with what, and what
