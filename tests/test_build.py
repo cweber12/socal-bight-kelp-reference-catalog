@@ -513,12 +513,15 @@ def test_every_topic_builds_from_the_real_catalog():
         ]
 
 
-def test_the_real_catalogs_only_bare_topic_tag_lands_under_general():
-    # noaa_oni carries bare `waves-storms-sediment`; it is the whole of that notebook's
-    # General section, and 11_ocean_climate's is empty.
+def test_the_real_catalogs_bare_topic_tag_lands_under_general():
+    # noaa_oni carries bare `waves-storms-sediment`, and the notebook renders it under
+    # General. What a test may assert about the real catalog is what adding a record cannot
+    # falsify: a named record's presence survives growth, an emptiness claim does not, so no
+    # topic's General section is asserted empty here (CONTEXT.md, "Gates"). A count survives it
+    # too when computed from the records, as
+    # test_the_real_catalogs_bare_tag_is_counted_under_general does.
     catalog, _ = check_catalog(ROOT)
     assert "noaa_oni" in sections(build_topic("waves-storms-sediment", catalog))["General"]
-    assert "No sources" in sections(build_topic("ocean-climate", catalog))["General"]
 
 
 def test_a_not_held_source_with_no_human_task_renders_an_empty_cell():
