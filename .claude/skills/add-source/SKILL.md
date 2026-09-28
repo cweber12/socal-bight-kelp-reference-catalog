@@ -205,6 +205,10 @@ or a `url`. Only equations an existing figure applies go in `equations`, each
 `{id, as_printed, where}` — the equation **exactly as the paper prints it**, with its page or
 equation number. Never adjusted, clipped or extended here.
 
+For `findings`, read the `findings` row of the same table: it says what makes an entry quotable and
+in which PR. Judge this draft against it as you judge `equations` against the figures committed
+today.
+
 ## 6. Run the gate, then check the record against the source
 
 ```sh

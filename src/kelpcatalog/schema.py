@@ -175,7 +175,7 @@ class Catalog:
 #
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
 # "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
-# "list[site_key]", "list[cite]", "list[variable]".
+# "list[finding]", "list[site_key]", "list[cite]", "list[variable]".
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -214,6 +214,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "url": (False, "str?"),
         "year": (True, "int"),
         "equations": (False, "list[eq]"),
+        "findings": (False, "list[finding]"),
         "topics": (True, "list[topic]"),
     },
     "excluded": {
@@ -300,6 +301,15 @@ def _type_ok(value: Any, kind: str) -> bool:
     if base == "list[eq]":
         return isinstance(value, list) and all(
             isinstance(e, dict) and {"id", "as_printed", "where"} <= set(e) for e in value
+        )
+    if base == "list[finding]":
+        # CONTEXT.md, references: a findings entry is {as_printed, where}. The check is
+        # list[eq]'s, the precedent that row's neighbour sets: both keys present, and a
+        # bare string - the quotation with no locator beside it - fails at the field.
+        # What a key holds is not checked here, as an equations entry's is not; whether
+        # each key holds what the row requires of it is review's question.
+        return isinstance(value, list) and all(
+            isinstance(e, dict) and {"as_printed", "where"} <= set(e) for e in value
         )
     if base in ("list[site_key]", "list[cite]"):
         return isinstance(value, list) and all(isinstance(e, dict) for e in value)
