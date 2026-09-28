@@ -1,16 +1,20 @@
 # PRD — Re-entry (milestone 6.4)
 
 Status: not active, and this file does not open 6.4; the owner does. Milestone 6.3c closed on
-2026-09-28 and no PRD reads `active` today — `CLAUDE.md` ("How work is tracked") caps how many
-milestones are active at once and does not require one. The owner's gate for opening 6.4
+2026-09-28 and no PRD's status line reads `active` today. The owner's gate for opening 6.4
 is #5 issuecomment-5823169852: open it when 6.3c closes and #198 and #208 have merged; on 2026-09-28
-the first of those three has happened and the other two have not. That comment's ground for holding
-6.4 shut is that nothing ready to run needs it open, and of this milestone's rows it names the six
-rule rows of Part three, #198, #179, #208 and this file's own revision (#210); it names rows of
-other milestones too. This file adds nothing to that list. The rows that wait for 6.4 to open are
-the migration rows (M1–M15) and the two closers. Which reading of "one milestone is active at a
-time" the practice of merging a row of an inactive milestone answers is still an open question on
-the Parking lot (settled point 6).
+the first of those three has happened and the other two have not. That comment gives three reasons
+for holding 6.4 shut, and they have not aged alike: the `coverage` reorder collides with the open
+6.3c rows that enter a source record, **spent** — 6.3c closed with none open; rows M1–M15 want two
+fields that do not exist yet, so opening now costs a second touch per record, **live**, and it is
+why the gate's other two conditions are #198 and #208; and nothing ready to run needs it open,
+whose own clause was "beside an active 6.3c" and so no longer reads as written. Of this milestone's
+rows that comment names the six rule rows of Part three, #198, #179, #208 and this file's own
+revision (#210) as needing no open milestone; it names rows of other milestones too, and this file
+adds nothing to that list. The rows that wait for 6.4 to open are the migration rows (M1–M15) and
+the two closers. Which reading of "one milestone is active at a time" the practice of merging a row
+of an inactive milestone answers is still an open question on the Parking lot (settled point 6),
+and this file takes no reading of it.
 Created: 2026-09-23
 Revised: 2026-09-28, for the grill of 2026-09-24 (#210): settled point 2 reversed, `coverage` added
 to every migration row's fills, the schema queue reordered, the Problem paragraph and three counts
@@ -27,9 +31,10 @@ schema queue is building toward, and Part two gives them no row.
 
 Of the 28: `variables` holds 369 bare-string entries across 15 records — the fifteen Part two
 migrates — and 224 map-form entries across 6 records, while 7 records carry `variables: []`.
-`license_stated_at` (PR #171) is present on 9 records and absent from 19; `site_key` (PR #189) is
-present on 5 and absent from 23; `citations` (PR #191) is present on 5 and absent from 23. The nine
-records entered since 2026-09-23 are exactly the nine that carry `license_stated_at`, so the 19
+`license_stated_at` (PR #171) is present on 9 records and absent from 19; `site_key` (PR #189) and
+`citations` (PR #191) are each non-empty on 5 and present-but-empty on 4 more, a state
+`CONTEXT.md`'s sources table distinguishes from absence. The nine records entered since
+2026-09-23 are exactly the nine that carry `license_stated_at`, so the 19
 lacking it are exactly the 15 migration rows plus the 4 records of Part two's closing paragraph,
 which is what row C2 counts. `catalog/sites/` holds 21 site records, listed in the `sites` field of
 5 source records: `klingbeil_kelp_genotypes` (10, PR #187) and the four `sbc_lter_*` records (11,
@@ -49,11 +54,11 @@ Each point names where it was decided; none restates the rule it points at.
    A document's phrases are not `variables`; they move verbatim to `measures` (row S3), and a
    non-tabular source has `variables: []`.
 2. **Four of a migration row's five fills move no notebook; the fifth moves one per topic the
-   record carries.** #90's failing test asserts that `build.py` renders no `variables`, and on
-   2026-09-28 no module under `src/kelpcatalog/` except `schema.py` names `variables`,
-   `license_stated_at`, `site_key` or `citations` as a field — the one other grep hit, `citations`
-   in `figure_provenance.py`, is the English word in a docstring — so those four move nothing
-   under `notebooks/`.
+   record carries, where it changes what the sources table renders.** #90's failing test asserts
+   that `build.py` renders no `variables`, and on 2026-09-28 no module under `src/kelpcatalog/`
+   except `schema.py` names `variables`, `license_stated_at`, `site_key` or `citations` as a
+   field — the one other grep hit, `citations` in `figure_provenance.py`, is the English word in a
+   docstring — so those four move nothing under `notebooks/`.
    `coverage` is the exception and it is new here: `build.py` carries `coverage` in
    `SOURCE_COLUMNS` and renders it truncated to `COVERAGE_CHARS`, so the reorder every migration
    row now carries (#203) changes the rendered cell. Measured on 2026-09-28 on two records, by
@@ -63,10 +68,15 @@ Each point names where it was decided; none restates the rule it points at.
    sub-topics across three topics, moved three: `1_physical_environment/11_ocean_climate.ipynb`,
    `1_physical_environment/13_waves_storms_sediment.ipynb` and
    `3_human_uses_management/31_water_quality_harvest.ipynb`. So the count is one notebook per
-   **topic**, not per tag. Neither moved `00_index`, whose generated cells are counts and a matrix
-   and carry no `coverage`; and the same measurement with a `license_stated_at` fill moved no
-   notebook at all. A migration PR that moves a notebook this does not predict reports the diff in
-   its body rather than absorbing it (#183, Goal).
+   **topic**, not per tag. Neither moved `00_index`: its generated cells are counts and a matrix
+   today, and its third section is unbuilt (#160), neither of whose candidate column sets carries
+   `coverage`. The same measurement with a `license_stated_at` fill moved no notebook at all.
+   **Both experiments changed the first characters of the field, so they measure the mechanism and
+   not how often it fires**: `build.py` truncates the cell to `COVERAGE_CHARS`, so a reorder that
+   leaves those characters alone moves nothing, and the Slices intro counts how many of the fifteen
+   records the reorder is expected to reach. Every migration PR reports which notebooks it moved,
+   and one that moves a notebook this does not predict reports the diff in its body rather than
+   absorbing it (#183, Goal).
 3. **`sccwrp_b08_rocky_reef`'s 13 phrases become column headers or `measures` depending on what
    its held files carry.** Whoever migrates it opens `data/raw/sccwrp_b08_rocky_reef/` (on
    2026-09-28 still `685_B08RockyReef.pdf` and its manifest, two files) and says which in the PR
@@ -130,11 +140,17 @@ row M6's `site_key`, which #177 reads for `pisco_kelp_forest`'s held site table.
 fill that changes what a reader sees, so it is what makes "what a first view needs" an order rather
 than a preference.
 
-**Because every migration row now carries the `coverage` reorder, every migration row moves
-notebooks** (settled point 2), and so collides in `notebooks/` with any other open PR that adds or
-edits a source record reaching the same topic notebooks. That collision is why the grill of
-2026-09-24 held 6.4 shut: on that day it was the 10 open 6.3c rows that entered a source record
-(#5 issuecomment-5823169852). 6.3c closed on 2026-09-28 with none open, so that case is spent. The
+**Every migration row now carries the `coverage` reorder, and a row moves notebooks when its
+reorder changes the first `COVERAGE_CHARS` characters `build.py` renders — not otherwise**
+(settled point 2). Which rows those are is not known in advance: measured 2026-09-28, 9 of the 15
+open `coverage` with an attribution clause and 6 open with the content itself
+(`noaa_oni`, `census_tiger_county_2025`, `cdfw_ds3135`, `sccwrp_b08_rocky_reef`,
+`sccwrp_kelp_status_2016`, `sccwrp_tr1289`), so a row of the second group may move none. Each row
+reports what it moved, as settled point 2 requires. A row that does move collides in `notebooks/`
+with any other open PR that adds or edits a source record reaching the same topic notebooks. That
+collision is the first of the three reasons the grill of 2026-09-24 gave for holding 6.4 shut: on
+that day it was the 10 open 6.3c rows that entered a source record
+(#5 issuecomment-5823169852). 6.3c closed on 2026-09-28 with none open, so that reason is spent. The
 live case beside this file is issue #209, which retags `sccwrp_tr1289` — the record row M15
 migrates — and is its own `catalog:` PR for exactly this reason.
 
@@ -156,7 +172,7 @@ in one touch. S5 (#179) is in the queue because S2 waits on it, not because the 
 | order | # | slice | seam | note |
 |---|---|---|---|---|
 | S1 | [#90](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/90) | expand: a `variables` entry may be `{name, description, unit, file?}` | `RULES["sources"]`, `_type_ok`, the `variables` row, `add-source` step 3 | **done** — merged as PR #193; the `variables` row admits `{name, description, unit, file?}` and existing string-shaped records still validate |
-| S3 | to file | `measures`: `list[str]`, a document's phrases as printed | `RULES["sources"]`, `_type_ok`, a new sources-table row, `add-source` step 3 | filed as #198 (the `#` cell is #201's to fill); unblocked; failing test: a non-string entry is a problem (#183, Goal); rows M13–M15 wait on it, and M12 if settled point 3 falls to `measures` |
+| S3 | [#198](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/198) | `measures`: `list[str]`, a document's phrases as printed | `RULES["sources"]`, `_type_ok`, a new sources-table row, the `variables` row for the one sentence #198's Seam names, `add-source` step 3 | unblocked; failing test: a non-string entry is a problem (#183, Goal); rows M13–M15 wait on it, and M12 if settled point 3 falls to `measures` |
 | S5 | [#179](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/179) | findings on references | the `references/` rule S2 points at | moved from milestone 6.6 to 6.4 on 2026-09-24 so it is not split from S2 (#5 issuecomment-5823169852); S2 waits on it |
 | S2 | [#208](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/208) | findings on sources | `RULES["sources"]`, `_type_ok`, a sources-table row that points at #179's rule | after S5 has written the rule it points at; failing test as #179's, on the sources table; `needs-triage` |
 | S4 | [#89](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/89) | `coverage_spans`, one entry per span the source states | `RULES["sources"]`, `_type_ok`, the sources table, `add-source` step 3 | `ready-for-human` until [#178](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/178) (6.6) merges, so it lands after this milestone's migration rows; the fills are row P1; a 6.6 row |
@@ -170,25 +186,26 @@ fields; as there, no failing test can be named — the gate checks the shape (S1
 audit checks each entry against the source. The **held** column counts the files under
 `data/raw/<id>/` on 2026-09-28 excluding manifests, because #90 makes `file` required on an entry
 when the record holds more than one data file. How a column that more than one held file carries
-takes `file` was parked for S1 and **S1's landing settled it** (#5 issuecomment-5822999312, closing
-issuecomment-5805925619 and issuecomment-5806181504): a column several files state the same way is
-one entry whose `file` names each, and a column two files state differently is one entry per
-statement. The records that raise it are `calcofi`, which states five columns in both its files;
-`sio_shore_stations`, which states that no single file carries all of its variables; and
-`pisco_kelp_forest`, whose 76 names are the union of seven tables' attributeNames, no table
-carrying all of them, 17 occurring in more than one, and `size` stating "number" in one table and
-"centimeter" in another — which the second limb resolves into one entry per statement. Whether a
-zip counts as one file or as what it contains is not settled by that pair and is the migrating
-PR's to state. The **fills** column names
+takes `file`, and whether a stored archive is one file or what it contains, were parked for S1 and
+**S1's landing settled both**: the `variables` row of `CONTEXT.md`'s sources table now answers each
+in its own words, and the parked lines are closed (#5 issuecomment-5822999312, closing
+issuecomment-5805925619 and issuecomment-5806181504). Read that row rather than this paragraph; it
+is the authority and nothing compares a copy to it. The records that raise it are `calcofi`, which
+states five columns in both its files; `sio_shore_stations`, which states that no single file
+carries all of its variables; and `pisco_kelp_forest`, whose 76 names are the union of seven
+tables' attributeNames, no table carrying all of them, 17 occurring in more than one, and `size`
+stating "number" in one table and "centimeter" in another. The four rows holding archives — M1, M7,
+M10 and M11 — take their `file` values from that row's archive clause, which is also why the
+**held** column counts each archive as one. The **fills** column names
 every field the record has to state in that PR; `coverage` on every row is the reorder of #203
 (settled points 2 and 4), which is what makes the row move notebooks.
 
 | order | # | id | `variables` today | held | fills | note |
 |---|---|---|---|---|---|---|
-| M1 | to file | `klingbeil_kelp_genotypes` | 6 strings → maps | 1 (zip) | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | filed as #199 (the `#` cell is #201's to fill); one of five records whose `sites` is non-empty, and the only one outside the `sbc_lter_*` group (ten site records, PR #187); columns the source never names and its undefined `999` stay out of `variables` (#90, Decision; #5 issuecomment-5761453102) |
-| M2 | to file | `sbc_lter_bottom_temperature` | 5 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | the four `sbc_lter_*` rows share one EML vocabulary and eleven site records, and run in the order the 6.3c table entered them; M2 and M3 were not checked for the code-list disagreement #90's comments record on M4 and M5 |
+| M1 | [#199](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/199) | `klingbeil_kelp_genotypes` | 6 strings → maps | 1 (zip) | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | `needs-triage`, because a migration row waits for 6.4 to open; one of five records whose `sites` is non-empty, and the only one outside the `sbc_lter_*` group (ten site records, PR #187); columns the source never names and its undefined `999` stay out of `variables` (#90, Decision; #5 issuecomment-5761453102) |
+| M2 | to file | `sbc_lter_bottom_temperature` | 5 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | the four `sbc_lter_*` rows share one EML vocabulary and draw their sites from the same eleven site records (11, 11, 5 and 5), and run in the order the 6.3c table entered them; M2 and M3 were not checked for the code-list disagreement #90's comments record on M4 and M5 |
 | M3 | to file | `sbc_lter_kelp_biomass` | 25 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | as M2 |
-| M4 | to file | `sbc_lter_kelp_removal_cover` | 22 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | the EML's `SITE` and `TREATMENT` code lists contradict the held file (#90, comment of 2026-09-20); S1 says what the record states, and the `coverage` fill quotes both statements under #204 |
+| M4 | to file | `sbc_lter_kelp_removal_cover` | 22 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | two separate disagreements. The EML's `SITE` and `TREATMENT` code lists contradict the held file (#90, comment of 2026-09-20), which is a `variables` matter and S1 says what the record states. Separately, the `coverage` fill gains **the two EML `methods` sentences row M5 carries** and this record does not, under R3 (#204), quoting both and resolving neither — the owner's decision of 2026-09-24, #5 issuecomment-5822998934 |
 | M5 | to file | `sbc_lter_kelp_removal_density` | 24 strings → maps | 1 | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | the EML's `TREATMENT` code list contradicts the held file (#90, second comment); as M4 |
 | M6 | to file | `pisco_kelp_forest` | 76 strings → maps | 8 (7 CSV, 1 PDF) | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | the 76 are the union of seven tables' attributeNames, as the record states; the site table is a held file |
 | M7 | to file | `sio_shore_stations` | 16 strings → maps | 5 (zip) | `license_stated_at`, `license` (the cleanup, #38), `site_key`, `citations`, `variables`, `coverage` | one archive per station; `{file}` alone is the `site_key` form for a file that is one site's (`CONTEXT.md`, `site_key`) |
@@ -255,7 +272,9 @@ No `CONTEXT.md` change. No issue filed or edited: the migration rows are filed w
 record edit and no notebook regenerated. 6.4 does not become active by this file. No `version`
 field (#38, amendment; #172). No builder change: how a view renders `measures`, findings or
 `coverage_spans` is 6.6's. This file decides no row's schedule beyond what the owner's gate
-at #5 issuecomment-5823169852 already decides.
+at #5 issuecomment-5823169852 and the grill's decisions of 2026-09-24 already entail: the two
+ordering sentences under Part three are derived from #203's Non-goals and from #204, not decided
+here.
 
 ## Done
 
