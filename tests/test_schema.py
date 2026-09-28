@@ -812,6 +812,53 @@ def test_citations_values_are_non_empty_strings(key: str):
     ]
 
 
+# --- findings: a result a reference's own document prints (#179) -------------------
+#
+# CONTEXT.md, references: findings is a list of {as_printed, where}. The shape is checked
+# here and nothing else: whether `as_printed` is a whole sentence the document prints, and
+# whether `where` is a locator a reader can open, are the audit's questions (PR #170,
+# F3/F4/F9), and no record carries the field yet (#179's non-goal).
+#
+# The check is `list[eq]`'s, the precedent the row's neighbour sets, so what a key holds
+# is not checked either place. Deepening both is not this slice's.
+
+# The two keys, as a literal: the test below parametrizes over this tuple, and a member
+# dropped from the constant would drop its case, not fail it (PR #185, F5).
+FINDING_KEYS = ("as_printed", "where")
+
+A_FINDING = {
+    "as_printed": (
+        "Canopy biomass in the study area declined over the record. The decline was "
+        "greatest at the shallowest stations."
+    ),
+    "where": "Results, printed page 88 (PDF page 4)",
+}
+
+
+def test_a_findings_entry_validates():
+    assert validate(a_reference(findings=[A_FINDING])) == []
+
+
+def test_findings_is_optional_and_the_empty_list_is_a_reference_with_none_entered():
+    assert validate(a_reference()) == []
+    assert validate(a_reference(findings=[])) == []
+
+
+def test_a_findings_entry_that_is_a_bare_string_is_a_problem():
+    # The shape a hand reaches for: the quotation with no locator beside it.
+    assert reports(validate(a_reference(findings=[A_FINDING["as_printed"]]))) == [
+        ("findings", "expected list[finding]")
+    ]
+
+
+@pytest.mark.parametrize("missing", FINDING_KEYS)
+def test_a_findings_entry_missing_a_key_is_a_problem(missing: str):
+    entry = {k: v for k, v in A_FINDING.items() if k != missing}
+    assert reports(validate(a_reference(findings=[entry]))) == [
+        ("findings", "expected list[finding]")
+    ]
+
+
 # --- variables: the named columns or fields of a source's data files (#90) ----------
 #
 # CONTEXT.md, sources: an entry is {name, description, unit, file?}, no other key, and
@@ -1441,6 +1488,7 @@ WRONG_VALUE: dict[str, Any] = {
     "list[str]": "one string, not a list",
     "list[topic]": "bed-state",
     "list[eq]": ["not a mapping"],
+    "list[finding]": ["not a mapping"],
     "list[site_key]": ["SITE"],
     "list[cite]": ["A. Author. 2020. A title."],
     # A half-migrated record: one form to a list (CONTEXT.md, sources, `variables`).

@@ -376,6 +376,7 @@ Required fields are marked `*`. "Where from" says what may supply the value.
 | `doi` / `url` | str or null; at least one non-null | |
 | `year`* | int | |
 | `equations` | list of `{id, as_printed, where}` | only equations a figure applies; verbatim |
+| `findings` | list of `{as_printed, where}` | a result the document itself prints, quoted — never a finding computed here, which the table of *The rule* excludes. `as_printed` is a whole sentence or sentences exactly as the document prints them, never a clause; `where` is a locator a reader can open — section, printed page, PDF page. An entry is quoted because a view needs it, in the `catalog:` PR of that view, and never harvested in bulk, so the field grows with use |
 | `topics`* | list of topic tags, ≥ 1 | |
 
 ### excluded/<slug>.md

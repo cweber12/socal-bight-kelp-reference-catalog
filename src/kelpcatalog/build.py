@@ -283,10 +283,10 @@ def _sources_by_region(topic: str, sources: list[Record], catalog: Catalog) -> l
 def _references(topic: str, references: list[Record]) -> list[str]:
     """Every rendering of a reference goes through here.
 
-    Today a reference record is a citation - citekey, ref, doi/url, year - so a section
-    renders a bibliography. A `findings` field holding what a study states, verbatim with
-    its page or section, is decided but not landed; when it lands this list becomes a
-    table, and this is the one function that changes.
+    Today no reference record carries a `findings` entry - the field landed with #179
+    (CONTEXT.md, references) and nothing fills it - so a section renders a bibliography.
+    When a record carries one this list becomes a table, and this is the one function
+    that changes.
     """
     if not references:
         return [NO_REFERENCES]

@@ -44,12 +44,21 @@ them from where this slice had to decide something `CONTEXT.md` did not settle, 
 between what the tests construct and what a user will do. Name what to check against what — the
 catalog directly, not the PR's own tests.
 
-**One standing question, added to those two or three rather than counted among them.** `CLAUDE.md`,
-under "Changing a rule in `CONTEXT.md`", names the words this applies to. Where the diff adds
-one of them, ask the auditor to name the set and count it from the repo. That section states the
-practice for an author; this asks it of a reader who did not write the sentence, and the audits
-that section cites are where the practice came from. Ask for the count, never whether the
-quantifier reads correctly — phrased that way it returns the author's confidence.
+**Standing questions, added to those two or three rather than counted among them.** Each is
+conditional: ask it where the diff gives it something to check, and leave it out otherwise.
+
+- `CLAUDE.md`, under "Changing a rule in `CONTEXT.md`", names the words the first applies to. Where
+  the diff adds one of them, ask the auditor to name the set and count it from the repo. That
+  section states the practice for an author; this asks it of a reader who did not write the
+  sentence, and the audits that section cites are where the practice came from. Ask for the count,
+  never whether the quantifier reads correctly — phrased that way it returns the author's
+  confidence.
+- Where the diff adds a `findings` entry to a `references/` record, ask the auditor to read ±1
+  sentence of the document around every entry and say what the sentences either side hold. A
+  `findings` entry is a quotation, and a quotation that stops early is true of what it prints and
+  wrong about what the document says: PR #170's F3, F4 and F9 were three of them in one diff. Ask
+  for what the neighbouring sentences say, never whether the quotation is complete — phrased that
+  way it returns the author's confidence, as the first one would.
 
 **Claims to re-run.** Every assertion in your PR body, flat, as things to re-run rather than facts:
 counts, byte-identity, "the gate is green", coverage figures. Put the one you are least sure of in
