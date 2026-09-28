@@ -815,15 +815,14 @@ def test_citations_values_are_non_empty_strings(key: str):
 # --- findings: a result a reference's own document prints (#179) -------------------
 #
 # CONTEXT.md, references: findings is a list of {as_printed, where}. The shape is checked
-# here and nothing else: whether `as_printed` is a whole sentence the document prints, and
-# whether `where` is a locator a reader can open, are the audit's questions (PR #170,
-# F3/F4/F9), and no record carries the field yet (#179's non-goal).
+# here and nothing else: whether each key holds what that row requires of it is the audit's
+# question, and a quotation that stops early is what the audit is looking for (PR #170,
+# F3/F4/F9). No record carries the field yet (#179's non-goal).
 #
 # The check is `list[eq]`'s, the precedent the row's neighbour sets, so what a key holds
 # is not checked either place. Deepening both is not this slice's.
 
-# The two keys, as a literal: the test below parametrizes over this tuple, and a member
-# dropped from the constant would drop its case, not fail it (PR #185, F5).
+# The two keys, as a literal, pinned by the first test below (PR #185, F5).
 FINDING_KEYS = ("as_printed", "where")
 
 A_FINDING = {
@@ -833,6 +832,14 @@ A_FINDING = {
     ),
     "where": "Results, printed page 88 (PDF page 4)",
 }
+
+
+def test_the_two_findings_keys_are_pinned():
+    # The constant above is what the missing-key test is parametrised over, so a member
+    # dropped from it would drop its case rather than fail it. Measured on this branch:
+    # dropping `where` leaves tests/test_schema.py at 255 passed and nothing failed. The
+    # literal is what fails instead, as HELD_TIERS and TABLE_TIERS do above.
+    assert FINDING_KEYS == ("as_printed", "where")
 
 
 def test_a_findings_entry_validates():

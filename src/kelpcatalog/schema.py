@@ -307,7 +307,7 @@ def _type_ok(value: Any, kind: str) -> bool:
         # list[eq]'s, the precedent that row's neighbour sets: both keys present, and a
         # bare string - the quotation with no locator beside it - fails at the field.
         # What a key holds is not checked here, as an equations entry's is not; whether
-        # as_printed is a whole sentence the document prints is review's question.
+        # each key holds what the row requires of it is review's question.
         return isinstance(value, list) and all(
             isinstance(e, dict) and {"as_printed", "where"} <= set(e) for e in value
         )

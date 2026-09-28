@@ -205,8 +205,9 @@ or a `url`. Only equations an existing figure applies go in `equations`, each
 `{id, as_printed, where}` — the equation **exactly as the paper prints it**, with its page or
 equation number. Never adjusted, clipped or extended here.
 
-This skill fills no `findings`: the `findings` row of `CONTEXT.md`'s `references/<citekey>.md`
-table says when an entry is quoted, and it is not here. Leave the key out.
+For `findings`, read the `findings` row of the same table: it says what makes an entry quotable and
+in which PR. Judge this draft against it as you judge `equations` against the figures committed
+today.
 
 ## 6. Run the gate, then check the record against the source
 
