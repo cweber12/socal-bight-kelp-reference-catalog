@@ -1054,6 +1054,78 @@ def test_variables_file_is_optional():
     assert validate(a_fetched_source(variables=[{**A_VARIABLE, "file": None}])) == []
 
 
+# --- measures: a phrase a document source prints for what it reports (#198) --------
+#
+# CONTEXT.md, sources: measures is a list of str. The shape is checked here and nothing
+# else: whether an entry holds what that row requires of it is the audit's question, and
+# a quotation that stops early is what the audit is looking for (PR #170, F3/F4/F9). The
+# type is `access`'s, so _type_ok needed no branch of its own and these tests pin the
+# field to it. No record carries the field - 0 of 28 on this branch, and #198's non-goal
+# keeps it so; rows M12-M15 of docs/prd/re-entry.md are what fill it.
+#
+# The fixture is FETCHED because the records that will carry the field are: measured
+# 2026-09-28, the four rows M13-M15 and M12 name - cdfw_kelp_esr, sccwrp_kelp_status_2016,
+# sccwrp_tr1289 and sccwrp_b08_rocky_reef, the last of them only if settled point 3 falls
+# to measures - each state `tier: FETCHED`. A field's default fixture may be the tier that
+# cannot carry it (PR #189, F2). The row ties the field to no tier, and the last test
+# below pins that nothing checks one.
+
+# Two entries read from catalog/sources/sccwrp_kelp_status_2016.md's `variables` on
+# 2026-09-28; row M14 of docs/prd/re-entry.md is what moves them here. Neither is committed
+# to a record by this slice, and nothing compares these literals to that record - they are
+# a fixture, and the parked "no test parses CONTEXT.md" class covers the comparison.
+MEASURES = [
+    "canopy surface area of each kelp bed",
+    "Presence/absence of apical meristem (scimitar = growing tips)",
+]
+
+# Values a list of phrases gets wrong, as a literal: the test below is parametrised over
+# this tuple, so a member dropped from it would drop its case rather than fail it (PR
+# #185, F5). 5 and None are the non-string entry the failing test names; the nested list
+# and the map are the two shapes a hand reaches for when an entry wants a locator beside
+# it, which this field has no room for; "" and " " are strings that state no phrase.
+NON_PHRASE_ENTRIES = (5, None, ["a phrase"], {"as_printed": "a phrase"}, "", " ")
+
+
+def test_the_non_phrase_entries_are_pinned():
+    # The constant above is what the next test is parametrised over, so the literal is
+    # what fails when a member goes missing, as FINDING_KEYS and VARIABLE_KEYS are above.
+    assert NON_PHRASE_ENTRIES == (5, None, ["a phrase"], {"as_printed": "a phrase"}, "", " ")
+
+
+def test_measures_entries_validate():
+    assert validate(a_fetched_source(measures=MEASURES)) == []
+
+
+def test_measures_is_optional_and_the_empty_list_is_a_source_with_none_entered():
+    assert validate(a_fetched_source()) == []
+    assert validate(a_fetched_source(measures=[])) == []
+
+
+@pytest.mark.parametrize("entry", NON_PHRASE_ENTRIES, ids=repr)
+def test_a_non_string_entry_in_measures_is_a_problem(entry: Any):
+    assert reports(validate(a_fetched_source(measures=[entry]))) == [
+        ("measures", "expected list[str]")
+    ]
+
+
+def test_measures_is_not_a_list():
+    # The field itself, not an entry: a record that folded its phrases into one string.
+    assert reports(validate(a_fetched_source(measures=MEASURES[0]))) == [
+        ("measures", "expected list[str]")
+    ]
+
+
+def test_measures_is_tied_to_no_tier():
+    # The row names no tier, so neither does RULES. The case that motivates the silence is
+    # NOT HELD - a document a record does not hold can still print a phrase the record
+    # quotes - and the loop says nothing about the others beyond that no rule excludes
+    # them. Every tier's fixture carries the field so that adding a tier rule fails this
+    # test rather than passing unremarked.
+    for tier, builder in SOURCE_OF_TIER.items():
+        assert validate(builder(measures=MEASURES)) == [], tier
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)

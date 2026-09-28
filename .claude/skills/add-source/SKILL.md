@@ -118,6 +118,9 @@ does not list.
 - `variables`: one map per column, as the `variables` row of the table says. Records entered
   before that row carry the bare-string form instead, `noaa_oni` below among them, and #182
   retires it: a record entered now is born as maps.
+- `measures`: one phrase per entry, as the `measures` row of the table says; `[]` where you enter
+  none, and a source that is not a document enters none — the `variables` row's closing clause is
+  the other half of that case.
 - `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
   draws on several places, name each in `coverage_stated_at` in the order its clause appears in
   `coverage`. A span read off a file's first and last rows is a fact of the copy you fetched: date
@@ -139,7 +142,7 @@ does not list.
   in the shape.
 
 `catalog/sources/noaa_oni.md` shows all of this but `citations`, `derived_from`,
-`license_stated_at` and `site_key`, which it was entered before and does not yet carry:
+`license_stated_at`, `measures` and `site_key`, which it was entered before and does not yet carry:
 `file: null` and `transcribed_from: null` among its rows; a licence quoted from the NWS
 disclaimer two hops out, with the footer it was reached through, still inside `license` until #38
 moves it; and a `coverage_stated_at` naming the landing page, then the file, in the order

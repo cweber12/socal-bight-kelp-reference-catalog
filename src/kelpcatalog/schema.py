@@ -192,6 +192,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "license": (True, "str"),
         "license_stated_at": (False, "str?"),
         "variables": (True, "list[variable]"),
+        "measures": (False, "list[str]"),
         "coverage": (False, "str?"),
         "coverage_stated_at": (False, "str?"),
         "retrieved": (True, "date?"),
