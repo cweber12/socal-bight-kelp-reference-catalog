@@ -1,12 +1,15 @@
 # PRD — Monitoring sources (milestone 6.3c)
 
-Status: active — opened by the owner on 2026-09-17, when every `ready-for-agent` row of milestone
-6.3's table had merged (PR #130 was the last then; rows 7–14 were its open `needs-triage` rows,
-and 7 and 8 have since merged as PRs #184 and #185, leaving 9–14, frozen whether or not the exit
-trigger on #84 has fired); milestone 6.3b's **beds** track follows this one, since no row here
-needs a bed record and the region nodes 6.3 delivered let each row here tag its county or island on
-entry rather than in a re-tag pass, while its **sites** track does not wait and runs beside this
-milestone except its last row, whose schedule is the owner's call, for the reasons
+Status: done (seventeen source records, one `references/` record, one transcribed table under
+`catalog/tables/` and one `excluded/` record, the last merged as PR #254 on 2026-09-28; rows 14 and
+18 left the milestone without a record, and row 21 is withdrawn for the reason the prose under the
+Slices table gives) — opened by the owner on 2026-09-17, when every `ready-for-agent` row of
+milestone 6.3's table had merged (PR #130 was the last then; rows 7–14 were its open
+`needs-triage` rows, and 7 and 8 have since merged as PRs #184 and #185, leaving 9–14, frozen
+whether or not the exit trigger on #84 has fired); milestone 6.3b's **beds** track follows this one,
+since no row here needs a bed record and the region nodes 6.3 delivered let each row here tag its
+county or island on entry rather than in a re-tag pass, while its **sites** track does not wait and
+runs beside this milestone except its last row, whose schedule is the owner's call, for the reasons
 `docs/prd/regions-and-authorities.md` gives in its Sites track section
 Created: 2026-09-15
 Revised: 2026-09-15, after the audit of PR #110 found the table carried no routes, one reading
@@ -15,18 +18,24 @@ four Parking-lot lines the text described as filed were not. Revised again the s
 second audit: ids added, `steward` aligned with the seven held records, and the exclusion reason
 made the one reading 1 does not contradict. Revised 2026-09-16, after the second manifest review:
 row 17 added, NOAA Fisheries Rocky Reefs HAPC GIS, the one item of that review with a route that
-verified on the day; rows 17–20 became 18–21. In the same revision, after the audits of PR #115:
-reading 4, the Problem paragraph, the Slices intro, the row's note and Done rewritten to stay true
-of the row, and the review's other lead recorded under "Found while reviewing". Revised
+verified on the day; rows 17–20 became 18–21. In the same revision, after the audits of
+PR #115: reading 4, the Problem paragraph, the Slices intro, the row's note and Done rewritten to
+stay true of the row, and the review's other lead recorded under "Found while reviewing". Revised
 2026-09-17, on filing: the status line, the issue numbers in the Slices table, the Slices intro's
 tense, the line under the table, and reading 4 extended to record the reading #105 chose; and
 2026-09-18, after the audit of PR #151, reading 4 rewritten to quote the clause rather than
 paraphrase it, and the status line's count of open 6.3 rows corrected. Revised 2026-09-19, after
-the acquisition grill: reading 2 gained the proportionality clause, which overturns #106's "the fix
-is to hold the bytes" at a size #106 never faced. Revised 2026-09-24, on #173: the status line says
-that 6.3b's sites track runs beside this milestone, its last row excepted, while its beds track
-follows, and its account of
-milestone 6.3's open rows is corrected — rows 7 and 8 have merged since 2026-09-17.
+the acquisition grill: reading 2 gained the proportionality clause, which overturns #106's "the
+fix is to hold the bytes" at a size #106 never faced. Revised 2026-09-24, on #173: the status line
+says that 6.3b's sites track runs beside this milestone, its last row excepted, while its beds
+track follows, and its account of milestone 6.3's open rows is corrected — rows 7 and 8 have
+merged since 2026-09-17. Revised 2026-09-28, on #255: the status line says done and names what
+finished the milestone, row 21 is marked withdrawn in its own note cell and the limb it clipped is
+named, and rows 14 and 18 are recorded as having left the milestone without a record. In the same
+revision, after the audit of PR #256: reading 8's criterion is recorded as failing for row 21's
+paper, with its named pair and the superseded admission test left to #207; the `Done` criterion
+gains what it did not anticipate; and the `calcofi` bullet records the owner's settlement of
+2026-09-24.
 
 ## Problem
 
@@ -166,10 +175,30 @@ are what was observed then, not what the record enters. The **id** column is the
 | 18 | [#148](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/148) | `cdfw_marine_habitat_gis` | CDFW California marine habitat GIS | none given; identify the layer | `substrate/rock-mapping` | `scb` | `needs-triage` until the exact layer and its Bight coverage are identified — a fact question, not a vocabulary one; the id follows the layer's own number once known |
 | 19 | [#149](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/149) | `nasa_modis_aqua_chl` | NASA Ocean Color chlorophyll, MODIS Aqua L3 | doi:10.5067/AQUA/MODIS/L3B/CHL/2018 | bare `ocean-climate` | `global` | a global product; `global` if it states no regional bound, as `noaa_oni` does |
 | 20 | [#150](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/150) | `stebbins-wetzer-2023` | exclude: Stebbins & Wetzer 2023, Bight isopod review | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a review paper with no dataset behind it |
-| 21 | [#150](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/150) | `cheresh-2023` | exclude: Cheresh et al. 2023, California Current corrosive events | title as the manifest gives it; find the DOI | — | — | `excluded/` record; reason: a study paper with no dataset behind it that its host publishes |
+| 21 | [#150](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/150) | `cheresh-2023` | exclude: Cheresh et al. 2023, California Current corrosive events | title as the manifest gives it; find the DOI | — | — | **Withdrawn** — see below the table; `excluded/` record; reason: a study paper with no dataset behind it that its host publishes |
 
 Rows 1–17 and 19 were filed `ready-for-agent`. Row 18 (#148) is `needs-triage` until the layer is
-identified. Rows 20–21 are one `ready-for-agent` issue, #150.
+identified. Rows 20–21 were filed as one `ready-for-agent` issue, #150.
+
+**Row 21 is withdrawn, not deferred**, and its text is left standing so the clip stays legible.
+Its **note** cell states the criterion as "a study paper with no dataset behind it that its host
+publishes", dropping *the paper or* from reading 8's sentence above, and that limb is the one the
+row turns on: the paper publishes a dataset itself, so reading 8's own criterion **fails** for it.
+The evidence is at #150 issuecomment-5863257066, and `cheresh-2023` is parked on #5
+(issuecomment-5864447533), whose entry names the one measurement that decides whether it becomes
+a row or no record of any kind. On the clipped limb alone: reading 8 says *the paper or its host*,
+row 20 names no publisher at all, and row 21 narrows it to the host.
+
+**Reading 8's sentence is not rewritten here, and two things in it are stale.** The criterion as a
+test is sound; what fails is its application. The sentence names this paper as one of two items with
+no dataset behind them, which is false of this one; and the owner's decision of 2026-09-24 (#5
+issuecomment-5822998934, line 10, recorded in #214) enters a context paper as a document record
+under `catalog/sources/`, so lacking a dataset is no longer the admission test either. Both belong
+to **#207**, which writes the `excluded/` rule and reads these rows.
+
+Rows 14 (#144) and 18 (#148) left milestone 6.3c without a record, on the owner's word of
+2026-09-28, and both stay open and `needs-triage`: the host of #144 did not answer when probed
+on 2026-09-27, and #148's layer is still unidentified, which its own title says.
 
 ## Found while reviewing, not filed as rows
 
@@ -182,7 +211,8 @@ identified. Rows 20–21 are one `ready-for-agent` issue, #150.
   dataset it leads to is unnamed. A Parking-lot line (filed 2026-09-16), with that review's other
   leads, until a route is named.
 - CalCOFI appears in the manifest as a lead. It is held as `calcofi`, one station. Whether the record
-  widens is a 6.4 re-entry question.
+  widens was a 6.4 re-entry question, and the owner settled it on 2026-09-24: it does not widen past
+  one station (#5 issuecomment-5822998934, which says that decision closes this bullet).
 - Hoel et al. 2025's study data, kelp canopy against nutrient sources, is the one `ON REQUEST`
   candidate worth returning to once H-ids have a registry.
 
@@ -201,3 +231,7 @@ row 18 either merged after its layer was identified or still open with the quest
 exclusions in `excluded/`; and no topic notebook renders its question over an empty *sources* count
 except `canyon-dynamics`, which neither manifest reached, and `restoration-mitigation`, whose two
 leads from the 2026-09-16 review are parked without a route.
+
+**What this criterion, written before the work, did not anticipate**, and the status line records:
+rows 14 and 18 stayed open and left the milestone rather than merging, and row 21 was withdrawn, so
+`excluded/` holds one record and not two. The prose under the Slices table says why for each.
