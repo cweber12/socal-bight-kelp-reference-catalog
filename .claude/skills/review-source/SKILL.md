@@ -166,9 +166,9 @@ rather than the console (*Hazards*).
 **One link can carry several candidates.** A paper, the dataset its data-availability statement
 names, and the code repository beside it are three things with three routes and three verdicts. A
 project report that states activities and names the data pages it reports on is the route to a
-dataset, not the source. Separate them here and rank them, in two cases. What the input itself is
-— the paper, the dataset its data-availability statement names, the code beside it — gets its own
-line through steps 4–7, as the paper and the Dryad deposit behind it did on 2026-09-28
+dataset, not the source. Separate them here and rank them, in two cases. What the input itself
+is — the paper, the dataset its data-availability statement names, the code beside it — gets its
+own line through steps 4–7, as the paper and the Dryad deposit behind it did on 2026-09-28
 (`source-review-2026-09-28.md`, §11). What the input merely links — another dataset on the same
 project or deployment page, another paper of the same project — is identified to its machine
 metadata (rung 1 or 2) and no further, and the set goes to the Parking lot as one line naming
