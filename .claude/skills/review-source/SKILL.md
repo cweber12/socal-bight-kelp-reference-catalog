@@ -162,7 +162,8 @@ and is for the PDF on which the literal one printed `PAGES 0`: it returned 62 pa
 San Diego report whose fonts are subset. A PDF that is image only returns nothing from either, and
 that is the finding. A PDF can also return fragments from the CMap one alone: the 2016 NLT
 sampling report (306,881 bytes, `%PDF-1.5`) gave `PAGES 0 CHARS 0` from the literal extractor and
-`CMAPS 1 PAGES 4 CHARS 312` from the CMap one, coordinate strings and no site name among them
+`CMAPS 1 PAGES 4 CHARS 312` from the CMap one — coordinate strings in degrees and minutes, the
+words `on boat GPS` and `boat (473)`, and `Backup sites: 5' and 2'`, no site name among them
 (2026-09-29). Record both extractors' counts and what the fragments are, and do not count the
 document as read. Count terms in the `.txt` in Python, and write extracted text to a file
 rather than the console (*Hazards*).
@@ -372,20 +373,28 @@ whose text above was written without an example of the case it names.
 - **Multi-line content goes to a file with an editor tool** (`CLAUDE.md`, "Branches, commits,
   PRs"). Backticks inside a `python -c "…"` string are evaluated by bash first.
 - **`.venv/Scripts/python`, not bare `python`**, for the extractors, the probe and the counts.
-- **`probe.py` cannot verify `doi.org`'s certificate from `.venv`.** Both fetches of
-  `https://doi.org/10.1575/1912/bco-dmo.709181.1` on 2026-09-29 returned `error: [SSL:
+- **`probe.py` failed to verify `doi.org`'s certificate from `.venv` once, and verified it later
+  the same day.** At about 05:49 on 2026-09-29 both fetches of
+  `https://doi.org/10.1575/1912/bco-dmo.709181.1` returned `error: [SSL:
   CERTIFICATE_VERIFY_FAILED] … unable to get local issuer certificate`, both booleans null, while
   `www.bco-dmo.org`, `datadocs.bco-dmo.org`, `s3.amazonaws.com` and `erddap.bco-dmo.org` verified
-  in the same session; `ssl.get_default_verify_paths()` in that venv names
-  `C:\Program Files\Common Files\SSL\cert.pem`. For the DOI chain use
+  in the same session; at about 07:55 the same venv verified `doi.org` on three of three probes
+  (the audit of PR #277), with `certifi` absent, `SSL_CERT_FILE` unset and
+  `ssl.get_default_verify_paths()` naming `C:\Program Files\Common Files\SSL/cert.pem` both
+  times. So probe first; when the probe errors, fall back to
   `curl -s -o /dev/null -A "<ua>" -w "%{http_code} %{redirect_url}\n" <url>` one hop at a time,
-  and for rung 1 `curl -s -L -A "<ua>" -H "Accept: application/vnd.citationstyles.csl+json"
-  <doi-url>`, and paste those lines into the note in place of the probe record. Whether the venv
-  gets a CA bundle is not decided here.
-- **A link count over a Next.js page doubles.** `grep -o 'https://datadocs[^"<> ]*'` on the
-  709181 landing HTML returned 14 lines for 7 URLs, each once plain and once with a trailing
-  backslash, because the flight payload carries the page's URLs JSON-escaped (2026-09-29). Drop
-  the `\`-terminated form before counting.
+  which carries the status and the redirect target and none of step 4's other fields — fetch the
+  terminal hop's body to a file with `curl -s -A "<ua>" -o <path> <url>` to record its bytes and
+  what it is — and, when rung 1's own endpoint errors too,
+  `curl -s -L -A "<ua>" -H "Accept: application/vnd.citationstyles.csl+json" <doi-url>` for the
+  DOI's Crossref metadata. Say in the note which of the two ran. Whether the venv gets a CA
+  bundle is not decided here.
+- **A link count over a Next.js page over-counts, and not by a fixed factor.**
+  `grep -o 'https://datadocs[^"<> ]*'` on the 709181 landing HTML (171,164 bytes, 2026-09-29)
+  returned 20 matches for 7 distinct URLs: six of the seven appear twice as rendered `<a href>`
+  and once JSON-escaped with a trailing backslash in the flight payload, and the seventh, the
+  JSON-LD `contentUrl`, once plain and once escaped. Count distinct URLs in Python after stripping
+  the trailing backslash, and report the page's links as that count, not the match count.
 
 ## Non-goals
 
