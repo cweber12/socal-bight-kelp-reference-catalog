@@ -160,7 +160,11 @@ and write `<path>.txt` beside it. Try the literal one first:
 Springer PDF. `pdftext_cmap.py` decodes glyph-index strings through each font's `/ToUnicode` CMap
 and is for the PDF on which the literal one printed `PAGES 0`: it returned 62 pages from a City of
 San Diego report whose fonts are subset. A PDF that is image only returns nothing from either, and
-that is the finding. Count terms in the `.txt` in Python, and write extracted text to a file
+that is the finding. A PDF can also return fragments from the CMap one alone: the 2016 NLT
+sampling report (306,881 bytes, `%PDF-1.5`) gave `PAGES 0 CHARS 0` from the literal extractor and
+`CMAPS 1 PAGES 4 CHARS 312` from the CMap one, coordinate strings and no site name among them
+(2026-09-29). Record both extractors' counts and what the fragments are, and do not count the
+document as read. Count terms in the `.txt` in Python, and write extracted text to a file
 rather than the console (*Hazards*).
 
 **One link can carry several candidates.** A paper, the dataset its data-availability statement
@@ -368,6 +372,20 @@ whose text above was written without an example of the case it names.
 - **Multi-line content goes to a file with an editor tool** (`CLAUDE.md`, "Branches, commits,
   PRs"). Backticks inside a `python -c "…"` string are evaluated by bash first.
 - **`.venv/Scripts/python`, not bare `python`**, for the extractors, the probe and the counts.
+- **`probe.py` cannot verify `doi.org`'s certificate from `.venv`.** Both fetches of
+  `https://doi.org/10.1575/1912/bco-dmo.709181.1` on 2026-09-29 returned `error: [SSL:
+  CERTIFICATE_VERIFY_FAILED] … unable to get local issuer certificate`, both booleans null, while
+  `www.bco-dmo.org`, `datadocs.bco-dmo.org`, `s3.amazonaws.com` and `erddap.bco-dmo.org` verified
+  in the same session; `ssl.get_default_verify_paths()` in that venv names
+  `C:\Program Files\Common Files\SSL\cert.pem`. For the DOI chain use
+  `curl -s -o /dev/null -A "<ua>" -w "%{http_code} %{redirect_url}\n" <url>` one hop at a time,
+  and for rung 1 `curl -s -L -A "<ua>" -H "Accept: application/vnd.citationstyles.csl+json"
+  <doi-url>`, and paste those lines into the note in place of the probe record. Whether the venv
+  gets a CA bundle is not decided here.
+- **A link count over a Next.js page doubles.** `grep -o 'https://datadocs[^"<> ]*'` on the
+  709181 landing HTML returned 14 lines for 7 URLs, each once plain and once with a trailing
+  backslash, because the flight payload carries the page's URLs JSON-escaped (2026-09-29). Drop
+  the `\`-terminated form before counting.
 
 ## Non-goals
 
