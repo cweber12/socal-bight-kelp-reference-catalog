@@ -42,14 +42,22 @@ class Gate:
 def _run(cmd: list[str]) -> tuple[bool, str]:
     """Run a child in the repo root and return its verdict with both of its streams.
 
-    A Python child writes to a pipe in the console codepage on Windows, so `PYTHONIOENCODING`
-    tells it to write UTF-8 instead; `errors="replace"` covers a child that writes a byte no
-    setting reaches, such as a tool that is not Python. Without both, one `…` in a failing
-    test's diff killed the reader thread and the row's whole output with it (#251).
+    A Python child writes to a pipe in the ANSI codepage on Windows, so `PYTHONIOENCODING`
+    tells it to write UTF-8 instead; `errors="backslashreplace"` covers a child that writes a
+    byte no setting reaches - `lint`'s child is ruff's own binary, which `python -m ruff` only
+    launches. Without both, one `…` in a failing test's diff killed the reader thread and the
+    row's whole output with it (#251). The escape rather than U+FFFD because it names the
+    byte and is ASCII, so `main()`'s own stdout can always print it.
     """
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     p = subprocess.run(
-        cmd, cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace"
+        cmd,
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="backslashreplace",
     )
     return p.returncode == 0, (p.stdout or "") + (p.stderr or "")
 
@@ -229,7 +237,7 @@ def main() -> int:
     exit code alone and shows up as the gap between the passed count and the total.
 
     The report's own stdout never raises on a character it cannot encode: on a piped Windows
-    run it is the ANSI codepage, and `_run` now hands it the UTF-8 a child wrote, so a `â‰¥` in
+    run it is the ANSI codepage, and `_run` now hands it the UTF-8 a child wrote, so a `≥` in
     a failing diff would otherwise replace the report with a traceback (audit of PR #278, F1).
     An escape rather than `?`, so the character stays legible in a pasted report.
     """
