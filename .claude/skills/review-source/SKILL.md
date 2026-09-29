@@ -167,14 +167,21 @@ rather than the console (*Hazards*).
 names, and the code repository beside it are three things with three routes and three verdicts. A
 project report that states activities and names the data pages it reports on is the route to a
 dataset, not the source. Separate them here and rank them, in two cases. What the input itself
-is — the paper, the dataset its data-availability statement names, the code beside it — gets its
-own line through steps 4–7, as the paper and the Dryad deposit behind it did on 2026-09-28
-(`source-review-2026-09-28.md`, §11). What the input merely links — another dataset on the same
-project or deployment page, another paper of the same project — is identified to its machine
-metadata (rung 1 or 2) and no further, and the set goes to the Parking lot as one line naming
-each by id and title, with the note's section: on 2026-09-29 the deployment page of BCO-DMO
-709181 listed 8 datasets and its project page 11, of which one was identified and ten parked. The
-line between the two cases is the relation to the input, not a count.
+is — those three — gets its own line through steps 4–7; on 2026-09-28 the paper and the Dryad
+deposit behind it were separated that way, reaching #261 and a comment on #214
+(`Claude outputs/source-review-2026-09-28.md`, §11). What the input merely links — another
+dataset on the same project or deployment page — is not a candidate this run judges, so step 6
+does not reach it: the set is not carried through steps 4–7, and the note records it as
+identified only. The run may identify the one nearest the input's question to its machine
+metadata, by whichever rung answers, and says which and why: on 2026-09-29 the deployment page of
+BCO-DMO 709181 linked 8 datasets and its project page 11, the 8 among the 11 and the input among
+both, so ten linked datasets, all ten drafted into one Parking-lot line naming each by id and
+title, and one of the ten (707078, the same sites and span) identified to its JSON-LD first.
+Where an issue for the input already exists, that line is a comment on its thread instead — step
+6's *not a source* destination — as #267's comment of 2026-09-29 did for a project's five other
+datasets. An index page whose links are the installments of one series is the input's own content
+and not a linked set: the 2026-09-28 note's §12 read seven reports as one series record (#262).
+The line between the two cases is the relation to the input, not a count.
 
 ## 4. Evidence the route
 
@@ -309,7 +316,7 @@ Then draft, into that note or a file beside it:
 
 - **The Parking-lot line**, one line, in the form "Ideas are not issues" gives, for every verdict
   but *add* — and for an *add* too where a question came up that the issue body should not carry,
-  or where step 3 set aside what the input merely links: that sibling line is one of these.
+  or where step 3 set aside what the input merely links: that line is one of these.
 - **The issue body**, for an *add* whose track takes rows, in the shape "Record issues" in
   `docs/agents/issue-tracker.md` gives: seam, the failing test it cannot name, acceptance,
   non-goals. Its body carries the step-4 facts, the step-5 lines, and any open question — PMC as a
@@ -333,6 +340,10 @@ whose text above was written without an example of the case it names.
 - **No `ON REQUEST` case, and no `human_task` entry.** A thesis available only by order was parked
   rather than entered, in part because the registry an `H<n>` id would live in is itself parked.
 - **No source that needed a new topic or sub-topic.** Step 5's "fit to no topic" line has not run.
+- **No linked paper.** Of the links the two notes set aside, zero were a paper of the same project
+  as the input: the sets were datasets on a project or deployment page and the installments of one
+  report series, and the 709181 page prints "No Related Publications" (2026-09-29). Step 3's
+  two cases have no example of one.
 - **Two datasets walked end to end**, through Dryad's API (2026-09-28) and a BCO-DMO page
   (2026-09-29, `Claude outputs/source-review-2026-09-29.md`). No EDI/DataONE candidate, and the
   one ArcGIS FeatureServer named was not walked; an ERDDAP answered a `.das` and two `distinct()`
