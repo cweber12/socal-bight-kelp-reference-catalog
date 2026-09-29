@@ -38,8 +38,9 @@ right and the code is a bug** — change the code, not the document, unless a hu
     │   └── prd/<slug>.md   one PRD per milestone
     ├── .claude/
     │   ├── skills/         add-source (walks one record in), audit-pr (commissions the audit),
-    │   │                   run-prd (derives a PRD's work order, then dispatches its first
-    │   │                   record row through record-row.md and opens its PR)
+    │   │                   review-source (decides whether a link becomes a source; bundles three
+    │   │                   scripts), run-prd (derives a PRD's work order, then dispatches its
+    │   │                   first record row through record-row.md and opens its PR)
     │   ├── agents/         pr-auditor, the audit method
     │   ├── hooks/          advise.py and advise.sh, the two advisory PostToolUse checks
     │   ├── settings.json   declares those two hooks on Edit and Write
