@@ -166,8 +166,15 @@ rather than the console (*Hazards*).
 **One link can carry several candidates.** A paper, the dataset its data-availability statement
 names, and the code repository beside it are three things with three routes and three verdicts. A
 project report that states activities and names the data pages it reports on is the route to a
-dataset, not the source. Separate them here, rank them, and carry each through steps 4–7 on its
-own line.
+dataset, not the source. Separate them here and rank them, in two cases. What the input itself is
+— the paper, the dataset its data-availability statement names, the code beside it — gets its own
+line through steps 4–7, as the paper and the Dryad deposit behind it did on 2026-09-28
+(`source-review-2026-09-28.md`, §11). What the input merely links — another dataset on the same
+project or deployment page, another paper of the same project — is identified to its machine
+metadata (rung 1 or 2) and no further, and the set goes to the Parking lot as one line naming
+each by id and title, with the note's section: on 2026-09-29 the deployment page of BCO-DMO
+709181 listed 8 datasets and its project page 11, of which one was identified and ten parked. The
+line between the two cases is the relation to the input, not a count.
 
 ## 4. Evidence the route
 
@@ -301,7 +308,8 @@ nothing is carried over from an earlier note.
 Then draft, into that note or a file beside it:
 
 - **The Parking-lot line**, one line, in the form "Ideas are not issues" gives, for every verdict
-  but *add* — and for an *add* too where a question came up that the issue body should not carry.
+  but *add* — and for an *add* too where a question came up that the issue body should not carry,
+  or where step 3 set aside what the input merely links: that sibling line is one of these.
 - **The issue body**, for an *add* whose track takes rows, in the shape "Record issues" in
   `docs/agents/issue-tracker.md` gives: seam, the failing test it cannot name, acceptance,
   non-goals. Its body carries the step-4 facts, the step-5 lines, and any open question — PMC as a
