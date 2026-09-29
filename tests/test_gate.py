@@ -459,7 +459,12 @@ def test_run_tells_a_python_child_to_write_utf8(monkeypatch) -> None:
     settings below put the child in the narrowest locale its OS offers - `PYTHONUTF8=0` is
     what makes a Windows pipe cp1252 again, and the other three make a POSIX child ASCII -
     and `_run`'s own `PYTHONIOENCODING` is then the only thing that can carry `…` through.
-    Measured on Windows; the POSIX half is what the Ubuntu job measures."""
+    Measured on Windows; the POSIX half is what the Ubuntu job measures.
+
+    The `…` is an escape inside the child's source rather than a character on its command
+    line: a POSIX child in that locale decodes `argv` as ASCII with surrogates, and the first
+    version of this test failed on Ubuntu (run 36643951401) with the child refusing to encode
+    the surrogate it had been handed, which is not the thing under test."""
     for name, value in (
         ("PYTHONUTF8", "0"),
         ("PYTHONCOERCECLOCALE", "0"),
@@ -468,7 +473,7 @@ def test_run_tells_a_python_child_to_write_utf8(monkeypatch) -> None:
     ):
         monkeypatch.setenv(name, value)
 
-    ok, out = gate._run([sys.executable, "-c", "print('before … after')"])
+    ok, out = gate._run([sys.executable, "-c", "print('before \\u2026 after')"])
 
     assert ok
     assert "before … after" in out
