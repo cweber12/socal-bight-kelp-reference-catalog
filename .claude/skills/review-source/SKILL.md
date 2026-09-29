@@ -60,7 +60,8 @@ Four places — the working tree, the earlier review notes, the Parking lot, the
 the counts go in the review note with the command that produced each. Search for the bare DOI,
 the host and path, one distinctive title word, and the steward's name, each as its own term. The
 steward's name is a step-3 output: run that term once step 3 has given it, and record it under
-this step's counts (on 2026-09-29 the title words ran first and the four names after).
+this step's counts (on 2026-09-29 the title words ran first, and three investigators' and two
+institutions' names after).
 
 **The working tree.** Run the two searches `add-source` step 1 gives, and widen the path list to
 the whole tree: a candidate can already be a lead in a PRD.
