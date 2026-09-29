@@ -104,9 +104,9 @@ first that answers with metadata; record which one did and what the ones above i
 dataset's machine metadata is in its page (rung 2 below), so for a dataset rung 2 comes first and
 the rest follow as ranked. If step 2 found a record on the same host, read its `access` steps
 before probing: they are the route's precedent, and where the probe disagrees with them the note
-says so. `bcodmo_839175` states that its own file's S3 `ETag` equals that file's MD5; that held
-for its file and not for 709181's, whose ETag is a multipart one (2026-09-29). The record's
-statement was about its file, and the generalisation was a start prompt's.
+says so. `bcodmo_839175`'s fourth `access` step records its file's S3 `ETag` and its MD5 as the
+same 32 characters; 709181's ETag is a multipart one (2026-09-29). The record's values were its
+file's, and the generalisation was a start prompt's.
 
 1. **Crossref**, for a DOI: `https://api.crossref.org/works/<doi>` to the honest User-Agent. Full
    metadata, abstract and licence URLs. It answered when the publisher's own page sent a 303 to an
@@ -219,7 +219,8 @@ project's activity log and a case study of a data pipeline, each answering none.
 **Region.** The tagging sentence, `CONTEXT.md`, *Vocabularies*, regions, gives the cases. The
 evidence is the stated geography from step 3 and the extracted text: count the place names in
 Python and quote each sentence that states an extent — a source can state more than one, and the
-note quotes each rather than choosing, as `coverage` does at entry (#204). Write the tag the
+note quotes each rather than choosing; what `coverage` does with two statements at entry is the
+question #204 is open to settle (open on 2026-09-29, milestone 6.4). Write the tag the
 sentences' case gives and which case, saying whether each stated extent gives the same one
 (BCO-DMO 709181 stated three on 2026-09-29 — a box in three documents, an ERDDAP `actual_range`
 and the file's own rows — and the three fell in one county), or that the stated bound lies outside
