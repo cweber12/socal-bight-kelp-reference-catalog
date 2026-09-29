@@ -58,9 +58,10 @@ searches for the normalised forms; step 7 records both.
 
 Four places — the working tree, the earlier review notes, the Parking lot, the open issues — and
 the counts go in the review note with the command that produced each. Search for the bare DOI,
-the host and path, one distinctive title word, and the steward's name, each as its own term. The
-steward's name is a step-3 output: run that term once step 3 has given it, and record it under
-this step's counts (on 2026-09-29 the title words ran first, and three investigators' and two
+the host and path, the host's name, one distinctive title word, and the steward's name, each as
+its own term. Where the steward is an affiliation the page prints rather than the host, that name
+is a step-3 output: run it once step 3 has given it, and record it under this step's counts (on
+2026-09-29 the host's name and the title words ran first, and three investigators' and two
 institutions' names after).
 
 **The working tree.** Run the two searches `add-source` step 1 gives, and widen the path list to
@@ -101,23 +102,28 @@ Establish what the thing is — title, authors or steward, date, licence as publ
 geography, and what it holds — from **machine metadata before the rendered page**. In the
 thirteen, the human page was the least reliable route: a 403, a 202 with a zero-byte body, a
 paywalled stub and a 303 to an identity provider. Try the rungs in this order and stop at the
-first that answers with metadata; record which one did and what the ones above it returned. A
-dataset's machine metadata is in its page (rung 2 below), so for a dataset rung 2 comes first and
-the rest follow as ranked. If step 2 found a record on the same host, read its `access` steps
-before probing: they are the route's precedent, and where the probe disagrees with them the note
-says so. `bcodmo_839175`'s fourth `access` step records its file's S3 `ETag` and its MD5 as the
-same 32 characters; 709181's ETag is a multipart one (2026-09-29). The record's values were its
-file's, and the generalisation was a start prompt's.
+first that answers with metadata; record which one did and what the ones above it returned. Of
+the two datasets whose machine metadata this skill's sample obtained, one had it in its page
+(BCO-DMO 709181, 2026-09-29) and one in a repository API (the Dryad deposit of 2026-09-28, whose
+page rung 6 says 403s). So for a dataset whose page serves structured data, rung 2 is tried early
+and does not end the ladder: run rung 1 as well and record what each returned. If step 2 found a
+record on the same host, read its `access` steps before probing: they are a dated observation of
+that host's route for one source, the probe run today is the fact, and where the two differ the
+note says so. `bcodmo_839175`'s fourth `access` step records its file's S3 `ETag` and its MD5 as
+the same 32 characters; 709181's ETag is a multipart one (2026-09-29). The record's values were
+its file's, and the generalisation was a start prompt's.
 
 1. **Crossref**, for a DOI: `https://api.crossref.org/works/<doi>` to the honest User-Agent. Full
    metadata, abstract and licence URLs. It answered when the publisher's own page sent a 303 to an
    identity provider and when another answered 403.
-2. **The page's structured data**, for a dataset, and first for one: the schema.org `Dataset`
+2. **The page's structured data**, for a dataset whose page serves it: the schema.org `Dataset`
    JSON-LD in the landing HTML, an ISO 19115 or EML document the page links, a service's `.das`.
    For BCO-DMO 709181 on 2026-09-29 the JSON-LD, the Next.js payload behind it, `/iso` and
    `/description` carried the licence text, the data file's stated MD5 and byte count, fifteen
-   variables with descriptions and units, both citation forms and the supplemental files' MD5s;
-   Crossref (rung 1) had answered too, with less. One dataset's ordering, on one host.
+   variables with descriptions and units, both citation forms and the supplemental files' MD5s.
+   Crossref (rung 1) had answered first, with less — and with what only it carried: the funder,
+   two award numbers, the registration dates and the Crossref member, which the run's scope test
+   1 rested on. One dataset's ordering, on one host.
 3. **OAI-PMH**, for a repository item. eScholarship's form is
    `https://escholarship.org/oai?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:escholarship.org:ark:/13030/qt<id>`,
    colon-delimited; the slash form errors `idDoesNotExist`. It served full Dublin Core to the
@@ -220,12 +226,13 @@ project's activity log and a case study of a data pipeline, each answering none.
 **Region.** The tagging sentence, `CONTEXT.md`, *Vocabularies*, regions, gives the cases. The
 evidence is the stated geography from step 3 and the extracted text: count the place names in
 Python and quote each sentence that states an extent — a source can state more than one, and the
-note quotes each rather than choosing; what `coverage` does with two statements at entry is the
-question #204 is open to settle (open on 2026-09-29, milestone 6.4). Write the tag the
-sentences' case gives and which case, saying whether each stated extent gives the same one
-(BCO-DMO 709181 stated three on 2026-09-29 — a box in three documents, an ERDDAP `actual_range`
-and the file's own rows — and the three fell in one county), or that the stated bound lies outside
-the tree and the source has no regional bound either. In the thirteen a study collected in one
+note quotes each rather than choosing; what `coverage` does with two statements at entry is
+decided and not yet written into `CONTEXT.md` (#204, open on 2026-09-29, milestone 6.4). Write
+the tag the sentences' case gives and which case, saying whether each stated extent gives the same
+one (BCO-DMO 709181 stated two on 2026-09-29 — a box in three documents and an ERDDAP
+`actual_range` — and its file's rows, a measurement rather than a statement, lay outside the box;
+box, range and rows all fell in one county), or that the stated bound lies outside the tree and
+the source has no regional bound either. In the thirteen a study collected in one
 named city was read under the smallest-containing-node case, a three-state index under the
 wider-than-Bight case with its tags left open for entry, and a report sampling stations on both
 sides of the international border was noted for the boundary question it raises.
@@ -320,9 +327,10 @@ whose text above was written without an example of the case it names.
 - **No source that needed a new topic or sub-topic.** Step 5's "fit to no topic" line has not run.
 - **Two datasets walked end to end**, through Dryad's API (2026-09-28) and a BCO-DMO page
   (2026-09-29, `Claude outputs/source-review-2026-09-29.md`). No EDI/DataONE candidate, and the
-  one ArcGIS FeatureServer named was not walked; an ERDDAP answered a `.das` and one `distinct()`
-  query on 2026-09-29 and was not walked as the route: these are the routes where `variables`,
-  `site_key` and subsetting bite.
+  one ArcGIS FeatureServer named was not walked; an ERDDAP answered a `.das` and two `distinct()`
+  queries on 2026-09-29 — the first 400, `Unrecognized variable="lat"`, because it renames the
+  CSV's columns; the second 200 — and was not walked as the route: these are the routes where
+  `variables`, `site_key` and subsetting bite.
 - **No decline that passed the scope test**, so the `excluded/` branch of step 6 rests on one
   record entered outside this skill.
 - **Three of the thirteen named a dataset** — a FeatureServer, a Dryad deposit, two mooring data
