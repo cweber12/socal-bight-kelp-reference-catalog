@@ -35,7 +35,8 @@ named, and rows 14 and 18 are recorded as having left the milestone without a re
 revision, after the audit of PR #256: reading 8's criterion is recorded as failing for row 21's
 paper, with its named pair and the superseded admission test left to #207; the `Done` criterion
 gains what it did not anticipate; and the `calcofi` bullet records the owner's settlement of
-2026-09-24.
+2026-09-24. Revised 2026-09-28, on #202: reading 1's quotation of `CONTEXT.md`'s admission
+sentence is dated to the review that made it, because #202 replaced that sentence.
 
 ## Problem
 
@@ -61,12 +62,13 @@ that exception is.
 Each is a reading of an existing rule, applied to the manifest's proposals, and stated here so a
 slice does not re-derive it.
 
-1. **Driver data is admitted.** `CONTEXT.md` admits "an authoritative source about kelp in the
-   Bight", and four of its ten questions are about the environment the beds are exposed to. Three of
-   the seven records held on 2026-09-15 — `noaa_oni`, `calcofi`, `sio_shore_stations` — observe no
-   kelp. The practice is that a source answering one of the ten questions is in scope. The manifest
-   asked for that to be written into the admission sentence; that is a Parking-lot line (filed
-   2026-09-15), not a gate on this milestone.
+1. **Driver data is admitted.** `CONTEXT.md` admitted "an authoritative source about kelp in the
+   Bight" when this review ran, and four of its ten questions are about the environment the beds are
+   exposed to. Three of the seven records held on 2026-09-15 — `noaa_oni`, `calcofi`,
+   `sio_shore_stations` — observe no kelp. The practice is that a source answering one of the ten
+   questions is in scope. The manifest asked for that to be written into the admission sentence;
+   that was a Parking-lot line (filed 2026-09-15), not a gate on this milestone, and #202 has since
+   written it in as one of the sentence's three tests.
 2. **A public dataset enters as `FETCHED` on first entry.** The manifest proposed every candidate as
    `PATTERN / NOT HELD` "now" with an upgrade later. `add-source` step 2 says a route that downloads
    today is `VERIFIED / FETCHED`, and #106 exists because one record entered without its bytes

@@ -217,8 +217,12 @@ number of tags across any topics.
 | `water-quality-harvest` | `discharges-outfalls` · `runoff-sedimentation` · `power-plants` · `kelp-harvest` · `fishing-pressure` |
 | `restoration-mitigation` | `outplanting` · `urchin-removal` · `artificial-reefs` · `kelp-farms` |
 
-**Topics do not decide what is admitted.** Admission is by scope — an authoritative source about
-kelp in the Bight. If a source fits no topic or sub-topic, add one (a row here, an entry in
+**Topics do not decide what is admitted.** Admission is by scope, and scope is three tests a
+source passes together: it is **authoritative**; its coverage earns it a **region tag — a node
+of the tree below, or `global` for a source with no regional bound** (*regions* above says
+which, a bound wider than the Bight included); and it **answers one of the ten questions,
+whether or not it was collected for kelp** — the `DERIVED` tier excepted, for the reason *tier*
+above gives. If a source fits no topic or sub-topic, add one (a row here, an entry in
 `schema.py`, a notebook section) in its own PR; never exclude the source for want of a tag. A
 `DERIVED` record is the one source that carries no tag, by the rule under *tier* above.
 
