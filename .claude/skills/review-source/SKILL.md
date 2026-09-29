@@ -58,7 +58,9 @@ searches for the normalised forms; step 7 records both.
 
 Four places — the working tree, the earlier review notes, the Parking lot, the open issues — and
 the counts go in the review note with the command that produced each. Search for the bare DOI,
-the host and path, the steward's name, and one distinctive title word, each as its own term.
+the host and path, one distinctive title word, and the steward's name, each as its own term. The
+steward's name is a step-3 output: run that term once step 3 has given it, and record it under
+this step's counts (on 2026-09-29 the title words ran first and the four names after).
 
 **The working tree.** Run the two searches `add-source` step 1 gives, and widen the path list to
 the whole tree: a candidate can already be a lead in a PRD.
@@ -98,32 +100,46 @@ Establish what the thing is — title, authors or steward, date, licence as publ
 geography, and what it holds — from **machine metadata before the rendered page**. In the
 thirteen, the human page was the least reliable route: a 403, a 202 with a zero-byte body, a
 paywalled stub and a 303 to an identity provider. Try the rungs in this order and stop at the
-first that answers with metadata; record which one did and what the ones above it returned.
+first that answers with metadata; record which one did and what the ones above it returned. A
+dataset's machine metadata is in its page (rung 2 below), so for a dataset rung 2 comes first and
+the rest follow as ranked. If step 2 found a record on the same host, read its `access` steps
+before probing: they are the route's precedent, and where the probe disagrees with them the note
+says so. `bcodmo_839175` states that its own file's S3 `ETag` equals that file's MD5; that held
+for its file and not for 709181's, whose ETag is a multipart one (2026-09-29). The record's
+statement was about its file, and the generalisation was a start prompt's.
 
 1. **Crossref**, for a DOI: `https://api.crossref.org/works/<doi>` to the honest User-Agent. Full
    metadata, abstract and licence URLs. It answered when the publisher's own page sent a 303 to an
    identity provider and when another answered 403.
-2. **OAI-PMH**, for a repository item. eScholarship's form is
+2. **The page's structured data**, for a dataset, and first for one: the schema.org `Dataset`
+   JSON-LD in the landing HTML, an ISO 19115 or EML document the page links, a service's `.das`.
+   For BCO-DMO 709181 on 2026-09-29 the JSON-LD, the Next.js payload behind it, `/iso` and
+   `/description` carried the licence text, the data file's stated MD5 and byte count, fifteen
+   variables with descriptions and units, both citation forms and the supplemental files' MD5s;
+   Crossref (rung 1) had answered too, with less. One dataset's ordering, on one host.
+3. **OAI-PMH**, for a repository item. eScholarship's form is
    `https://escholarship.org/oai?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:escholarship.org:ark:/13030/qt<id>`,
    colon-delimited; the slash form errors `idDoesNotExist`. It served full Dublin Core to the
    honest User-Agent while the item page answered 403 and, to a browser, 202 with no body.
-3. **The publisher's XML**, where one is offered: Pensoft's `/article/<id>/download/xml/` gave
+4. **The publisher's XML**, where one is offered: Pensoft's `/article/<id>/download/xml/` gave
    clean JATS where the landing page was a shell.
-4. **PMC**, when the publisher is walled: `https://pmc.ncbi.nlm.nih.gov/articles/PMC<id>/` served
+5. **PMC**, when the publisher is walled: `https://pmc.ncbi.nlm.nih.gov/articles/PMC<id>/` served
    the full text where ACS and Wiley each answered 403. Its `/pdf/` path is not the PDF (step 4).
    PMC serves under a PMCID rather than an identifier the publisher issued, so whether it is one
    of `FETCHED`'s routes (`CONTEXT.md`, *Vocabularies*, tier) is **undecided**; the review note
    says so rather than settling it, and a candidate reachable only through PMC is a *park* or an
    *add* whose issue body carries the question, not an *add* that assumes an answer.
-5. **A repository's API.** Dryad's `https://datadryad.org/api/v2/datasets/doi%3A<doi>` returned
+6. **A repository's API.** Dryad's `https://datadryad.org/api/v2/datasets/doi%3A<doi>` returned
    licence, version, size and a download href to the honest User-Agent; the page links 403 by
    `robots.txt`.
-6. **OpenAlex**, for open-access locations. It answered 429 on two of two attempts in the
+7. **OpenAlex**, for open-access locations. It answered 429 on two of two attempts in the
    thirteen; best effort, and its version labels are to be confirmed before they are quoted.
-7. **The PDF's own info dictionary and XMP.** For an image-only PDF with no extractable text, this
+8. **The PDF's own info dictionary and XMP.** For an image-only PDF with no extractable text, this
    gave the title and producer; the extractors below give the rest of a PDF.
-8. **The rendered page**, last, and read with step 4's probe rather than a browser, so that what it
-   served is a record and not an impression.
+9. **The rendered page**, last for a document, and read with step 4's probe rather than a browser,
+   so that what it served is a record and not an impression. A dataset's page was read at rung 2
+   for its structured data; what its rendered text prints — labels, roles, the licence label —
+   is read here through the same probe.
 
 **A PDF in hand** is read with the two extractors bundled beside this file, which take the PDF path
 and write `<path>.txt` beside it. Try the literal one first:
@@ -202,12 +218,15 @@ project's activity log and a case study of a data pipeline, each answering none.
 
 **Region.** The tagging sentence, `CONTEXT.md`, *Vocabularies*, regions, gives the cases. The
 evidence is the stated geography from step 3 and the extracted text: count the place names in
-Python and quote the sentence that states the extent. Write the tag the sentence's case gives and
-which case, or that the stated bound lies outside the tree and the source has no regional bound
-either. In the thirteen a study collected in one named city was read under the
-smallest-containing-node case, a three-state index under the wider-than-Bight case with its tags
-left open for entry, and a report sampling stations on both sides of the international border was
-noted for the boundary question it raises.
+Python and quote each sentence that states an extent — a source can state more than one, and the
+note quotes each rather than choosing, as `coverage` does at entry (#204). Write the tag the
+sentences' case gives and which case, saying whether each stated extent gives the same one
+(BCO-DMO 709181 stated three on 2026-09-29 — a box in three documents, an ERDDAP `actual_range`
+and the file's own rows — and the three fell in one county), or that the stated bound lies outside
+the tree and the source has no regional bound either. In the thirteen a study collected in one
+named city was read under the smallest-containing-node case, a three-state index under the
+wider-than-Bight case with its tags left open for entry, and a report sampling stations on both
+sides of the international border was noted for the boundary question it raises.
 
 **Topics.** The two tables in *Topics: the ten questions*. List the tags the thing would carry
 and, for each, the sentence in the source that supports it: a tag supported by one hit in a
@@ -297,14 +316,17 @@ whose text above was written without an example of the case it names.
 - **No `ON REQUEST` case, and no `human_task` entry.** A thesis available only by order was parked
   rather than entered, in part because the registry an `H<n>` id would live in is itself parked.
 - **No source that needed a new topic or sub-topic.** Step 5's "fit to no topic" line has not run.
-- **One dataset walked end to end**, through Dryad's API. No ERDDAP or EDI/DataONE candidate,
-  and the one ArcGIS FeatureServer named was not walked: these are the routes where `variables`,
+- **Two datasets walked end to end**, through Dryad's API (2026-09-28) and a BCO-DMO page
+  (2026-09-29, `Claude outputs/source-review-2026-09-29.md`). No EDI/DataONE candidate, and the
+  one ArcGIS FeatureServer named was not walked; an ERDDAP answered a `.das` and one `distinct()`
+  query on 2026-09-29 and was not walked as the route: these are the routes where `variables`,
   `site_key` and subsetting bite.
 - **No decline that passed the scope test**, so the `excluded/` branch of step 6 rests on one
   record entered outside this skill.
 - **Three of the thirteen named a dataset** — a FeatureServer, a Dryad deposit, two mooring data
   pages — and one was walked; the rest were documents. The identity ladder is ranked by how
-  document routes performed, and a dataset's may order differently.
+  document routes performed; one dataset, on 2026-09-29, ordered differently, and rung 2 is that
+  one instance.
 
 ## Hazards on the owner's machine
 
