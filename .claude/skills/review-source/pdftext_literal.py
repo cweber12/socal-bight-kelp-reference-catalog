@@ -12,6 +12,9 @@ import re
 import sys
 import zlib
 
+if len(sys.argv) != 2:
+    print("python pdftext_literal.py <path.pdf>")
+    sys.exit(2)
 path = sys.argv[1]
 raw = open(path, "rb").read()
 

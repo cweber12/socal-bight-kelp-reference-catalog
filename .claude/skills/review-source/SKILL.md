@@ -31,7 +31,8 @@ holds the admission sentence; *Record schemas*, the `sources/<id>.md` table, the
 candidate nobody has entered is; and *What is not a record*.
 
 Then `docs/agents/issue-tracker.md` whole: it gives the forms for reading the tracker, and
-"Ideas are not issues" is where step 6 sends three of the four verdicts.
+"Ideas are not issues" is where step 6 sends two of the four verdicts, and where step 7's one-line
+drafts go.
 
 Write down today's date. Every count and status code this skill records is stated as of it.
 
@@ -63,8 +64,9 @@ the host and path, the steward's name, and one distinctive title word, each as i
 the whole tree: a candidate can already be a lead in a PRD.
 
 **The earlier review notes.** `git grep` skips `Claude outputs/`, which is git-ignored, and that
-directory is where a candidate already reviewed and not filed anywhere is written down. List the
-files there that contain each term with `grep -ril`, which names files and counts nothing.
+directory is where a candidate already reviewed and not filed anywhere is written down. Read each
+file there in Python and count the terms, as for the two dumps below. A clone without the
+directory has nothing to read here; say so in the note rather than skipping the line.
 
 **The Parking lot and the open issues.** Dump both whole to the session scratchpad and count in
 Python — never with a shell pipeline (*Hazards* below). The pinned Parking-lot issue's number is
@@ -86,8 +88,9 @@ to open, not a number to report.
 **STOP if a hit is this candidate.** Name the file or comment and the matching line. A record
 means the answer is `add-source`'s update path, not this skill; a parked line means the review
 already happened, and the question is what has changed since; an open issue means it is filed, and
-the review note says so. The thirteen returned no hit, so this stop has never fired; see *What this
-skill has not seen*.
+the review note says so. In the thirteen the one hit came from the open issues — a lead already
+recorded on two of them — and none from the tree or the Parking lot, so the first two stops have
+never fired; see *What this skill has not seen*.
 
 ## 3. Identify
 
@@ -192,10 +195,10 @@ In that order, because the order is what keeps the third from deciding the first
 names the tests a source passes together. For each test write one line: the evidence from step 3
 or 4, and pass or fail. Evidence for the first test is who issued the thing and in what capacity
 — a steward's own monitoring report, a journal of record, an agency's data service — and against
-it, in the thirteen, a consumer-facing website, a textbook with no Bight content and a newspaper
-article. Evidence for the third is what the thing holds: a measurement, a survey, a time series,
-an index over catalogued inputs, as *The rule*'s table admits them, against a project's activity
-log or a case study of a data pipeline that holds none.
+it, in the thirteen, a consumer-facing website and a newspaper article. Evidence for the third is
+which of the ten questions the thing answers, and the sentence in it that answers that question;
+against it, in the thirteen, a textbook whose metadata page named no Bight place and no kelp, a
+project's activity log and a case study of a data pipeline, each answering none.
 
 **Region.** The tagging sentence, `CONTEXT.md`, *Vocabularies*, regions, gives the cases. The
 evidence is the stated geography from step 3 and the extracted text: count the place names in
@@ -220,17 +223,16 @@ One of four, written with the step-5 line that decided it.
 
 | verdict | what it means | destination |
 |---|---|---|
-| **add** | passes scope; a record can be drafted from what steps 3–4 established | derived below |
+| **add** | passes scope; a record can be drafted from what steps 3–4 established. Where the track it lands on is blocked, the note names the blocker — the *add but blocked* of the line that proposed this skill, folded into the derivation | derived below |
 | **park** | passes scope on what it is about, and entering it today would be premature: no open copy and the open page states too little to fill a record; it would be the first of a kind the repo has no shape for yet; or a rule question decides its tier | the Parking lot, one line naming what would change the verdict |
 | **decline** | fails the scope test, or passed it and fails on its own merits | the Parking lot, one line, so nobody re-reviews it; see below for `excluded/` |
 | **not a source** | not a candidate for a record, but evidence about something the tracker or a record already carries — a citation for a parked question, a document that is the route to a dataset | the thread or record it is evidence about; the draft is a comment |
 
-**`catalog/excluded/` is not where a scope failure goes.** Two of the thirteen were nearly routed
-there. The rule that decides which declines get an exclusion record is the one #207 was filed to
-put into `CONTEXT.md`, *Record schemas*, `excluded/<slug>.md`; read that section, and that issue
-while its PR is open, and draft an `excluded/` entry — its `reason` is one line — only for a
-decline that passed the scope test. The thirteen held no such decline; the one record in
-`catalog/excluded/` on `main` on 2026-09-29 is the precedent.
+**Which declines get an entry in `catalog/excluded/`** is decided by `CONTEXT.md`, *Record
+schemas*, `excluded/<slug>.md`, and by the decision #207 was filed to put there, while that issue
+is open. Read both before drafting one; two of the thirteen were nearly routed there against that
+decision. The thirteen held no decline that got one; the one record in `catalog/excluded/` on
+`main` on 2026-09-29 is the precedent.
 
 **The destination for an *add* is derived from the tracker, never listed here.** Destinations
 moved three times in the two days of the thirteen, so a milestone written into this file is stale
@@ -238,15 +240,21 @@ within a week. Derive it every time:
 
 1. List the milestones with the form under "Milestones themselves" in
    `docs/agents/issue-tracker.md`, and keep the open ones.
-2. For each open milestone, find its PRD under `docs/prd/` where one exists, read the `Status:`
-   line whole (it begins on line 3 and wraps) and the prose of each track: what kind of source
-   the track admits. Where the PRD is still an open issue rather than a file, read that issue.
+2. For each open milestone, find its PRD: a file under `docs/prd/`, whose `Status:` line (it
+   begins on line 3 and wraps) the note records; or, where no file exists yet, the open
+   `docs(prd):` issue or issues on that milestone (`gh issue list --milestone "<name>"`). A
+   milestone with neither is not a destination. Read the prose of each track: what kind of source
+   it admits, and what it says it does not reach.
 3. Decide the candidate's kind from what its record would hold — the `variables` and `measures`
    rows of the `sources/<id>.md` table in `CONTEXT.md`, *Record schemas*, say what a dataset and a
-   document each carry — and match it to the track that admits that kind.
-4. A track takes candidates one of two ways, and its PRD says which: as a row of its table, for
-   which step 7 drafts an issue body; or as a comment on its PRD issue, for which step 7 drafts the
-   comment.
+   document each carry — and match it to the track that admits that kind. Where two tracks admit
+   the kind, their own prose separates them; the note quotes the sentence that did.
+4. How a track takes a new candidate — a row of its table, for which step 7 drafts an issue body,
+   or a comment on its PRD issue, for which step 7 drafts the comment — is not something to read
+   off the PRD: the four PRD issues open on 2026-09-29 each describe rows, and the review's
+   candidates for one of them arrived as a comment because its rows were blocked. Read how the
+   last candidate arrived on that track, draft that form, and say in the note that the form was
+   inferred.
 5. If no open milestone admits the kind, the destination is the Parking lot and the note says a
    milestone is wanted. Creating one is the owner's (`CLAUDE.md`, "How work is tracked").
 
@@ -284,19 +292,21 @@ every draft in full, then **stop**.
 Thirteen candidates, reviewed on two days, and the sample is lopsided. Each line below is a step
 whose text above was written without an example of the case it names.
 
-- **De-duplication never returned a hit.** Step 2's stop is untested against a real duplicate.
+- **De-duplication hit once, in the open issues, and never in the tree or the Parking lot.** Step
+  2's stops for a record and for a parked line are untested.
 - **No `ON REQUEST` case, and no `human_task` entry.** A thesis available only by order was parked
   rather than entered, in part because the registry an `H<n>` id would live in is itself parked.
 - **No source that needed a new topic or sub-topic.** Step 5's "fit to no topic" line has not run.
-- **One dataset walked end to end**, through Dryad's API. No ERDDAP, ArcGIS FeatureServer or
-  EDI/DataONE candidate, which are the routes where `variables`, `site_key` and subsetting bite.
+- **One dataset walked end to end**, through Dryad's API. No ERDDAP or EDI/DataONE candidate,
+  and the one ArcGIS FeatureServer named was not walked: these are the routes where `variables`,
+  `site_key` and subsetting bite.
 - **No decline that passed the scope test**, so the `excluded/` branch of step 6 rests on one
   record entered outside this skill.
-- **One of the thirteen carried a dataset**, behind a paper's data-availability statement; the
-  other twelve were documents. The identity ladder is ranked by how document routes performed,
-  and a dataset's may order differently.
+- **Three of the thirteen named a dataset** — a FeatureServer, a Dryad deposit, two mooring data
+  pages — and one was walked; the rest were documents. The identity ladder is ranked by how
+  document routes performed, and a dataset's may order differently.
 
-## Hazards, measured on the owner's machine
+## Hazards on the owner's machine
 
 - **Bash `/tmp` is `%LOCALAPPDATA%\Temp`, not `c:\tmp`.** A stale file at `c:\tmp` gave a count
   wrong by a factor of three. Write and read by the same absolute path in the session scratchpad.

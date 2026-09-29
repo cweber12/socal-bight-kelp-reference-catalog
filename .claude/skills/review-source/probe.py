@@ -10,7 +10,9 @@ stay identical, and an archive whose bytes vary per request, look the same after
 Each entry records, in this order: the URL asked for, the final URL after redirects, the status
 code, the byte count, `Content-Type`, the first 8 bytes as hex and as ASCII, `Content-Disposition`,
 `Last-Modified`, `ETag`, and the sha256 of the body. A 4xx or 5xx answer is recorded the same way,
-body included, because a 403 page's bytes are evidence about the route.
+body included, because a 403 page's bytes are evidence about the route. A connection that fails
+— a host that does not resolve, a refused port — gives an entry holding `url` and `error` only,
+and both booleans are then null rather than a comparison of two absences.
 
 `--ua` sets the User-Agent; the default names this skill. `--save` writes the first fetch's bytes to
 the path given, unmodified. `--once` fetches once. Output is ASCII-only JSON, so it prints on a
@@ -86,8 +88,11 @@ def main(argv):
 
     out = {"user_agent": ua, "fetches": fetches}
     if times == 2:
-        out["same_final_url"] = fetches[0].get("final_url") == fetches[1].get("final_url")
-        out["same_sha256"] = fetches[0].get("sha256") == fetches[1].get("sha256")
+        if any("error" in record for record in fetches):
+            out["same_final_url"] = out["same_sha256"] = None
+        else:
+            out["same_final_url"] = fetches[0]["final_url"] == fetches[1]["final_url"]
+            out["same_sha256"] = fetches[0]["sha256"] == fetches[1]["sha256"]
     print(json.dumps(out, indent=2))
     return 0
 
