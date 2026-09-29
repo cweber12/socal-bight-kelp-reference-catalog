@@ -14,6 +14,7 @@ ones not yet here. A row here that is not a row there is a gate nothing asked fo
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import traceback
@@ -39,7 +40,17 @@ class Gate:
 
 
 def _run(cmd: list[str]) -> tuple[bool, str]:
-    p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    """Run a child in the repo root and return its verdict with both of its streams.
+
+    A Python child writes to a pipe in the console codepage on Windows, so `PYTHONIOENCODING`
+    tells it to write UTF-8 instead; `errors="replace"` covers a child that writes a byte no
+    setting reaches, such as a tool that is not Python. Without both, one `…` in a failing
+    test's diff killed the reader thread and the row's whole output with it (#251).
+    """
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    p = subprocess.run(
+        cmd, cwd=ROOT, env=env, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     return p.returncode == 0, (p.stdout or "") + (p.stderr or "")
 
 

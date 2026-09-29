@@ -401,6 +401,33 @@ def test_run_runs_the_child_in_the_repo_root_whatever_the_caller_s_cwd(monkeypat
     assert Path(out.strip()).resolve() == Path(gate.__file__).parent.resolve()
 
 
+def test_run_keeps_a_child_s_output_when_one_byte_is_not_utf8() -> None:
+    """#251: with no `errors=` on the decode, one undecodable byte killed `subprocess`'s
+    reader thread and `_run` returned `(False, '')` - the failing row's whole output gone,
+    a `UnicodeDecodeError` traceback in its place. The byte is written raw so that no
+    encoding setting in the child's environment can turn it into valid UTF-8; the mutation
+    this catches is `errors="replace"` going missing."""
+    script = "import sys; sys.stdout.buffer.write(b'before \\x85 after\\n'); sys.exit(1)"
+    ok, out = gate._run([sys.executable, "-c", script])
+
+    assert not ok
+    assert "before" in out
+    assert "after" in out
+
+
+def test_run_tells_a_python_child_to_write_utf8() -> None:
+    """#251: on Windows a Python child writes to a pipe in the console codepage, so a
+    `…` in a failing test's diff left the pipe as cp1252 `0x85`. `errors="replace"` alone
+    would keep the row's output but degrade that character; telling the child to emit
+    UTF-8 keeps it. The mutation this catches is `PYTHONIOENCODING` going missing from the
+    child's environment, which only a Windows run can see - a UTF-8 locale passes either
+    way, which is why the two halves of #251's fix each have their own test."""
+    ok, out = gate._run([sys.executable, "-c", "print('before … after')"])
+
+    assert ok
+    assert "before … after" in out
+
+
 # --- the unit row ------------------------------------------------------------------
 
 
