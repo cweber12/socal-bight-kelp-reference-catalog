@@ -23,7 +23,9 @@ those are already imported, so it is a no-op here.
 
 from __future__ import annotations
 
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -262,6 +264,35 @@ def test_a_run_with_nothing_skipped_says_nothing_about_skipping(monkeypatch, cap
 
 
 # --- the shape of the report -------------------------------------------------------
+
+
+def test_main_s_report_survives_a_character_its_own_stdout_cannot_encode() -> None:
+    """Audit of PR #278, F1: `_run` now hands `main()` text a child wrote in UTF-8, and on a
+    piped Windows run `gate.py`'s own stdout is the ANSI codepage, so a `â‰¥` in a failing diff
+    - or the U+FFFD `errors="replace"` manufactures - raised `UnicodeEncodeError` at the
+    `print` and replaced the report with a traceback. The child's stdout is forced to ASCII
+    so the test discriminates on any OS; the mutation it catches is the `reconfigure` at the
+    top of `main` going missing. Run as a real child because `capsys` is already UTF-8."""
+    script = (
+        "import sys; sys.path.insert(0, sys.argv[1]); import gate;"
+        " gate.GATES = [gate.Gate('row', lambda: (False, 'before \\ufffd after'))];"
+        " sys.exit(gate.main())"
+    )
+    env = {**os.environ, "PYTHONIOENCODING": "ascii", "PYTHONUTF8": "0"}
+    p = subprocess.run(
+        [sys.executable, "-c", script, str(Path(gate.__file__).parent)],
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    assert p.returncode == 1, p.stderr
+    assert "UnicodeEncodeError" not in p.stderr
+    assert "before" in p.stdout
+    assert "after" in p.stdout
+    assert "0/1 gates passed" in p.stdout
 
 
 def test_main_prints_one_row_per_gate_and_no_others(monkeypatch, capsys) -> None:

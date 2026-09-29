@@ -227,7 +227,13 @@ def main() -> int:
     A skipped gate is not counted as a pass. It is not counted as a failure either - the
     module docstring says skipping "is for the clone, not the author", so a skip leaves the
     exit code alone and shows up as the gap between the passed count and the total.
+
+    The report's own stdout never raises on a character it cannot encode: on a piped Windows
+    run it is the ANSI codepage, and `_run` now hands it the UTF-8 a child wrote, so a `â‰¥` in
+    a failing diff would otherwise replace the report with a traceback (audit of PR #278, F1).
+    An escape rather than `?`, so the character stays legible in a pasted report.
     """
+    sys.stdout.reconfigure(errors="backslashreplace")
     width = max(len(g.name) for g in GATES)
     failed = 0
     skipped = 0
