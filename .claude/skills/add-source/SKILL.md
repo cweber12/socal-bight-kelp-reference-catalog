@@ -121,10 +121,11 @@ does not list.
 - `measures`: one phrase per entry, as the `measures` row of the table says; `[]` where you enter
   none, and a source that is not a document enters none — the `variables` row's closing clause is
   the other half of that case.
-- `coverage` as the source states it, and `coverage_stated_at` where it states it. When `coverage`
-  draws on several places, name each in `coverage_stated_at` in the order its clause appears in
-  `coverage`. A span read off a file's first and last rows is a fact of the copy you fetched: date
-  it, and expect to restate it on re-fetch.
+- `coverage` as the `coverage` row of the table says, which fixes the order its clauses come in, and
+  `coverage_stated_at` where it states it. When `coverage` draws on several places, name each in
+  `coverage_stated_at` in the order its clause appears in `coverage`. A span read off a file's
+  first and last rows is a fact of the copy you fetched: date it, and expect to restate it on
+  re-fetch.
 - `retrieved`: the date of the fetch in step 4 when `FETCHED`; `null` when `TRANSCRIBED` (the
   provenance is `transcribed_from`, not a fetch); `null` when `NOT HELD`.
 - `topics`: tags from `CONTEXT.md` only. **A source that fits no topic is never excluded for it** —
