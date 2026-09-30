@@ -259,6 +259,7 @@ def test_a_notebook_that_cannot_be_read_fails_and_names_it(tmp_path: Path):
     (problem,) = problems(root)
 
     assert problem.path == rel(OCEAN_CLIMATE)
+    assert problem.field == "notebook"
     # Written out, and over bytes that do not themselves contain it: nbformat quotes the
     # file's own content back in its error, so a file reading "not a notebook" made the old
     # `"not a notebook" in problem.message` pass on the file rather than on the gate, and
