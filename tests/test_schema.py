@@ -1289,14 +1289,48 @@ def test_a_stray_under_tables_is_unexpected_and_not_also_an_orphan(tmp_path: Pat
     ]
 
 
-def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(tmp_path: Path):
-    # The sentence says which tier the naming record has, and no rule forbids `file` on the
-    # other two (RULES: file is (False, "str?")), so a NOT HELD record pointing at the CSV
-    # validates on its own and must not make the CSV a table with a record.
+def test_each_orphan_is_reported(tmp_path: Path):
+    # One problem per CSV, not one for the directory (audit of #284, F5).
     root = a_catalog_with_a_table(tmp_path, "orphan.csv")
+    (root / "catalog" / "tables" / "other.csv").write_text("a\n1\n", encoding="utf-8")
+    _, problems = check_catalog(root)
+    assert [p.path for p in problems] == ["catalog/tables/orphan.csv", "catalog/tables/other.csv"]
+
+
+# The tiers outside TABLE_TIERS, as a literal so the parametrization below cannot shrink with
+# the tuple it is drawn from; the test after it says the literal is still the complement.
+NON_TABLE_TIERS = ("FETCHED", "NOT HELD")
+
+
+def test_the_non_table_tiers_are_pinned():
+    assert tuple(t for t in TIER if t not in TABLE_TIERS) == NON_TABLE_TIERS
+
+
+@pytest.mark.parametrize(
+    "tier, tier_fields",
+    [
+        (
+            "FETCHED",
+            "status: VERIFIED\nurl: https://example.org/x\nretrieved: 2026-09-30\n"
+            "fetch_script: src/fetch/x.py\n",
+        ),
+        ("NOT HELD", "status: NOT PUBLIC\nurl: null\nretrieved: null\n"),
+    ],
+    ids=NON_TABLE_TIERS,
+)
+def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(
+    tmp_path: Path, tier: str, tier_fields: str
+):
+    # The sentence says which tier the naming record has, and no rule forbids `file` on the
+    # other two (RULES: file is (False, "str?")), so a record of either tier pointing at the
+    # CSV validates on its own and must not make the CSV a table with a record. Both tiers,
+    # because `in HELD_TIERS` admits FETCHED and passes a NOT HELD-only pin (audit of #284, F2).
+    root = a_catalog_with_a_table(tmp_path, "orphan.csv")
+    (root / "src" / "fetch").mkdir(parents=True)
+    (root / "src" / "fetch" / "x.py").write_text("", encoding="utf-8")
     (root / "catalog" / "sources" / "x.md").write_text(
-        "---\nid: x\ntitle: t\nsteward: s\nurl: null\nstatus: NOT PUBLIC\ntier: NOT HELD\n"
-        'access: ["x"]\nlicense: "x"\nvariables: []\nretrieved: null\ntopics: [bed-state]\n'
+        f"---\nid: x\ntitle: t\nsteward: s\ntier: {tier}\n{tier_fields}"
+        'access: ["x"]\nlicense: "x"\nvariables: []\ntopics: [bed-state]\n'
         "regions: [global]\nfile: catalog/tables/orphan.csv\n---\n",
         encoding="utf-8",
     )
