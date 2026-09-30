@@ -1256,6 +1256,105 @@ def test_gitkeep_and_transcribed_tables_are_not_unexpected():
     assert (tree / "catalog" / "tables" / "parnell2005_table1.csv").is_file()
 
 
+# --- a table has a source record -----------------------------------------------------
+
+
+def a_catalog_with_a_table(tmp_path: Path, name: str) -> Path:
+    """An empty catalog plus one file under catalog/tables/, beside a .gitkeep."""
+    for kind in KINDS:
+        (tmp_path / "catalog" / kind).mkdir(parents=True)
+    tables = tmp_path / "catalog" / "tables"
+    tables.mkdir()
+    (tables / ".gitkeep").write_text("", encoding="utf-8")
+    (tables / name).write_text("a,b\n1,2\n", encoding="utf-8")
+    return tmp_path
+
+
+def test_a_table_no_source_record_names_is_reported(tmp_path: Path):
+    # CONTEXT.md, "Record format": tables/<id>.csv, "each has a source record whose tier is
+    # TRANSCRIBED or DERIVED". _tier_problems checks the record -> table direction; this is
+    # the other one. Before #246 the walk skipped the CSV and the gate stayed green.
+    _, problems = check_catalog(a_catalog_with_a_table(tmp_path, "orphan.csv"))
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
+    ]
+
+
+def test_a_stray_under_tables_is_unexpected_and_not_also_an_orphan(tmp_path: Path):
+    # A non-CSV under catalog/tables/ is the stray the walk already reports; it is not a
+    # table, so it is not an orphan on top of that.
+    _, problems = check_catalog(a_catalog_with_a_table(tmp_path, "notes.md"))
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        ("catalog/tables/notes.md", "file", "unexpected file; catalog/tables/ holds *.csv")
+    ]
+
+
+def test_each_orphan_is_reported(tmp_path: Path):
+    # One problem per CSV, not one for the directory (audit of #284, F5).
+    root = a_catalog_with_a_table(tmp_path, "orphan.csv")
+    (root / "catalog" / "tables" / "other.csv").write_text("a\n1\n", encoding="utf-8")
+    _, problems = check_catalog(root)
+    assert [p.path for p in problems] == ["catalog/tables/orphan.csv", "catalog/tables/other.csv"]
+
+
+# The tiers outside TABLE_TIERS, as a literal so the parametrization below cannot shrink with
+# the tuple it is drawn from; the test after it says the literal is still the complement.
+NON_TABLE_TIERS = ("FETCHED", "NOT HELD")
+
+
+def test_the_non_table_tiers_are_pinned():
+    assert tuple(t for t in TIER if t not in TABLE_TIERS) == NON_TABLE_TIERS
+
+
+@pytest.mark.parametrize(
+    "tier, tier_fields",
+    [
+        (
+            "FETCHED",
+            "status: VERIFIED\nurl: https://example.org/x\nretrieved: 2026-09-30\n"
+            "fetch_script: src/fetch/x.py\n",
+        ),
+        ("NOT HELD", "status: NOT PUBLIC\nurl: null\nretrieved: null\n"),
+    ],
+    ids=NON_TABLE_TIERS,
+)
+def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(
+    tmp_path: Path, tier: str, tier_fields: str
+):
+    # The sentence says which tier the naming record has, and no rule forbids `file` on the
+    # other two (RULES: file is (False, "str?")), so a record of either tier pointing at the
+    # CSV validates on its own and must not make the CSV a table with a record. Both tiers,
+    # because `in HELD_TIERS` admits FETCHED and passes a NOT HELD-only pin (audit of #284, F2).
+    root = a_catalog_with_a_table(tmp_path, "orphan.csv")
+    (root / "src" / "fetch").mkdir(parents=True)
+    (root / "src" / "fetch" / "x.py").write_text("", encoding="utf-8")
+    (root / "catalog" / "sources" / "x.md").write_text(
+        f"---\nid: x\ntitle: t\nsteward: s\ntier: {tier}\n{tier_fields}"
+        'access: ["x"]\nlicense: "x"\nvariables: []\ntopics: [bed-state]\n'
+        "regions: [global]\nfile: catalog/tables/orphan.csv\n---\n",
+        encoding="utf-8",
+    )
+    _, problems = check_catalog(root)
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
+    ]
+
+
+def test_every_table_in_the_valid_fixture_is_named_by_a_table_writing_record():
+    # test_valid_catalog_has_no_problems says the rule is silent there; this says the
+    # fixture holds a CSV for each of the two tiers to be silent about, and nothing else.
+    catalog = valid_catalog()
+    csvs = sorted(p.name for p in (FIXTURES / "valid" / "catalog" / "tables").glob("*.csv"))
+    assert csvs == ["bed_region.csv", "parnell2005_table1.csv"]
+    named = {
+        str(r.data["file"]).removeprefix("catalog/tables/"): r.data["tier"]
+        for r in catalog.records["sources"]
+        if r.data.get("file")
+    }
+    assert named == {"bed_region.csv": "DERIVED", "parnell2005_table1.csv": "TRANSCRIBED"}
+    assert set(named.values()) == set(TABLE_TIERS)
+
+
 # --- the conditional rules a mutation sweep found undefended ------------------------
 #
 # Sweep: disable one rule in schema.py, run the suite, see whether anything fails. A

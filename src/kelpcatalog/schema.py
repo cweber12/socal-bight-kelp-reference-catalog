@@ -162,6 +162,9 @@ class Record:
 class Catalog:
     root: Path
     records: dict[str, list[Record]] = field(default_factory=lambda: {k: [] for k in KINDS})
+    # The CSVs the walk saw under catalog/tables/, repo-relative, so the table -> record
+    # direction can be checked after loading (_orphan_table_problems).
+    tables: list[str] = field(default_factory=list)
 
     def ids(self, kind: str) -> set[str]:
         return {r.id for r in self.records[kind] if r.id}
@@ -717,6 +720,21 @@ def _duplicate_problems(catalog: Catalog) -> list[Problem]:
     return out
 
 
+def _orphan_table_problems(catalog: Catalog) -> list[Problem]:
+    """CONTEXT.md, "Record format": a table under catalog/tables/ "has a source record
+    whose tier is TRANSCRIBED or DERIVED". _tier_problems checks that such a record's
+    `file` exists; this is the other direction, a CSV that no record of those tiers
+    names. The tiers are read from TABLE_TIERS, the set _tier_problems requires `file`
+    of, so a tier added there is admitted here without an edit (#17)."""
+    named = {
+        str(r.data["file"])
+        for r in catalog.records["sources"]
+        if r.data.get("tier") in TABLE_TIERS and r.data.get("file")
+    }
+    message = f"no {' or '.join(TABLE_TIERS)} source record names it"
+    return [Problem(path, "file", message) for path in catalog.tables if path not in named]
+
+
 # --- loading -----------------------------------------------------------------------
 
 
@@ -743,7 +761,8 @@ def load_catalog(root: Path) -> tuple[Catalog, list[Problem]]:
                 )
                 continue
             if dirname not in KINDS:
-                continue  # catalog/tables/ holds tables, not records
+                catalog.tables.append(rel)  # catalog/tables/ holds tables, not records
+                continue
             rec, probs = parse_record(path.read_text(encoding="utf-8"), dirname, rel)
             problems += probs
             if rec is not None:
@@ -757,4 +776,5 @@ def check_catalog(root: Path) -> tuple[Catalog, list[Problem]]:
     for rec in catalog.all():
         problems += validate(rec, catalog)
     problems += _duplicate_problems(catalog)
+    problems += _orphan_table_problems(catalog)
     return catalog, problems
