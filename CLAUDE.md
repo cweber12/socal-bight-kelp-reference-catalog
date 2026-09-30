@@ -106,8 +106,10 @@ applies.
   it run. Every other path is outside. `catalog/regions/` is out because every commit in this
   repo's history that added a region record changed code beside it — three, `b12b4e7`, `24111f6`
   and `0b40a82`; `catalog/beds/`, `catalog/excluded/` and `catalog/tables/` are out because a
-  directory's first record establishes a shape rather than repeating one, and none of the three
-  has one yet.
+  directory's first file establishes a shape rather than repeating one, and when the allowlist
+  was drawn (PR #235) each of the three held only a `.gitkeep`. A first file landing does not
+  bring a directory in: `catalog/excluded/` gained its first record in PR #254 and
+  `catalog/tables/` its first CSV in PR #245.
 - **A multi-record row is eligible** when the diff's record ids are the ones the row names.
 - **The audit runs per row.** Auto-merge neither batches it across rows nor stands in for one, and
   who may say to skip it is unchanged ("Branches, commits, PRs"). Paths are what the allowlist
