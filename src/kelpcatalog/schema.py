@@ -723,13 +723,16 @@ def _duplicate_problems(catalog: Catalog) -> list[Problem]:
 def _orphan_table_problems(catalog: Catalog) -> list[Problem]:
     """CONTEXT.md, "Record format": a table under catalog/tables/ "has a source record
     whose tier is TRANSCRIBED or DERIVED". _tier_problems checks that such a record's
-    `file` exists; this is the other direction, a CSV no record's `file` names."""
-    named = {str(r.data["file"]) for r in catalog.records["sources"] if r.data.get("file")}
-    return [
-        Problem(path, "file", "no source record names it")
-        for path in catalog.tables
-        if path not in named
-    ]
+    `file` exists; this is the other direction, a CSV that no record of those tiers
+    names. The tiers are read from TABLE_TIERS, the set _tier_problems requires `file`
+    of, so a tier added there is admitted here without an edit (#17)."""
+    named = {
+        str(r.data["file"])
+        for r in catalog.records["sources"]
+        if r.data.get("tier") in TABLE_TIERS and r.data.get("file")
+    }
+    message = f"no {' or '.join(TABLE_TIERS)} source record names it"
+    return [Problem(path, "file", message) for path in catalog.tables if path not in named]
 
 
 # --- loading -----------------------------------------------------------------------

@@ -1276,7 +1276,7 @@ def test_a_table_no_source_record_names_is_reported(tmp_path: Path):
     # the other one. Before #246 the walk skipped the CSV and the gate stayed green.
     _, problems = check_catalog(a_catalog_with_a_table(tmp_path, "orphan.csv"))
     assert [(p.path, p.field, p.message) for p in problems] == [
-        ("catalog/tables/orphan.csv", "file", "no source record names it")
+        ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
     ]
 
 
@@ -1286,6 +1286,23 @@ def test_a_stray_under_tables_is_unexpected_and_not_also_an_orphan(tmp_path: Pat
     _, problems = check_catalog(a_catalog_with_a_table(tmp_path, "notes.md"))
     assert [(p.path, p.field, p.message) for p in problems] == [
         ("catalog/tables/notes.md", "file", "unexpected file; catalog/tables/ holds *.csv")
+    ]
+
+
+def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(tmp_path: Path):
+    # The sentence says which tier the naming record has, and no rule forbids `file` on the
+    # other two (RULES: file is (False, "str?")), so a NOT HELD record pointing at the CSV
+    # validates on its own and must not make the CSV a table with a record.
+    root = a_catalog_with_a_table(tmp_path, "orphan.csv")
+    (root / "catalog" / "sources" / "x.md").write_text(
+        "---\nid: x\ntitle: t\nsteward: s\nurl: null\nstatus: NOT PUBLIC\ntier: NOT HELD\n"
+        'access: ["x"]\nlicense: "x"\nvariables: []\nretrieved: null\ntopics: [bed-state]\n'
+        "regions: [global]\nfile: catalog/tables/orphan.csv\n---\n",
+        encoding="utf-8",
+    )
+    _, problems = check_catalog(root)
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
     ]
 
 
