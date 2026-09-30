@@ -83,7 +83,12 @@ def test_the_committed_notebooks_pass_and_are_counted():
     sections, found = check_structure(ROOT)
 
     assert found == [], "\n".join(str(p) for p in found)
-    assert len(sections) == 11
+    # The paths, not `len(sections) == 11`: a count stays at eleven when NOTEBOOK_PATHS gains
+    # an entry the walk never reaches, or when a notebook is keyed under another spelling of
+    # its path (#66). A notebook missing from disk is a reported problem in this gate, so
+    # `found == []` above catches that case; the count never did. Keyed off NOTEBOOK_PATHS
+    # rather than TOPICS, the name the walk iterates; test_plan.py pins the two together.
+    assert set(sections) == {rel(INDEX_PATH), *(rel(p) for p in NOTEBOOK_PATHS.values())}
 
 
 def test_it_reads_back_the_sections_the_committed_ocean_climate_notebook_holds():
@@ -249,12 +254,17 @@ def test_a_notebook_that_cannot_be_read_fails_and_names_it(tmp_path: Path):
     # A gate that raised here would break gate.py's contract - (passed, message) - on
     # exactly the hand-edited notebook it exists to catch.
     root = a_repo(tmp_path)
-    (root / NOTEBOOKS_DIR / OCEAN_CLIMATE).write_text("not a notebook\n", encoding="utf-8")
+    (root / NOTEBOOKS_DIR / OCEAN_CLIMATE).write_text("{ not json", encoding="utf-8")
 
     (problem,) = problems(root)
 
     assert problem.path == rel(OCEAN_CLIMATE)
-    assert "not a notebook" in problem.message
+    # Written out, and over bytes that do not themselves contain it: nbformat quotes the
+    # file's own content back in its error, so a file reading "not a notebook" made the old
+    # `"not a notebook" in problem.message` pass on the file rather than on the gate, and
+    # a mutant that replaced the whole message survived the suite (#66).
+    assert problem.message.startswith("is not a notebook this gate can read")
+    assert "JSON" in problem.message
 
 
 def test_a_tree_with_no_notebooks_fails_once_per_notebook(tmp_path: Path):
