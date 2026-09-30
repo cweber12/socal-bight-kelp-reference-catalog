@@ -23,7 +23,9 @@ those are already imported, so it is a no-op here.
 
 from __future__ import annotations
 
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -264,6 +266,35 @@ def test_a_run_with_nothing_skipped_says_nothing_about_skipping(monkeypatch, cap
 # --- the shape of the report -------------------------------------------------------
 
 
+def test_main_s_report_survives_a_character_its_own_stdout_cannot_encode() -> None:
+    """Audit of PR #278, F1: `_run` now hands `main()` text a child wrote in UTF-8, and on a
+    piped Windows run `gate.py`'s own stdout is the ANSI codepage, so a `≥` in a failing diff
+    - or the U+FFFD `errors="replace"` manufactures - raised `UnicodeEncodeError` at the
+    `print` and replaced the report with a traceback. The child's stdout is forced to ASCII
+    so the test discriminates on any OS; the mutation it catches is the `reconfigure` at the
+    top of `main` going missing. Run as a real child because `capsys` is already UTF-8."""
+    script = (
+        "import sys; sys.path.insert(0, sys.argv[1]); import gate;"
+        " gate.GATES = [gate.Gate('row', lambda: (False, 'before \\ufffd after'))];"
+        " sys.exit(gate.main())"
+    )
+    env = {**os.environ, "PYTHONIOENCODING": "ascii", "PYTHONUTF8": "0"}
+    p = subprocess.run(
+        [sys.executable, "-c", script, str(Path(gate.__file__).parent)],
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+
+    assert p.returncode == 1, p.stderr
+    assert "UnicodeEncodeError" not in p.stderr
+    assert "before" in p.stdout
+    assert "after" in p.stdout
+    assert "0/1 gates passed" in p.stdout
+
+
 def test_main_prints_one_row_per_gate_and_no_others(monkeypatch, capsys) -> None:
     monkeypatch.setattr(gate, "GATES", [_passing(name, "counts") for name in sorted(GATE_ROWS)])
 
@@ -399,6 +430,53 @@ def test_run_runs_the_child_in_the_repo_root_whatever_the_caller_s_cwd(monkeypat
 
     assert ok
     assert Path(out.strip()).resolve() == Path(gate.__file__).parent.resolve()
+
+
+def test_run_keeps_a_child_s_output_when_one_byte_is_not_utf8() -> None:
+    """#251: with no `errors=` on the decode, one undecodable byte killed `subprocess`'s
+    reader thread and `_run` returned `(False, '')` - the failing row's whole output gone,
+    a `UnicodeDecodeError` traceback in its place. The byte is written raw so that no
+    encoding setting in the child's environment can turn it into valid UTF-8; the mutation
+    this catches is the `errors=` handler going missing. The byte is rendered as its escape
+    rather than U+FFFD: the escape names the byte, which is the diagnosis #251 is about, and
+    it is ASCII, so the report's own stdout can always print it (audit of PR #278, F5)."""
+    script = "import sys; sys.stdout.buffer.write(b'before \\x85 after\\n'); sys.exit(1)"
+    ok, out = gate._run([sys.executable, "-c", script])
+
+    assert not ok
+    assert "before \\x85 after" in out
+
+
+def test_run_tells_a_python_child_to_write_utf8(monkeypatch) -> None:
+    """#251: on Windows a Python child writes to a pipe in the ANSI codepage, so a `…` in
+    a failing test's diff left the pipe as cp1252 `0x85`. The `errors=` handler alone would
+    keep the row's output but degrade that character; telling the child to emit UTF-8 keeps
+    it. The mutation this catches is `PYTHONIOENCODING` going missing from the child's
+    environment.
+
+    A child that already runs in UTF-8 passes either way, and both CI runners do: Ubuntu by
+    locale, Windows by `PYTHONUTF8=1` in `ci.yml` (audit of PR #278, F2). So the four
+    settings below put the child in the narrowest locale its OS offers - `PYTHONUTF8=0` is
+    what makes a Windows pipe cp1252 again, and the other three make a POSIX child ASCII -
+    and `_run`'s own `PYTHONIOENCODING` is then the only thing that can carry `…` through.
+    Measured on Windows; the POSIX half is what the Ubuntu job measures.
+
+    The `…` is an escape inside the child's source rather than a character on its command
+    line: a POSIX child in that locale decodes `argv` as ASCII with surrogates, and the first
+    version of this test failed on Ubuntu (run 36643951401) with the child refusing to encode
+    the surrogate it had been handed, which is not the thing under test."""
+    for name, value in (
+        ("PYTHONUTF8", "0"),
+        ("PYTHONCOERCECLOCALE", "0"),
+        ("LC_ALL", "C"),
+        ("LANG", "C"),
+    ):
+        monkeypatch.setenv(name, value)
+
+    ok, out = gate._run([sys.executable, "-c", "print('before \\u2026 after')"])
+
+    assert ok
+    assert "before … after" in out
 
 
 # --- the unit row ------------------------------------------------------------------

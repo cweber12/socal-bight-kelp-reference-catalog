@@ -14,6 +14,7 @@ ones not yet here. A row here that is not a row there is a gate nothing asked fo
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import traceback
@@ -39,7 +40,25 @@ class Gate:
 
 
 def _run(cmd: list[str]) -> tuple[bool, str]:
-    p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+    """Run a child in the repo root and return its verdict with both of its streams.
+
+    A Python child writes to a pipe in the ANSI codepage on Windows, so `PYTHONIOENCODING`
+    tells it to write UTF-8 instead; `errors="backslashreplace"` covers a child that writes a
+    byte no setting reaches - `lint`'s child is ruff's own binary, which `python -m ruff` only
+    launches. Without both, one `…` in a failing test's diff killed the reader thread and the
+    row's whole output with it (#251). The escape rather than U+FFFD because it names the
+    byte and is ASCII, so `main()`'s own stdout can always print it.
+    """
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+    p = subprocess.run(
+        cmd,
+        cwd=ROOT,
+        env=env,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="backslashreplace",
+    )
     return p.returncode == 0, (p.stdout or "") + (p.stderr or "")
 
 
@@ -216,7 +235,13 @@ def main() -> int:
     A skipped gate is not counted as a pass. It is not counted as a failure either - the
     module docstring says skipping "is for the clone, not the author", so a skip leaves the
     exit code alone and shows up as the gap between the passed count and the total.
+
+    The report's own stdout never raises on a character it cannot encode: on a piped Windows
+    run it is the ANSI codepage, and `_run` now hands it the UTF-8 a child wrote, so a `≥` in
+    a failing diff would otherwise replace the report with a traceback (audit of PR #278, F1).
+    An escape rather than `?`, so the character stays legible in a pasted report.
     """
+    sys.stdout.reconfigure(errors="backslashreplace")
     width = max(len(g.name) for g in GATES)
     failed = 0
     skipped = 0
