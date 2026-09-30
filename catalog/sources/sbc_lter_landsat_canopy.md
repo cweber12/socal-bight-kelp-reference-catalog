@@ -13,9 +13,10 @@ access:
     Open https://sbclter.msi.ucsb.edu/data/catalog/, the Santa Barbara Coastal LTER data catalog.
     Under the collection "SBC LTER: Ongoing and long-term time-series of satellite and aerial
     estimates of giant kelp biomass" it lists "Kelp canopy area and biomass from Landsat", linking
-    to https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-sbc&identifier=74&revision=newest
-    and to https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.74 (HTTP 200,
-    2026-09-18)
+    to https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.74. The page's HTML
+    carries a second link under the same label, to
+    https://portal.edirepository.org/nis/mapbrowse?scope=knb-lter-sbc&identifier=74&revision=newest,
+    inside an HTML comment (HTTP 200, 2026-09-30)
   - >-
     The steward's own package page,
     https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.74, is served as an
