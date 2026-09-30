@@ -93,8 +93,8 @@ typed, per `transcribed_from`. Or a committed script was run over catalogued inp
 table the record names, per `derived_from`, `access` stating what the run wrote and when. Or —
 only where the entity is disproportionate to hold, so that the record keeps nothing and says so
 with the entity's size — enough of the entity itself answered to show that it opens:
-`sbc_lter_landsat_canopy` records its first 64 bytes arriving beside its byte count, its checksum
-and its access policy. The fourth way is the exception: an entity a record could hold is fetched,
+`sbc_lter_landsat_canopy` records its first 64 bytes arriving beside its byte count and its
+checksum. The fourth way is the exception: an entity a record could hold is fetched,
 not probed. A landing page answering is not the source answering, and a document
 describing the source is not the source.
 
