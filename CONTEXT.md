@@ -337,9 +337,10 @@ meters … with maximum depths of 30 meters" (`cdfw_kelp_esr`, section "0.3." Ha
 
 ## Record schemas
 
-Required fields are marked `*`. "Where from" says what may supply the value. A field whose
-value is a list of str holds each entry once; the str form of `variables`, which #182 retires,
-is excepted.
+Required fields are marked `*`. "Where from" says what may supply the value. A field a schema
+below types as a list of str holds each entry once; the str form of `variables`, which #182
+retires, and a list of str inside a mapping (`variables[].file`, `derived_from.inputs`) are
+excepted.
 
 ### sources/<id>.md
 

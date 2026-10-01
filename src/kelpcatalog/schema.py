@@ -180,11 +180,12 @@ class Catalog:
 # "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
 # "list[finding]", "list[site_key]", "list[cite]", "list[variable]".
 #
-# CONTEXT.md, "Record schemas": a field whose value is a list of str holds each entry
-# once. _shape_problems reports a repeat in a field of either type here. The other
-# five list types are not checked: their entries are mappings - list[variable]'s str
-# form until #182 aside, which the sentence excepts - and what "repeats an entry"
-# means for a mapping is undecided (#57).
+# CONTEXT.md, "Record schemas": a field a schema types as a list of str holds each
+# entry once. _shape_problems reports a repeat in a field of either type here. The
+# other five list types are not checked here: their entries are mappings (list[variable]
+# admits str entries until #182; the sentence excepts that form), and what one entry is
+# differs by row - the citations, variables and site_key rows each state an identity
+# that no gate enforces, and the equations and findings rows state none (#5, 2026-10-01).
 REPEAT_CHECKED_TYPES = ("list[str]", "list[topic]")
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {

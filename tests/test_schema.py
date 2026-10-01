@@ -1792,16 +1792,30 @@ def test_every_str_list_field_reports_a_repeated_entry(kind: str, name: str):
     assert (name, REPEATED.format("x")) in reports(validate(repeated))
 
 
+def test_the_str_form_of_variables_is_excepted():
+    # CONTEXT.md, "Record schemas": the str form of `variables`, which #182 retires, is
+    # excepted. #182 retires this test with the form.
+    found = reports(validate(a_fetched_source(variables=["temp_c", "temp_c"])))
+    assert not [m for _, m in found if "entered more than once" in m]
+
+
+def test_entries_that_differ_only_in_whitespace_or_case_are_not_a_repeat():
+    # "holds each entry once" compares the strings as entered; nothing is stripped or folded.
+    assert validate(a_source(access=["Open the page", "Open the page ", "open the page"])) == []
+
+
 AN_EQUATION = {"id": "eq1", "as_printed": "N_t = N_0 e^{rt}", "where": "p. 3, eq. 1"}
 
 # One record per dict-valued list type, of the kind and tier that admits the field,
-# carrying one valid entry twice, so a repeat is the only thing that could be reported.
+# carrying one entry twice. The citations, variables and site_key rows each say what one
+# entry is, so three of these records are not valid under their rows; what is pinned is
+# that this check says nothing of them, so the assertion is on the message, not `== []`.
 A_DICT_LIST_REPEATED = {
     "list[eq]": lambda: a_reference(equations=[AN_EQUATION, AN_EQUATION]),
     "list[finding]": lambda: a_reference(findings=[A_FINDING, A_FINDING]),
     "list[site_key]": lambda: a_fetched_source(site_key=SITE_KEY_SHAPES["file"] * 2),
     "list[cite]": lambda: a_source(citations=[A_CITATION, A_CITATION]),
-    "list[variable]": lambda: a_source(variables=[A_VARIABLE, A_VARIABLE]),
+    "list[variable]": lambda: a_fetched_source(variables=[A_VARIABLE, A_VARIABLE]),
 }
 
 
@@ -1811,9 +1825,11 @@ def test_every_dict_valued_list_type_has_a_repeated_record():
 
 @pytest.mark.parametrize("typ", DICT_LIST_TYPES)
 def test_a_dict_valued_list_is_not_checked_for_repeats(typ: str):
-    # #57's brief takes the two str-valued types only: what "repeats an entry" means for a
-    # mapping (the same id, or the whole mapping) is undecided, so nothing is reported.
-    assert validate(A_DICT_LIST_REPEATED[typ]()) == []
+    # #57's brief takes the two str-valued types only. The citations, variables and site_key
+    # rows each say what one entry is and no gate enforces it; equations and findings say
+    # nothing. So the pin is that this check reports nothing, not that the record is valid.
+    found = reports(validate(A_DICT_LIST_REPEATED[typ]()))
+    assert not [m for _, m in found if "entered more than once" in m]
 
 
 # --- the island region nodes (#88) --------------------------------------------------
