@@ -32,9 +32,11 @@ and that prose is where this repo keeps the freezes, the declarations and the ex
 
 - **The `Status:` line.** It begins on line 3 in all six files under `docs/prd/` today and wraps
   over several lines. **Report it; do not rule on it.** A file whose status says "not active" can
-  still hold a track that runs beside the active milestone, and the track's own prose is what says
-  so — `docs/prd/regions-and-authorities.md`, "Sites track": "**This track runs beside milestone
-  6.3c, which is active**".
+  still hold a track that runs beside another milestone, and the track's own prose is what says
+  so — `docs/prd/regions-and-authorities.md`, "Sites track", opens with that sentence. On
+  2026-10-01 that sentence still names 6.3c as active while `monitoring-sources.md`'s own status
+  line reads `done`; the stale sentence is parked (#5 issuecomment-5875138695) and is one more
+  reason to report a status rather than rule on it.
 - **Problem**, and the readings an intro says a slice does not re-derive.
 - **The prose around every table, above it and below it.** Not the intro alone: the sentences that
   say where the work order departs from the `order` column sit *below*
