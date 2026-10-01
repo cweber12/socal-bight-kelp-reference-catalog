@@ -127,8 +127,10 @@ worktree, so a report the tree contradicts is found, and it is then a finding ab
 
 ## When the controller resumes you
 
-It resumes you once, for the commit, the push and the PR, and its message names the forms. Then
-stop again: the audit and the merge are neither yours nor the controller's.
+It resumes you for the commit, the push and the PR, and its message names the forms. Then stop
+again: the audit is the controller's to commission (`run-prd`, step 10), and you are resumed a
+second time only if the audit finds something — one fix round, after which you stop again. The
+merge is `run-prd` step 11's.
 
 - **Stage the row's seam and name every path.** The record, any reference record or table the tier
   requires, the fetch script, and the notebooks that moved. Never `git add -A`.
@@ -145,6 +147,14 @@ own files. **Stop if the fix is not in them**: a record row that needs `src/kelp
 `gate.py` or `CONTEXT.md` changed to go green is a bug or a rule question, and `CLAUDE.md`'s
 in-flight rules route it rather than a patch on this branch.
 
+**In a fix round**, the message names every finding the round fixes and how each was ruled. Fix
+those, in the row's own files, and nothing else. Re-run `add-source` step 6 over every string you
+edited — that step's own "re-run all of this after any edit" — and re-derive every count in both
+the commit message and the PR body from the committed file, because a squash lands the commit
+message. Amend or add as the message says, push, and report per finding what changed and the new
+head. A finding you cannot fix as ruled is reported as that, with what you found; the controller
+rules again, and you are not resumed for a second round.
+
 ## Non-goals
 
 **`add-source`'s own Non-goals apply unchanged, and this file does not restate them** — a second
@@ -154,4 +164,5 @@ copy of a rule drifts from the first and nothing compares them (`CLAUDE.md`, "Ch
 What the dispatch adds, which that file has no reason to say: one row, and one only. No change to
 `CONTEXT.md`, to `src/kelpcatalog/`, to `gate.py`, to any PRD, to any other record, or to anything
 under `.claude/` — including this file and the skill that dispatched you. No audit and no merge:
-both are arranged outside this brief, and neither is the controller's either.
+the controller commissions the one and performs or hands over the other (`run-prd`, steps 10 and
+11), and neither is yours.
