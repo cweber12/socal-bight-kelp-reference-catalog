@@ -44,48 +44,51 @@ and that prose is where this repo keeps the freezes, the declarations and the ex
   carries a freeze and its exit trigger ("**Freeze, 2026-09-14**"), the declaration (`CLAUDE.md`,
   "Auto-merge in a declared PRD run"), which rows share one issue, which rows a track's exceptions
   cover, and the `to file` convention (`re-entry.md`, its Slices intro).
-- **Every table of rows in the file.** Measured 2026-09-25: the five files hold nine such tables
-  between them. Two sit outside their file's `## Slices` section, under `## Milestone 6.3b`; three
+- **Every table of rows in the file.** Measured 2026-10-01: the six files hold eleven such tables
+  between them. Two sit outside their file's `## Slices` section, under `## Milestone 6.3b`; four
   more sit under sub-headings inside it. A file's tables are not one table.
 
 ## 2. Read a table the way a reader does
 
-**Take no cell by its position, and none by its header name either.** The nine tables as measured on
-2026-09-25:
+**Take no cell by its position, and none by its header name either.** The eleven tables as measured
+on 2026-10-01:
 
 | file under `docs/prd/` | table | columns, in order | count |
 |---|---|---|---|
+| `dataset-sources.md` | `## Slices` | order, #, id, source, route (lead), topics, region today, note | 8 |
 | `monitoring-sources.md` | `## Slices` | order, #, id, source, route (lead), topics, region today, note | 8 |
 | `regions-and-authorities.md` | `## Slices` | order, #, slice, seam, done when | 5 |
 | `regions-and-authorities.md` | Beds track | #, slice | 2 |
 | `regions-and-authorities.md` | Sites track | order, #, slice | 3 |
 | `re-entry.md` | Part one: the schema queue | order, #, slice, seam, note | 5 |
 | `re-entry.md` | Part two: the migration rows | order, #, id, `variables` today, held, fills, note | 7 |
-| `re-entry.md` | Part three: the closers, and the row outside the queue | order, #, slice, blocked on, note | 5 |
+| `re-entry.md` | Part three: the rule queue | order, #, slice | 3 |
+| `re-entry.md` | Part four: the closers, and the row outside the queue | order, #, slice, blocked on, note | 5 |
 | `scaffold.md` | `## Slices` | #, slice, seam, done when | 4 |
 | `topic-notebooks.md` | `## Slices` | order, #, slice, seam, done when | 5 |
 
 Seven things a reader gets right and a column reader does not. Each carries the row it was measured
 on, so a claim here can be contradicted by opening that row.
 
-- **`#` is the only column all nine share, and it does not always name an issue.** In `scaffold.md`
-  it holds `1`–`6`, order numbers, and no row in that file names an issue at all. In the Beds track
-  it holds issue links. One header, two meanings.
+- **`#` is the only column all eleven share, and it does not always name an issue.** In
+  `scaffold.md` it holds `1`–`6`, order numbers, and no row in that file names an issue at all. In
+  the Beds track it holds issue links. One header, two meanings.
 - **A `#` cell can say `to file`** — the row is planned and its issue does not exist yet, a
   convention `re-entry.md`'s Slices intro states in its own words. Measured 2026-09-25, that file
   has **eighteen** such rows: S2 and S3 in Part one, all fifteen of Part two's M1–M15, and P1 in
   Part three. So a whole table can name no issue. Such a row is not in the order and is reported
   instead.
-- **`order` is not always there.** Seven of the nine tables carry it; the Beds track and
+- **`order` is not always there.** Nine of the eleven tables carry it; the Beds track and
   `scaffold.md` do not.
 - **The order is the rows' document order, and the `order` cell is a label.** Sorting by that cell
   gives a different order from the file. `regions-and-authorities.md`'s `## Slices` runs `15`,
   `16b`, `16c`, `16d`, `16e`, `16`, `16a`, `17`, `18`, `18a` down the page, and the prose *below*
   that table says why — "Between 16b and 16 sit 16c, 16d and 16e, in that order", and "18a follows
-  16e, not in any order". `re-entry.md`'s three tables label their rows `S1`–`S4`, `M1`–`M15`, and
-  `C1`, `C2`, `P1`, `X1`.
-- **A row can say its place is not its document position.** `re-entry.md`'s third table is
-  `### Part three: the closers, and the row outside the queue`, and the row that clause names, X1,
+  16e, not in any order". `re-entry.md`'s four tables label their rows `S1`–`S5`, `M1`–`M15`,
+  `R1`–`R6`, and `C1`, `C2`, `P1`, `X1` — and Part one runs `S1`, `S3`, `S5`, `S2`, `S4` down the
+  page.
+- **A row can say its place is not its document position.** `re-entry.md`'s fourth table is
+  `### Part four: the closers, and the row outside the queue`, and the row that clause names, X1,
   has a slice cell reading "outside the serial queue; may run at any time". Report what the row says
   about its own place rather than dropping it or moving it.
 - **An issue cell can name several issues, and two rows can share one issue.** The Sites track's row
@@ -95,8 +98,9 @@ on, so a claim here can be contradicted by opening that row.
   rows. Row 4 contributes two today, not three, because #195 has closed — which is what the
   staleness bullet below records.
 - **A `#N` anywhere but the `#` column is not that row's issue.** The Beds track's `#96` row says
-  "blocked on #93, #94 and #122" in its slice cell; Part one's S2 says "after [#179](…)" in its
-  note. Take the row's issue from the `#` cell's own markdown link, `[#131](…/issues/131)`, which is
+  "blocked on #93, #94 and #122" in its slice cell; `dataset-sources.md`'s row 1 says "which is
+  #214's candidate" in its note. Take the row's issue from the `#` cell's own markdown link,
+  `[#131](…/issues/131)`, which is
   the form every issue cell in these tables uses.
 
 Then the two things the table cannot tell you, because a hand maintains them:
@@ -278,7 +282,7 @@ Measured 2026-09-25 over the nine entries of `monitoring-sources.md`'s order: ei
 which entry, quote the seam you read, and wait.
 
 **STOP if the row or its issue states a blocker that is not closed.** Two places state one and both
-are read: the row's own cell where its table has that column (`re-entry.md`'s Part three has
+are read: the row's own cell where its table has that column (`re-entry.md`'s Part four has
 `blocked on`), and the issue's `## Blocked by` section. Where a blocker names an issue the tracker
 settles it, and step 3's listing already holds the state — #143's row says "enters after row 7",
 which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no issue nothing settles
