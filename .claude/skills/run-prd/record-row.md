@@ -45,9 +45,9 @@ Every other step of `add-source` is exactly as written.
 
 The worktree has no `.venv/`: `.venv/` is git-ignored and belongs to the controller's checkout. So
 the dispatch gives you an absolute path to that interpreter, and it stands in for
-`.venv/Scripts/python` everywhere `add-source` writes it — four lines, its `:176`, `:177`, `:211`
-and `:238`, plus the second `gate.py` run its step 7 asks for in prose and the one this file adds
-below.
+`.venv/Scripts/python` everywhere `add-source` writes it — four lines, its `:180`, `:181`, `:219`
+and `:278` on 2026-10-01, plus the second `gate.py` run its step 7 asks for in prose and the one
+this file adds below.
 **Two of those are `ruff`, not `python`**: run them as `<interpreter> -m ruff check …` and
 `<interpreter> -m ruff format …`, which is what `gate.py`'s own `lint` row does, so the single path
 the dispatch gave you covers every one of them rather than leaving you to find `ruff.exe`.
@@ -61,7 +61,8 @@ you invoke**, which is the easier mistake to make and the harder one to see:
   about it.
 - `gate.py` and every fetch script root at their own file instead — `ROOT = Path(__file__).parent`
   (`gate.py:24`), whose subprocesses then run with `cwd=ROOT` (`gate.py:42`), and
-  `Path(__file__).resolve().parents[2]` in all 19 scripts under `src/fetch/` on `main`. Your
+  `Path(__file__).resolve().parents[2]` in all 23 scripts under `src/fetch/` on `main` (counted
+  2026-10-01, `__init__.py` excluded). Your
   directory is therefore irrelevant to them and their path is everything: run **this worktree's**
   `gate.py` and **this worktree's** `src/fetch/<id>.py`, never the controller's copies, which would
   gate and fill the controller's checkout while reporting nothing amiss.
