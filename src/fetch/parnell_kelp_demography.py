@@ -30,8 +30,9 @@ them on 2026-10-01. Whatever the status and the headers say, the zip must hold t
 FILES names and no others, each with that size and that digest, or it is not kept. Because
 the zip's own digest cannot be pinned, the file around the members is checked too: it must
 begin with a local file header (the bytes 50 4B 03 04), carry no bytes before its first
-member, and carry no archive comment, or it is not kept. The members are read from the zip
-to be hashed and are not written out: what is held is the zip as served.
+member, carry no archive comment, and end where its end of central directory record ends,
+so that no bytes follow it, or it is not kept. The members are read from the zip to be
+hashed and are not written out: what is held is the zip as served.
 """
 
 from __future__ import annotations
@@ -65,6 +66,11 @@ FILES = (
 )
 CHUNK = 1 << 20
 LOCAL_HEADER = b"PK\x03\x04"
+END_RECORD = b"PK\x05\x06"
+# An end of central directory record is 22 bytes, then its comment; the comment length is
+# the two little-endian bytes at offset 20, and the comment can be at most 65535 bytes.
+END_RECORD_SIZE = 22
+END_RECORD_SEARCH = END_RECORD_SIZE + 0xFFFF
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
@@ -72,9 +78,13 @@ OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 def check_container(path: Path, archive: zipfile.ZipFile) -> None:
     """Raise unless the zip at path is nothing but its members: it begins with a local file
-    header, no bytes stand before its first member, and it carries no archive comment."""
+    header, no bytes stand before its first member, it carries no archive comment, and it ends
+    where its end of central directory record ends, so no bytes follow that record."""
+    size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))
+        raw.seek(max(0, size - END_RECORD_SEARCH))
+        tail = raw.read()
     if head != LOCAL_HEADER:
         raise RuntimeError(f"{URL} served a file beginning {head!r}, not a local file header")
     first = min((info.header_offset for info in archive.infolist()), default=None)
@@ -82,6 +92,17 @@ def check_container(path: Path, archive: zipfile.ZipFile) -> None:
         raise RuntimeError(f"{URL} served {first} bytes before the zip's first member")
     if archive.comment:
         raise RuntimeError(f"{URL} served an archive comment of {len(archive.comment)} bytes")
+    found = tail.rfind(END_RECORD)
+    if found < 0:
+        raise RuntimeError(f"{URL} served a file with no end of central directory record")
+    end_record = size - len(tail) + found
+    comment_length = int.from_bytes(tail[found + 20 : found + 22], "little")
+    record_end = end_record + END_RECORD_SIZE + comment_length
+    if record_end != size:
+        raise RuntimeError(
+            f"{URL} served {size - record_end} bytes after the zip's end of central directory "
+            f"record, which ends at byte {record_end} of {size}"
+        )
 
 
 def check_members(path: Path) -> None:

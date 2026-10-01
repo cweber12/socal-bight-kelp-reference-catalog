@@ -53,7 +53,14 @@ access:
     "From: Ecological Applications" and a link whose text is https://doi.org/10.1002/eap.70181.
     That DOI answers HTTP 302 with https://esajournals.onlinelibrary.wiley.com/doi/10.1002/eap.70181
     as its Location, which answered HTTP 403 with a page titled "Just a moment..." under the
-    User-Agent the fetch script sends (2026-10-01)
+    User-Agent the fetch script sends. The PMC copy of the article,
+    https://pmc.ncbi.nlm.nih.gov/articles/PMC12851851/, answered HTTP 200 with 263,787 bytes of
+    Content-Type "text/html; charset=utf-8" under the same User-Agent, and prints, under the
+    heading "DATA AVAILABILITY STATEMENT" and again under the heading "Data Availability
+    Statement", "Data (Parnell et al., 2025) are available in Dryad at
+    https://doi.org/10.5061/dryad.fttdz096d.", the "2025" being the text of a link to the
+    article's reference list and the URL the text of a link to itself: the paper's statement of
+    where the data is to be had (2026-10-01)
   - >-
     Dryad's API describes the deposit without an account.
     https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fttdz096d answers HTTP 200 and
@@ -100,7 +107,8 @@ access:
     https://datadryad.org/api/v2/versions/409846/download, stores the body under its
     Content-Disposition filename, and keeps it only when the file begins with the zip local file
     header signature, the bytes 50 4B 03 04, carries no bytes before its first member and no
-    archive comment, and holds the three members the files listing of version 409846 names and no
+    archive comment, ends where its end of central directory record ends, and holds the three
+    members the files listing of version 409846 names and no
     other, each with the size and the SHA-256 that listing states; no account, key or referrer is
     required. The zip held is 597,078 bytes. The zip is assembled on request: two earlier requests
     that day were served 597,083 and 597,073 bytes, their SHA-256s differing from each other and
@@ -119,9 +127,9 @@ format: >-
   are those files. README.md states "The data consists of 2 R data files (*.RData) as follows."
   and, under "## Code/software", "Data files are provided as R (open source) data files: R Core
   Team (2021). R: A language and environment for statistical computing. R Foundation for
-  Statistical Computing, Vienna, Austria. URL " followed by the text https://www.R-project.org/
-  linked, in Markdown syntax, to the same URL, then "All analyses were conducted with standard
-  packaged libraries within R as described in the manuscript." Under "#### File:
+  Statistical Computing, Vienna, Austria. URL
+  [https://www.R-project.org/](https://www.R-project.org/)." and "All analyses were conducted with
+  standard packaged libraries within R as described in the manuscript." Under "#### File:
   AlgaeBoxData.RData" it states "This data file consists of one object ‘tl’ with 19 fields as
   described below:" over nineteen lines, and under "#### File: StipeData.RData" "Contains one
   object named ‘stipes’ with 8 fields. Each row indicates a plant was found alive, and the number
@@ -137,9 +145,9 @@ format: >-
   description, as "Number of *Macrocystis pyrifera* pre-adults (plants with 2 stipes at least 1
   meter tall)" does, so every entry reads unit: null. Nothing is entered from the two .RData files
   themselves. In the copy retrieved 2026-10-01 README.md is 3,957 bytes of UTF-8 holding 80 line
-  feeds and no carriage return, its last line having no terminator. Both objects key their rows by
-  the field README.md names "Site" and describes as "Name of study site (20 sites)"; README.md
-  names no coordinate field, so site_key names no coordinate columns
+  feeds and no carriage return, its last line having no terminator. This record takes README.md's
+  field "Site", described as "Name of study site (20 sites)" in both lists, as the site key of
+  both objects; README.md names no coordinate field, so site_key names no coordinate columns
 license: >-
   "Public domain", under the heading "License:" and linked to
   https://creativecommons.org/publicdomain/zero/1.0/ with the label "CC0 (opens in new window)", in
@@ -241,22 +249,19 @@ coverage: >-
   and 2 meters on each side of the line." and "Transect lines are oriented perpendicular to the
   shore, and ‘A’ lines are located at the northern end, with lines ‘B’, ‘C’, and ‘D’ located
   progressively to the south.", the same section of README.md; "Name of study site (20 sites)",
-  "Sampling bout date" and "quarterly season (‘F’, ‘W’, ‘Sp’, ‘Su’)", README.md's descriptions of
-  the fields Site, BoutDate and Season; "Here, we utilized a unique dataset documenting the
+  README.md's description of the field Site; "Here, we utilized a unique dataset documenting the
   demographic dynamics of giant kelp, Macrocystis pyrifera, in response to multiple disturbances
-  across >40 years off San Diego (California, USA)." and "Cohort dynamics varied spatially by depth
-  and study subregion, thus aiding the identification of areas to prioritize for intervention to
-  foster resilience.", the landing page's Abstract, whose HTML carries the ">" as "&gt;";
-  "spatialCoverage": [] and a "temporalCoverage" of "2025-11-14 21:55:36 UTC", "2025-11-14 21:55:37
+  across >40 years off San Diego (California, USA).", the landing page's Abstract, whose HTML
+  carries the ">" as "&gt;"; "spatialCoverage": [] and a "temporalCoverage" of "2025-11-14 21:55:36 UTC", "2025-11-14 21:55:37
   UTC", "2025-11-24 00:00:00 UTC" and "2025-11-24 00:00:00 UTC", the JSON-LD in the landing page's
   HTML
 coverage_stated_at: >-
   README.md in the held zip, which the landing page also renders, states the sentences quoted
-  first under "## Description of the data and file structure" and the field descriptions under
-  "#### File: AlgaeBoxData.RData" and "#### File: StipeData.RData"; the Abstract of
-  https://datadryad.org/dataset/doi:10.5061/dryad.fttdz096d, which
+  first under "## Description of the data and file structure" and the description of the field
+  Site under "#### File: AlgaeBoxData.RData" and again under "#### File: StipeData.RData"; the
+  Abstract of https://datadryad.org/dataset/doi:10.5061/dryad.fttdz096d, which
   https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fttdz096d also carries as abstract,
-  states the sentences quoted from it; and the JSON-LD in the landing page's HTML states the
+  states the sentence quoted from it; and the JSON-LD in the landing page's HTML states the
   spatialCoverage and the temporalCoverage (retrieved 2026-10-01)
 retrieved: 2026-10-01
 fetch_script: src/fetch/parnell_kelp_demography.py
