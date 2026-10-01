@@ -30,7 +30,7 @@ Do not guess which PRD was meant, and do not run against more than one.
 Read the file rather than searching it. A search returns a row and loses the prose that governs it,
 and that prose is where this repo keeps the freezes, the declarations and the exceptions.
 
-- **The `Status:` line.** It begins on line 3 in all five files under `docs/prd/` today and wraps
+- **The `Status:` line.** It begins on line 3 in all six files under `docs/prd/` today and wraps
   over several lines. **Report it; do not rule on it.** A file whose status says "not active" can
   still hold a track that runs beside the active milestone, and the track's own prose is what says
   so — `docs/prd/regions-and-authorities.md`, "Sites track": "**This track runs beside milestone
@@ -212,8 +212,8 @@ step 5, with the order's first entry.
   names the milestone it runs *beside*, not the one its rows are on: the Sites track's own sentence
   names 6.3c, while its rows' issues are on `6.3b Beds and sites`. Keying on the prose there looks
   for strangers on 6.3c — every one of which `monitoring-sources.md` has already ordered — and never
-  looks at 6.3b, which is where the one real stranger is. Measured 2026-09-25: #201, open,
-  `ready-for-agent`, on 6.3b, named by no row in any of the five files.
+  looks at 6.3b, which is where the one real stranger is. Measured 2026-09-25 and again
+  2026-10-01: #201, open, `ready-for-agent`, on 6.3b, named by no row in any of the six files.
 
 ## 5. Take the first entry, and check that it is a record row
 
@@ -246,9 +246,9 @@ and this step reuses the test rather than restating it. **The two rules are not 
 though.** Auto-merge eligibility needs the seam test *and* the declaration — "A PRD that does not
 carry the sentence declares nothing" — while dispatch needs only the seam: a record row is still a
 record row in a PRD that declares nothing, and steps 5–9 open a PR and stop, which is what every row
-gets anyway. Measured 2026-09-25, two of the five files under `docs/prd/` carry the sentence,
-`monitoring-sources.md` and `regions-and-authorities.md`; the other three carry nothing, and nothing
-in this step turns on which do.
+gets anyway. Measured 2026-10-01, three of the six files under `docs/prd/` carry the sentence,
+`dataset-sources.md`, `monitoring-sources.md` and `regions-and-authorities.md`; the other three
+carry nothing, and nothing in this step turns on which do.
 
 **Read the seam from the issue, not from the table.** `monitoring-sources.md`'s `## Slices` has no
 seam column at all — step 2's table of the nine — so the table cannot answer, while the issue's
