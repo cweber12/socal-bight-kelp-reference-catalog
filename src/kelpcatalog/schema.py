@@ -745,19 +745,44 @@ def _duplicate_problems(catalog: Catalog) -> list[Problem]:
     return out
 
 
+def _table_namers(catalog: Catalog) -> dict[str, list[str]]:
+    """The path of every source record whose tier is in TABLE_TIERS and whose `file` is
+    set, keyed by that `file`, in record order. TABLE_TIERS is the set _tier_problems
+    requires `file` of, so a tier added there is counted here without an edit (#17)."""
+    out: dict[str, list[str]] = {}
+    for r in catalog.records["sources"]:
+        if r.data.get("tier") in TABLE_TIERS and r.data.get("file"):
+            out.setdefault(str(r.data["file"]), []).append(r.path)
+    return out
+
+
 def _orphan_table_problems(catalog: Catalog) -> list[Problem]:
-    """CONTEXT.md, "Record format": a table under catalog/tables/ "has a source record
-    whose tier is TRANSCRIBED or DERIVED". _tier_problems checks that such a record's
-    `file` exists; this is the other direction, a CSV that no record of those tiers
-    names. The tiers are read from TABLE_TIERS, the set _tier_problems requires `file`
-    of, so a tier added there is admitted here without an edit (#17)."""
-    named = {
-        str(r.data["file"])
-        for r in catalog.records["sources"]
-        if r.data.get("tier") in TABLE_TIERS and r.data.get("file")
-    }
+    """CONTEXT.md, "Record format": a table under catalog/tables/ "has exactly one source
+    record whose tier is TRANSCRIBED or DERIVED". _tier_problems checks that such a
+    record's `file` exists; this is the other direction's "at least one", a CSV that no
+    record of those tiers names (#17, first clause)."""
+    named = _table_namers(catalog)
     message = f"no {' or '.join(TABLE_TIERS)} source record names it"
     return [Problem(path, "file", message) for path in catalog.tables if path not in named]
+
+
+def _shared_table_problems(catalog: Catalog) -> list[Problem]:
+    """The same sentence's "at most one": a CSV under catalog/tables/ that more than one
+    record of those tiers names (#17, second clause). One Problem per CSV, on the CSV,
+    listing every record's path so a reader sees which `file` fields to choose between -
+    per CSV rather than per record past the first because the sentence is stated of the
+    table and "first" among the records would be file-name order. A `file` naming no CSV
+    is that record's own problem in _tier_problems and is not counted here."""
+    namers = _table_namers(catalog)
+    tiers = " or ".join(TABLE_TIERS)
+    out: list[Problem] = []
+    for path in catalog.tables:
+        records = namers.get(path, [])
+        if len(records) > 1:
+            names = ", ".join(records)
+            message = f"{len(records)} {tiers} source records name it: {names}"
+            out.append(Problem(path, "file", message))
+    return out
 
 
 # --- loading -----------------------------------------------------------------------
@@ -802,4 +827,5 @@ def check_catalog(root: Path) -> tuple[Catalog, list[Problem]]:
         problems += validate(rec, catalog)
     problems += _duplicate_problems(catalog)
     problems += _orphan_table_problems(catalog)
+    problems += _shared_table_problems(catalog)
     return catalog, problems

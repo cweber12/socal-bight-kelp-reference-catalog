@@ -56,8 +56,8 @@ catalog/
   beds/<n>.md              a CDFW Administrative Kelp Bed
   sites/<id>.md            a monitoring program's named station
   human-tasks/<id>.md      what a person must ask for to obtain a source, and where it says so
-  tables/<id>.csv          transcribed and derived tables; each has a source record whose tier
-                           is TRANSCRIBED or DERIVED
+  tables/<id>.csv          transcribed and derived tables; each has exactly one source record
+                           whose tier is TRANSCRIBED or DERIVED
   data-lock.json           every fetched file's url, sha256 and bytes (arrives with the lock gate)
 ```
 
@@ -524,7 +524,7 @@ grew; counts are printed, not asserted.
 | gate | asserts | arrives |
 |---|---|---|
 | `unit` | the schema seams, ≥ 90 % coverage | scaffold |
-| `catalog-schema` | every record parses, validates, and links only to records that exist, a record directory holds nothing but records (`.gitkeep` aside), and a table under `catalog/tables/` has a source record of a tier *Record format* gives it | scaffold |
+| `catalog-schema` | every record parses, validates, and links only to records that exist, a record directory holds nothing but records (`.gitkeep` aside), and a table under `catalog/tables/` has the source record *Record format* requires of it | scaffold |
 | `notebook-structure` | every topic notebook has exactly the sections its sub-topic list requires, and the index lists every topic | milestone 6.2 |
 | `notebook-outputs` | committed notebooks carry outputs and no errors | milestone 6.2 |
 | `notebook-fresh` | re-executing a notebook reproduces its committed outputs (local; needs `data/` for figures) | milestone 6.2 |

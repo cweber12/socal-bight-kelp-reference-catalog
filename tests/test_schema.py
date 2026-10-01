@@ -1257,7 +1257,7 @@ def test_gitkeep_and_transcribed_tables_are_not_unexpected():
     assert (tree / "catalog" / "tables" / "parnell2005_table1.csv").is_file()
 
 
-# --- a table has a source record -----------------------------------------------------
+# --- a table has exactly one source record -------------------------------------------
 
 
 def a_catalog_with_a_table(tmp_path: Path, name: str) -> Path:
@@ -1272,9 +1272,9 @@ def a_catalog_with_a_table(tmp_path: Path, name: str) -> Path:
 
 
 def test_a_table_no_source_record_names_is_reported(tmp_path: Path):
-    # CONTEXT.md, "Record format": tables/<id>.csv, "each has a source record whose tier is
-    # TRANSCRIBED or DERIVED". _tier_problems checks the record -> table direction; this is
-    # the other one. Before #246 the walk skipped the CSV and the gate stayed green.
+    # CONTEXT.md, "Record format": tables/<id>.csv, "each has exactly one source record whose
+    # tier is TRANSCRIBED or DERIVED". _tier_problems checks the record -> table direction;
+    # this is the other one. Before #246 the walk skipped the CSV and the gate stayed green.
     _, problems = check_catalog(a_catalog_with_a_table(tmp_path, "orphan.csv"))
     assert [(p.path, p.field, p.message) for p in problems] == [
         ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
@@ -1301,23 +1301,36 @@ def test_each_orphan_is_reported(tmp_path: Path):
 # The tiers outside TABLE_TIERS, as a literal so the parametrization below cannot shrink with
 # the tuple it is drawn from; the test after it says the literal is still the complement.
 NON_TABLE_TIERS = ("FETCHED", "NOT HELD")
+# What a record of each tier outside TABLE_TIERS carries besides `file` to validate on its own.
+NON_TABLE_TIER_FIELDS = {
+    "FETCHED": (
+        "status: VERIFIED\nurl: https://example.org/x\nretrieved: 2026-09-30\n"
+        "fetch_script: src/fetch/x.py\n"
+    ),
+    "NOT HELD": "status: NOT PUBLIC\nurl: null\nretrieved: null\n",
+}
 
 
 def test_the_non_table_tiers_are_pinned():
     assert tuple(t for t in TIER if t not in TABLE_TIERS) == NON_TABLE_TIERS
+    assert tuple(NON_TABLE_TIER_FIELDS) == NON_TABLE_TIERS
+
+
+def a_non_table_record_naming(root: Path, tier: str, tier_fields: str, csv: str) -> None:
+    """Write a source record x of a tier outside TABLE_TIERS under root whose `file` is csv,
+    with the fetch script FETCHED names beside it."""
+    (root / "src" / "fetch").mkdir(parents=True, exist_ok=True)
+    (root / "src" / "fetch" / "x.py").write_text("", encoding="utf-8")
+    (root / "catalog" / "sources" / "x.md").write_text(
+        f"---\nid: x\ntitle: t\nsteward: s\ntier: {tier}\n{tier_fields}"
+        'access: ["x"]\nlicense: "x"\nvariables: []\ntopics: [bed-state]\n'
+        f"regions: [global]\nfile: {csv}\n---\n",
+        encoding="utf-8",
+    )
 
 
 @pytest.mark.parametrize(
-    "tier, tier_fields",
-    [
-        (
-            "FETCHED",
-            "status: VERIFIED\nurl: https://example.org/x\nretrieved: 2026-09-30\n"
-            "fetch_script: src/fetch/x.py\n",
-        ),
-        ("NOT HELD", "status: NOT PUBLIC\nurl: null\nretrieved: null\n"),
-    ],
-    ids=NON_TABLE_TIERS,
+    "tier, tier_fields", list(NON_TABLE_TIER_FIELDS.items()), ids=NON_TABLE_TIERS
 )
 def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(
     tmp_path: Path, tier: str, tier_fields: str
@@ -1327,14 +1340,7 @@ def test_a_record_of_a_tier_that_writes_no_table_does_not_name_one(
     # CSV validates on its own and must not make the CSV a table with a record. Both tiers,
     # because `in HELD_TIERS` admits FETCHED and passes a NOT HELD-only pin (audit of #284, F2).
     root = a_catalog_with_a_table(tmp_path, "orphan.csv")
-    (root / "src" / "fetch").mkdir(parents=True)
-    (root / "src" / "fetch" / "x.py").write_text("", encoding="utf-8")
-    (root / "catalog" / "sources" / "x.md").write_text(
-        f"---\nid: x\ntitle: t\nsteward: s\ntier: {tier}\n{tier_fields}"
-        'access: ["x"]\nlicense: "x"\nvariables: []\ntopics: [bed-state]\n'
-        "regions: [global]\nfile: catalog/tables/orphan.csv\n---\n",
-        encoding="utf-8",
-    )
+    a_non_table_record_naming(root, tier, tier_fields, "catalog/tables/orphan.csv")
     _, problems = check_catalog(root)
     assert [(p.path, p.field, p.message) for p in problems] == [
         ("catalog/tables/orphan.csv", "file", "no TRANSCRIBED or DERIVED source record names it")
@@ -1354,6 +1360,132 @@ def test_every_table_in_the_valid_fixture_is_named_by_a_table_writing_record():
     }
     assert named == {"bed_region.csv": "DERIVED", "parnell2005_table1.csv": "TRANSCRIBED"}
     assert set(named.values()) == set(TABLE_TIERS)
+
+
+# --- two records naming one table (#17's other clause) ------------------------------
+
+
+REFERENCE_TEXT = (
+    "---\ncitekey: konotchick2012\nref: Konotchick T et al. (2012)\ndoi: 10.1/x\n"
+    "year: 2012\ntopics: [ocean-climate]\n---\n"
+)
+# What a record of each table-writing tier carries besides `file` to validate on its own:
+# the reference TRANSCRIBED cites, the provenance DERIVED states (and topics is [] there).
+TABLE_TIER_FIELDS = {
+    "TRANSCRIBED": (
+        'transcribed_from: {reference: konotchick2012, table: "Table 1", page: "p. 2"}\n'
+        "topics: [bed-state]\n"
+    ),
+    "DERIVED": (
+        "derived_from: {inputs: [catalog/sites/], script: src/derive/x.py, parameters: {}}\n"
+        "topics: []\n"
+    ),
+}
+SHARED = "catalog/tables/shared.csv"
+
+
+def test_the_table_tier_fields_are_pinned():
+    assert tuple(TABLE_TIER_FIELDS) == TABLE_TIERS
+
+
+def a_record_naming(root: Path, rec_id: str, tier: str, csv: str) -> str:
+    """Write a source record of a table-writing tier under root whose `file` is csv, with
+    the reference and the script it needs beside it, and return its repo-relative path."""
+    (root / "catalog" / "references" / "konotchick2012.md").write_text(
+        REFERENCE_TEXT, encoding="utf-8"
+    )
+    (root / "src" / "derive").mkdir(parents=True, exist_ok=True)
+    (root / "src" / "derive" / "x.py").write_text("", encoding="utf-8")
+    path = f"catalog/sources/{rec_id}.md"
+    (root / path).write_text(
+        f"---\nid: {rec_id}\ntitle: t\nsteward: s\nurl: null\nstatus: VERIFIED\ntier: {tier}\n"
+        'access: ["x"]\nlicense: "x"\nvariables: [a]\nretrieved: null\n'
+        f"file: {csv}\n{TABLE_TIER_FIELDS[tier]}regions: [global]\n---\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_a_table_two_records_name_is_reported(tmp_path: Path):
+    # CONTEXT.md, "Record format": tables/<id>.csv, "each has exactly one source record whose
+    # tier is TRANSCRIBED or DERIVED". The orphan tests above are its "at least one"; this is
+    # its "at most one". The problem names every record so a reader sees which `file` fields
+    # to choose between (#17).
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    a = a_record_naming(root, "a", "TRANSCRIBED", SHARED)
+    b = a_record_naming(root, "b", "TRANSCRIBED", SHARED)
+    _, problems = check_catalog(root)
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        (SHARED, "file", f"2 TRANSCRIBED or DERIVED source records name it: {a}, {b}")
+    ]
+
+
+def test_one_problem_per_table_however_many_records_name_it(tmp_path: Path):
+    # Per CSV, not per record past the first: the sentence is stated of the table, the orphan
+    # half reports on the table, and "first" among the records would be file-name order, which
+    # nobody chose. Three records, one problem, all three named.
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    paths = [a_record_naming(root, rec_id, "TRANSCRIBED", SHARED) for rec_id in "abc"]
+    _, problems = check_catalog(root)
+    assert [(p.path, p.message) for p in problems] == [
+        (SHARED, f"3 TRANSCRIBED or DERIVED source records name it: {', '.join(paths)}")
+    ]
+
+
+def test_each_shared_table_is_reported(tmp_path: Path):
+    # One problem per shared CSV, not one for the first found (the mutant that `break`s
+    # after one survived the three tests above; the orphan half has the same pin).
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    (root / "catalog" / "tables" / "other.csv").write_text("a\n1\n", encoding="utf-8")
+    for rec_id in "ab":
+        a_record_naming(root, rec_id, "TRANSCRIBED", SHARED)
+    for rec_id in "cd":
+        a_record_naming(root, rec_id, "TRANSCRIBED", "catalog/tables/other.csv")
+    _, problems = check_catalog(root)
+    assert [p.path for p in problems] == ["catalog/tables/other.csv", SHARED]
+
+
+def test_a_record_of_each_table_writing_tier_naming_one_table_is_two_records(tmp_path: Path):
+    # The count is over TABLE_TIERS, not one member of it: a TRANSCRIBED and a DERIVED record
+    # naming the same CSV are two records naming it.
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    a = a_record_naming(root, "a", "TRANSCRIBED", SHARED)
+    b = a_record_naming(root, "b", "DERIVED", SHARED)
+    _, problems = check_catalog(root)
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        (SHARED, "file", f"2 TRANSCRIBED or DERIVED source records name it: {a}, {b}")
+    ]
+
+
+@pytest.mark.parametrize(
+    "tier, tier_fields", list(NON_TABLE_TIER_FIELDS.items()), ids=NON_TABLE_TIERS
+)
+def test_a_record_of_a_tier_that_writes_no_table_is_not_a_second_one(
+    tmp_path: Path, tier: str, tier_fields: str
+):
+    # The record that does not count as naming a CSV above does not count as naming it twice
+    # either: a FETCHED or NOT HELD record whose `file` is the CSV beside one TRANSCRIBED
+    # record leaves exactly one record naming it.
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    a_record_naming(root, "a", "TRANSCRIBED", SHARED)
+    a_non_table_record_naming(root, tier, tier_fields, SHARED)
+    _, problems = check_catalog(root)
+    assert problems == []
+
+
+def test_two_records_naming_no_table_are_each_their_own_problem(tmp_path: Path):
+    # The sentence is stated of a CSV under catalog/tables/. Two records whose `file` names
+    # none are two records with a `file` that does not exist (_tier_problems), not a table
+    # that two records share.
+    root = a_catalog_with_a_table(tmp_path, "shared.csv")
+    a = a_record_naming(root, "a", "TRANSCRIBED", "catalog/tables/missing.csv")
+    b = a_record_naming(root, "b", "TRANSCRIBED", "catalog/tables/missing.csv")
+    a_record_naming(root, "c", "TRANSCRIBED", SHARED)
+    _, problems = check_catalog(root)
+    assert [(p.path, p.field, p.message) for p in problems] == [
+        (a, "file", "catalog/tables/missing.csv does not exist in the repo"),
+        (b, "file", "catalog/tables/missing.csv does not exist in the repo"),
+    ]
 
 
 # --- the conditional rules a mutation sweep found undefended ------------------------
