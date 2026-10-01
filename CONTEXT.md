@@ -524,7 +524,7 @@ grew; counts are printed, not asserted.
 | gate | asserts | arrives |
 |---|---|---|
 | `unit` | the schema seams, ≥ 90 % coverage | scaffold |
-| `catalog-schema` | every record parses, validates, and links only to records that exist, a record directory holds nothing but records (`.gitkeep` aside), and a table under `catalog/tables/` has exactly one source record of a tier *Record format* gives it | scaffold |
+| `catalog-schema` | every record parses, validates, and links only to records that exist, a record directory holds nothing but records (`.gitkeep` aside), and a table under `catalog/tables/` has the source record *Record format* requires of it | scaffold |
 | `notebook-structure` | every topic notebook has exactly the sections its sub-topic list requires, and the index lists every topic | milestone 6.2 |
 | `notebook-outputs` | committed notebooks carry outputs and no errors | milestone 6.2 |
 | `notebook-fresh` | re-executing a notebook reproduces its committed outputs (local; needs `data/` for figures) | milestone 6.2 |

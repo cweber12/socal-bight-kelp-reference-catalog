@@ -771,7 +771,7 @@ def _shared_table_problems(catalog: Catalog) -> list[Problem]:
     record of those tiers names (#17, second clause). One Problem per CSV, on the CSV,
     listing every record's path so a reader sees which `file` fields to choose between -
     per CSV rather than per record past the first because the sentence is stated of the
-    table and "first" among the records would be directory order. A `file` naming no CSV
+    table and "first" among the records would be file-name order. A `file` naming no CSV
     is that record's own problem in _tier_problems and is not counted here."""
     namers = _table_namers(catalog)
     tiers = " or ".join(TABLE_TIERS)

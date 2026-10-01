@@ -1422,7 +1422,7 @@ def test_a_table_two_records_name_is_reported(tmp_path: Path):
 
 def test_one_problem_per_table_however_many_records_name_it(tmp_path: Path):
     # Per CSV, not per record past the first: the sentence is stated of the table, the orphan
-    # half reports on the table, and "first" among the records would be directory order, which
+    # half reports on the table, and "first" among the records would be file-name order, which
     # nobody chose. Three records, one problem, all three named.
     root = a_catalog_with_a_table(tmp_path, "shared.csv")
     paths = [a_record_naming(root, rec_id, "TRANSCRIBED", SHARED) for rec_id in "abc"]
