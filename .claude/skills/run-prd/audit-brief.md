@@ -75,6 +75,9 @@ repo's and a run adds a third voice:
   6.3c run's audit of PR #253 reversed one such ruling, C3, at #141 issuecomment-5861820435, F2.
 - **what is parked** — the Parking-lot entries the row touched, read from #5's comments and cited
   by id, so a parked choice is not re-filed as new.
+- **what is out of scope** — the row's issue's Non-goals, the other rows of the order and any open
+  issue beside them, and PRD prose that reads as live status but carries a date — so the auditor
+  meets them and puts them down rather than reporting them.
 
 Then **what is newly in scope**, which none of the three can say: the first record under a
 sub-topic, on a host, of a tier, or in a shape no record on `main` has — read from the row's `note`
