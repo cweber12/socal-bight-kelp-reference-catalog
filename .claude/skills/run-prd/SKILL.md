@@ -74,10 +74,10 @@ on, so a claim here can be contradicted by opening that row.
   `scaffold.md` it holds `1`–`6`, order numbers, and no row in that file names an issue at all. In
   the Beds track it holds issue links. One header, two meanings.
 - **A `#` cell can say `to file`** — the row is planned and its issue does not exist yet, a
-  convention `re-entry.md`'s Slices intro states in its own words. Measured 2026-09-25, that file
-  has **eighteen** such rows: S2 and S3 in Part one, all fifteen of Part two's M1–M15, and P1 in
-  Part three. So a whole table can name no issue. Such a row is not in the order and is reported
-  instead.
+  convention `re-entry.md`'s Slices intro states in its own words. Measured 2026-10-01, that file
+  has **fifteen** such rows, Part two's M2–M15 and Part four's P1, and `dataset-sources.md` has
+  three, its rows 4–6. So most of a table can name no issue. Such a row is not in the order and is
+  reported instead.
 - **`order` is not always there.** Nine of the eleven tables carry it; the Beds track and
   `scaffold.md` do not.
 - **The order is the rows' document order, and the `order` cell is a label.** Sorting by that cell
@@ -189,10 +189,10 @@ The comment carries one line per entry, in order: the table the row came from, t
 cell, the issue, the label GitHub gives it, whether an open PR already closes it, whatever the row
 states about its own blockers or its place in the queue, and the row's own inline state wherever
 that disagrees with GitHub. The blockers go in because a first entry can be the one the table calls
-blocked: `re-entry.md`'s order today is #38 then #17, and #38's `blocked on` cell reads
-"M1–M15, for the required flag" — fifteen rows whose `#` cells all say `to file` — while #17's
-reads "nothing". What a blocked first entry means for dispatch is step 5's; naming it is this
-step's.
+blocked: `re-entry.md`'s order on 2026-10-01 is #38 alone, #17 having closed that day, and #38's
+`blocked on` cell reads "M1–M15, for the required flag" — fifteen rows, of which M1 names #199 and
+the other fourteen say `to file` in their `#` cells. What a blocked first entry means for dispatch
+is step 5's; naming it is this step's.
 
 Above those lines goes the commit the PRD was last changed in, so a mid-run edit to a table is
 visible rather than silent:
@@ -286,8 +286,8 @@ are read: the row's own cell where its table has that column (`re-entry.md`'s Pa
 `blocked on`), and the issue's `## Blocked by` section. Where a blocker names an issue the tracker
 settles it, and step 3's listing already holds the state — #143's row says "enters after row 7",
 which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no issue nothing settles
-it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fifteen rows whose `#` cells
-all say `to file`, so that file's order stops here at its first entry. #141's `## Blocked by` reads
+it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fourteen of whose `#` cells
+say `to file`, so that file's order stops here at its first entry. #141's `## Blocked by` reads
 "None; can start immediately."
 
 **A row may state its own exit from a blocker, and then the blocker does not stop it.** #145's
