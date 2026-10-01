@@ -23,6 +23,7 @@ from kelpcatalog.schema import (
     GROUPS,
     HELD_TIERS,
     KINDS,
+    REPEAT_CHECKED_TYPES,
     RULES,
     STATUS,
     TABLE_TIERS,
@@ -1703,6 +1704,116 @@ def test_every_field_is_typed(kind: str, name: str, typ: str):
     rec = a_valid(kind)
     mistyped = Record(kind, rec.path, {**rec.data, name: WRONG_VALUE[typ]})
     assert (name, f"expected {typ}") in reports(validate(mistyped))
+
+
+# --- a list field holds each entry once (#57) ----------------------------------------
+#
+# CONTEXT.md, "Record schemas", the sentence on a list of str - quoted above
+# REPEAT_CHECKED_TYPES in schema.py. The check reads the type RULES declares for the
+# field, so a field of either type added to RULES later is covered without being named
+# here; REPEATABLE_FIELDS is derived from RULES the same way as TYPED_FIELDS above.
+
+REPEATED = "{!r} is entered more than once"
+
+DICT_LIST_TYPES = ("list[eq]", "list[finding]", "list[site_key]", "list[cite]", "list[variable]")
+
+REPEATABLE_FIELDS = [(k, n) for k, n, _, t in FIELD_RULES if t in REPEAT_CHECKED_TYPES]
+
+
+def test_the_repeat_checked_types_are_pinned():
+    # Stated as a literal because the test below is parametrised over the fields of these
+    # types: a member dropped from the constant would drop its cases, not fail them (PR
+    # #185, F5). The second assertion holds every list type RULES declares to one of the
+    # two literals, so a list type added later lands in one of them on purpose.
+    assert REPEAT_CHECKED_TYPES == ("list[str]", "list[topic]")
+    list_types = {t for _, _, _, t in FIELD_RULES if t.startswith("list[")}
+    assert list_types == set(REPEAT_CHECKED_TYPES) | set(DICT_LIST_TYPES)
+
+
+def test_a_repeated_region_is_reported():
+    # The repro in #57's body: `regions: [scb, scb]` validated.
+    assert reports(validate(a_source(regions=["scb", "scb"]))) == [
+        ("regions", REPEATED.format("scb"))
+    ]
+
+
+def test_a_repeated_topic_tag_is_reported():
+    # Silent before #57: the builder tests membership, so a repeated tag rendered once.
+    assert reports(validate(a_source(topics=["bed-state", "bed-state"]))) == [
+        ("topics", REPEATED.format("bed-state"))
+    ]
+
+
+def test_a_mistyped_list_field_gets_the_type_problem_only():
+    rec = a_source(regions=["scb", "scb", 5])
+    assert reports(validate(rec)) == [("regions", "expected list[str]")]
+
+
+def test_each_repeated_entry_is_reported_once_in_first_repeat_order():
+    rec = a_source(access=["a", "b", "b", "a", "a"])
+    assert reports(validate(rec)) == [
+        ("access", REPEATED.format("b")),
+        ("access", REPEATED.format("a")),
+    ]
+
+
+def test_a_repeated_entry_does_not_silence_the_field_s_other_checks():
+    # The field is well-typed, so it is not in the set _shape_problems hands the later
+    # checks: a repeated tag that is also no topic tag is reported for both.
+    rec = a_source(topics=["nope", "nope"])
+    found = reports(validate(rec))
+    assert ("topics", REPEATED.format("nope")) in found
+    assert ("topics", topic_problem("nope")) in found
+
+
+def test_two_distinct_entries_in_every_str_list_field_of_a_source_is_no_problem():
+    # No catalog, so the link checks on beds, sites and references do not run and the
+    # entries need not resolve; the repeat check runs on the record alone.
+    rec = a_source(
+        access=["Open the page", "Download the file"],
+        measures=["kelp canopy", "bed area"],
+        topics=["bed-state", "ocean-climate"],
+        regions=["scb", "global"],
+        beds=["3", "4"],
+        sites=["a.b", "a.c"],
+        references=["x2020", "y2021"],
+    )
+    assert validate(rec) == []
+
+
+@pytest.mark.parametrize(
+    "kind, name", REPEATABLE_FIELDS, ids=[f"{k}.{n}" for k, n in REPEATABLE_FIELDS]
+)
+def test_every_str_list_field_reports_a_repeated_entry(kind: str, name: str):
+    # Membership, not equality: "x" is no topic tag and no consortium, and those fields
+    # report that too. What is pinned is that the repeat is reported whatever the field.
+    rec = a_valid(kind)
+    repeated = Record(kind, rec.path, {**rec.data, name: ["x", "x"]})
+    assert (name, REPEATED.format("x")) in reports(validate(repeated))
+
+
+AN_EQUATION = {"id": "eq1", "as_printed": "N_t = N_0 e^{rt}", "where": "p. 3, eq. 1"}
+
+# One record per dict-valued list type, of the kind and tier that admits the field,
+# carrying one valid entry twice, so a repeat is the only thing that could be reported.
+A_DICT_LIST_REPEATED = {
+    "list[eq]": lambda: a_reference(equations=[AN_EQUATION, AN_EQUATION]),
+    "list[finding]": lambda: a_reference(findings=[A_FINDING, A_FINDING]),
+    "list[site_key]": lambda: a_fetched_source(site_key=SITE_KEY_SHAPES["file"] * 2),
+    "list[cite]": lambda: a_source(citations=[A_CITATION, A_CITATION]),
+    "list[variable]": lambda: a_source(variables=[A_VARIABLE, A_VARIABLE]),
+}
+
+
+def test_every_dict_valued_list_type_has_a_repeated_record():
+    assert set(A_DICT_LIST_REPEATED) == set(DICT_LIST_TYPES)
+
+
+@pytest.mark.parametrize("typ", DICT_LIST_TYPES)
+def test_a_dict_valued_list_is_not_checked_for_repeats(typ: str):
+    # #57's brief takes the two str-valued types only: what "repeats an entry" means for a
+    # mapping (the same id, or the whole mapping) is undecided, so nothing is reported.
+    assert validate(A_DICT_LIST_REPEATED[typ]()) == []
 
 
 # --- the island region nodes (#88) --------------------------------------------------

@@ -337,7 +337,9 @@ meters … with maximum depths of 30 meters" (`cdfw_kelp_esr`, section "0.3." Ha
 
 ## Record schemas
 
-Required fields are marked `*`. "Where from" says what may supply the value.
+Required fields are marked `*`. "Where from" says what may supply the value. A field whose
+value is a list of str holds each entry once; the str form of `variables`, which #182 retires,
+is excepted.
 
 ### sources/<id>.md
 

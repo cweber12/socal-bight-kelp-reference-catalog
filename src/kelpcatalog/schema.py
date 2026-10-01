@@ -179,6 +179,13 @@ class Catalog:
 # Each rule: (required, type). Types: "str", "str?" (str or null), "int", "float",
 # "date", "date?", "map", "map?", "list[str]", "list[topic]", "list[eq]",
 # "list[finding]", "list[site_key]", "list[cite]", "list[variable]".
+#
+# CONTEXT.md, "Record schemas": a field whose value is a list of str holds each entry
+# once. _shape_problems reports a repeat in a field of either type here. The other
+# five list types are not checked: their entries are mappings - list[variable]'s str
+# form until #182 aside, which the sentence excepts - and what "repeats an entry"
+# means for a mapping is undecided (#57).
+REPEAT_CHECKED_TYPES = ("list[str]", "list[topic]")
 
 RULES: dict[str, dict[str, tuple[bool, str]]] = {
     "sources": {
@@ -359,9 +366,23 @@ def parse_record(
 # --- validation --------------------------------------------------------------------
 
 
+def _repeated(values: list[str]) -> list[str]:
+    """The entries that occur more than once, each once, in the order of their
+    first repeat."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in values:
+        if v in seen and v not in out:
+            out.append(v)
+        seen.add(v)
+    return out
+
+
 def _shape_problems(rec: Record) -> tuple[list[Problem], set[str]]:
-    """Missing, mistyped and unknown fields. Also returns the names of fields that
-    are missing or mistyped, so later checks skip them instead of reporting twice."""
+    """Missing, mistyped and unknown fields, and a list of str that repeats an entry.
+    Also returns the names of fields that are missing or mistyped, so later checks
+    skip them instead of reporting twice; a field that repeats an entry is well-typed
+    and is not among them."""
     rules = RULES[rec.kind]
     out: list[Problem] = []
     bad: set[str] = set()
@@ -374,6 +395,9 @@ def _shape_problems(rec: Record) -> tuple[list[Problem], set[str]]:
         if not _type_ok(rec.data[name], typ):
             out.append(Problem(rec.path, name, f"expected {typ}"))
             bad.add(name)
+        elif typ in REPEAT_CHECKED_TYPES:
+            for v in _repeated(rec.data[name]):
+                out.append(Problem(rec.path, name, f"{v!r} is entered more than once"))
     for name in rec.data:
         if name not in rules:
             out.append(Problem(rec.path, name, "unknown field; CONTEXT.md lists the allowed ones"))
