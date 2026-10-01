@@ -573,7 +573,10 @@ and at five, the report, in the thread, naming the union of fields entered acros
 `CLAUDE.md`, "Branches, commits, PRs": a PR that merged unattended is exempt from "a merge ends the
 unit of work" and not from the report — so report, and go back to step 1 for the next entry as a
 resume. The order is re-derived rather than continued, because `main` has moved and step 3 now
-drops the merged row.
+drops the merged row. **Unless step 10 halted the run**: a shared premise stops the next dispatch,
+not this merge, so after a halted row's merge the report says what settles the premise, and the
+run stops. Measured on the first live run of this step, 2026-10-01: PR #290 merged under a halt on
+its F1 (#261 issuecomment-5941998320), and the next row waits on #5 issuecomment-5941998740.
 
 Any of the four fails → the PR is the owner's to merge, the `handed to the owner` write says which
 of the four and why, and the run stops: a merge the owner makes ends the unit of work, and the run
