@@ -156,9 +156,12 @@ access:
     3920 (PDF page 4), ends "The oxygen sensors were factory calibrated by Aanderaa, and before
     each deployment a two-point (0 % and 100 % saturation) offset was applied as recommended in
     the manual. Data from SeapHOx deployments presented in this paper are available at
-    http://osprey.bco-dmo.org.", and "2.3 Data analysis" follows: the statement, by the authors
-    the landing page names as Principal Investigator, Co-Principal Investigator and Contact, of
-    where the data is to be had, naming the host and not dataset 3638 by id. Its section "2.1
+    http://osprey.bco-dmo.org.", and "2.3 Data analysis" follows: the statement, by three of the
+    paper's four authors, Frieder, Martz and Levin, whom the landing page names as Contact,
+    Co-Principal Investigator and Principal Investigator, of where the data is to be had, naming
+    the host and not dataset 3638 by id; the fourth author, Nam, the landing page names in that
+    citation and in no role, the whole word "Nam" occurring 4 times in its HTML, each as "Nam, S.
+    H.". Its section "2.1
     Field measurements", printed page 3919 (PDF page 3), opens "We used moorings deployed on the
     inner shelf, located within and around the LJKF to explore cross-shore, alongshore and water
     depth effects on DO and pH between July 2010 and November 2011 (Fig. 1)."

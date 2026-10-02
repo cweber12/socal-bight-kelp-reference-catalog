@@ -3,13 +3,15 @@
 Run:  python src/fetch/bcodmo_3638.py
 
 The route is CONTEXT.md's second FETCHED limb, "a route the steward names as where the
-source is to be had": the dataset's authors state, in Frieder et al. 2012 (Biogeosciences,
-9, pages 3917-3930, doi:10.5194/bg-9-3917-2012), section 2.2 "Calibrations", printed page
-3920, "Data from SeapHOx deployments presented in this paper are available at
-http://osprey.bco-dmo.org." The BCO-DMO landing page names that paper under "Description"
-as its "Related publication:", links its PDF as "Manuscript", and names its authors Levin,
-Martz and Frieder as Principal Investigator, Co-Principal Investigator and Contact at
-University of California-San Diego Scripps. The sentence names the host and not dataset
+source is to be had": Frieder et al. 2012 (Biogeosciences, 9, pages 3917-3930,
+doi:10.5194/bg-9-3917-2012; authors C. A. Frieder, S. H. Nam, T. R. Martz and L. A. Levin)
+states in section 2.2 "Calibrations", printed page 3920, "Data from SeapHOx deployments
+presented in this paper are available at http://osprey.bco-dmo.org." The BCO-DMO landing
+page names that paper under "Description" as its "Related publication:", links its PDF as
+"Manuscript", and names three of its four authors, Levin, Martz and Frieder, as Principal
+Investigator, Co-Principal Investigator and Contact at University of California-San Diego
+Scripps; the fourth, Nam, it names in that citation and in no role. The sentence names the
+host and not dataset
 3638 by id; the access steps of catalog/sources/bcodmo_3638.md quote it with the redirect
 chain that serves the PDF. FILES holds the URL the page prints for its one data file; the
 request is answered with HTTP 307 to a presigned s3.amazonaws.com URL whose X-Amz-Date and
