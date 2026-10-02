@@ -1,10 +1,10 @@
 # PRD — Dataset sources (milestone 6.4d)
 
-Status: not active, and this file does not open 6.4d; the owner does, by revising this line to say
-so (#263, Non-goals: "Does not open the milestone or make it active"). The review of 2026-10-01
-recommended that no run of this table start before the PR for #229 merges; that is a recommendation
-the owner acts on, not a condition this line sets. Which rows are open and which labels they carry
-is read from GitHub, not from this file.
+Status: active, opened by the owner on 2026-10-02 by the PR for #297, which revised this line
+(#263, Non-goals, left opening the milestone to the owner). The declaring sentence above the Slices
+table stands (`CLAUDE.md`, "Auto-merge in a declared PRD run"); PR #290 merged unattended under it
+on 2026-10-01, and the run's state since is on the #261 ledger thread. Which rows are open and
+which labels they carry is read from GitHub, not from this file.
 Created: 2026-10-01
 
 ## Problem
@@ -191,6 +191,16 @@ source; nothing here settles them. The **id** column is the proposed id, which s
 | 4 | to file | `sandiego_rtoms_salinity` | RTOMS salinity, DCAT `monitoring_ocean_rtoms_salinity` | https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-salinity/, identified to its DCAT entry only (#5 issuecomment-5933645289) | `ocean-climate/salinity`, the #5 entry's lead | as row 3 | reading 6; filed by the owner after row 3 merges, copying row 3's shape; the id follows #285's proposed form and step 3 confirms it |
 | 5 | to file | `sandiego_rtoms_ocean_chemistry` | RTOMS ocean chemistry, DCAT `monitoring_ocean_rtoms_ocean_chemistry` | https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-ocean-chemistry/, identified to its DCAT entry only | `ocean-climate/oxygen-ph`, `ocean-climate/nutrients`, the #5 entry's leads | as row 3 | as row 4 |
 | 6 | to file | `sandiego_rtoms_water_quality` | RTOMS water quality, DCAT `monitoring_ocean_rtoms_water_quality` | https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-water-quality/, identified to its DCAT entry only | none proposed: the #5 entry names the parameters and no tag; read off the source | as row 3 | as row 4 |
+| 7 | [#293](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/293) | `cugn_sp030_20260701` | Spray glider sp030, CUGN Line 90, deployment `sp030-20260701T1719` of 2026-07-01, on the NOAA IOOS National Glider Data Assembly Center ERDDAP | https://gliders.ioos.us/erddap/tabledap/sp030-20260701T1719.html; the unconstrained tabledap CSV, held whole and dated, as `calcofi` holds its ERDDAP CSV; `VERIFIED` / `FETCHED` under the route the steward names, `https://spraydata.ucsd.edu/data-access` | `ocean-climate/temperature`, `ocean-climate/salinity`, `ocean-climate/oxygen-ph` | `scb` | merged as PR #294 on 2026-10-02 (`b90cf7f`) before this row existed, so its cells are read from the record on `main`, not proposed: topics and region are its `topics` and `regions`; steward `Instrument Development Group, Scripps Institution of Oceanography`; the delayed-mode version, the other sp030 deployments, `binnedCUGN90` and the chlorophyll and current columns that fit no sub-topic are parked on #5 (PR #294's comment) |
+| 8 | [#295](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/295) | `opc_mlpa_kelp_forest` | Monitoring and Evaluation of Kelp Forest Ecosystems in the MLPA Marine Protected Area Network (Carr et al.), revision `.12` on the California Ocean Protection Council's DataONE member node | https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.12; seven entities fetched by the identifiers the node's system metadata states, each kept when its SHA-256 and size equal them, as `pisco_kelp_forest` is fetched; `VERIFIED` / `FETCHED` | `bed-state/diver-surveys`, `bed-state/community`, `bed-state/mpas`, `grazers-predators-competitors/urchins`, `substrate/relief-rugosity` | `scb` | merged as PR #296 on 2026-10-02 (`206c351`) before this row existed, so its cells are read from the record on `main`, not proposed; `steward` is `UCSC`, the producer, with the host repository in `access` — `docs/prd/monitoring-sources.md` reading 6, carried here by reading 4, on which the audit of PR #296 blocked (PR #296, "Audit rulings", F1); the next DataONE row copies that; one record beside `pisco_kelp_forest`, not a mention in its `access` |
+
+Rows 7 and 8 are appended out of the work order because they had no work left when they were
+written: each merged before its row existed, and neither was dispatched from this table, since
+neither #293 nor #295 carries a `run-prd` ledger thread on 2026-10-02. On `main` at `206c351`
+(2026-10-02) the table's merged rows are 1, 7 and 8, and `catalog/sources/` holds 31 records:
+`ocean-climate/temperature` tags 9 of the 31 (the eight the Problem section names at `fb15aac`
+and `cugn_sp030_20260701`) and `recruitment-connectivity/settlement` tags 1
+(`parnell_kelp_demography`). The Problem section's counts stand as measured at `fb15aac`.
 
 Each of #261, #267 and #285 was `needs-triage` on 2026-10-01, waiting on this PR; the merged
 table is what their issues say they wait for.
