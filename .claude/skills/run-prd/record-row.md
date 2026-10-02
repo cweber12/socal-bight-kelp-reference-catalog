@@ -1,7 +1,7 @@
 # record-row
 
 You are the implementer of **one** record row of one PRD, dispatched by `/run-prd`
-(`.claude/skills/run-prd/SKILL.md`, steps 5–9). The controller that dispatched you made your
+(`.claude/skills/run-prd/SKILL.md`, steps 5–11). The controller that dispatched you made your
 branch and your worktree and will read what you print. It has not opened your source and it will
 not draft your record: the row's judgements are yours, and the evidence for them is the source,
 not the table the row sits in.
@@ -45,9 +45,9 @@ Every other step of `add-source` is exactly as written.
 
 The worktree has no `.venv/`: `.venv/` is git-ignored and belongs to the controller's checkout. So
 the dispatch gives you an absolute path to that interpreter, and it stands in for
-`.venv/Scripts/python` everywhere `add-source` writes it — four lines, its `:176`, `:177`, `:211`
-and `:238`, plus the second `gate.py` run its step 7 asks for in prose and the one this file adds
-below.
+`.venv/Scripts/python` everywhere `add-source` writes it — four lines, its `:180`, `:181`, `:219`
+and `:278` on 2026-10-01, plus the second `gate.py` run its step 7 asks for in prose and the one
+this file adds below.
 **Two of those are `ruff`, not `python`**: run them as `<interpreter> -m ruff check …` and
 `<interpreter> -m ruff format …`, which is what `gate.py`'s own `lint` row does, so the single path
 the dispatch gave you covers every one of them rather than leaving you to find `ruff.exe`.
@@ -61,7 +61,9 @@ you invoke**, which is the easier mistake to make and the harder one to see:
   about it.
 - `gate.py` and every fetch script root at their own file instead — `ROOT = Path(__file__).parent`
   (`gate.py:24`), whose subprocesses then run with `cwd=ROOT` (`gate.py:42`), and
-  `Path(__file__).resolve().parents[2]` in all 19 scripts under `src/fetch/` on `main`. Your
+  `Path(__file__).resolve().parents[2]` in every script under `src/fetch/` on `main` — 24 at
+  `177a0c1` on 2026-10-01, `__init__.py` excluded, `grep -c "parents\[2\]"` agreeing, a count every
+  `FETCHED` row moves. Your
   directory is therefore irrelevant to them and their path is everything: run **this worktree's**
   `gate.py` and **this worktree's** `src/fetch/<id>.py`, never the controller's copies, which would
   gate and fill the controller's checkout while reporting nothing amiss.
@@ -126,8 +128,10 @@ worktree, so a report the tree contradicts is found, and it is then a finding ab
 
 ## When the controller resumes you
 
-It resumes you once, for the commit, the push and the PR, and its message names the forms. Then
-stop again: the audit and the merge are neither yours nor the controller's.
+It resumes you for the commit, the push and the PR, and its message names the forms. Then stop
+again: the audit is the controller's to commission (`run-prd`, step 10), and you are resumed a
+second time only if the audit finds something — one fix round, after which you stop again. The
+merge is `run-prd` step 11's.
 
 - **Stage the row's seam and name every path.** The record, any reference record or table the tier
   requires, the fetch script, and the notebooks that moved. Never `git add -A`.
@@ -144,6 +148,15 @@ own files. **Stop if the fix is not in them**: a record row that needs `src/kelp
 `gate.py` or `CONTEXT.md` changed to go green is a bug or a rule question, and `CLAUDE.md`'s
 in-flight rules route it rather than a patch on this branch.
 
+**In a fix round**, the message names every finding the round fixes and how each was ruled. Fix
+those, in the row's own files, and nothing else. Re-run `add-source` step 6 over every string you
+edited — that step's own "re-run all of this after any edit" — and re-derive every count in both
+the commit message and the PR body from the committed file, because a squash lands the commit
+message. Amend or add as the message says, push, and report per finding what changed and the new
+head. A finding you cannot fix as ruled is reported as that, with what you found; the controller
+rules again. You may be resumed once more, for one precision edit the controller's re-review of
+your fix names and nothing else; that is not a second round, and a second round does not happen.
+
 ## Non-goals
 
 **`add-source`'s own Non-goals apply unchanged, and this file does not restate them** — a second
@@ -153,4 +166,5 @@ copy of a rule drifts from the first and nothing compares them (`CLAUDE.md`, "Ch
 What the dispatch adds, which that file has no reason to say: one row, and one only. No change to
 `CONTEXT.md`, to `src/kelpcatalog/`, to `gate.py`, to any PRD, to any other record, or to anything
 under `.claude/` — including this file and the skill that dispatched you. No audit and no merge:
-both are arranged outside this brief, and neither is the controller's either.
+the controller commissions the one and performs or hands over the other (`run-prd`, steps 10 and
+11), and neither is yours.

@@ -1,6 +1,6 @@
 ---
 name: run-prd
-description: Use when driving one milestone's PRD as a run in the SoCal Bight kelp reference catalog. Invoked as /run-prd docs/prd/<slug>.md. Derives that PRD's work order from its tables of rows, recovers each row's state from GitHub, writes the order to the ledger, then dispatches its first entry when that entry is a record row and carries it to an open PR with CI green. It stops before review: it audits nothing and merges nothing.
+description: Use when driving one milestone's PRD as a run in the SoCal Bight kelp reference catalog. Invoked as /run-prd docs/prd/<slug>.md. Derives that PRD's work order from its tables of rows, recovers each row's state from GitHub, writes the order to the ledger, then dispatches its first entry when that entry is a record row, carries it to an open PR with CI green, commissions its audit and rules on every finding, and merges it only where CLAUDE.md's declared-run rule allows, handing it to the owner otherwise.
 disable-model-invocation: true
 ---
 
@@ -12,10 +12,11 @@ and which row is next follows from it: `CLAUDE.md`, "How work is tracked", and
 `docs/agents/issue-tracker.md`, "Conventions".
 
 Steps 1–4 derive the order and write it down. Steps 5–9 carry its first entry from a branch to an
-open PR with CI green, and stop there: review and merge are #229, and a row whose seam is not
-`add-source` is #230 — step 5 stops on one.
+open PR with CI green. Steps 10–11 commission that PR's audit, rule on what it finds, and merge it
+where `CLAUDE.md`, "Auto-merge in a declared PRD run", allows — or hand it to the owner where it
+does not. A row whose seam is not `add-source` is #230 — step 5 stops on one.
 
-Do the nine steps **1–9 in order**. **Stop at the first one that cannot be answered from the repo
+Do the eleven steps **1–11 in order**. **Stop at the first one that cannot be answered from the repo
 and the tracker**: say which step, what it found, and what you have derived so far, then wait. Never
 make a step pass by picking between two readings of a rule — a stop here is cheap and a wrong order
 is not.
@@ -30,11 +31,13 @@ Do not guess which PRD was meant, and do not run against more than one.
 Read the file rather than searching it. A search returns a row and loses the prose that governs it,
 and that prose is where this repo keeps the freezes, the declarations and the exceptions.
 
-- **The `Status:` line.** It begins on line 3 in all five files under `docs/prd/` today and wraps
+- **The `Status:` line.** It begins on line 3 in all six files under `docs/prd/` today and wraps
   over several lines. **Report it; do not rule on it.** A file whose status says "not active" can
-  still hold a track that runs beside the active milestone, and the track's own prose is what says
-  so — `docs/prd/regions-and-authorities.md`, "Sites track": "**This track runs beside milestone
-  6.3c, which is active**".
+  still hold a track that runs beside another milestone, and the track's own prose is what says
+  so — `docs/prd/regions-and-authorities.md`, "Sites track", opens with that sentence. On
+  2026-10-01 that sentence still names 6.3c as active while `monitoring-sources.md`'s own status
+  line reads `done`; the stale sentence is parked (#5 issuecomment-5875138695) and is one more
+  reason to report a status rather than rule on it.
 - **Problem**, and the readings an intro says a slice does not re-derive.
 - **The prose around every table, above it and below it.** Not the intro alone: the sentences that
   say where the work order departs from the `order` column sit *below*
@@ -42,48 +45,51 @@ and that prose is where this repo keeps the freezes, the declarations and the ex
   carries a freeze and its exit trigger ("**Freeze, 2026-09-14**"), the declaration (`CLAUDE.md`,
   "Auto-merge in a declared PRD run"), which rows share one issue, which rows a track's exceptions
   cover, and the `to file` convention (`re-entry.md`, its Slices intro).
-- **Every table of rows in the file.** Measured 2026-09-25: the five files hold nine such tables
-  between them. Two sit outside their file's `## Slices` section, under `## Milestone 6.3b`; three
+- **Every table of rows in the file.** Measured 2026-10-01: the six files hold eleven such tables
+  between them. Two sit outside their file's `## Slices` section, under `## Milestone 6.3b`; four
   more sit under sub-headings inside it. A file's tables are not one table.
 
 ## 2. Read a table the way a reader does
 
-**Take no cell by its position, and none by its header name either.** The nine tables as measured on
-2026-09-25:
+**Take no cell by its position, and none by its header name either.** The eleven tables as measured
+on 2026-10-01:
 
 | file under `docs/prd/` | table | columns, in order | count |
 |---|---|---|---|
+| `dataset-sources.md` | `## Slices` | order, #, id, source, route (lead), topics, region today, note | 8 |
 | `monitoring-sources.md` | `## Slices` | order, #, id, source, route (lead), topics, region today, note | 8 |
 | `regions-and-authorities.md` | `## Slices` | order, #, slice, seam, done when | 5 |
 | `regions-and-authorities.md` | Beds track | #, slice | 2 |
 | `regions-and-authorities.md` | Sites track | order, #, slice | 3 |
 | `re-entry.md` | Part one: the schema queue | order, #, slice, seam, note | 5 |
 | `re-entry.md` | Part two: the migration rows | order, #, id, `variables` today, held, fills, note | 7 |
-| `re-entry.md` | Part three: the closers, and the row outside the queue | order, #, slice, blocked on, note | 5 |
+| `re-entry.md` | Part three: the rule queue | order, #, slice | 3 |
+| `re-entry.md` | Part four: the closers, and the row outside the queue | order, #, slice, blocked on, note | 5 |
 | `scaffold.md` | `## Slices` | #, slice, seam, done when | 4 |
 | `topic-notebooks.md` | `## Slices` | order, #, slice, seam, done when | 5 |
 
 Seven things a reader gets right and a column reader does not. Each carries the row it was measured
 on, so a claim here can be contradicted by opening that row.
 
-- **`#` is the only column all nine share, and it does not always name an issue.** In `scaffold.md`
-  it holds `1`–`6`, order numbers, and no row in that file names an issue at all. In the Beds track
-  it holds issue links. One header, two meanings.
+- **`#` is the only column all eleven share, and it does not always name an issue.** In
+  `scaffold.md` it holds `1`–`6`, order numbers, and no row in that file names an issue at all. In
+  the Beds track it holds issue links. One header, two meanings.
 - **A `#` cell can say `to file`** — the row is planned and its issue does not exist yet, a
-  convention `re-entry.md`'s Slices intro states in its own words. Measured 2026-09-25, that file
-  has **eighteen** such rows: S2 and S3 in Part one, all fifteen of Part two's M1–M15, and P1 in
-  Part three. So a whole table can name no issue. Such a row is not in the order and is reported
-  instead.
-- **`order` is not always there.** Seven of the nine tables carry it; the Beds track and
+  convention `re-entry.md`'s Slices intro states in its own words. Measured 2026-10-01, that file
+  has **fifteen** such rows, Part two's M2–M15 and Part four's P1, and `dataset-sources.md` has
+  three, its rows 4–6. So most of a table can name no issue. Such a row is not in the order and is
+  reported instead.
+- **`order` is not always there.** Nine of the eleven tables carry it; the Beds track and
   `scaffold.md` do not.
 - **The order is the rows' document order, and the `order` cell is a label.** Sorting by that cell
   gives a different order from the file. `regions-and-authorities.md`'s `## Slices` runs `15`,
   `16b`, `16c`, `16d`, `16e`, `16`, `16a`, `17`, `18`, `18a` down the page, and the prose *below*
   that table says why — "Between 16b and 16 sit 16c, 16d and 16e, in that order", and "18a follows
-  16e, not in any order". `re-entry.md`'s three tables label their rows `S1`–`S4`, `M1`–`M15`, and
-  `C1`, `C2`, `P1`, `X1`.
-- **A row can say its place is not its document position.** `re-entry.md`'s third table is
-  `### Part three: the closers, and the row outside the queue`, and the row that clause names, X1,
+  16e, not in any order". `re-entry.md`'s four tables label their rows `S1`–`S5`, `M1`–`M15`,
+  `R1`–`R6`, and `C1`, `C2`, `P1`, `X1` — and Part one runs `S1`, `S3`, `S5`, `S2`, `S4` down the
+  page.
+- **A row can say its place is not its document position.** `re-entry.md`'s fourth table is
+  `### Part four: the closers, and the row outside the queue`, and the row that clause names, X1,
   has a slice cell reading "outside the serial queue; may run at any time". Report what the row says
   about its own place rather than dropping it or moving it.
 - **An issue cell can name several issues, and two rows can share one issue.** The Sites track's row
@@ -93,8 +99,9 @@ on, so a claim here can be contradicted by opening that row.
   rows. Row 4 contributes two today, not three, because #195 has closed — which is what the
   staleness bullet below records.
 - **A `#N` anywhere but the `#` column is not that row's issue.** The Beds track's `#96` row says
-  "blocked on #93, #94 and #122" in its slice cell; Part one's S2 says "after [#179](…)" in its
-  note. Take the row's issue from the `#` cell's own markdown link, `[#131](…/issues/131)`, which is
+  "blocked on #93, #94 and #122" in its slice cell; `dataset-sources.md`'s row 1 says "which is
+  #214's candidate" in its note. Take the row's issue from the `#` cell's own markdown link,
+  `[#131](…/issues/131)`, which is
   the form every issue cell in these tables uses.
 
 Then the two things the table cannot tell you, because a hand maintains them:
@@ -150,12 +157,12 @@ gh issue comment <the ledger thread> --body-file <path>
 
 **One thread per run, named in its own first comment, and it does not move.** The thread is the
 issue of the order's first entry *as first derived*, and the comment says so in a line a resume can
-read: `ledger thread: #<N>`. The per-row transitions of steps 5–9 continue that same thread. Write
+read: `ledger thread: #<N>`. The per-row transitions of steps 5–11 continue that same thread. Write
 the order before doing anything else with it, so the order is fixed and auditable rather than
 re-derived silently on every resume.
 
-The thread has to be named because it would otherwise move. Once the first entry merges — which is
-#229's, not this skill's — that issue closes and the next resume's first entry is a different issue
+The thread has to be named because it would otherwise move. Once the first entry merges (step 11)
+that issue closes and the next resume's first entry is a different issue
 with an empty thread, so a run of nine rows would leave nine unlinked threads and each resume would
 read the wrong one. A resume therefore finds the thread by reading **every issue the file's rows
 name**, closed ones included, for the most recent `ledger thread:` comment — which is the other
@@ -175,18 +182,20 @@ and `docs/prd/topic-notebooks.md` are both `Status: done` and reach this, so it 
 Nothing in this repo orders between two tables in one file, and that gap is parked twice: #5
 issuecomment-5823293391 ("two tables on one milestone is two orders with nothing ordering between
 them") and #5 issuecomment-5834515570, which counts this file's tables. Ask which track to run; do
-not interleave them and do not pick one. Measured 2026-09-25, neither file with a live track trips
-this — `monitoring-sources.md` has one table, and of `regions-and-authorities.md`'s three only the
-Sites track has an open `ready-for-agent` row.
+not interleave them and do not pick one. Measured 2026-10-01, `re-entry.md` trips it: Part three's
+R3–R6 (#204–#207) and Part four's C2 (#38) are all open `ready-for-agent`, so that file stops
+here. `dataset-sources.md` and `monitoring-sources.md` have one table each, and of
+`regions-and-authorities.md`'s three only the Sites track has an open `ready-for-agent` row (#196,
+#197).
 
 The comment carries one line per entry, in order: the table the row came from, the row's `order`
 cell, the issue, the label GitHub gives it, whether an open PR already closes it, whatever the row
 states about its own blockers or its place in the queue, and the row's own inline state wherever
 that disagrees with GitHub. The blockers go in because a first entry can be the one the table calls
-blocked: `re-entry.md`'s order today is #38 then #17, and #38's `blocked on` cell reads
-"M1–M15, for the required flag" — fifteen rows whose `#` cells all say `to file` — while #17's
-reads "nothing". What a blocked first entry means for dispatch is step 5's; naming it is this
-step's.
+blocked: were `re-entry.md`'s Part four the table run, its first entry on 2026-10-01 would be #38
+(#17 closed that day), whose `blocked on` cell reads "M1–M15, for the required flag" — fifteen
+rows, of which M1 names #199 and the other fourteen say `to file` in their `#` cells. What a
+blocked first entry means for dispatch is step 5's; naming it is this step's.
 
 Above those lines goes the commit the PRD was last changed in, so a mid-run edit to a table is
 visible rather than silent:
@@ -212,27 +221,35 @@ step 5, with the order's first entry.
   names the milestone it runs *beside*, not the one its rows are on: the Sites track's own sentence
   names 6.3c, while its rows' issues are on `6.3b Beds and sites`. Keying on the prose there looks
   for strangers on 6.3c — every one of which `monitoring-sources.md` has already ordered — and never
-  looks at 6.3b, which is where the one real stranger is. Measured 2026-09-25: #201, open,
-  `ready-for-agent`, on 6.3b, named by no row in any of the five files.
+  looks at 6.3b, which is where the one real stranger is. Measured 2026-09-25 and again
+  2026-10-01: #201, open, `ready-for-agent`, on 6.3b, named by no row in any of the six files.
 
 ## 5. Take the first entry, and check that it is a record row
 
-The order's first entry is what steps 5–9 work — not the first `ready-for-agent` row of the table,
+The order's first entry is what steps 5–11 work — not the first `ready-for-agent` row of the table,
 because step 3 already left out everything that is not open and `ready-for-agent` and step 4 wrote
 the result down.
 
 **First, read what steps 3 and 4 already know about this row.** A run is resumed far more often
-than it is started — steps 5–9 stop after one row, so every row after the first begins as a resume —
-and both facts a resume needs are already in hand: step 3's `gh pr list` read, "an open PR whose
-body closes a row's issue means that row is in progress", and step 4's thread. **Consume them here,
-or the ledger is written and never read.**
+than it is started — a row ends at step 11 and the next begins at step 1, so every row after the
+first begins as a resume — and both facts a resume needs are already in hand: step 3's `gh pr list`
+read, "an open PR whose body closes a row's issue means that row is in progress", and step 4's
+thread. **Consume them here, or the ledger is written and never read.**
 
 - **An open PR closes the first entry's issue** → the run is a resume and there is nothing to
-  dispatch. Report the PR, the thread's last write, and stop: what is left of that row is the audit
-  and the merge, and both are #229's. **Never dispatch a row that has an open PR.** Step 6 does not
-  catch it — `git worktree add` merely errors on the existing directory, and once that worktree is
-  removed, which #5 says is the owner's to do, nothing would stop a second branch and a second PR
+  dispatch. Re-enter at the step the thread's last write leaves next: `CI settled` → step 10;
+  `audited` → the fix round or the wait that write names; `fix round landed` → step 11; `handed to
+  the owner` → wait for the owner's merge; a finding recorded as the owner's → wait for the ruling,
+  as step 8 waits on a `NEEDS_CONTEXT`. **Never dispatch a row that has an open PR.** Step 6 does
+  not catch it — `git worktree add` merely errors on the existing directory, and once that worktree
+  is removed, which #5 says is the owner's to do, nothing would stop a second branch and a second PR
   for one issue.
+- **The thread's last write is the previous entry's `merged` or `handed to the owner` and it says
+  the run halted** → read what that write names as settling the halt — a skill PR, a rule PR, an
+  owner's ruling — and **STOP unless the thread, or the owner, says it has happened**. Steps 1–4
+  re-derive the order on every resume and know nothing of a halt, so this bullet is the only thing
+  between a resumed step 1 and a dispatch through it. Measured 2026-10-01: #261's `merged` write
+  (issuecomment-5942144624) names #5 issuecomment-5941998740 as what the next dispatch waits on.
 - **The thread's last write is `dispatched`, with no `reported` after it** → a dispatch was lost, to
   compaction or a crashed agent. This is the one case where dispatching the same row again is right,
   and the ledger says so before it happens rather than after.
@@ -245,10 +262,10 @@ writes that seam test out once, as the sentence a PRD's preamble carries above t
 and this step reuses the test rather than restating it. **The two rules are not the same rule,
 though.** Auto-merge eligibility needs the seam test *and* the declaration — "A PRD that does not
 carry the sentence declares nothing" — while dispatch needs only the seam: a record row is still a
-record row in a PRD that declares nothing, and steps 5–9 open a PR and stop, which is what every row
-gets anyway. Measured 2026-09-25, two of the five files under `docs/prd/` carry the sentence,
-`monitoring-sources.md` and `regions-and-authorities.md`; the other three carry nothing, and nothing
-in this step turns on which do.
+record row in a PRD that declares nothing, and steps 5–10 run the same way in either, so only step
+11's merge turns on it. Measured 2026-10-01, three of the six files under `docs/prd/` carry the
+sentence, `dataset-sources.md`, `monitoring-sources.md` and `regions-and-authorities.md`; the other
+three carry nothing, and nothing in this step turns on which do.
 
 **Read the seam from the issue, not from the table.** `monitoring-sources.md`'s `## Slices` has no
 seam column at all — step 2's table of the nine — so the table cannot answer, while the issue's
@@ -276,13 +293,13 @@ Measured 2026-09-25 over the nine entries of `monitoring-sources.md`'s order: ei
 which entry, quote the seam you read, and wait.
 
 **STOP if the row or its issue states a blocker that is not closed.** Two places state one and both
-are read: the row's own cell where its table has that column (`re-entry.md`'s Part three has
+are read: the row's own cell where its table has that column (`re-entry.md`'s Part four has
 `blocked on`), and the issue's `## Blocked by` section. Where a blocker names an issue the tracker
 settles it, and step 3's listing already holds the state — #143's row says "enters after row 7",
 which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no issue nothing settles
-it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fifteen rows whose `#` cells
-all say `to file`, so that file's order stops here at its first entry. #141's `## Blocked by` reads
-"None; can start immediately."
+it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fourteen of whose `#` cells
+say `to file`, so an order that begins at #38 stops here at its first entry. #141's `## Blocked by`
+reads "None; can start immediately."
 
 **A row may state its own exit from a blocker, and then the blocker does not stop it.** #145's
 `## Blocked by` names #144 and adds "If row 14 closes at step 2, this row starts anyway" — so #144
@@ -293,13 +310,14 @@ blocker naming an open issue stops the row only where the row states no exit fro
 2026-09-15, so step 2 may stop" — a fact about the route, which `add-source` step 2 is where it
 lands, not this step.
 
-**One row per run**, and the reason is mechanical rather than a limit on ambition: two source-record
-rows collide in `notebooks/00_index.ipynb`, which counts sources and references, so the second
+**One row at a time**, and the reason is mechanical rather than a limit on ambition: two
+source-record rows collide in `notebooks/00_index.ipynb`, which counts sources and references, so
+the second
 cannot branch from a `main` the first has not merged into. Measured 2026-09-25: of the 22
 `catalog: add` commits on `main` after `notebooks/00_index.ipynb` existed (`5438219`, #61,
 2026-09-10), **20 moved it**; the two that did not — `24111f6` (#117, region nodes) and `668cb22`
-(#215, site records) — add no source record. Merging is #229's, so a run ends after one row until it
-lands.
+(#215, site records) — add no source record. So a row runs through step 11 before the next is
+dispatched, and the next begins at step 1 against a `main` that already holds the first.
 
 ## 6. Branch a worktree, and leave the checkout you are standing in alone
 
@@ -440,7 +458,7 @@ prompt rather than about the row: fix it on the controller's own branch, say in 
 did, and dispatch the corrected one. Three things are not retries of an unchanged dispatch: a resume
 (step 9), a CI failure diagnosed from its own log (step 9), and a dispatch after the brief changed.
 
-## 9. Resume for the commit and the PR, gate on CI, then stop
+## 9. Resume for the commit and the PR, then gate on CI
 
 **Resume the agent that did the work** — `SendMessage`, not a fresh agent and not the controller
 committing on its behalf. Its context holds the record, the manifest, the gate output and the
@@ -480,48 +498,156 @@ worktree lacks is missing bytes, not a bug, and the fix is to run that source's 
 script. CI never sees it — the runners have no `data/` at all, so both rows skip there — so it is a
 local red only, and routing it to the in-flight rules would file a bug that does not exist.
 
-**Then stop.** The PR is open and green and it is not ready: `CLAUDE.md`, "Branches, commits, PRs",
-says a PR is ready when it has been audited, and both the audit and the merge are #229 — until that
-lands the owner runs `/audit-pr <PR>` by hand, as today. Report the PR, the worktree it was built in
-and that you left it there for #229, and the ledger comments.
+**Then the `CI settled` write, and step 10.** The PR is open and green and it is not ready:
+`CLAUDE.md`, "Branches, commits, PRs", says a PR is ready when it has been audited.
+
+## 10. Commission the audit, rule on every finding, and judge each finding's premise
+
+`audit-pr` is the method (`.claude/skills/audit-pr/SKILL.md`): its four steps run here as written,
+and this step says only what a run changes about who does each.
+
+**The controller writes the brief, not the implementer.** `audit-pr` step 1's load-bearing part is
+"What you cannot get from the repo", and the controller is the one holding it — the PRD's readings,
+the ledger's rulings, the Parking-lot entries the row touched — while step 7 starved the
+implementer of exactly that. `.claude/skills/run-prd/audit-brief.md` says where each part of the
+brief comes from in a run; the parts are `audit-pr` step 1's, and that file adds none.
+
+**Dispatch as `audit-pr` step 3 says, then idle.** Its clean tree and frozen checkout hold
+literally and for both trees: the controller's checkout, where the auditor reads the branch, and
+the row's worktree, which the brief names. Between the dispatch and the report the controller
+touches no file, runs nothing that writes, posts no ledger comment and starts no other row — the
+reason is step 3's, that the auditor verifies its own restores against `git status`. Idling costs
+nothing: step 5 made the run sequential.
+
+**Rule on each finding under the rule `CLAUDE.md` states** in "Branches, commits, PRs", and record
+why wherever that rule says, the `audited` write being one of those places; `audit-pr` step 4 says
+where a finding ruled not fixed here goes. A finding the controller cannot settle — a reading of a
+`CONTEXT.md` rule, a field the row's issue or its start prompt reserved — goes to the owner the way
+step 8 sends a `NEEDS_CONTEXT`: ledger it with both readings, their costs and a recommendation, and
+wait. Declining to settle is itself a ruling, recorded as one; #141 issuecomment-5861820435 is the
+shape.
+
+**Then, for each finding ruled on, a second and separate judgement: is its premise shared by the
+rows not yet built?** `CLAUDE.md`, "Auto-merge in a declared PRD run", third bullet, states the
+rule and the argument behind it; this step applies it. Read the rows the order still holds (step
+4's comment) and the `to file` rows under them, and say for every finding whether what it rests on
+— a reading of a field, a step of `add-source`, a host's behaviour, a shape copied from a precedent
+— is one those rows will meet. **Name the premise in the `audited` write either way**, shared or
+not; a judgement that names no premise cannot be shown wrong by the report that section's last
+bullet asks for. A shared premise halts the run: this row's fix round still runs, its PR reaches
+step 11 and is handed to the owner there (fact 4), and no later row is dispatched until the premise
+is settled outside a record — a skill PR, a rule PR or an owner's ruling — which the write names.
+Both outcomes are on the 6.3c ledger: #141 issuecomment-5857960971 judged five of PR #247's
+findings one premise, unquoted prose that `add-source` step 6 never re-read, shared by the rows
+left; the run stopped, the premise became
+#248 and PR #249, and the next row was dispatched after that merged. #141 issuecomment-5861934623
+judged PR #253's F1 unshared by counting the `region today` cells of the rows left — one of 21
+carried `global`, and it was that row.
+
+**One fix round per finding, then a ruling.** Resume the implementer that built the row —
+`SendMessage`, as step 9 does — with every finding the round fixes, as ruled, in one message that
+also names the forms: a second commit rather than an amend (amend-and-force-push is refused in
+this session's mode, PR #284), its message `-F` from a file and carrying any correction the squash
+has to land, `git push`, `gh pr edit <PR> --body-file <path>` for the body, and the
+`closingIssuesReferences` re-check after the edit. It fixes in the row's own files, re-derives
+every count in the commit message and the PR body, pushes, and reports the new head;
+`record-row.md`, "When the controller resumes you", says what it does with the message. Then the
+controller re-reviews **the fix diff only**, `git diff <head before>..<head after>`, for two
+things: that each finding is fixed as ruled, and that the new text carries no defect the fix
+introduced — the 6.3c run's fix rounds introduced one each time, a universal true only
+case-sensitively (#141 issuecomment-5851515113) and a count taken against the record as it was
+before the fix (issuecomment-5857960971). What the re-review finds is
+ruled under the same rule: one precision edit, made by resuming the same implementer once more for
+that edit alone and recorded as such; a route; or a halt. Not a second round, and not a fresh audit
+of the whole diff.
+
+Then `gh pr checks <PR> --watch` on the new head (step 9's gate), the `fix round landed` write, and
+step 11.
+
+## 11. Merge where `CLAUDE.md` allows it, or hand the PR to the owner
+
+`CLAUDE.md`, "Auto-merge in a declared PRD run", is the whole of the authority; this step applies
+it. Four facts are read, each from the thing itself:
+
+1. **The declaration**, from step 1's reading of the prose above the row's table — the one
+   sentence that section specifies. Step 5 said nothing in it turns on which files carry the
+   sentence; here everything does.
+2. **The diff**, every path from `gh pr view <PR> --json files --jq '.files[].path'`, against that
+   section's allowlist, its fifth pattern read as that section derives it.
+3. **CI**, the three checks green on the head being merged — a fix round moves the head, so step
+   10's second `--watch` is the one that counts, not step 9's.
+4. **The audit**, step 10's, with no finding open and no premise judged shared. A finding still
+   with the owner leaves the PR not ready (`CLAUDE.md`, "Branches, commits, PRs": a PR is ready when
+   it has been audited). A shared premise is one of the three conditions that section says stop an
+   unattended merge, and this step reads it as stopping this row's merge as well as the next
+   dispatch; the owner may rule it narrower. The first live run of this step merged PR #290 under
+   the narrower reading before this sentence existed — #261 issuecomment-5942357818 records that.
+
+All four hold → `gh pr merge <PR> --squash`, without `--delete-branch`: the remote deletes the head
+branch on merge when `gh api repos/{owner}/{repo} --jq .delete_branch_on_merge` is `true`, which it
+was on 2026-10-01, and the flag would also switch the controller's checkout to `main` and try to
+delete a branch the worktree still holds. Then the `merged` write, naming the squash commit —
+GitHub attributes the merge to the credential's login, so that write is the only record that it was
+unattended. Then the count that section's last bullet asks for: the thread's `merged` writes since
+its last report, and at five, the report, in the thread, naming the union of fields entered across
+the five. Then `CLAUDE.md`, "Branches, commits, PRs": a PR that merged unattended is exempt from "a
+merge ends the unit of work" and not from the report — so report, and go back to step 1 for the
+next entry as a resume. The order is re-derived rather than continued, because `main` has moved
+and step 3 now drops the merged row.
+
+Any of the four fails → the PR is the owner's to merge, the `handed to the owner` write says which
+of the four and why — for a halt, what settles the premise, which step 5 reads on the next
+resume — and the run stops: a merge the owner makes ends the unit of work, and the run
+resumes from step 1 after it. The worktree stays in place either way; removing it is the owner's
+(#5, as step 6 says).
 
 ## The ledger, per row
 
-**Four writes for a row that goes straight through, and one more for each extra report and each
-ruling** — each its own comment, because a resume arriving between two of them has to be able to
-tell them apart. The four:
+**Six writes for a row that goes straight through, a seventh when it has a fix round, and one more
+for each extra report and for each ruling that authorises a resume** — each its own comment,
+because a resume arriving between two of them has to be able to tell them apart. A ruling on a
+`DONE_WITH_CONCERNS` concern authorises nothing and goes inside the `reported` write. The seven:
 
 1. **dispatched** — the issue, the branch, the worktree path, the `origin/main` commit it was cut
    from, and the brief's path
 2. **reported** — the report word, and for anything but `DONE` what it said. A row that reported
-   `NEEDS_CONTEXT` and was then ruled on adds a fifth write between this one and the next, the
+   `NEEDS_CONTEXT` and was then ruled on adds a write between this one and the next, the
    ruling, because the resume it authorises is the thing a later reader will want the authority for
 3. **PR opened** — the number and the files it touches
-4. **CI settled** — the three checks green and that the run stopped for review, or red and what it
+4. **CI settled** — the three checks green and that the row goes to step 10, or red and what it
    was
+5. **audited** — the report's path and the brief's, the auditor's blocking call, each finding with
+   its ruling and where the ruling is recorded, each finding's premise judgement with the premise
+   named, which findings go to the owner, and whether the run halts after this row
+6. **fix round landed** — when there was one: the head before and after, CI on the new head, and
+   what the re-review of the fix diff found and how it was ruled
+7. **merged** — the squash commit and the four facts step 11 read; or **handed to the owner** —
+   which of the four did not hold
 
-**A write happens at the transition, not afterwards, and a row owes four plus one per extra
-report plus one for a ruling.** Count them before starting the row. The first live run got this
-wrong in both directions and is the reason the sentence is here: its `PR opened` and `CI settled`
-writes went up one second apart, three minutes after the PR was created and after CI had finished,
-so the window those two exist to distinguish never existed in the thread; and its second report,
-`DONE_WITH_CONCERNS` after a `NEEDS_CONTEXT` and a ruling, got no write of its own and was folded
-into `PR opened`. A resume reading that thread cannot tell `ruled` from `ruled and resumed, report
-pending`.
+**A write happens at the transition, not afterwards, and a row owes six, seven with a fix round,
+plus one per extra report plus one for a ruling.** Count them before starting the row. The first
+live run got this wrong in both directions and is the reason the sentence is here: its `PR opened`
+and `CI settled` writes went up one second apart, three minutes after the PR was created and after
+CI had finished, so the window those two exist to distinguish never existed in the thread; and its
+second report, `DONE_WITH_CONCERNS` after a `NEEDS_CONTEXT` and a ruling, got no write of its own
+and was folded into `PR opened`. A resume reading that thread cannot tell `ruled` from `ruled and
+resumed, report pending`.
 
-Four is a judgement about what a resume needs rather than a measurement. On
-`monitoring-sources.md` it would come to 32 over the whole file before any extra reports or rulings
-— its order has nine entries and eight of them are record rows, and step 5 stops the run at the
-ninth — spread over as many runs as #229 takes merges to allow. Each is
+Six is a judgement about what a resume needs rather than a measurement. On `dataset-sources.md` it
+would come to 18 over its three issue rows before any fix round, extra report or ruling, and its
+three `to file` rows add theirs once filed. Each is
 `gh issue comment <thread> --body-file <path>` (`docs/agents/issue-tracker.md`, "Commands"), and
 `<thread>` is the one step 4 named in its own first comment — **not the row's own issue**, which is
 the same only for the first entry.
 
 ## Non-goals
 
-No audit and no merge (#229): the PR step 9 opens is not ready, and nothing here runs `/audit-pr` or
-`gh pr merge`. No code row (#230) — step 5 stops on one. No parallel dispatch, for step 5's
-collision, and #222's non-goals already exclude fan-out. No second row in one run. No change to
+No merge outside `CLAUDE.md`, "Auto-merge in a declared PRD run": step 11 applies that section and
+widens nothing, and an undeclared row, a path outside its allowlist, a red check or an open finding
+hands the PR to the owner. No fix ladder: one round per finding, then a ruling (step 10). No second
+review path: `audit-pr` is the method and `.claude/agents/pr-auditor.md` is unchanged. No code row
+(#230) — step 5 stops on one. No parallel dispatch, for step 5's collision, and #222's non-goals
+already exclude fan-out. No second row before the first has merged. No change to
 `.claude/skills/add-source/SKILL.md`, whose step-8 stop is what step 8 here reads. No change to any
 PRD or to any table in one — the controller adapts to the repo, not the reverse (#222, Non-goals).
 No new label: run state lives in the ledger, and the label vocabulary is
