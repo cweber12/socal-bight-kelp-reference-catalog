@@ -2,16 +2,17 @@
 
 Run:  python src/fetch/bcodmo_3638.py
 
-The route is read as CONTEXT.md's second FETCHED limb, "a route the steward names as where
-the source is to be had", and the access steps of catalog/sources/bcodmo_3638.md state what
-that reading rests on: the dataset's Metadata HTML page states under "BCO-DMO Processing
-Notes" that the data file was "Generated from original files "SeapOHx_Mooring [A-D].txt"
-contributed by Christina Frieder", the Contact the landing page names at University of
-California-San Diego Scripps, and BCO-DMO's Terms of Use state what submitting data to it
-means. The related publication the page names states no data repository, so no statement
-of the steward's own names this host - bcodmo_839175's route rests on one, and this one
-does not. FILES holds the URL the page prints for its one data file; the request is
-answered with HTTP 307 to a presigned s3.amazonaws.com URL whose X-Amz-Date and
+The route is CONTEXT.md's second FETCHED limb, "a route the steward names as where the
+source is to be had": the dataset's authors state, in Frieder et al. 2012 (Biogeosciences,
+9, pages 3917-3930, doi:10.5194/bg-9-3917-2012), section 2.2 "Calibrations", printed page
+3920, "Data from SeapHOx deployments presented in this paper are available at
+http://osprey.bco-dmo.org." The BCO-DMO landing page names that paper under "Description"
+as its "Related publication:", links its PDF as "Manuscript", and names its authors Levin,
+Martz and Frieder as Principal Investigator, Co-Principal Investigator and Contact at
+University of California-San Diego Scripps. The sentence names the host and not dataset
+3638 by id; the access steps of catalog/sources/bcodmo_3638.md quote it with the redirect
+chain that serves the PDF. FILES holds the URL the page prints for its one data file; the
+request is answered with HTTP 307 to a presigned s3.amazonaws.com URL whose X-Amz-Date and
 X-Amz-Signature follow the second in which the request is made, so the manifest records
 the URL requested, not the one that served the bytes.
 
