@@ -106,7 +106,9 @@ matters in a tool call you made along the way. **Its first line is one of four w
 **`DONE_WITH_CONCERNS`** — the eight steps passed, and something needs a reader's ruling rather
 than another step. One line per concern, above step 8's full output. What belongs here: a quoted
 string you could not byte-diff against the source (step 6), a count or universal in your own prose
-whose set you could not name (step 6), a page that changed between your draft and your check, a
+whose set you could not name (step 6), a quoted `coverage` statement you could name as none of
+span, extent or how much the record holds (step 6), a page that changed between your draft and
+your check, a
 `license` of `"not stated"` and where you looked, a `coverage` read off a file's own first and
 last rows rather than stated by the source, a fetch date later than the date you wrote down in
 step 2. A concern is a fact, not a worry: say what the source states and what it does not.
