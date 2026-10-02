@@ -16,8 +16,9 @@ URLs for revision .12 carry the file extension inside the identifier (…_swath.
 and that spelling answered HTTP 404 from the node and from the DataONE resolver on
 2026-10-01; the spelling here, which the previous revision's entities name in their
 obsoletedBy elements, answered HTTP 200. The host is opc.dataone.org, the member node
-urn:node:CA_OPC; the `access` steps of catalog/sources/opc_mlpa_kelp_forest.md state what
-reading it as the first FETCHED route (CONTEXT.md, "Vocabularies") rests on. The URL
+urn:node:CA_OPC, which the EML's creators name as the distribution through the DataONE
+resolver; the `access` steps of catalog/sources/opc_mlpa_kelp_forest.md state what
+reading it as the second FETCHED route (CONTEXT.md, "Vocabularies") rests on. The URL
 fetched is MEMBER_NODE followed by the identifier percent-encoded whole.
 
 That URL's last segment is the encoded identifier, so each file is stored under the name

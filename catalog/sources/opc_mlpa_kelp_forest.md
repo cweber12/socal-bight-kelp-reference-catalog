@@ -1,10 +1,20 @@
 ---
 id: opc_mlpa_kelp_forest
 title: Monitoring and Evaluation of Kelp Forest Ecosystems in the MLPA Marine Protected Area Network
-steward: California Ocean Protection Council Data Repository
+steward: UCSC
 url: https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.12
 doi: 10.25494/P6/MLPA_kelpforest.12
-citations: []
+citations:
+  - as_printed: "Carr MH ,  Caselle JE ,  Tissot BN ,  Pondella DJ ,  Malone DP ,  Williams JP ,  Parsons-Field A ,  Criag SF ,  and Seeto KD. 2026. Monitoring and Evaluation of Kelp Forest Ecosystems in the MLPA Marine Protected Area Network "
+    stated_at: >-
+      https://opc.dataone.org/metacat/d1/mn/v2/views/metacatui/doi:10.25494%2FP6%2FMLPA_kelpforest.12,
+      the node's MNView rendering of the package named in the eighth access step: in the HTML that
+      page sends it is the text of the one <cite class="citation"> element, the first element of
+      that HTML, under no heading, followed by a Download link; the <cite> carries
+      a <strong> element around the title, whose text ends with a space before the
+      closing tag, and an empty <a id="viewMetadataCitationLink" href=""> after it; the author
+      list is spaced as that element prints it, a space before each comma and two after
+      (2026-10-02)
 status: VERIFIED
 tier: FETCHED
 access:
@@ -13,9 +23,9 @@ access:
     https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.12 as its Location, and that
     page, this record's landing page, is served as an application shell: the HTML answers HTTP
     200 in 10,352 bytes of Content-Type text/html and does not contain "kelp" in any letter case.
-    https://doi.org/10.25494/P6/MLPA_kelpforest.9, the revision first reviewed here, answers HTTP
-    302 with https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.9 as its Location, and
-    that page answers HTTP 200 with the same 10,352 bytes (2026-10-01)
+    https://doi.org/10.25494/P6/MLPA_kelpforest.9, an earlier revision of the chain the third step
+    records, answers HTTP 302 with https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.9
+    as its Location, and that page answers HTTP 200 with the same 10,352 bytes (2026-10-01)
   - >-
     opc.dataone.org is the California Ocean Protection Council's member node of DataONE:
     https://cn.dataone.org/cn/v2/node/urn:node:CA_OPC states name "California Ocean Protection
@@ -29,8 +39,17 @@ access:
     record of the DOI, https://api.datacite.org/dois/10.25494%2FP6%2FMLPA_kelpforest.12, answers
     HTTP 200 and states publisher "California Ocean Protection Council Data Repository",
     publicationYear 2026, registered 2026-01-16T01:55:17.000Z, nine creators and an empty
-    rightsList; https://api.crossref.org/works/10.25494/P6/MLPA_kelpforest.9 answers HTTP 404
-    (2026-10-01)
+    rightsList; https://api.crossref.org/works/10.25494/P6/MLPA_kelpforest.12 answers HTTP 404
+    (2026-10-01, the Crossref request re-run 2026-10-02). The node holds the package and the
+    Council's repository publishes it; the EML named in the fourth step has no publisher
+    element and names the producers: nine creator elements, each with an organizationName,
+    "UCSC" for the first, Mark H. Carr, and for the fifth, Daniel P. Malone, who is also the
+    dataset's one contact and, in the system metadata of the package and of each of its seven
+    entities, its submitter and rightsHolder (http://orcid.org/0000-0002-1758-7026); the
+    other organizationNames are "UCSB", "HSU" and "VRG". Its project element is titled
+    "Monitoring and Evaluation of Kelp Forest Ecosystems in the MLPA Marine Protected Area
+    Network (CA OPC) and PISCO (David and Louise Packard Foundation)", with Jennifer E.
+    Caselle, UCSB, as Principal Investigator and a funding element reading 0CAI5032 (2026-10-02)
   - >-
     Revision .12 is the revision this record enters.
     https://opc.dataone.org/metacat/d1/mn/v2/meta/ followed by the identifier
@@ -105,10 +124,15 @@ access:
     https://docs.google.com/forms/d/e/1FAIpQLSct8vbkyM3l36GjQ0Uq6E50oeCQWlW7682DYecXnTfxpmzlUQ/viewform
     in a paragraph of its own, and "A recommended citation for the data package is available from
     the download page." The landing page named in the first step carries no citation in the bytes
-    it serves, and this record enters none (2026-10-01)
+    it serves. The node document named in the second step declares an MNView service, and
+    https://opc.dataone.org/metacat/d1/mn/v2/views/metacatui/doi:10.25494%2FP6%2FMLPA_kelpforest.12
+    answers HTTP 200 with 458,113 bytes of Content-Type text/html, the same SHA-256 on two fetches
+    and no Last-Modified or ETag; that page prints the citation entered under citations as its
+    first element, and the intellectualRights text under the heading "Intellectual Rights"
+    (2026-10-02)
 format: >-
-  The EML lists six dataTable entities and one otherEntity: "MLPA kelp forest swath data",
-  objectName MLPA_kelpforest_swath.10.csv, size 41135852, numberOfRecords 353253; "MLPA kelp
+  The EML lists six dataTable entities and one otherEntity: "MLPA kelp  forest swath data"
+  (two spaces between kelp and forest, as the EML prints it), objectName MLPA_kelpforest_swath.10.csv, size 41135852, numberOfRecords 353253; "MLPA kelp
   forest upc data", objectName MLPA_kelpforest_upc.10.csv, size 29835317, numberOfRecords 252861;
   "MLPA kelp forest size frequency data", objectName MLPA_kelpforest_sizefreq.10.csv, size
   9587148, numberOfRecords 74917; "MLPA kelp forest fish data", objectName
@@ -129,8 +153,8 @@ format: >-
   "text/csv" for the six tables and "application/pdf" for the methods document, and for each of
   the seven a size equal to the EML's and a checksum of algorithm "SHA-256". The EML states no characterEncoding; in the copy retrieved 2026-10-01 three of the six
   tables, MLPA_kelpforest_swath.10.csv, MLPA_kelpforest_upc.10.csv and MLPA_kelpforest_fish.10.csv,
-  do not decode as UTF-8, the first byte that fails being 0x85 at offset 6179389, 0x92 at 7253967
-  and 0xa6 at 5082823, and the other three do (2026-10-01)
+  decode as cp1252 and not as UTF-8, the first byte that fails as UTF-8 being 0x85 at offset
+  6179389, 0x92 at 7253967 and 0xa6 at 5082823, and the other three decode as UTF-8 (2026-10-01)
 license: >-
   "This information is released under the Creative Commons license - Attribution - CC BY
   (https://creativecommons.org/licenses/by/4.0/). The consumer of these data ("Data User" herein)
@@ -236,7 +260,7 @@ variables:
     file:
       - MLPA_kelpforest_swath.10.csv
   - name: "size"
-    description: "For Macrocystis pyrifera, this represents the number of individual stipes growing for each individual. For a select number of invertebrate species that are measured on swath transects, this represents the size (in centimeters) of the following: test diameter for urchins, length of longest arm for seastars, shell length for abalone, carapace length for lobsters, total turgid length for sea cucumbers"
+    description: "For Macrocystis pyrifera, this represents the number of individual stipes growing for each individual. For a select number of invertebrate species that are measured on swath transects, this represents the size (in centimeters) of the following:  test diameter for urchins, length of longest arm for seastars, shell length for abalone, carapace length for lobsters, total turgid length for sea cucumbers"
     unit: "number"
     file:
       - MLPA_kelpforest_swath.10.csv
@@ -336,7 +360,7 @@ variables:
     file:
       - MLPA_kelpforest_sizefreq.10.csv
   - name: "level"
-    description: "The horizontal placement of the transect within the water column. Includes BOT: bottom transects placed at the seafloor, MID: midwater transects placed at roughly half the depth of the seafloor, and CAN: canopy transects placed at the surface to survey the top two meters of the water column and kelp canopy (when present)"
+    description: "The horizontal placement of the transect within the water column. Includes BOT: bottom transects placed at the seafloor, MID: midwater transects placed at roughly half the depth of the seafloor, and CAN:  canopy transects placed at the surface to survey the top two meters of the water column and kelp canopy (when present)"
     unit: null
     file:
       - MLPA_kelpforest_fish.10.csv
@@ -376,7 +400,7 @@ variables:
     file:
       - MLPA_kelpforest_fish.10.csv
   - name: "vis"
-    description: "The diver's estimation of horizontal visibility on each transect. Measured by reeling in the transect tape and noting the distance at which the end of the tape can first be seen"
+    description: "The diver's estimation of horizontal visibility on each  transect. Measured by reeling in the transect tape and noting the distance at which the end of the tape can first be seen"
     unit: "meter"
     file:
       - MLPA_kelpforest_fish.10.csv
@@ -700,8 +724,9 @@ coverage: >-
   wide-scale monitoring effort of the Cooperative Research and Assessment of Nearshore Ecosystems
   (CRANE) Program. Researchers at Humboldt State University began monitoring sites in the north
   coast region in 2014 and 2015 using the PISCO sampling methodology. Data have been integrated
-  across all four programs." and "Typically, two to four sites inside a given MPA and two to four
-  sites outside of the MPA are surveyed in a given year, with the number and shape of sites
+  across all four programs." and "Surveys are conducted annually, during the summer or early
+  fall. Typically, two to four sites inside a given MPA and two to four sites outside of the MPA
+  are surveyed in a given year, with the number and shape of sites
   varying depending on habitat (e.g. onshore-offshore steepness of the reef) and longshore width
   of the MPA. Sampling history varies by program, MPA, and sampling site." The methods state
   "Kelp forest surveys are conducted annually, generally from June to late October." The
