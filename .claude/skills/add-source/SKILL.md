@@ -233,13 +233,16 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   dropped, a line break turned into a space: each is a value the source does not state. Correct
   the record to what the source states today; if the source itself has changed since you drafted
   the record, say so in the step-8 report.
-- **Name each quoted `coverage` statement as what it states.** The byte-diff above proves a
-  `coverage` quotation was quoted; it does not say what the quotation states. For each statement
-  `coverage` quotes, write which of the three the `coverage` row of `CONTEXT.md`'s sources table
-  names it is — a span, an extent, or how much of the source this record holds — one row per
-  statement in the step-8 report, *the statement · its kind*. A statement you can name as none of
-  the three is itself the finding: report it as such, and leave what becomes of it to a reader's
-  ruling under *The rule*, not to this step.
+- **Name what each quoted `coverage` statement states.** The byte-diff above proves a `coverage`
+  quotation was quoted; it does not say what the quotation states. A statement here is a quoted
+  sentence, or a quoted label with the values printed under it; a quoted heading or label on its own
+  attributes and is not one. For each statement `coverage` quotes, write what it states of the two
+  kinds of source statement the `coverage` row of `CONTEXT.md`'s sources table names — a span, an
+  extent, or both — one row per statement in the step-8 report, *the statement · its kind*. The
+  third thing that row names, how much of the source this record holds, is the record's own
+  statement rather than a quotation, and is outside this check. A statement you can name as neither
+  span nor extent is itself the finding: report it as such, and leave what becomes of it to a
+  reader's ruling under *The rule*, not to this step.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
