@@ -222,8 +222,8 @@ second Slices table for this milestone. No `CONTEXT.md` change; if reading 3 eve
 is its own PR. No edit to #213's, #214's or #258's tracks or rows, and no change to any existing
 record. No `sites/` record for any row (each of #261, #267 and #285 says so of itself). The SeapHOx
 project's five other datasets and the City's seven other Ocean Monitoring Program datasets are
-candidates on #5, not rows (readings 5 and 6). The file does not open the milestone or make it
-active.
+candidates on #5, not rows (readings 5 and 6). That PR did not open the milestone or make it
+active; the PR for #297 did, on 2026-10-02, by revising the status line.
 
 ## Done
 
