@@ -6,11 +6,12 @@ FILES holds the eight download URLs the landing page
 https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-water-temperature/ prints under "Get
 the data", in the order it lists them, which is also the order of the eight distribution entries
 for identifier monitoring_ocean_rtoms_water_temperature in the portal's DCAT catalog
-https://raw.githubusercontent.com/COSD-PANDA/data-inventory/refs/heads/master/data.json. The host,
-seshat.datasd.org, is the City's own: the portal's Terms of Use,
-https://data.sandiego.gov/help/guides/terms/, define "Data" as "any of the data that is available
-for download through DataSD.org or data.sandiego.gov" (CONTEXT.md, "Vocabularies", the first
-FETCHED route).
+https://raw.githubusercontent.com/COSD-PANDA/data-inventory/refs/heads/master/data.json. The files
+are on seshat.datasd.org. What the source states about that route is quoted in the record's fourth
+access step (catalog/sources/sandiego_rtoms_water_temperature.md): the portal's Terms of Use,
+https://data.sandiego.gov/help/guides/terms/, say the City makes datasets available for download
+through the portal and define Data as data available for download through DataSD.org or
+data.sandiego.gov, and the landing page itself prints the eight links.
 
 Each file is downloaded unmodified and written beside a manifest carrying the url, the time of the
 fetch, the sha256, the byte count, the HTTP status and the response headers a repeat fetch records

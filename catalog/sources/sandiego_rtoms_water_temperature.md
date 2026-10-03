@@ -82,11 +82,13 @@ access:
     (2026-10-02)
   - >-
     The footer links "Terms of Use" to https://data.sandiego.gov/help/guides/terms/, which answers
-    HTTP 200 with 19,868 bytes, is headed "Terms of Use" and states under "III. Definitions"
+    HTTP 200 with 19,868 bytes, is headed "Terms of Use" and states under "I. Introduction" "As a
+    convenience to potential users, the City of San Diego (“City”) makes a variety of datasets
+    (“Data”) available for download through this website." and under "III. Definitions"
     "“Data” means any of the data that is available for download through DataSD.org or
     data.sandiego.gov and includes any updates to that data."; the eight files the next step
-    fetches are served from seshat.datasd.org. The footer of the landing page also prints "©
-    2002–2026 City of San Diego. All rights reserved." (2026-10-02)
+    fetches are the "Download" links the landing page prints, on seshat.datasd.org. The footer of
+    the landing page also prints "© 2002–2026 City of San Diego. All rights reserved." (2026-10-02)
   - >-
     Under "Get the data" the landing page prints a table headed "File name", "Download actions",
     "File Format" and "File size" with eight rows, each a file name coverage quotes, a "Download"
@@ -123,46 +125,52 @@ format: >-
   2020 files
 license: >-
   "View License", the text of the link the landing page prints after the label "License", to
-  https://opendefinition.org/licenses/odc-pddl/. That page is headed "Open Data Commons Public
-  Domain Dedication and Licence (ODC PDDL)" and states "Domain of Application: Data", under
-  "Comments" "“Public Domain for data/databases”", and under "Full Text" the link
-  http://opendatacommons.org/licenses/pddl/1.0/. The document that link reaches is headed "Open
-  Data Commons Public Domain Dedication and License (PDDL) v1.0" and "Public Domain Dedication and
-  License (PDDL)", and states under "Preamble" "The Open Data Commons – Public Domain Dedication
-  and Licence is a document intended to allow you to freely share, modify, and use this work for
-  any purpose and without any restrictions. This licence is intended for use on databases or their
-  contents (“data”), either together or individually." and under "Part II: Dedication to the
-  public domain" "3.1 Dedication of Copyright and Database Rights to the public domain. The
-  Rightsholder by using this Document, dedicates the Work to the public domain for the benefit of
-  the public and relinquishes all rights in Copyright and Database Rights over the Work."
+  https://opendefinition.org/licenses/odc-pddl/, a page headed "Open Data Commons Public Domain
+  Dedication and Licence (ODC PDDL)" that states "Domain of Application: Data" and, under
+  "Comments", "“Public Domain for data/databases”". The portal's Terms of Use state "Your use of
+  the Data is subject to these terms of use, which constitute a legal agreement between You and
+  the City of San Diego (“City”).", "In order to use any of the Data, You must agree to these
+  Terms of Use. You agree to the Terms of Use by either: (1) Clicking to accept the Terms of Use; or
+  (2) Downloading or using any of the Data or any Derivative Work, in which case you understand
+  and agree that the City will treat your download or use of the Data or a Derivative Work as an
+  acceptance of the Terms of Use from that point forward.", "“Data” means any of the data that
+  is available for download through DataSD.org or data.sandiego.gov and includes any updates to
+  that data.", "If the City claims or seeks to protect any patent, copyright, or other intellectual
+  property rights in any Data, the website will so indicate in the file containing such Data or on
+  the page from which such Data is accessed. These Terms of Use do not grant You any title or right
+  to any patent, copyright, or other such intellectual property rights that the City or others may
+  have in the Data." and "For certain of the Data, there may be additional terms and conditions
+  that are stated in the file containing such Data or on the page from which such Data is accessed.
+  You understand and agree that You are bound by such additional terms and conditions."
 license_stated_at: >-
   "License" and the "View License" link stand in the "Dataset Details" panel of
   https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-water-temperature/, and the DCAT
   entry the second access step names states the same URL as its license.
-  https://opendefinition.org/licenses/odc-pddl/ answers HTTP 200 with 27,671 bytes of Content-Type
-  text/html; charset=utf-8; the heading, the domain line and the comment quoted are its <h2>, the
-  one <li> under it and its "Comments" section. Its "Full Text" link
-  http://opendatacommons.org/licenses/pddl/1.0/ answers HTTP 301 with Location
-  https://opendatacommons.org/licenses/pddl/1-0, which answers HTTP 301 with Location
-  https://opendatacommons.org/licenses/pddl/1-0/, which answers HTTP 200 with 41,513 bytes; the
-  two headings quoted are its <h2> elements, and the sentences quoted are the first paragraph
-  under its "Preamble" heading and the paragraph beginning "3.1" under its heading "Part II:
-  Dedication to the public domain", a section of sixteen paragraphs that the headings "4.0
-  Relationship to other rights", "Part III: General provisions", "5.0 Warranties, disclaimer, and
-  limitation of liability" and "6.0 General" follow. The same page's "Overview" link
-  http://opendatacommons.org/licenses/pddl/summary/
-  answers HTTP 301 with Location https://opendatacommons.org/licenses/pddl/summary/, which answers
-  HTTP 200 with 25,686 bytes and states under "Disclaimer" "This is not a license. It is simply a
-  handy reference for understanding the PDDL 1.0 — it is a human-readable expression of some of
-  its key terms." The portal's Terms of Use, which the fourth access step names, state under "IV.
-  City’s Intellectual Property Rights Not Affected" "If the City claims or seeks to protect any
-  patent, copyright, or other intellectual property rights in any Data, the website will so
-  indicate in the file containing such Data or on the page from which such Data is accessed." and
-  under "VII. Acceptance of Other Conditions" "For certain of the Data, there may be additional
-  terms and conditions that are stated in the file containing such Data or on the page from which
-  such Data is accessed." Nothing nearer states terms: the eight held files and the three
-  dictionary files contain none of "licen", "copyright", "terms", "public domain", "creative" or
-  "disclaim" in any letter case (2026-10-02)
+  https://opendefinition.org/licenses/odc-pddl/ answers HTTP 200 with Content-Type text/html;
+  charset=utf-8: the heading quoted is its one <h2>, the domain line the one <li> under it, and the
+  comment its "Comments" section; it links "Overview" to
+  http://opendatacommons.org/licenses/pddl/summary/ and "Full Text" to
+  http://opendatacommons.org/licenses/pddl/1.0/. The "Full Text" link answers HTTP 301 with
+  Location https://opendatacommons.org/licenses/pddl/1-0, which answers HTTP 301 with Location
+  https://opendatacommons.org/licenses/pddl/1-0/, which answers HTTP 200 with a document whose two
+  <h2> headings read "Open Data Commons Public Domain Dedication and License (PDDL) v1.0" and
+  "Public Domain Dedication and License (PDDL)"; the "Overview" link answers HTTP 301 with Location
+  https://opendatacommons.org/licenses/pddl/summary/, which answers HTTP 200. The byte counts of
+  those three pages depend on the client: curl 8.15.0 was served 27,671, 41,513 and 25,686 bytes
+  and Python's urllib sending the User-Agent "kelpcatalog/sandiego_rtoms_water_temperature" 28,038,
+  41,880 and 26,053, 367 more each, while urllib sending its default User-Agent was answered HTTP
+  403 by each; every other byte count this record states was the same under curl 8.15.0 and under
+  urllib sending that User-Agent. The Terms of Use sentences quoted are on
+  https://data.sandiego.gov/help/guides/terms/, which the landing page's footer links as "Terms of
+  Use" and the fourth access step describes: the first is the second sentence of the one paragraph
+  under "I. Introduction"; the second is the whole paragraph under "II. Accepting the Terms of Use"
+  and its subheading "A. Means of Acceptance."; the third is the first of the three paragraphs under
+  "III. Definitions"; the fourth is the whole paragraph under "IV. City’s Intellectual Property
+  Rights Not Affected"; and the fifth is the whole paragraph under "VII. Acceptance of Other
+  Conditions". The same document carries the further headings "V. Exclusion of Warranties", "VI.
+  Limitation of Liability and Indemnity" and "VIII. General Provisions". Nothing nearer states
+  terms: the eight held files and the three dictionary files contain none of "licen", "copyright",
+  "terms", "public domain", "creative" or "disclaim" in any letter case (2026-10-02)
 variables:
   - name: project
     description: "The Ocean Outfall project for this measurement "
