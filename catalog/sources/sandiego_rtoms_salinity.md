@@ -86,9 +86,39 @@ access:
     convenience to potential users, the City of San Diego (“City”) makes a variety of datasets
     (“Data”) available for download through this website." and under "III. Definitions"
     "“Data” means any of the data that is available for download through DataSD.org or
-    data.sandiego.gov and includes any updates to that data."; the eight files the next step
-    fetches are the "Download" links the landing page prints, on seshat.datasd.org. The footer of
-    the landing page also prints "© 2002–2026 City of San Diego. All rights reserved." (2026-10-03)
+    data.sandiego.gov and includes any updates to that data."; the eight files the sixth access
+    step fetches are the "Download" links the landing page prints, on seshat.datasd.org. The
+    footer of the landing page also prints "© 2002–2026 City of San Diego. All rights reserved."
+    (2026-10-03)
+  - >-
+    The steward states the moorings' positions in its biennial receiving waters reports.
+    https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports/annual-report-archives,
+    whose <h1> is "Annual Receiving Waters Monitoring Reports", answers HTTP 200 with 149,160 bytes
+    of Content-Type text/html; charset=UTF-8 and links "2020-2021 Report" to
+    http://www.sandiego.gov/sites/default/files/compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf,
+    which answers HTTP 301 with Location
+    https://www.sandiego.gov/sites/default/files/compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf,
+    which answers HTTP 200 with 38,157,298 bytes of Content-Type application/pdf, SHA-256
+    683939f2d019d5efc8d79e0ed44c2f5f66352e36d713521eff712bbfbb777a13; and links "2022-2023
+    Biennial Report" to
+    https://www.sandiego.gov/sites/default/files/2024-12/compressed_2022-2023-biennial-receiving-waters-monitoring-and-assessment-report-for-ploo-and-sboo.pdf,
+    which answers HTTP 200 with 48,069,765 bytes of Content-Type application/pdf, SHA-256
+    ac4949335f06871e507d232884551f2f1f0202e8084304f0392561b88e00aae3. In each report Appendix C.2,
+    on the page printed C2 (PDF page 432 of the 2020-2021 report and 472 of the 2022-2023 report),
+    is a table captioned "Location, depth, and dates for each year-long deployment of the PLOO and
+    SBOO RTOMS. Dates are displayed by deployment, recovery, and period of real-time (RT) data
+    availability. All times are Pacific Standard Time; DD = decimal degrees." and headed "Site",
+    "Deployment #", "Lat (DD)", "Long (DD)", "Total Depth (m)", "Deployment", "RTdata Start",
+    "RTdata End" and "Recovery", as the 2022-2023 report's text layer reads them. The 2020-2021
+    table prints, as Lat (DD), Long (DD), Total Depth (m), Deployment date and Recovery: PLOO 2,
+    "32.66959", "-117.32298", "95", "10/7/2019", "9/29/2020"; PLOO 3, "32.66963", "-117.32272",
+    "95", "11/3/2021", "--"; SBOO 3, "32.53185", "-117.18644", "31", "12/18/2019", "12/17/2020";
+    and SBOO 4, "32.53177", "-117.18628", "31", "11/3/2021", "--". The 2022-2023 table prints
+    PLOO 4, "32.66953", "-117.32404", "95", "12/8/2022", "10/26/2023"; PLOO 5, "32.67012",
+    "-117.32463", "96", "12/20/2023", "--"; and SBOO 5, "32.53185", "-117.18651", "31",
+    "6/29/2023", "--"; it also lists PLOO 3 and SBOO 4 with the positions above and Recovery
+    "11/22/2022" and "Lost to Sea". Those are the Deployment# values the held files carry: 2, 3,
+    4 and 5 for PLOO and 3, 4 and 5 for SBOO (2026-10-03)
   - >-
     Under "Get the data" the landing page prints a table headed "File name", "Download actions",
     "File Format" and "File size" with eight rows, each a file name coverage quotes, a "Download"
@@ -323,7 +353,7 @@ derived_from: null
 topics:
   - ocean-climate/salinity
 regions:
-  - scb.mainland.san-diego
+  - scb
 beds: []
 sites: []
 site_key:
