@@ -147,13 +147,15 @@ license_stated_at: >-
   entry the second access step names states the same URL as its license.
   https://opendefinition.org/licenses/odc-pddl/ answers HTTP 200 with Content-Type text/html;
   charset=utf-8: the heading quoted is its one <h2>, the domain line the one <li> under it, and the
-  comment its "Comments" section; it links "Overview" to
-  http://opendatacommons.org/licenses/pddl/summary/ and "Full Text" to
-  http://opendatacommons.org/licenses/pddl/1.0/. The "Full Text" link answers HTTP 301 with
+  comment its "Comments" section; under its <h3> heading "Overview" it links
+  http://opendatacommons.org/licenses/pddl/summary/, and under its <h3> heading "Full Text"
+  http://opendatacommons.org/licenses/pddl/1.0/, each link's text being its own URL. The link
+  under "Full Text" answers HTTP 301 with
   Location https://opendatacommons.org/licenses/pddl/1-0, which answers HTTP 301 with Location
   https://opendatacommons.org/licenses/pddl/1-0/, which answers HTTP 200 with a document whose two
   <h2> headings read "Open Data Commons Public Domain Dedication and License (PDDL) v1.0" and
-  "Public Domain Dedication and License (PDDL)"; the "Overview" link answers HTTP 301 with Location
+  "Public Domain Dedication and License (PDDL)"; the link under "Overview" answers HTTP 301 with
+  Location
   https://opendatacommons.org/licenses/pddl/summary/, which answers HTTP 200. The byte counts of
   those three pages depend on the client: curl 8.15.0 was served 27,671, 41,513 and 25,686 bytes
   and Python's urllib sending the User-Agent "kelpcatalog/sandiego_rtoms_salinity" 28,038,
