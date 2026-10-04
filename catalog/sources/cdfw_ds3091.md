@@ -12,8 +12,8 @@ access:
     Open
     https://data.cnra.ca.gov/dataset/predicted-nearshore-benthic-substrates-of-california-r7-cdfw-ds3091,
     the dataset page on California Natural Resources Agency Open Data, which answers HTTP 200 with
-    Content-Type text/html; charset=utf-8. Its <h1> is this record's title, and the paragraph
-    under it reads "This dataset uses rugosity measurements collected during the California
+    Content-Type text/html; charset=utf-8. Its <h1> of class "dataset-title" is this record's
+    title, and the paragraph under it reads "This dataset uses rugosity measurements collected during the California
     Seafloor Mapping Project (CSMP) as a proxy to classify benthic habitat as either Hard or Soft.
     While originally developed for MPA planning and MLPA implementation, this dataset provides a
     comprehensive estimate of benthic habitat for California waters. Two versions of this data are
@@ -50,8 +50,9 @@ access:
     Run src/fetch/cdfw_ds3091.py, which sends the User-Agent "kelpcatalog/cdfw_ds3091", requests
     https://filelib.wildlife.ca.gov/Public/BDB/GIS/BIOS/Public_Datasets/3000_3099/ds3091.zip and
     keeps the body only when it begins with the zip local file header. It answered HTTP 200 with
-    150,952,600 bytes, no redirect, Content-Type application/x-zip-compressed, Last-Modified "Mon,
-    01 Dec 2025 16:19:02 GMT" and ETag "aa6bc634de62dc1:0" (2026-10-03). No account, key or
+    150,952,600 bytes, Content-Type application/x-zip-compressed, Last-Modified "Mon, 01 Dec 2025
+    16:19:02 GMT" and ETag "aa6bc634de62dc1:0" (2026-10-03). A HEAD request to the same URL that
+    follows no redirect answered HTTP 200 with Content-Length 150952600 (2026-10-03). No account, key or
     referrer is required. The metadata document "v1_final/tiff/ds3091.tif.xml" in the zip
     states, in the last paragraph of the
     element metadata/dataIdInfo/idPurp, "A vector version at the original resolution can be
@@ -68,7 +69,17 @@ format: >-
   "v1_final/ds3091.lyrx" and "v1_final/DS3091_20230420.lyr". The metadata document
   "v1_final/tiff/ds3091.tif.xml" states formatName "Raster Dataset", rowcount "107325", colcount
   "74349", rastxsz and rastysz "10.000000", rastband "1" and rastdtyp "pixel codes". The
-  ImageServer the third access step names publishes its raster attribute table at
+  variables are the fields three places in the zip name, each in the attrlabl and attrdef elements
+  of an ArcGIS metadata document's eainfo: "v1_final/tiff/ds3091.tif.xml", for the entity
+  "ds3091.tif.vat", names OID, Value, Count, sub, CLASSNAME, Red, Green and Blue; the member
+  "v1_final/ds3091.gdb/a00000004.gdbtable" carries four metadata documents, each naming, for the
+  entity "VAT_ds3091", OBJECTID, Value, Count and sub; and the member
+  "v1_final/ds3091_vector.gdb/a00000004.gdbtable" carries four, the first for the entity "ds3091"
+  and the other three for "ds391", each naming OBJECTID, zone, X, Y, shape, Sub, Shape_Length and
+  Shape_Area. The documents inside a .gdbtable were read as the UTF-8 text from each "<metadata"
+  to the next "</metadata>"; within each member the four state the same labels and the same
+  definitions, and where a field is named in more than one place its definition is the same in
+  each. No document names a unit for any field. The ImageServer the third access step names publishes its raster attribute table at
   https://tiledimageservices2.arcgis.com/Uq9r85Potqm3MfRV/arcgis/rest/services/biosds3091_cru/ImageServer/rasterAttributeTable?f=json,
   which answers HTTP 200 with Content-Type application/json; charset=utf-8 and states the fields
   "Value" of type "esriFieldTypeInteger", "Count" of type "esriFieldTypeDouble", "Sub" of type
@@ -108,7 +119,7 @@ variables:
     description: null
     unit: null
   - name: sub
-    description: Substrate classification of 'Hard' or 'Soft' benthic habitat.
+    description: "Substrate classification of 'Hard' or 'Soft' benthic habitat. "
     unit: null
   - name: CLASSNAME
     description: null
@@ -122,18 +133,45 @@ variables:
   - name: Blue
     description: null
     unit: null
+  - name: OBJECTID
+    description: Internal feature number.
+    unit: null
+  - name: zone
+    description: "Depth range used to bin classifications. "
+    unit: null
+  - name: X
+    description: >-
+      Longitude centroid of one-degree grids used to bin classification in Decimal Minute
+      Degrees.
+    unit: null
+  - name: Y
+    description: >-
+      Latitude centroid of one-degree grids used to bin classification in Decimal Minute
+      Degrees.
+    unit: null
+  - name: shape
+    description: Feature geometry.
+    unit: null
+  - name: Sub
+    description: "Sub: Substrate classification of 'Hard' or 'Soft' benthic habitat."
+    unit: null
+  - name: Shape_Length
+    description: Length of feature in internal units.
+    unit: null
+  - name: Shape_Area
+    description: Area of feature in internal units squared.
+    unit: null
 measures: []
 coverage: >-
   The dataset page states "While originally developed for MPA planning and MLPA implementation,
-  this dataset provides a comprehensive estimate of benthic habitat for California waters." and
-  "Two versions of this data are available:Statewide mosaic raster of all data resampled at 10m
-  (shown here)." Its "spatial" extra is the polygon "{"type": "Polygon", "coordinates":
+  this dataset provides a comprehensive estimate of benthic habitat for California waters." Its
+  "spatial" extra is the polygon "{"type": "Polygon", "coordinates":
   [[[-124.6329,32.3947],[-124.6329,42.1032],[-116.2959,42.1032],[-116.2959,32.3947],[-124.6329,32.3947]]]}".
   The metadata document in the held zip states "This version is a statewide mosaic of all data
   resampled at 10m.", and its bounding box westBL "-125.264867", eastBL "-116.295895", northBL
   "42.157317" and southBL "32.394712". This record holds the one zip the dataset page lists, whole
 coverage_stated_at: >-
-  The first two sentences are the second and third sentences of the paragraph under the <h1> of
+  The first sentence is the second sentence of the paragraph under the <h1> of
   https://data.cnra.ca.gov/dataset/predicted-nearshore-benthic-substrates-of-california-r7-cdfw-ds3091;
   the polygon is the value of the "spatial" extra in that dataset's package_show response, which
   the second access step names; the next sentence is the first sentence of the last paragraph of
