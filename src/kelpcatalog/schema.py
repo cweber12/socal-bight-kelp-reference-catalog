@@ -204,6 +204,7 @@ RULES: dict[str, dict[str, tuple[bool, str]]] = {
         "license_stated_at": (False, "str?"),
         "variables": (True, "list[variable]"),
         "measures": (False, "list[str]"),
+        "findings": (False, "list[finding]"),
         "coverage": (False, "str?"),
         "coverage_stated_at": (False, "str?"),
         "retrieved": (True, "date?"),

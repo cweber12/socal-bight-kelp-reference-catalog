@@ -121,6 +121,8 @@ does not list.
 - `measures`: one phrase per entry, as the `measures` row of the table says; `[]` where you enter
   none, and a source that is not a document enters none — the `variables` row's closing clause is
   the other half of that case.
+- `findings`: as the `findings` row of the table says, which points at the `findings` row of the
+  `references/<citekey>.md` table; that row says what makes an entry quotable and in which PR.
 - `coverage` as the `coverage` row of the table says, which fixes the order its clauses come in, and
   `coverage_stated_at` where it states it. When `coverage` draws on several places, name each in
   `coverage_stated_at` in the order its clause appears in `coverage`. A span read off a file's
@@ -209,9 +211,9 @@ or a `url`. Only equations an existing figure applies go in `equations`, each
 `{id, as_printed, where}` — the equation **exactly as the paper prints it**, with its page or
 equation number. Never adjusted, clipped or extended here.
 
-For `findings`, read the `findings` row of the same table: it says what makes an entry quotable and
-in which PR. Judge this draft against it as you judge `equations` against the figures committed
-today.
+For `findings`, read the `findings` row of the `references/<citekey>.md` table: it says what makes
+an entry quotable and in which PR. Judge this draft against it as you judge `equations` against
+the figures committed today.
 
 ## 6. Run the gate, then check the record against the source
 
