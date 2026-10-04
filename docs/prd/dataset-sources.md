@@ -50,7 +50,8 @@ this file points at them and restates none.
    #148's title says "once identified", and its body says what makes it ready: a comment there
    naming the layer, its landing page and what that page states about coverage. Each is named
    below the table with that condition. #263's Non-goals forbid this PR re-triaging either, and it
-   changes neither label.
+   changes neither label. #148 met its condition on 2026-10-03 and is row 9; the paragraph under
+   the Slices table says how.
 2. **A dataset's paper gets no `references/` record.** `CONTEXT.md` glosses `references/` as "a
    paper or report cited by a source or a figure" (*Record format*, the `catalog/` tree), and
    6.3c's reading 3 is that papers are leads, not records. The four dataset-behind-paper records
@@ -195,6 +196,7 @@ source; nothing here settles them. The **id** column is the proposed id, which s
 | 6 | [#305](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/305) | `sandiego_rtoms_water_quality` | RTOMS water quality, DCAT `monitoring_ocean_rtoms_water_quality` | https://data.sandiego.gov/datasets/monitoring-ocean-rtoms-water-quality/, identified to its DCAT entry only | none proposed: the #5 entry names the parameters and no tag; read off the source | as row 3 | as row 4 |
 | 7 | [#293](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/293) | `cugn_sp030_20260701` | Spray glider sp030, CUGN Line 90, deployment `sp030-20260701T1719` of 2026-07-01, on the NOAA IOOS National Glider Data Assembly Center ERDDAP | https://gliders.ioos.us/erddap/tabledap/sp030-20260701T1719.html; the unconstrained tabledap CSV, held whole and dated, where `calcofi` holds one station's subset of its ERDDAP tables; `VERIFIED` / `FETCHED` under the second limb, the GDAC being the route the steward's own page `https://spraydata.ucsd.edu/data-access` names for Level 2 data (the record's third `access` step) | `ocean-climate/temperature`, `ocean-climate/salinity`, `ocean-climate/oxygen-ph` | `scb` | merged as PR #294 on 2026-10-02 (`b90cf7f`) before this row existed, so its cells are read from the record on `main`, not proposed: topics and region are its `topics` and `regions`; steward `Instrument Development Group, Scripps Institution of Oceanography`; the other 110 CUGN datasets on the DAC, `binnedCUGN90` on the steward's ERDDAP, and the chlorophyll and current columns that fit no sub-topic are parked at #5 issuecomment-5944478720 |
 | 8 | [#295](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/295) | `opc_mlpa_kelp_forest` | Monitoring and Evaluation of Kelp Forest Ecosystems in the MLPA Marine Protected Area Network (Carr et al.), revision `.12` on the California Ocean Protection Council's DataONE member node | https://opc.dataone.org/view/doi:10.25494/P6/MLPA_kelpforest.12; seven entities fetched by the identifiers the node's system metadata states, each kept when its SHA-256 and size equal them, as `pisco_kelp_forest` is fetched; `VERIFIED` / `FETCHED` under the second limb, the route the creators' EML names through `cn.dataone.org/cn/v2/resolve/` (the record's fifth `access` step; PR #296, "Audit rulings", F1) | `bed-state/diver-surveys`, `bed-state/community`, `bed-state/mpas`, `grazers-predators-competitors/urchins`, `substrate/relief-rugosity` | `scb` | merged as PR #296 on 2026-10-02 (`206c351`) before this row existed, so its cells are read from the record on `main`, not proposed; `steward` is `UCSC`, the producer, with the host repository in `access` — `docs/prd/monitoring-sources.md` reading 6, carried here by reading 4, on which the audit of PR #296 blocked (PR #296, "Audit rulings", F1); the next DataONE row copies that; one record beside `pisco_kelp_forest`, not a mention in its `access` |
+| 9 | [#148](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/148) | `cdfw_ds3091` | Predicted Nearshore Benthic Substrates of California - R7 - CDFW [ds3091] | https://data.cnra.ca.gov/dataset/predicted-nearshore-benthic-substrates-of-california-r7-cdfw-ds3091; the "ZIP" resource on `filelib.wildlife.ca.gov`, 150,952,600 bytes on 2026-10-03, as `cdfw_ds3135` takes its zip | `substrate/rock-mapping` | `scb` | added by the PR that enters the record, on the owner's ruling of 2026-10-03 that #148's record PR may add its own row; #148 issuecomment-5976932760 is the comment its body asks for; no record in `catalog/sources/` on `main` contained `raster`, `ImageServer`, `GeoTIFF` or `.tif` in any letter case (0 of 36 files, 2026-10-03); the zip also carries the vector version, which is not a second record (#148's brief) |
 
 Rows 7 and 8 are appended out of the work order because they had no work left when they were
 written: each merged before its row existed, and neither was dispatched from this table, since
@@ -208,13 +210,15 @@ and `cugn_sp030_20260701`) and `recruitment-connectivity/settlement` tags 1
 Each of #261, #267 and #285 was `needs-triage` on 2026-10-01, waiting on this PR; the merged
 table is what their issues say they wait for.
 
-**#144 and #148 are candidates, not rows** (reading 1), and both are `needs-triage` on this
-milestone on 2026-10-01. #144, `cordc_hfrnet`, becomes a row when its host answers a probe or the
-owner rules on a route, the owner's ruling at #141 issuecomment-5852435312; its lead and its
-proposed tags are 6.3c's row 14 and are not carried forward here as fresh. #148, the CDFW marine
-habitat GIS layer, becomes a row when a comment on it names the layer, its landing page and what
-that page states about coverage, which its own body says and which is the form this track takes a
-new candidate in. Neither is re-triaged by this PR.
+**#144 and #148 were candidates, not rows** (reading 1), and both were `needs-triage` on this
+milestone on 2026-10-01. #144, `cordc_hfrnet`, is still a candidate: it becomes a row when its host
+answers a probe or the owner rules on a route, the owner's ruling at #141
+issuecomment-5852435312; its lead and its proposed tags are 6.3c's row 14 and are not carried
+forward here as fresh. #148, the CDFW marine habitat GIS layer, was to become a row when a comment
+on it named the layer, its landing page and what that page states about coverage, which its own
+body says and which is the form this track takes a new candidate in. That comment is #148
+issuecomment-5976932760 (2026-10-03), and #148 is row 9. The PR that created this file
+re-triaged neither.
 
 ## Non-goals
 
