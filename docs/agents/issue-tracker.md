@@ -27,8 +27,9 @@ repo from `git remote -v` when run inside a clone.
 
 - One milestone is active at a time; they are named `<number> <name>`: `6.1 Scaffold`,
   `6.2 Topic notebooks`, `6.3 Regions and authorities`, `6.3b Beds and sites`,
-  `6.3c Monitoring sources`, `6.4 Re-entry`, `6.4d Dataset sources`, `6.5 Lock and fetch`,
-  `6.6 Indexes and citation`, `6.7 Bight expansion`. A PRD for each lives at
+  `6.3c Monitoring sources`, `6.4 Re-entry`, `6.4c Monitoring report series`,
+  `6.4d Dataset sources`, `6.5 Lock and fetch`, `6.6 Indexes and citation`, `6.7 Bight expansion`.
+  A PRD for each lives at
   `docs/prd/<slug>.md`; 6.3b is scheduled inside the 6.3 PRD, and 6.3c runs before 6.3b's beds
   track while 6.3b's sites track runs beside 6.3c, except its last row, whose schedule is the
   owner's call (`docs/prd/monitoring-sources.md`, its status line, and the 6.3 PRD's Sites track
