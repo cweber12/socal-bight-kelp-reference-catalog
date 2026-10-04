@@ -118,11 +118,11 @@ access:
     "RTdata End" and "Recovery", as the 2022-2023 report's text layer reads them. The 2020-2021
     table prints, as Lat (DD), Long (DD), Total Depth (m), Deployment date and Recovery: PLOO 2,
     "32.66959", "-117.32298", "95", "10/7/2019", "9/29/2020"; PLOO 3, "32.66963", "-117.32272",
-    "95", "11/3/2021", "--"; SBOO 3, "32.53185", "-117.18644", "31", "12/18/2019", "12/17/2020";
-    and SBOO 4, "32.53177", "-117.18628", "31", "11/3/2021", "--". The 2022-2023 table prints
+    "95", "11/3/2021", "—"; SBOO 3, "32.53185", "-117.18644", "31", "12/18/2019", "12/17/2020";
+    and SBOO 4, "32.53177", "-117.18628", "31", "11/3/2021", "—". The 2022-2023 table prints
     PLOO 4, "32.66953", "-117.32404", "95", "12/8/2022", "10/26/2023"; PLOO 5, "32.67012",
-    "-117.32463", "96", "12/20/2023", "--"; and SBOO 5, "32.53185", "-117.18651", "31",
-    "6/29/2023", "--"; it also lists PLOO 3 and SBOO 4 with the positions above and Recovery
+    "-117.32463", "96", "12/20/2023", "—"; and SBOO 5, "32.53185", "-117.18651", "31",
+    "6/29/2023", "—"; it also lists PLOO 3 and SBOO 4 with the positions above and Recovery
     "11/22/2022" and "Lost to Sea". Those are the Deployment# values the held files carry, written
     2, 3, 4 and 5 in the PLOO files and 3.0, 4.0 and 5.0 in the SBOO files (2026-10-03)
   - >-
