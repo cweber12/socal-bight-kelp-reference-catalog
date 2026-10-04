@@ -1127,6 +1127,44 @@ def test_measures_is_tied_to_no_tier():
         assert validate(builder(measures=MEASURES)) == [], tier
 
 
+# --- findings on sources: a result a source's own document prints (#208) ------------
+#
+# CONTEXT.md, sources: the findings row points at the references row, so the shape is
+# that row's and these are #179's cases on a source fixture, reusing FINDING_KEYS and
+# A_FINDING rather than a second copy. FETCHED is the fixture, as it is for measures; the
+# last test loops every tier. No record carries the field yet (#208's non-goal).
+
+
+def test_a_findings_entry_on_a_source_validates():
+    assert validate(a_fetched_source(findings=[A_FINDING])) == []
+
+
+def test_findings_is_optional_and_the_empty_list_is_a_source_with_none_entered():
+    assert validate(a_fetched_source()) == []
+    assert validate(a_fetched_source(findings=[])) == []
+
+
+def test_a_findings_entry_on_a_source_that_is_a_bare_string_is_a_problem():
+    assert reports(validate(a_fetched_source(findings=[A_FINDING["as_printed"]]))) == [
+        ("findings", "expected list[finding]")
+    ]
+
+
+@pytest.mark.parametrize("missing", FINDING_KEYS)
+def test_a_findings_entry_on_a_source_missing_a_key_is_a_problem(missing: str):
+    entry = {k: v for k, v in A_FINDING.items() if k != missing}
+    assert reports(validate(a_fetched_source(findings=[entry]))) == [
+        ("findings", "expected list[finding]")
+    ]
+
+
+def test_findings_is_tied_to_no_tier():
+    # As test_measures_is_tied_to_no_tier: the row names no tier, and a document a record
+    # does not hold can still print the result the record quotes.
+    for tier, builder in SOURCE_OF_TIER.items():
+        assert validate(builder(findings=[A_FINDING])) == [], tier
+
+
 @pytest.mark.parametrize("bad", ["leichter2023", "leichter2023.point.loma", "leichter2023."])
 def test_site_id_is_program_dot_site(bad: str):
     # CONTEXT.md, sites: id* (`<program>.<site>`, equals file name)
