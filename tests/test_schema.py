@@ -1160,7 +1160,9 @@ def test_a_findings_entry_on_a_source_missing_a_key_is_a_problem(missing: str):
 
 def test_findings_is_tied_to_no_tier():
     # As test_measures_is_tied_to_no_tier: the row names no tier, and a document a record
-    # does not hold can still print the result the record quotes.
+    # does not hold can still print the result the record quotes. The loop says nothing
+    # about the others beyond that no gate excludes them: a DERIVED record's own document
+    # is computed here, which the references row excludes, and review checks that.
     for tier, builder in SOURCE_OF_TIER.items():
         assert validate(builder(findings=[A_FINDING])) == [], tier
 
