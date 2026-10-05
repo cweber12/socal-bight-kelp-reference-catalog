@@ -113,16 +113,20 @@ the catalog already holds: the index the table of *The rule* admits, never the f
 excludes) · `NOT HELD` (nothing local; the record describes the source and how to ask).
 
 `FETCHED`'s route is one of three, and nothing else. A host the steward runs, or that a body
-constituting it runs: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest
-Fisheries Science Center", which the steward's own data usage policy lists among its participating
-agencies. A route the steward names as where the source is to be had: `sio_shore_stations`' Data
-Access page names the UC San Diego Library Digital Collections, and `ccr_t14_165_5`'s steward links
-the Barclays Official California Code of Regulations as the route to the text. Or a service that
-serves that same object under the identifier one of those two issued it, a replica or a proxy
-included: `sbc_lter_landsat_canopy` records DataONE serving the PASTA object under its PASTA
-identifier, with a `DataONE-Proxy` header naming it — that record holds nothing, so the limb is
-stated from a route it documents rather than from bytes it keeps. Anyone else's copy of the same
-content is not a route, however faithful.
+constituting it runs, or, where the source itself states the membership, that a body the steward is
+part of runs: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest Fisheries
+Science Center", which the steward's own data usage policy lists among its participating agencies,
+and the City of San Diego's kelp forest report archive page, whose title ends "City of San Diego
+Official Website" and whose heading "Public Utilities" sits over a "Public Utilities Home" link,
+links its reports on that same host, so for the steward `Public Utilities, City of San Diego` a
+report taken from it is this limb. A route the steward names as where the source is to be had:
+`sio_shore_stations`' Data Access page names the UC San Diego Library Digital Collections, and
+`ccr_t14_165_5`'s steward links the Barclays Official California Code of Regulations as the route to
+the text. Or a service that serves that same object under the identifier one of those two issued it,
+a replica or a proxy included: `sbc_lter_landsat_canopy` records DataONE serving the PASTA object
+under its PASTA identifier, with a `DataONE-Proxy` header naming it — that record holds nothing, so
+the limb is stated from a route it documents rather than from bytes it keeps. Anyone else's copy of
+the same content is not a route, however faithful.
 
 Subsetting is a question about a single file, and only about a single file. Which of the files a
 publisher offers a record holds is not subsetting at all, and needs no licence here: a record holds
