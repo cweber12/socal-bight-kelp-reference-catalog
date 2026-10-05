@@ -35,8 +35,9 @@ access:
     https://www.sandiego.gov/sites/default/files/2026-07/city-of-san-diego-kelp-forest-monitoring-biennial-report-final-version-2023-2025.pdf,
     this record's url, as an absolute href. The page carries the <h3> headings "Related Videos"
     and "Related Articles" after that list; the strings "cite" and "citation" occur in its HTML 0
-    and 4 times, the 4 being the site navigation's link "Parking Citations" and its href
-    /parking/citations (2026-10-05)
+    and 4 times in any letter case, the 4 being the text and the href of the navigation link
+    "Parking Citations", /parking/citations, which the page prints twice, once in each of two of
+    its navigation menus (2026-10-05)
   - >-
     Download
     https://www.sandiego.gov/sites/default/files/2026-07/city-of-san-diego-kelp-forest-monitoring-biennial-report-final-version-2023-2025.pdf,
@@ -182,18 +183,21 @@ coverage: >-
   "Benthic temperature measured at the cross-depth long-term monitoring sites from 2007 to 2025 at
   Point Loma Central at: a) 8 m depth, b) 12 m depth, c) 15 m depth, d) 18 m depth, and e) 21 m
   depth."; "The measurement sites off Point Loma are located at 9, 15, and 24 m depth. Submarine
-  light is also measured off southern La Jolla at a depth of 24 m." The City's kelp forest
-  monitoring page lists seven installments under "Available Reports"; this record holds the one it
-  links as "Biennial Report: 2023-2025" and none of the other six
+  light is also measured off southern La Jolla at a depth of 24 m."; "Using the Point Loma South
+  191 CDIP buoy station (cdip.ucsd.edu), significant wave height (Hs) and wave period were used to
+  explore wave impacts for the reporting period (Figure 6), as well as historically." The City's
+  kelp forest monitoring page lists seven installments under "Available Reports"; this record
+  holds the one it links as "Biennial Report: 2023-2025" and none of the other six
 coverage_stated_at: >-
   The first two sentences quoted are under METHODS, printed page 9 (PDF page 9), the first opening
   that section and the second opening its second paragraph; the third quotation is the third and
   fourth sentences of the Figure 1 caption on the same page; the fourth is the second sentence of
   the last paragraph under INTRODUCTION, printed page 8 (PDF page 8); the fifth is the first
-  sentence of the Figure 3 caption, printed page 14 (PDF page 14); and the sixth is the third and
-  fourth sentences of the paragraph under METHODS, Light, printed page 11 (PDF page 11), all of
-  the held PDF, retrieved 2026-10-05; the seven link texts are on the City's kelp forest monitoring
-  page named in access (2026-10-05)
+  sentence of the Figure 3 caption, printed page 14 (PDF page 14); the sixth is the third and
+  fourth sentences of the paragraph under METHODS, Light, printed page 11 (PDF page 11); and the
+  seventh is the first sentence of the paragraph under RESULTS, Waves, printed page 17 (PDF page
+  17), all of the held PDF, retrieved 2026-10-05; the seven link texts are on the City's kelp
+  forest monitoring page named in access (2026-10-05)
 retrieved: 2026-10-05
 fetch_script: src/fetch/sandiego_kelp_forest_2023_2025.py
 file: null
