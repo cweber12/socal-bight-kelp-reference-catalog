@@ -54,9 +54,8 @@ and stated here so a slice does not re-derive it.
      `coverage` that it holds the report and not that appendix, as `sccwrp_kelp_status_2016`
      holds "the report and not its appendices" (`CONTEXT.md`, the subsetting paragraph).
    - **The monthly reports are two records, one per outfall.** The page groups them under its own
-     headings: on 2026-10-04 its `h2` headings were "2026 Monthly Receiving Waters Monitoring
-     Reports for the PLOO", the same for the SBOO, "PLOO Monthly Receiving Waters Monitoring
-     Report Archives" and "SBOO Monthly Receiving Waters Monitoring Report Archives". The template
+     `h2` headings, two per outfall, which the Slices intro quotes as the page printed them on
+     2026-10-04. The template
      evidence is two installments of one outfall, `ploo_mwqr_jun_2026.pdf` and
      `ploo_mwqr_jul_2026.pdf`: with digits, decimal points and English month names masked, the
      text `review-source`'s `pdftext_literal.py` takes out of each, about 6.4k characters of PDFs
@@ -91,8 +90,9 @@ and stated here so a slice does not re-derive it.
      four `sandiego_rtoms_*` records spell the department behind the same Ocean Monitoring
      Program. Those records join two fields of the City Open Data portal's DCAT metadata, the
      `publisher` "Public Utilities" and its `subOrganizationOf` "City of San Diego" (their second
-     `access` step); none of the pages or PDFs of rows 1–9 opened in this PR's reviews prints the
-     string in that form (audit of PR #320, R3-F4). Not Scripps Institution of Oceanography: the
+     `access` step); none of the pages of rows 1–9, nor of their PDFs with a text layer, opened in
+     this PR's reviews prints the string in that form, and row 7's PDF has no text layer (reading
+     7) (audit of PR #320, R3-F4 and R4-F4). Not Scripps Institution of Oceanography: the
      kelp forest page states "Researchers at the Scripps Institution of Oceanography (SIO) have
      partnered with the City of San Diego Ocean Monitoring Program to conduct regular surveys of
      the kelp forests off San Diego County." (2026-10-04); the 2023–2025 report states that it was
@@ -130,11 +130,19 @@ and stated here so a slice does not re-derive it.
      limb, or "A route the steward names as where the source is to be had", the second, or
      neither, is not settled here (`CONTEXT.md`, *Vocabularies*, **tier**). On the owner's fifth
      choice at #258 issuecomment-5986228821, rows 1 and 10 stop at this question under
-     `NEEDS_CONTEXT` (`.claude/skills/run-prd/SKILL.md` lines 438–441, and 524–527 for a reading
+     `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
+     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller, and 524–527 for a reading
      of a `CONTEXT.md` rule), and no row of this table enters `FETCHED` until the owner rules. The
      four merged `sandiego_rtoms_*` records carry rows 1–9's steward string, are `FETCHED` from
      the "Download" links the City Open Data portal's landing page prints, on `seshat.datasd.org`,
-     and state no limb; the ruling's own issue or PR says whether it touches them.
+     and name no limb in their fields; each record's fourth `access` step quotes the portal's
+     Terms of Use. Three of their four merge commits read one. In merge order: `76b6487` (#302)
+     reads the route "as CONTEXT.md's first FETCHED limb, a host the steward runs", and a later
+     paragraph of the same message says "the source does not say who runs seshat.datasd.org" and
+     "the record states those and draws no conclusion about the host"; `3493fd3` (#307) and
+     `d50460d` (#312), merged after it, say "The route is read as CONTEXT.md's first FETCHED limb,
+     a host the steward runs." and "The route is FETCHED's first limb, a host the steward runs";
+     `b2a75e3` (#313) states no limb. The ruling's own issue or PR says whether it touches them.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
@@ -151,10 +159,12 @@ and stated here so a slice does not re-derive it.
    issuecomment-5983528322 and is not this milestone's question.
 5. **6.3c's readings 2, 4, 5 and 6 carry over.** `docs/prd/monitoring-sources.md`, "What the
    review settled": reading 2 (a route that downloads enters `FETCHED`, with its proportionality
-   clause), reading 4 (region tags follow the tagging sentence), reading 5 (a bare topic tag for a
-   source that fits no sub-topic) and reading 6 (`steward`, as reading 2 above applies it). A row's
-   PR cites them by number. Readings 1, 3, 7 and 8 decide the admission of datasets, papers,
-   `ON REQUEST` sources and exclusions, and no row here turns on any of them.
+   clause; which limb a route here is stays open under reading 2 above, its bullet "Which
+   `FETCHED` limb a route is, this reading leaves open"), reading 4 (region tags follow the
+   tagging sentence), reading 5 (a bare topic tag for a source that fits no sub-topic) and
+   reading 6 (`steward`, as reading 2 above applies it). A row's PR cites them by number.
+   Readings 1, 3, 7 and 8 decide the admission of datasets, papers, `ON REQUEST` sources and
+   exclusions, and no row here turns on any of them.
 6. **The methods paper is not a row.** The 2023–2025 report cites "Parnell et al. 2026" for the
    program's full methods; it is doi:10.1002/eap.70181 (#260 issuecomment-5878053618), a candidate
    on #214's track, and its dataset is `parnell_kelp_demography` on 6.4d. A row creates a
@@ -216,9 +226,12 @@ Report: 2020-2021" is `KelpForest2022_FinalDraft.pdf`, "Annual Report: 2016-2017
 `sandiego_kelp_forest_2026` #259 and #260 proposed. A record's `title` is the title its document
 prints, not the link text. Rows 8 and 9 hold runs of installments whose printed titles differ; each
 takes the title one installment prints, the row's PR names that installment, and its `access`
-quotes both `h2` headings the index page gives its family, as reading 1 lists them. That is the
-owner's fourth choice at #258 issuecomment-5986228821, whose "the index page's family heading"
-is read as both because the page gives each family two.
+quotes both `h2` headings the index page gives its family, as the page prints them: on 2026-10-04,
+"2026 Monthly Receiving Waters Monitoring Reports for the PLOO" and "PLOO Monthly Receiving Waters
+Monitoring Report Archives" for the PLOO, and the same two with "SBOO" for the SBOO, each 2026
+heading with U+00A0 between "2026" and "Monthly". That is the owner's fourth choice at #258
+issuecomment-5986228821, whose "the index page's family heading" is read as both because the page
+gives each family two.
 
 | order | # | id | source | route (lead) | topics | region today | note |
 |---|---|---|---|---|---|---|---|
