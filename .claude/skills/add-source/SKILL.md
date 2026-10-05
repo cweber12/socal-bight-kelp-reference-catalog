@@ -250,9 +250,8 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   table says. For each entry, write where the document prints it — the caption, heading or
   sentence, and its page — and the printed text immediately before its first word and immediately
   after its last, one row per entry in the step-8 report, *the entry · where · before · after*.
-  An entry whose before-text is part of the name of the thing reported, or whose after-text is not
-  a clause of where, when or how it was measured, is cut against that row: correct it, or where
-  the row gives no answer for the phrase, report that in step 8.
+  Read each row against the `measures` row: an entry that row would begin or end elsewhere is cut
+  against it — correct it, or where the row gives no answer for the phrase, report that in step 8.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
