@@ -118,9 +118,9 @@ does not list.
 - `variables`: one map per column, as the `variables` row of the table says. Records entered
   before that row carry the bare-string form instead, `noaa_oni` below among them, and #182
   retires it: a record entered now is born as maps.
-- `measures`: one phrase per entry, as the `measures` row of the table says; `[]` where you enter
-  none, and a source that is not a document enters none — the `variables` row's closing clause is
-  the other half of that case.
+- `measures`: one phrase per entry, cut where the `measures` row of the table says it begins and
+  ends; `[]` where you enter none, and a source that is not a document enters none — the
+  `variables` row's closing clause is the other half of that case.
 - `findings`: as the `findings` row of the table says, which points at the `findings` row of the
   `references/<citekey>.md` table; that row says what makes an entry quotable and in which PR.
 - `coverage` as the `coverage` row of the table says, which fixes the order its clauses come in, and
@@ -245,6 +245,16 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   statement rather than a quotation, and is outside this check. A statement you can name as neither
   span nor extent is itself the finding: report it as such, and leave what becomes of it to a
   reader's ruling under *The rule*, not to this step.
+- **Show where each `measures` entry was cut.** The byte-diff above proves an entry is printed; it
+  does not say that the entry begins and ends where the `measures` row of `CONTEXT.md`'s sources
+  table says. For each entry, write every place the document prints it — caption, heading or
+  sentence, with its page — and, at the place it was taken from, the printed text immediately
+  before its first word and immediately after its last, naming the words of the after-text at
+  which that row ends the entry; one row per entry in the step-8 report, *the entry · printed at ·
+  before · after*. An entry that row would begin or end elsewhere is corrected to where the row
+  puts it. A phrase that row gives no one answer for, or that the document prints differently from
+  one place to another, is reported as such in step 8 and left to a reader's ruling, as the check
+  above leaves a statement of neither kind.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
