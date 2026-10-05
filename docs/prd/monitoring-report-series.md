@@ -135,19 +135,26 @@ and stated here so a slice does not re-derive it.
      document prints no such statement stops under `NEEDS_CONTEXT` as row 10 does. On 2026-10-04 the
      text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
      as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
-     through the outfalls). Rows 10–35: the network page lists "Channel Islands National Park" under
-     "Parks Monitored" and names the reports' host "NPS DataStore", and the 1990 report prints "In
-     1990, 44 National Park Service and volunteer divers made 759 dives during a series of seven
-     five-day and three shorter cruises to conduct the monitoring.", "The Federal Law which
-     established Channel Islands National Park (16-USC-410) requires monitoring of the natural
-     resources in the park." and, in its acknowledgements, "This program was supported by the U.S.
-     National Park Service in cooperation with the California Department of Fish and Game and the
-     Department of Commerce, National Oceanographic and Atmospheric Administration, Marine Sanctuary
-     Program." (all 2026-10-04); none of these prints that the park is part of the National Park
-     Service. On #323's acceptance the ruling then does not cover rows 10–35 and the owner decides.
-     Row 10 stops under `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for
-     the row agent, `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the
-     owner rules, and rows 11–35 follow it. The four merged `sandiego_rtoms_*` records carry rows
+     through the outfalls). Rows 10–35: the ruling at #283 issuecomment-5997494401 (2026-10-05,
+     under the owner's delegation it quotes) finds the statement in row 10's own document. The 1990
+     report prints on PDF page 5, under "EXECUTIVE SUMMARY", "As part of the long-term ecological
+     monitoring program, Channel Islands National Park has been conducting monitoring of the kelp
+     forests around Santa Barbara, Anacapa, Santa Cruz, Santa Rosa, and San Miguel Islands since
+     1982. In 1990, 44 National Park Service and volunteer divers made 759 dives during a series of
+     seven five-day and three shorter cruises to conduct the monitoring." (2026-10-05), and saved
+     search 1508's entry for its reference, 68419, lists `Contacts` "Daniel Richards, William Avery,
+     David Kushner,  National Park Service. Western Regional office" (two spaces as served,
+     2026-10-05). Row 10's `access` quotes both, and it no longer stops at this question. The ruling
+     names what row 10 does not rest on: the title page prints "CHANNEL ISLANDS NATIONAL PARK /
+     1901 SPINNAKER DRIVE / VENTURA, CA 93001" and no Service line, the acknowledgements' "This
+     program was supported by the U.S. National Park Service" states support, and the network page's
+     "Parks Monitored" line states what the network monitors. For rows 11–35 the condition is each
+     source's own, as for rows 2–9: a row quotes what its own document or its own DataStore
+     reference prints, in the document's body, in the reference's `DisplayCitation` (the steward
+     bullet above records "National Park Service" as 2005–15's publisher) or in the saved search's
+     `Contacts` for it (1990 and 1991 carry "National Park Service. Western Regional office";
+     1992–2015's entries list names only, 2026-10-05), and a row whose document and reference print
+     none stops under `NEEDS_CONTEXT`. The four merged `sandiego_rtoms_*` records carry rows
      1–9's steward string, are `FETCHED` from the "Download" links the City Open Data portal's
      landing page prints, on `seshat.datasd.org`, and name no limb in their fields; each record's
      fourth `access` step quotes the portal's Terms of Use. Three of their four merge commits read
