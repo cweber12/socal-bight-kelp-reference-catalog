@@ -247,11 +247,14 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   reader's ruling under *The rule*, not to this step.
 - **Show where each `measures` entry was cut.** The byte-diff above proves an entry is printed; it
   does not say that the entry begins and ends where the `measures` row of `CONTEXT.md`'s sources
-  table says. For each entry, write where the document prints it — the caption, heading or
-  sentence, and its page — and the printed text immediately before its first word and immediately
-  after its last, one row per entry in the step-8 report, *the entry · where · before · after*.
-  Read each row against the `measures` row: an entry that row would begin or end elsewhere is cut
-  against it — correct it, or where the row gives no answer for the phrase, report that in step 8.
+  table says. For each entry, write every place the document prints it — caption, heading or
+  sentence, with its page — and, at the place it was taken from, the printed text immediately
+  before its first word and immediately after its last, naming in the after-text the words that
+  state where, when or how; one row per entry in the step-8 report, *the entry · printed at ·
+  before · after*. An entry that row would begin or end elsewhere is corrected to where the row
+  puts it. A phrase that row gives no one answer for, or that the document prints differently from
+  one place to another, is reported as such in step 8 and left to a reader's ruling, as the check
+  above leaves a statement of neither kind.
 - **Every URL the script fetches appears in `access`.** Verbatim, when `FILES` is a literal list.
   When `FILES` is built from a template or a query string, `access` names the pattern and gives one
   worked example URL.
