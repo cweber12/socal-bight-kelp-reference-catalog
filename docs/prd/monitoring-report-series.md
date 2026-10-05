@@ -54,9 +54,8 @@ and stated here so a slice does not re-derive it.
      `coverage` that it holds the report and not that appendix, as `sccwrp_kelp_status_2016`
      holds "the report and not its appendices" (`CONTEXT.md`, the subsetting paragraph).
    - **The monthly reports are two records, one per outfall.** The page groups them under its own
-     headings: on 2026-10-04 its `h2` headings were "2026 Monthly Receiving Waters Monitoring
-     Reports for the PLOO", the same for the SBOO, "PLOO Monthly Receiving Waters Monitoring
-     Report Archives" and "SBOO Monthly Receiving Waters Monitoring Report Archives". The template
+     `h2` headings, two per outfall, which the Slices intro quotes as the page printed them on
+     2026-10-04. The template
      evidence is two installments of one outfall, `ploo_mwqr_jun_2026.pdf` and
      `ploo_mwqr_jul_2026.pdf`: with digits, decimal points and English month names masked, the
      text `review-source`'s `pdftext_literal.py` takes out of each, about 6.4k characters of PDFs
@@ -137,12 +136,13 @@ and stated here so a slice does not re-derive it.
      four merged `sandiego_rtoms_*` records carry rows 1–9's steward string, are `FETCHED` from
      the "Download" links the City Open Data portal's landing page prints, on `seshat.datasd.org`,
      and name no limb in their fields; each record's fourth `access` step quotes the portal's
-     Terms of Use. Their merge commits do read one: `3493fd3` (#307) says "The route is read as
-     CONTEXT.md's first FETCHED limb, a host the steward runs.", `d50460d` (#312) says "The route
-     is FETCHED's first limb, a host the steward runs", and `76b6487` (#302) reads it "as
-     CONTEXT.md's first FETCHED limb, a host the steward runs" and later in the same message
-     corrects that reading's grounds; `b2a75e3` (#313) states no limb. The ruling's own issue or
-     PR says whether it touches them.
+     Terms of Use. Three of their four merge commits read one. In merge order: `76b6487` (#302)
+     reads the route "as CONTEXT.md's first FETCHED limb, a host the steward runs", and a later
+     paragraph of the same message says "the source does not say who runs seshat.datasd.org" and
+     "the record states those and draws no conclusion about the host"; `3493fd3` (#307) and
+     `d50460d` (#312), merged after it, say "The route is read as CONTEXT.md's first FETCHED limb,
+     a host the steward runs." and "The route is FETCHED's first limb, a host the steward runs";
+     `b2a75e3` (#313) states no limb. The ruling's own issue or PR says whether it touches them.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
