@@ -249,8 +249,8 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   does not say that the entry begins and ends where the `measures` row of `CONTEXT.md`'s sources
   table says. For each entry, write every place the document prints it — caption, heading or
   sentence, with its page — and, at the place it was taken from, the printed text immediately
-  before its first word and immediately after its last, naming in the after-text the words that
-  state where, when or how; one row per entry in the step-8 report, *the entry · printed at ·
+  before its first word and immediately after its last, naming the words of the after-text at
+  which that row ends the entry; one row per entry in the step-8 report, *the entry · printed at ·
   before · after*. An entry that row would begin or end elsewhere is corrected to where the row
   puts it. A phrase that row gives no one answer for, or that the document prints differently from
   one place to another, is reported as such in step 8 and left to a reader's ruling, as the check
