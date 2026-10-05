@@ -135,35 +135,31 @@ and stated here so a slice does not re-derive it.
      document prints no such statement stops under `NEEDS_CONTEXT`. On 2026-10-04 the
      text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
      as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
-     through the outfalls). Rows 10–35: row 10 stops under `NEEDS_CONTEXT`
-     (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
-     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the owner rules at
-     #283, and rows 11–35 follow it. What has been read is at #283 issuecomment-5997494401 and
-     issuecomment-5997858626 (2026-10-05): an agent's two readings under the owner's delegation of
-     that day, the first withdrawn by the second after the audit of PR #325, and the second read by
-     that PR's round-2 audit as stating governance rather than membership; neither is the owner's
-     ruling. The 1990 report (holding 485218, `chis_kelp90.pdf`) prints no sentence that the park is
-     part of the National Park Service: in its text extraction "National Park Service" occurs twice
-     and "part of" twice, both about the monitoring program (2026-10-05). Its title page prints
-     "CHANNEL ISLANDS NATIONAL PARK / 1901 SPINNAKER DRIVE / VENTURA, CA 93001" and no Service line;
-     its executive summary (PDF page 5) prints "In 1990, 44 National Park Service and volunteer
-     divers made 759 dives during a series of seven five-day and three shorter cruises to conduct
-     the monitoring.", and its Table 5 lists participants from Moss Landing Marine Lab, Calif. Dept.
-     Fish & Game and Truth Aquatics among others; its acknowledgements print "This program was
-     supported by the U.S. National Park Service in cooperation with the California Department of
-     Fish and Game and the Department of Commerce, National Oceanographic and Atmospheric
-     Administration, Marine Sanctuary Program." The saved search's `Contacts` field is the
-     DataStore's `Author(s)` field and the 2005–15 citations' "National Park Service" is a publisher
-     line; neither is a membership statement. The candidate the second comment puts to the owner is
-     the park's own page `https://www.nps.gov/chis/learn/management/index.htm`, headed "Management",
-     which states "The park operates under Federal, Department of the Interior, and National Park
-     Service policies and guidelines, in accordance with a General Management Plan (GMP) which was
-     first published in 1980." ("Last updated: January 23, 2024"; retrieved 2026-10-05); whether
-     that sentence states the membership is the question. If the owner rules that it does, each of
-     rows 10–35 quotes it in `access` with its own retrieval date, as `calcofi` quotes its policy,
-     beside what its own document and `DisplayCitation` print (the steward bullet above), the
-     steward being the same for all 26 rows; if not, rows 10–35 enter `NOT HELD` or wait, the
-     owner's call. The four merged `sandiego_rtoms_*` records carry rows
+     through the outfalls). Rows 10–35: the owner ruled on 2026-10-05, at #283
+     issuecomment-5998521819, that the park's own page
+     `https://www.nps.gov/chis/learn/management/index.htm`, headed "Management", stating "The park
+     operates under Federal, Department of the Interior, and National Park Service policies and
+     guidelines, in accordance with a General Management Plan (GMP) which was first published in
+     1980." ("Last updated: January 23, 2024"; retrieved 2026-10-05) is the source stating the
+     membership the limb's condition asks for, and row 10 no longer stops at this question. Each of
+     rows 10–35 quotes that sentence in `access` with its own retrieval date, as `calcofi` quotes
+     its policy, beside what its own document and `DisplayCitation` print (the steward bullet
+     above), the steward being the same for all 26 rows. The ruling replaces an agent's two readings
+     at #283 issuecomment-5997494401 and issuecomment-5997858626, which the two audits of PR #325
+     blocked. What the ruling does not rest on, read 2026-10-05: the 1990 report (holding 485218,
+     `chis_kelp90.pdf`) prints no sentence that the park is part of the National Park Service
+     ("National Park Service" occurs twice and "part of" twice in its text extraction, both about
+     the monitoring program); its title page prints "CHANNEL ISLANDS NATIONAL PARK / 1901 SPINNAKER
+     DRIVE / VENTURA, CA 93001" and no Service line; its executive summary (PDF page 5) prints "In
+     1990, 44 National Park Service and volunteer divers made 759 dives during a series of seven
+     five-day and three shorter cruises to conduct the monitoring.", and its Table 5 lists
+     participants from Moss Landing Marine Lab, Calif. Dept. Fish & Game and Truth Aquatics among
+     others; its acknowledgements print "This program was supported by the U.S. National Park
+     Service in cooperation with the California Department of Fish and Game and the Department of
+     Commerce, National Oceanographic and Atmospheric Administration, Marine Sanctuary Program.";
+     and the saved search's `Contacts` field is the DataStore's `Author(s)` field and the 2005–15
+     citations' "National Park Service" is a publisher line. The four merged `sandiego_rtoms_*`
+     records carry rows
      1–9's steward string, are `FETCHED` from the "Download" links the City Open Data portal's
      landing page prints, on `seshat.datasd.org`, and name no limb in their fields; each record's
      fourth `access` step quotes the portal's Terms of Use. Three of their four merge commits read
