@@ -123,26 +123,41 @@ and stated here so a slice does not re-derive it.
      National Park Service for 2005–15, and for 1995–2004 no publisher, only the place "Ventura,
      California" (audit of PR #320, F3 and R2-F10). Each record states in `access` what its own
      citation prints, a place where that is all it prints.
-   - **Which `FETCHED` limb a route is, this reading leaves open.** The kelp forest and monthly
-     PDFs are on the City's host, and the Channel Islands PDFs are on irma.nps.gov, reached from
-     the network's page; in each the host or page is run by a body the steward is a part of.
-     Whether that is "A host the steward runs, or that a body constituting it runs", the first
-     limb, or "A route the steward names as where the source is to be had", the second, or
-     neither, is not settled here (`CONTEXT.md`, *Vocabularies*, **tier**). On the owner's fifth
-     choice at #258 issuecomment-5986228821, rows 1 and 10 stop at this question under
-     `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
-     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller, and 524–527 for a reading
-     of a `CONTEXT.md` rule), and no row of this table enters `FETCHED` until the owner rules. The
-     four merged `sandiego_rtoms_*` records carry rows 1–9's steward string, are `FETCHED` from
-     the "Download" links the City Open Data portal's landing page prints, on `seshat.datasd.org`,
-     and name no limb in their fields; each record's fourth `access` step quotes the portal's
-     Terms of Use. Three of their four merge commits read one. In merge order: `76b6487` (#302)
-     reads the route "as CONTEXT.md's first FETCHED limb, a host the steward runs", and a later
-     paragraph of the same message says "the source does not say who runs seshat.datasd.org" and
-     "the record states those and draws no conclusion about the host"; `3493fd3` (#307) and
-     `d50460d` (#312), merged after it, say "The route is read as CONTEXT.md's first FETCHED limb,
-     a host the steward runs." and "The route is FETCHED's first limb, a host the steward runs";
-     `b2a75e3` (#313) states no limb. The ruling's own issue or PR says whether it touches them.
+   - **Which `FETCHED` limb a route here is, `CONTEXT.md` states.** The kelp forest and monthly PDFs
+     are on the City's host, `www.sandiego.gov`, and the Channel Islands PDFs are on irma.nps.gov,
+     the NPS DataStore, reached from the network's page. The owner's fifth choice at #258
+     issuecomment-5986228821 reserved which limb that is; the owner ruled on 2026-10-04 in #323, and
+     the PR for #323 wrote the ruling into the first limb of `CONTEXT.md`, *Vocabularies*, **tier**,
+     which a row reads for the limb and its condition. Row 1: its report prints on its first page
+     "Submitted to City of San Diego Public Utilities Department" (2026-10-04), the statement that
+     file's example quotes, and row 1 no longer stops at this question. The condition is each
+     source's own: each of rows 2–9 quotes in `access` what its own document prints, and a row whose
+     document prints no such statement stops under `NEEDS_CONTEXT` as row 10 does. On 2026-10-04 the
+     text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
+     as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
+     through the outfalls). Rows 10–35: the network page lists "Channel Islands National Park" under
+     "Parks Monitored" and names the reports' host "NPS DataStore", and the 1990 report prints "In
+     1990, 44 National Park Service and volunteer divers made 759 dives during a series of seven
+     five-day and three shorter cruises to conduct the monitoring.", "The Federal Law which
+     established Channel Islands National Park (16-USC-410) requires monitoring of the natural
+     resources in the park." and, in its acknowledgements, "This program was supported by the U.S.
+     National Park Service in cooperation with the California Department of Fish and Game and the
+     Department of Commerce, National Oceanographic and Atmospheric Administration, Marine Sanctuary
+     Program." (all 2026-10-04); none of these prints that the park is part of the National Park
+     Service. On #323's acceptance the ruling then does not cover rows 10–35 and the owner decides.
+     Row 10 stops under `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for
+     the row agent, `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the
+     owner rules, and rows 11–35 follow it. The four merged `sandiego_rtoms_*` records carry rows
+     1–9's steward string, are `FETCHED` from the "Download" links the City Open Data portal's
+     landing page prints, on `seshat.datasd.org`, and name no limb in their fields; each record's
+     fourth `access` step quotes the portal's Terms of Use. Three of their four merge commits read
+     one. In merge order: `76b6487` (#302) reads the route "as CONTEXT.md's first FETCHED limb, a
+     host the steward runs", and a later paragraph of the same message says "the source does not say
+     who runs seshat.datasd.org" and "the record states those and draws no conclusion about the
+     host"; `3493fd3` (#307) and `d50460d` (#312), merged after it, say "The route is read as
+     CONTEXT.md's first FETCHED limb, a host the steward runs." and "The route is FETCHED's first
+     limb, a host the steward runs"; `b2a75e3` (#313) states no limb. The PR for #323 states which
+     of those readings the ruling makes correct, and edits none of the four records.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
@@ -157,14 +172,14 @@ and stated here so a slice does not re-derive it.
    issuecomment-5983528887). A row that planned otherwise would need a `CONTEXT.md` change in its
    own PR first. Whether a dataset source can carry `findings` is parked at #5
    issuecomment-5983528322 and is not this milestone's question.
-5. **6.3c's readings 2, 4, 5 and 6 carry over.** `docs/prd/monitoring-sources.md`, "What the
-   review settled": reading 2 (a route that downloads enters `FETCHED`, with its proportionality
-   clause; which limb a route here is stays open under reading 2 above, its bullet "Which
-   `FETCHED` limb a route is, this reading leaves open"), reading 4 (region tags follow the
-   tagging sentence), reading 5 (a bare topic tag for a source that fits no sub-topic) and
-   reading 6 (`steward`, as reading 2 above applies it). A row's PR cites them by number.
-   Readings 1, 3, 7 and 8 decide the admission of datasets, papers, `ON REQUEST` sources and
-   exclusions, and no row here turns on any of them.
+5. **6.3c's readings 2, 4, 5 and 6 carry over.** `docs/prd/monitoring-sources.md`, "What the review
+   settled": reading 2 (a route that downloads enters `FETCHED`, with its proportionality clause;
+   which limb a route here is, `CONTEXT.md`, *Vocabularies*, **tier**, states, as reading 2 above's
+   bullet "Which `FETCHED` limb a route here is" points), reading 4 (region tags follow the tagging
+   sentence), reading 5 (a bare topic tag for a source that fits no sub-topic) and reading 6
+   (`steward`, as reading 2 above applies it). A row's PR cites them by number. Readings 1, 3, 7 and
+   8 decide the admission of datasets, papers, `ON REQUEST` sources and exclusions, and no row here
+   turns on any of them.
 6. **The methods paper is not a row.** The 2023–2025 report cites "Parnell et al. 2026" for the
    program's full methods; it is doi:10.1002/eap.70181 (#260 issuecomment-5878053618), a candidate
    on #214's track, and its dataset is `parnell_kelp_demography` on 6.4d. A row creates a
