@@ -146,10 +146,10 @@ license_stated_at: >-
   "copyright" and "terms" 0 times (all retrieved 2026-10-05)
 variables: []
 measures:
-  - "monthly mean temperature anomaly at the surface and bottom compared to the 2007-2025 monthly means"
-  - "Benthic temperature measured at the cross-depth long-term monitoring sites from 2007 to 2025 at Point Loma Central"
-  - "Benthic photosynthetically active radiation (PAR) taken near the kelp monitoring sites"
-  - "significant wave height"
+  - "monthly mean temperature anomaly"
+  - "Benthic temperature"
+  - "Benthic photosynthetically active radiation (PAR)"
+  - "significant wave height (Hs)"
   - "wave period"
   - "density of Macrocystis pyrifera recruits (number of individual pre-bifurcate or blade stage individuals, shorter than 1 m)"
   - "Density of Macrocystis pyrifera small juveniles (number of bifurcated individuals shorter than 1 m)"
