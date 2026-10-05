@@ -89,22 +89,29 @@ and stated here so a slice does not re-derive it.
    each series; this reading states no rule about authors in general.
    - **Kelp forest and monthly reports, rows 1–9: `Public Utilities, City of San Diego`**, as the
      four `sandiego_rtoms_*` records spell the department behind the same Ocean Monitoring
-     Program. Not Scripps Institution of Oceanography: the kelp forest page states "Researchers at
-     the Scripps Institution of Oceanography (SIO) have partnered with the City of San Diego Ocean
-     Monitoring Program to conduct regular surveys of the kelp forests off San Diego County."
-     (2026-10-04); the 2023–2025 report states that it was "Submitted to City of San Diego Public
-     Utilities Department" (#260), the 2018–2019 report prints "Contract No. H146233", and the
-     2016–2017 report is an appendix of the City's own biennial report (reading 1). The monthly
-     index page names no producer, and the PLOO April 2015, June 2026 and July 2026 installments
-     each print "Public Utilities Department" (audit of PR #320, R2-F3). For rows 1–7 this departs
-     from 6.3c reading 6's "as the landing page names it", since the sentence quoted names the
-     program as "City of San Diego Ocean Monitoring Program"; the department's string is taken so
-     that one department has one spelling across the catalog. Each row states in `access` how its
-     page and its installments name the program and the issuing unit, and rows 1–7 state SIO's
-     authorship there. `sccwrp_kelp_status_2016` is not a precedent here: its steward is the
-     Southern California Coastal Water Research Project, its host, while its `access` states it
-     was "Prepared for" two consortia and "Prepared by" MBC Applied Environmental Sciences (audit
-     of PR #320, F4).
+     Program. Those records join two fields of the City Open Data portal's DCAT metadata, the
+     `publisher` "Public Utilities" and its `subOrganizationOf` "City of San Diego" (their second
+     `access` step); none of the pages or PDFs of rows 1–9 opened in this PR's reviews prints the
+     string in that form (audit of PR #320, R3-F4). Not Scripps Institution of Oceanography: the
+     kelp forest page states "Researchers at the Scripps Institution of Oceanography (SIO) have
+     partnered with the City of San Diego Ocean Monitoring Program to conduct regular surveys of
+     the kelp forests off San Diego County." (2026-10-04); the 2023–2025 report states that it was
+     "Submitted to City of San Diego Public Utilities Department" (#260), the 2018–2019 report
+     prints "Contract No. H146233", and the 2016–2017 report is an appendix of the City's own
+     biennial report (reading 1). The monthly index page names no producer, and the PLOO April
+     2015, June 2026 and July 2026 installments each print "Public Utilities Department" (audit of
+     PR #320, R2-F3). For rows 1–7 what departs from 6.3c reading 6's "as the landing page names
+     it" is the spelling's source: another record's portal metadata, not the row's landing page,
+     whose sentence quoted names the program as "City of San Diego Ocean Monitoring Program".
+     Taking the body the program belongs to is not itself a departure, since reading 6's
+     `sio_shore_stations` application took "the institution the Shore Stations Program belongs
+     to". The department's string is taken so that one department has one spelling across the
+     catalog. Each row states in `access` how its installments name the program and the issuing
+     unit, and rows 1–7 how the kelp forest page names the program; rows 1–6 state SIO's
+     authorship there, and row 7 states it only if its pages show it. `sccwrp_kelp_status_2016` is
+     not a precedent here: its steward is the Southern California Coastal Water Research Project,
+     its host, while its `access` states it was "Prepared for" two consortia and "Prepared by" MBC
+     Applied Environmental Sciences (audit of PR #320, F4).
    - **Channel Islands reports: `Channel Islands National Park`, for all 26.** The owner's third
      ruling at #258 issuecomment-5985079368, as `cinp_kfm` spells the same program. The landing
      page `https://www.nps.gov/im/medn/kelp-forest-communities.htm` is the NPS Mediterranean
@@ -121,9 +128,13 @@ and stated here so a slice does not re-derive it.
      the network's page; in each the host or page is run by a body the steward is a part of.
      Whether that is "A host the steward runs, or that a body constituting it runs", the first
      limb, or "A route the steward names as where the source is to be had", the second, or
-     neither, is not settled here (`CONTEXT.md`, *Vocabularies*, **tier**). Row 1's PR states the
-     limb for rows 1–9 and row 10's for rows 10–35, each with its ground, at `add-source` step 2;
-     the rows that copy them are entered after.
+     neither, is not settled here (`CONTEXT.md`, *Vocabularies*, **tier**). On the owner's fifth
+     choice at #258 issuecomment-5986228821, rows 1 and 10 stop at this question under
+     `NEEDS_CONTEXT` (`.claude/skills/run-prd/SKILL.md` lines 438–441, and 524–527 for a reading
+     of a `CONTEXT.md` rule), and no row of this table enters `FETCHED` until the owner rules. The
+     four merged `sandiego_rtoms_*` records carry rows 1–9's steward string, are `FETCHED` from
+     the "Download" links the City Open Data portal's landing page prints, on `seshat.datasd.org`,
+     and state no limb; the ruling's own issue or PR says whether it touches them.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
@@ -156,7 +167,8 @@ and stated here so a slice does not re-derive it.
    the 2015–2016 PDF has no text layer, 0 `/Font` and 1,669 image XObjects, so neither tool
    returns text from it; row 7 says what that means for its quoted fields before it enters any.
    Measured 2026-10-04: on the 2018–2019 PDF (row 5) `pdftext_literal.py` returns 0 characters and
-   `pdftext_cmap.py` 71,180 over 41 pages, with ligatures left as U+FB01 and U+FB00; on the
+   `pdftext_cmap.py` 71,180 over the 41 of its 42 pages it decoded, with ligatures left as
+   U+FB01, U+FB00 and one U+FB03; on the
    2014–2019 PDF (row 4) `pdftext_literal.py` returns 3,739,430 characters, not checked for being
    text, and `pdftext_cmap.py` 471; pypdf 6.19.0's `extract_text` returns 70,706 and 61,366
    characters from the two, in that order, with prose readable on the sixth page of each, the one
@@ -204,15 +216,17 @@ Report: 2020-2021" is `KelpForest2022_FinalDraft.pdf`, "Annual Report: 2016-2017
 `sandiego_kelp_forest_2026` #259 and #260 proposed. A record's `title` is the title its document
 prints, not the link text. Rows 8 and 9 hold runs of installments whose printed titles differ; each
 takes the title one installment prints, the row's PR names that installment, and its `access`
-quotes the index page's heading for the family.
+quotes both `h2` headings the index page gives its family, as reading 1 lists them. That is the
+owner's fourth choice at #258 issuecomment-5986228821, whose "the index page's family heading"
+is read as both because the page gives each family two.
 
 | order | # | id | source | route (lead) | topics | region today | note |
 |---|---|---|---|---|---|---|---|
 | 1 | [#260](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/260) | `sandiego_kelp_forest_2023_2025` | Kelp forest monitoring, "Biennial Report: 2023-2025" (Ladah et al., SIO), as the City's page labels it | the City's kelp forest page; `https://www.sandiego.gov/sites/default/files/2026-07/city-of-san-diego-kelp-forest-monitoring-biennial-report-final-version-2023-2025.pdf`, 9,616,297 bytes on 2026-09-28 (#260) | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/urchins`, `ocean-climate/temperature` | `scb.mainland.san-diego` | readings 1–4 and 7; #260 counts `outfall` once in the text and advises against `water-quality-harvest/discharges-outfalls`; the PDF's info Title differs from its cover (#260) |
 | 2 | [#259](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/259) | `sandiego_kelp_forest_2019_2024` | Kelp forest monitoring, "Final Report: 2019-2024" (Parnell, SIO) | the City's kelp forest page; `https://www.sandiego.gov/sites/default/files/2024-10/kelpforest2024_final.pdf`, 5,128,132 bytes on 2026-09-28 (#259) | `bed-state/diver-surveys`, `bed-state/community`, `grazers-predators-competitors/urchins`, `water-quality-harvest/discharges-outfalls`, `ocean-climate/temperature`, `ocean-climate/heatwaves` | `scb.mainland.san-diego` | as row 1; #259 quotes the sentence that supports the outfall tag |
-| 3 | to file | `sandiego_kelp_forest_2020_2021` | Kelp forest monitoring, "Biennial Report: 2020-2021" | the City's kelp forest page; `https://www.sandiego.gov/sites/default/files/2024-02/KelpForest2022_FinalDraft.pdf` | read off the document; rows 1 and 2 are leads | `scb.mainland.san-diego`, if the document names no place outside the county | as row 1; the file name says 2022 and "FinalDraft"; its first page prints "Appendix A" (reading 1), and its parent is the "2020-2021 Report" the City's annual report archives page links, `compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf`, 38,157,298 bytes on 2026-10-04, whose contents list "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego Coastal Kelp Forest" (PDF page 9) |
+| 3 | to file | `sandiego_kelp_forest_2020_2021` | Kelp forest monitoring, "Biennial Report: 2020-2021" | the City's kelp forest page; `https://www.sandiego.gov/sites/default/files/2024-02/KelpForest2022_FinalDraft.pdf` | read off the document; rows 1 and 2 are leads | `scb.mainland.san-diego`, if the document names no place outside the county | as row 1; the file name says 2022 and "FinalDraft"; its first page prints "Appendix A" (reading 1), and its parent is the "2020-2021 Report" the City's annual report archives page links, `compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf`, 38,157,298 bytes on 2026-10-04, whose contents list "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego Coastal Kelp Forest Ecosystem (Biennial Project Report) 2020 to 2021" (PDF page 9; the PDF breaks the entry after "Kelp Forest", and its author lines follow) |
 | 4 | to file | `sandiego_kelp_forest_2014_2019` | Kelp forest monitoring, "Final Report: 2014-2019" | the City's kelp forest page; `https://www.sandiego.gov/sites/default/files/kelpforest_finalreport_2014-2019.pdf` | as row 3 | as row 3 | as row 1 |
-| 5 | to file | `sandiego_kelp_forest_2018_2019` | Kelp forest monitoring, "Biennial Report: 2018-2019" | the City's kelp forest page; the link is relative, `/sites/default/files/kelpforestfinalreport_2018-2019.pdf` | as row 3 | as row 3 | as row 1; its first page prints "Appendix A" and "Contract No. H146233" (reading 1), and its parent is the "2018-2019 Report" the City's annual report archives page links, `2018_2019_biennial_report_new.pdf`, 44,231,934 bytes on 2026-10-04, whose contents list "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego Coastal Kelp Forest" (PDF page 8) |
+| 5 | to file | `sandiego_kelp_forest_2018_2019` | Kelp forest monitoring, "Biennial Report: 2018-2019" | the City's kelp forest page; the link is relative, `/sites/default/files/kelpforestfinalreport_2018-2019.pdf` | as row 3 | as row 3 | as row 1; its first page prints "Appendix A" and "Contract No. H146233" (reading 1), and its parent is the "2018-2019 Report" the City's annual report archives page links, `2018_2019_biennial_report_new.pdf`, 44,231,934 bytes on 2026-10-04, whose contents list "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego Coastal Kelp Forest Ecosystem (Biennial Project Report)" (PDF page 8; the PDF breaks the entry after "Kelp Forest", and its author lines follow) |
 | 6 | to file | `sandiego_kelp_forest_2016_2017` | Kelp forest monitoring, "Annual Report: 2016-2017" | the City's kelp forest page; relative link `/sites/default/files/kelpforestfinalreport_2018.pdf` | as row 3 | as row 3 | as row 1; the file name says 2018; "Appendix A" of the City's 2016–2017 Biennial Receiving Waters Monitoring Report, an installment of the series named as a candidate under the table (reading 1) |
 | 7 | to file | `sandiego_kelp_forest_2015_2016` | Kelp forest monitoring, "Annual Report: 2015-2016" | the City's kelp forest page; relative link `/sites/default/files/kelpforestfinalreport_2016.pdf` | as row 3 | as row 3 | as row 1; the PDF has no text layer (reading 7) |
 | 8 | [#262](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/262) | `sandiego_mwqr_ploo` | Monthly receiving waters monitoring reports, Point Loma Ocean Outfall | `https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports/monthly-report-archives`, HTTP 200 in 190,386 bytes on 2026-10-04; the `ploo_mwqr_*` file names, 125 distinct, plus the legacy names the row assigns to this outfall | `water-quality-harvest/discharges-outfalls`, `ocean-climate/temperature`, `ocean-climate/nutrients` | `scb.mainland.san-diego` | reading 1 makes #262 the PLOO record, where its body asks for the series; which installments it holds is the subsetting paragraph's question, which #262 names; of the page's 269 distinct PDF hrefs on 2026-10-04, 198 began `http://www.sandiego.gov`, 10 `https://` and 61 were relative, a different set from the 7 legacy-named files #262 counted as served over `http://`; #262 proposed `sandiego_mwqr` |
