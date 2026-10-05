@@ -114,18 +114,18 @@ excludes) · `NOT HELD` (nothing local; the record describes the source and how 
 
 `FETCHED`'s route is one of three, and nothing else. A host the steward runs, or that a body
 constituting it runs, or that a body the steward is part of runs, where the source itself states
-that membership or a page of that host which the source's landing page links states it:
-`calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest Fisheries Science Center",
-which the steward's own data usage policy lists among its participating agencies; the City of San
-Diego's kelp forest report for 2023–2025, a PDF under `www.sandiego.gov/sites/default/files/` that
-the kelp forest report archive page on the "City of San Diego Official Website" links, prints on its
-first page "Submitted to City of San Diego Public Utilities Department", so a record stewarded by
-that department holds it under this limb; and that archive page links "Public Utilities Home",
-`https://www.sandiego.gov/public-utilities`, which prints under its heading "Public Utilities" that
-"The City of San Diego Public Utilities Department currently serves more than 2.3 million wastewater
-customers and provides clean and safe drinking water to 1.4 million residents.", so a report the
-archive page links holds under this limb on that page's statement whatever the report itself
-prints, its record's `access` walking to the page. A route
+that membership or a page of that host which the source's landing page links by the steward's name
+states it: `calcofi`'s bytes come from an ERDDAP on "a host of the NOAA Southwest Fisheries Science
+Center", which the steward's own data usage policy lists among its participating agencies; the City
+of San Diego's kelp forest report for 2023–2025, a PDF under `www.sandiego.gov/sites/default/files/`
+that the kelp forest report archive page on the "City of San Diego Official Website" links, prints
+on its first page "Submitted to City of San Diego Public Utilities Department", so a record
+stewarded by that department holds it under this limb; and that archive page links "Public
+Utilities Home", `https://www.sandiego.gov/public-utilities`, which prints under its heading "Public
+Utilities" that "The City of San Diego Public Utilities Department currently serves more than 2.3
+million wastewater customers and provides clean and safe drinking water to 1.4 million residents.",
+so a record stewarded by that department holds a report the archive page links under this limb on
+that page's statement, whatever the report itself prints, its `access` walking to the page. A route
 the steward names as where the source is to be had: `sio_shore_stations`' Data Access page names the
 UC San Diego Library Digital Collections, and `ccr_t14_165_5`'s steward links the Barclays Official
 California Code of Regulations as the route to the text. Or a service that serves that same object
