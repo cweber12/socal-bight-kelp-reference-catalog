@@ -132,29 +132,40 @@ and stated here so a slice does not re-derive it.
      "Submitted to City of San Diego Public Utilities Department" (2026-10-04), the statement that
      file's example quotes, and row 1 no longer stops at this question. The condition is each
      source's own: each of rows 2–9 quotes in `access` what its own document prints, and a row whose
-     document prints no such statement stops under `NEEDS_CONTEXT` as row 10 does. On 2026-10-04 the
+     document prints no such statement stops under `NEEDS_CONTEXT`. On 2026-10-04 the
      text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
      as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
-     through the outfalls). Rows 10–35: the ruling at #283 issuecomment-5997494401 (2026-10-05,
-     under the owner's delegation it quotes) finds the statement in row 10's own document. The 1990
-     report prints on PDF page 5, under "EXECUTIVE SUMMARY", "As part of the long-term ecological
-     monitoring program, Channel Islands National Park has been conducting monitoring of the kelp
-     forests around Santa Barbara, Anacapa, Santa Cruz, Santa Rosa, and San Miguel Islands since
-     1982. In 1990, 44 National Park Service and volunteer divers made 759 dives during a series of
-     seven five-day and three shorter cruises to conduct the monitoring." (2026-10-05), and saved
-     search 1508's entry for its reference, 68419, lists `Contacts` "Daniel Richards, William Avery,
-     David Kushner,  National Park Service. Western Regional office" (two spaces as served,
-     2026-10-05). Row 10's `access` quotes both, and it no longer stops at this question. The ruling
-     names what row 10 does not rest on: the title page prints "CHANNEL ISLANDS NATIONAL PARK /
-     1901 SPINNAKER DRIVE / VENTURA, CA 93001" and no Service line, the acknowledgements' "This
-     program was supported by the U.S. National Park Service" states support, and the network page's
-     "Parks Monitored" line states what the network monitors. For rows 11–35 the condition is each
-     source's own, as for rows 2–9: a row quotes what its own document or its own DataStore
-     reference prints, in the document's body, in the reference's `DisplayCitation` (the steward
-     bullet above records "National Park Service" as 2005–15's publisher) or in the saved search's
-     `Contacts` for it (1990 and 1991 carry "National Park Service. Western Regional office";
-     1992–2015's entries list names only, 2026-10-05), and a row whose document and reference print
-     none stops under `NEEDS_CONTEXT`. The four merged `sandiego_rtoms_*` records carry rows
+     through the outfalls). Rows 10–35: the 1990 report (holding 485218, `chis_kelp90.pdf`) prints
+     no statement that the park is part of the National Park Service. Its title page prints "CHANNEL
+     ISLANDS NATIONAL PARK / 1901 SPINNAKER DRIVE / VENTURA, CA 93001" and no Service line; its
+     executive summary (PDF page 5) prints "In 1990, 44 National Park Service and volunteer divers
+     made 759 dives during a series of seven five-day and three shorter cruises to conduct the
+     monitoring.", which names who dived (its Table 5 lists participants from Moss Landing Marine
+     Lab, Calif. Dept. Fish & Game and Truth Aquatics among others); and its acknowledgements print
+     "This program was supported by the U.S. National Park Service", which names support (all
+     2026-10-05; the two audits of PR #324 and the audit of PR #325 each read the executive-summary
+     sentence as not stating the membership). The statement is on the steward's own page, in the
+     shape of the limb's `calcofi` example, whose statement is the steward's data usage policy and
+     not the fetched bytes: `https://www.nps.gov/chis/learn/management/index.htm`, the park's page
+     headed "Management", states "The park operates under Federal, Department of the Interior, and
+     National Park Service policies and guidelines, in accordance with a General Management Plan
+     (GMP) which was first published in 1980." and gives the mailing address "Superintendent 1901
+     Spinnaker Drive Ventura, CA 93001", the address the 1990 title page prints (the page prints
+     "Last updated: January 23, 2024"; retrieved 2026-10-05). That this sentence states the
+     membership the limb's condition asks for is an agent's reading, not the owner's: it was made
+     under the owner's delegation of 2026-10-05 and is recorded, with the reading it replaced, at
+     #283 issuecomment-5997494401 and issuecomment-5997858626. The owner's merge of PR #325, which
+     wrote these sentences, is where the reading is accepted; a rejection returns row 10 to
+     `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
+     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller), and rows 11–35 follow it.
+     On that reading, each of rows 10–35 quotes the Management page's sentence in `access` with its
+     own retrieval date, as `calcofi` quotes its policy, beside what its own document and
+     `DisplayCitation` print (the steward bullet above). The steward is the same for all 26 rows, so
+     the statement is one, and the condition is not per document as it is for rows 2–9, whose
+     steward's pages state nothing (PR #324, "Departure from #323's acceptance"). The saved search's
+     `Contacts` field is the DataStore's `Author(s)` field and the 2005–15 citations' "National Park
+     Service" is a publisher line; neither is offered as the statement. The four merged
+     `sandiego_rtoms_*` records carry rows
      1–9's steward string, are `FETCHED` from the "Download" links the City Open Data portal's
      landing page prints, on `seshat.datasd.org`, and name no limb in their fields; each record's
      fourth `access` step quotes the portal's Terms of Use. Three of their four merge commits read
