@@ -128,20 +128,28 @@ and stated here so a slice does not re-derive it.
      network's page; in each the host or page is run by a body the steward is a part of. The owner's
      fifth choice at #258 issuecomment-5986228821 reserved which limb that is; the owner ruled on
      2026-10-04 in #323, and the PR for #323 wrote the ruling into the first limb of `CONTEXT.md`,
-     *Vocabularies*, **tier**, which a row reads for the limb and its condition. That PR's body
-     quotes where the City's kelp forest and monthly archive pages and the network's page each state
-     the membership, as fetched on 2026-10-04. Rows 1 and 10 no longer stop at this question. The
-     four merged `sandiego_rtoms_*` records carry rows 1–9's steward string, are `FETCHED` from the
-     "Download" links the City Open Data portal's landing page prints, on `seshat.datasd.org`, and
-     name no limb in their fields; each record's fourth `access` step quotes the portal's Terms of
-     Use. Three of their four merge commits read one. In merge order: `76b6487` (#302) reads the
-     route "as CONTEXT.md's first FETCHED limb, a host the steward runs", and a later paragraph of
-     the same message says "the source does not say who runs seshat.datasd.org" and "the record
-     states those and draws no conclusion about the host"; `3493fd3` (#307) and `d50460d` (#312),
-     merged after it, say "The route is read as CONTEXT.md's first FETCHED limb, a host the steward
-     runs." and "The route is FETCHED's first limb, a host the steward runs"; `b2a75e3` (#313)
-     states no limb. The PR for #323 states which of those readings the ruling makes correct, and
-     edits none of the four records.
+     *Vocabularies*, **tier**, which a row reads for the limb and its condition. Rows 1–9: the
+     2023–2025 report prints on its first page "Submitted to City of San Diego Public Utilities
+     Department" (2026-10-04), the statement that file's example quotes, and row 1 no longer stops
+     at this question. Rows 10–35: the network page lists "Channel Islands National Park" under
+     "Parks Monitored" and names the reports' host "NPS DataStore", and the 1990 report prints "44
+     National Park Service and volunteer divers" and, in its acknowledgements, "This program was
+     supported by the U.S. National Park Service" (both 2026-10-04); none of these prints that the
+     park is part of the National Park Service, and whether any of them is the source stating the
+     membership is the owner's. Row 10 stops at that question under `NEEDS_CONTEXT`
+     (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
+     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the owner rules, and
+     rows 11–35 follow it. The four merged `sandiego_rtoms_*` records carry rows 1–9's steward
+     string, are `FETCHED` from the "Download" links the City Open Data portal's landing page
+     prints, on `seshat.datasd.org`, and name no limb in their fields; each record's fourth `access`
+     step quotes the portal's Terms of Use. Three of their four merge commits read one. In merge
+     order: `76b6487` (#302) reads the route "as CONTEXT.md's first FETCHED limb, a host the steward
+     runs", and a later paragraph of the same message says "the source does not say who runs
+     seshat.datasd.org" and "the record states those and draws no conclusion about the host";
+     `3493fd3` (#307) and `d50460d` (#312), merged after it, say "The route is read as CONTEXT.md's
+     first FETCHED limb, a host the steward runs." and "The route is FETCHED's first limb, a host
+     the steward runs"; `b2a75e3` (#313) states no limb. The PR for #323 states which of those
+     readings the ruling makes correct, and edits none of the four records.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
