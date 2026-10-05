@@ -124,32 +124,40 @@ and stated here so a slice does not re-derive it.
      California" (audit of PR #320, F3 and R2-F10). Each record states in `access` what its own
      citation prints, a place where that is all it prints.
    - **Which `FETCHED` limb a route here is, `CONTEXT.md` states.** The kelp forest and monthly PDFs
-     are on the City's host, and the Channel Islands PDFs are on irma.nps.gov, reached from the
-     network's page; in each the host or page is run by a body the steward is a part of. The owner's
-     fifth choice at #258 issuecomment-5986228821 reserved which limb that is; the owner ruled on
-     2026-10-04 in #323, and the PR for #323 wrote the ruling into the first limb of `CONTEXT.md`,
-     *Vocabularies*, **tier**, which a row reads for the limb and its condition. Rows 1–9: the
-     2023–2025 report prints on its first page "Submitted to City of San Diego Public Utilities
-     Department" (2026-10-04), the statement that file's example quotes, and row 1 no longer stops
-     at this question. Rows 10–35: the network page lists "Channel Islands National Park" under
-     "Parks Monitored" and names the reports' host "NPS DataStore", and the 1990 report prints "44
-     National Park Service and volunteer divers" and, in its acknowledgements, "This program was
-     supported by the U.S. National Park Service" (both 2026-10-04); none of these prints that the
-     park is part of the National Park Service, and whether any of them is the source stating the
-     membership is the owner's. Row 10 stops at that question under `NEEDS_CONTEXT`
-     (`.claude/skills/run-prd/record-row.md` lines 115–119 for the row agent,
-     `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the owner rules, and
-     rows 11–35 follow it. The four merged `sandiego_rtoms_*` records carry rows 1–9's steward
-     string, are `FETCHED` from the "Download" links the City Open Data portal's landing page
-     prints, on `seshat.datasd.org`, and name no limb in their fields; each record's fourth `access`
-     step quotes the portal's Terms of Use. Three of their four merge commits read one. In merge
-     order: `76b6487` (#302) reads the route "as CONTEXT.md's first FETCHED limb, a host the steward
-     runs", and a later paragraph of the same message says "the source does not say who runs
-     seshat.datasd.org" and "the record states those and draws no conclusion about the host";
-     `3493fd3` (#307) and `d50460d` (#312), merged after it, say "The route is read as CONTEXT.md's
-     first FETCHED limb, a host the steward runs." and "The route is FETCHED's first limb, a host
-     the steward runs"; `b2a75e3` (#313) states no limb. The PR for #323 states which of those
-     readings the ruling makes correct, and edits none of the four records.
+     are on the City's host, `www.sandiego.gov`, and the Channel Islands PDFs are on irma.nps.gov,
+     the NPS DataStore, reached from the network's page. The owner's fifth choice at #258
+     issuecomment-5986228821 reserved which limb that is; the owner ruled on 2026-10-04 in #323, and
+     the PR for #323 wrote the ruling into the first limb of `CONTEXT.md`, *Vocabularies*, **tier**,
+     which a row reads for the limb and its condition. Row 1: its report prints on its first page
+     "Submitted to City of San Diego Public Utilities Department" (2026-10-04), the statement that
+     file's example quotes, and row 1 no longer stops at this question. The condition is each
+     source's own: each of rows 2–9 quotes in `access` what its own document prints, and a row whose
+     document prints no such statement stops under `NEEDS_CONTEXT` as row 10 does. On 2026-10-04 the
+     text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
+     as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
+     through the outfalls). Rows 10–35: the network page lists "Channel Islands National Park" under
+     "Parks Monitored" and names the reports' host "NPS DataStore", and the 1990 report prints "In
+     1990, 44 National Park Service and volunteer divers made 759 dives during a series of seven
+     five-day and three shorter cruises to conduct the monitoring.", "The Federal Law which
+     established Channel Islands National Park (16-USC-410) requires monitoring of the natural
+     resources in the park." and, in its acknowledgements, "This program was supported by the U.S.
+     National Park Service in cooperation with the California Department of Fish and Game and the
+     Department of Commerce, National Oceanographic and Atmospheric Administration, Marine Sanctuary
+     Program." (all 2026-10-04); none of these prints that the park is part of the National Park
+     Service. On #323's acceptance the ruling then does not cover rows 10–35 and the owner decides.
+     Row 10 stops under `NEEDS_CONTEXT` (`.claude/skills/run-prd/record-row.md` lines 115–119 for
+     the row agent, `.claude/skills/run-prd/SKILL.md` lines 438–441 for the controller) until the
+     owner rules, and rows 11–35 follow it. The four merged `sandiego_rtoms_*` records carry rows
+     1–9's steward string, are `FETCHED` from the "Download" links the City Open Data portal's
+     landing page prints, on `seshat.datasd.org`, and name no limb in their fields; each record's
+     fourth `access` step quotes the portal's Terms of Use. Three of their four merge commits read
+     one. In merge order: `76b6487` (#302) reads the route "as CONTEXT.md's first FETCHED limb, a
+     host the steward runs", and a later paragraph of the same message says "the source does not say
+     who runs seshat.datasd.org" and "the record states those and draws no conclusion about the
+     host"; `3493fd3` (#307) and `d50460d` (#312), merged after it, say "The route is read as
+     CONTEXT.md's first FETCHED limb, a host the steward runs." and "The route is FETCHED's first
+     limb, a host the steward runs"; `b2a75e3` (#313) states no limb. The PR for #323 states which
+     of those readings the ruling makes correct, and edits none of the four records.
 3. **No `access` rule is needed for a file that no landing page links.** #258 asked for one. Its
    correction, issuecomment-5878382525, found the page, and on 2026-10-04 it answered HTTP 200 in
    149,754 bytes at
