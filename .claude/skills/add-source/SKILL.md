@@ -246,7 +246,7 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   span nor extent is itself the finding: report it as such, and leave what becomes of it to a
   reader's ruling under *The rule*, not to this step. Where the record holds several installments
   of one series — files the source publishes as issues of one report, as `sandiego_mwqr_ploo`'s
-  eight monthly reports are — and quotes a statement from one of them, read what each other held
+  monthly reports are — and quotes a statement from one of them, read what each other held
   installment prints at the same place, the same heading, bullet or passage. Report beside that
   statement's row each installment that prints it differently or prints nothing there, saying
   which of them `coverage` already quotes, and leave what becomes of them to a reader's ruling in
@@ -355,7 +355,7 @@ Stage the record, any reference record, the fetch script and every notebook that
 Print, in full: the record and any reference record; the manifest of every file fetched; the gate
 output verbatim; the result of each step-6 check — which quoted strings you diffed and against what,
 each quoted `coverage` statement and the kind you named it, with any held installment that prints
-it differently or not at all, that every URL the script fetches is in
+it differently or nothing there, that every URL the script fetches is in
 `access`, and the unquoted-claim table, one row per sentence with the command that counted its set;
 and the notebooks step 7 moved. Then **stop**. Do not commit
 and do not open a PR. Wait to be told.
