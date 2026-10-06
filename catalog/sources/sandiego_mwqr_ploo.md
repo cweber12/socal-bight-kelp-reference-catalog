@@ -53,8 +53,7 @@ access:
     http://www.sandiego.gov/sites/default/files/ and 7 begin
     https://www.sandiego.gov/sites/default/files/; each of the 97 answers HTTP 301 with Location
     the same path under https://www.sandiego.gov; and to a HEAD request 139 of the 140 answered
-    HTTP 200 with Content-Type application/pdf, the 131 under the archive heading summing to
-    484,817,851 bytes of Content-Length, while the "2020" accordion's "May",
+    HTTP 200 with Content-Type application/pdf, while the "2020" accordion's "May",
     http://www.sandiego.gov/sites/default/files/ploo_mwqr_may_2020_revised.pdf, answered HTTP 301
     and then HTTP 404 with Content-Type text/html; charset=UTF-8 (2026-10-05)
   - >-
@@ -108,7 +107,8 @@ access:
     69a0034e493fa87e80e6614b42a22abb44a56cd80ffad06eda7b2264d2abac23, "Tue, 22 Sep 2026 18:04:29
     GMT", "6ab2c32d-33bc58"
   - >-
-    Each file's first page prints, on separate lines in this order, "POINT LOMA OCEAN OUTFALL",
+    Each file's first page prints, on separate lines in this order except where the May file
+    differs as stated below, "POINT LOMA OCEAN OUTFALL",
     "MONTHLY RECEIVING WATERS", "MONITORING REPORT" (the three lines title joins with one space),
     "POINT LOMA", "WASTEWATER TREATMENT PLANT", "NPDES Permit No. CA0107409", a line beginning
     "SDRWQCB Order No." that reads "SDRWQCB Order No. R9-2017-0007" in the January, February,
@@ -116,7 +116,12 @@ access:
     files, a line naming the month and year, "JANUARY 2026", "FEBRUARY 2026", "MARCH 2026",
     "APRIL 2026", "MAY 2026", "JUNE 2026", "JULY 2026" and "AUGUST 2026" in turn, "Environmental
     Monitoring and Technical Services", "2392 Kincaid Road • Mail Station 45A • San Diego, CA
-    92101" (the bullets U+2022) and "Tel (619) 758-2300 Fax (619) 758-2309". PDF page 3 of each of
+    92101" (the bullets U+2022) and "Tel (619) 758-2300 Fax (619) 758-2309", where the May file's
+    address line ends "Tel", reading "2392 Kincaid Road • Mail Station 45A • San Diego, CA 92101
+    Tel" over "(619) 758-2300 Fax (619) 758-2309". The first sentence of each file's INTRODUCTION
+    names "Order No. R9-2017-0007" in the January, February, March, April and June files and
+    "Order No. R9-2026-0002" in the May, July and August files, beside the cover's R9-2017-0007 in
+    the January to May and August files and R9-2026-0002 in the June and July files. PDF page 3 of each of
     the January to July files is a letter headed "Public Utilities Department" over "Environmental
     Monitoring & Technical Services Division", dated the last day of the month after the month
     reported ("August 31, 2026" in the July file), addressed "Mr. David W. Gibson, Executive
@@ -136,14 +141,17 @@ access:
     occurs once in each, in the sentence "See the City of San Diego’s most recent Biennial
     Receiving Waters Monitoring and Assessment Report for the Point Loma and South Bay Ocean
     Outfalls for details (https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports)."
-    under SUMMARY OF RESULTS, Shore Stations (2026-10-05)
+    under SUMMARY OF RESULTS, Shore Stations, which the February, May and August files break at a
+    line end after "ocean-", read with the hyphen kept and that break joined with no space as the
+    next step states (2026-10-05)
   - >-
     The files have 90, 172, 98, 94, 144, 80, 74 and 148 PDF pages, January to August. In the July
     file PDF pages 5 to 8 print the page numbers 1 to 4 and are headed INTRODUCTION (PDF page 5),
     MATERIALS AND METHODS (5), with the sub-headings Shore Stations, Kelp Bed Stations, Offshore
     Stations and Bacteriological Reporting and Quality Assurance, and SUMMARY OF RESULTS (7), with
     the sub-headings Shore Stations, Kelp Bed Stations and Offshore Stations; PDF pages 9 to 14
-    carry no text, the INTRODUCTION referring to a "station locations map"; the tables are
+    carry no text, MATERIALS AND METHODS, Shore Stations, referring to a "station locations map";
+    the tables are
     captioned Table 2.1 to Table 2.8 (PDF pages 15 to 29, the shore stations), Table 3.1 to Table
     3.7 (PDF pages 33 to 53, the kelp stations), Figure 3.1 (PDF pages 54 to 69, each page's
     caption reading "Graphics of CTD profile data from the SBOO kelp stations for each sample
@@ -156,15 +164,18 @@ access:
     and Title "SBOO Monthly WQ Report CA 2019" in the January, February, March and April files
     and "" in the May, June, July and August files. The strings pypdf 6.19.0's extract_text returns
     for the eight files total 100,421, 283,208, 113,451, 103,492, 291,392, 103,868, 92,175 and
-    313,396 characters; pdftotext 4.00 with -enc UTF-8 returns 110,157, 316,927, 124,716, 113,255,
-    330,479, 114,735, 101,375 and 353,769; .claude/skills/review-source/pdftext_literal.py prints
+    313,396 characters; pdftotext 4.00 with -enc UTF-8 returns, counted with LF line ends,
+    110,157, 316,927, 124,716, 113,255, 330,479, 114,735, 101,375 and 353,769;
+    .claude/skills/review-source/pdftext_literal.py prints
     "PAGES 0 CHARS 0" for the January file and "PAGES 3 CHARS 7653", "PAGES 3 CHARS 6743", "PAGES
     3 CHARS 7127", "PAGES 3 CHARS 7676", "PAGES 3 CHARS 6429", "PAGES 3 CHARS 6334" and "PAGES 3
     CHARS 7754" for the others, and pdftext_cmap.py was not run. Where a quotation from a file in
     this record runs across one of the file's line breaks, the break is joined with one space and
     the file's other spacing is kept, as pdftotext 4.00 prints it, except that a hyphen printed at
-    the end of a line, which pdftotext drops, is kept as pdftext_literal.py prints it: "(F01-" ends
-    a line over "F03," on PDF page 6 of the July file. The strings "doi", "citation"
+    the end of a line, which pdftotext drops, is kept, as pdftotext 4.00 with -layout prints it,
+    and that break is joined with no space: "(F01-" ends a line over "F03," on PDF page 6 of the
+    July file, and "ocean-" ends a line over "monitoring/reports)." on PDF page 7 of the February,
+    May and August files. The strings "doi", "citation"
     and "cite" occur 0 times in the text of each of the eight files in any letter case
     (2026-10-05)
 format: >-
@@ -263,44 +274,66 @@ coverage: >-
   A6, A7, C4, C5, C6, C7, C8) were sampled on July 6, 16, 20, and 30."; "The eight kelp bed water
   quality stations (A1, A6, A7, C4, C5, C6, C7, C8) were sampled on August 3, 10, 17, and 25.";
   "The eight shore stations (D4, D5, D7, D8, D9, D10, D11, D12) were sampled on July 1, 8, 15, 22,
-  and 29."; "Quarterly water quality sampling was not conducted during July at the offshore
-  stations. The next quarterly sampling is scheduled for August 2026."; "Monthly reports of water
-  quality and ocean conditions for the San Diego coastal region surrounding the Point Loma Ocean
-  Outfall are submitted to the San Diego Regional Water Quality Control Board and U.S. EPA Region 9
-  in accordance with Order No. R9-2026-0002, NPDES Permit No. CA0107409 for the Point Loma
-  Wastewater Treatment Plant (PLWTP), Point Loma Ocean Outfall (PLOO)."; "Water quality conditions
-  are required to be monitored at eight shoreline stations, including D4, D5, D7, D8, D9, D10, D11
-  and D12, which range from the tip of the Point Loma Peninsula to west of Mission Bay (see
-  station locations map)."; "The eight kelp stations are sampled weekly according to permit
-  specifications to monitor water quality conditions within the Point Loma kelp forest. These
-  stations include three sites located along the inshore edge of the kelp bed paralleling the 9-m
-  depth contour (i.e., stations C4, C5 and C6), and five sites located near the offshore edge of
-  the kelp bed along the 18-m depth contour (i.e., stations A1, A6, A7, C7 and C8)."; "A total of
-  36 offshore stations (F01–F36) are sampled during each survey usually over a 3-day period. Three
-  of the stations (F01–F03) are located along the 18 m depth contour, while 11 stations are
-  located along each of the following contours: 60 m (stations F04–F14), 80 m (stations F15–F25),
-  and 98 m (stations F26–F36). Of these 36 stations, 15 (F01-F03, F06-F14, F18-F20) are located
-  within State jurisdictional waters (i.e., within 3 nautical miles of shore) and are subject to
-  the California Ocean Plan’s compliance standards." The City's monthly water quality reports
-  page lists 140 files under its two PLOO headings, eight under "2026 Monthly Receiving Waters
-  Monitoring Reports for the PLOO" and 132 under "PLOO Monthly Receiving Waters Monitoring Report
-  Archives"; this record holds the eight under the 2026 heading, whose first pages print "JANUARY
-  2026", "FEBRUARY 2026", "MARCH 2026", "APRIL 2026", "MAY 2026", "JUNE 2026", "JULY 2026" and
-  "AUGUST 2026", and none of the 132
+  and 29."; "The eight shore stations (D4, D5, D7, D8-B, D9, D10, D11, D12) were sampled on
+  February 4, 11, 12, 19, and 25."; "Quarterly water quality sampling was not conducted during July
+  at the offshore stations. The next quarterly sampling is scheduled for August 2026.";
+  "Quarterly offshore water quality sampling was conducted on February 10, 11, and 12.";
+  "Quarterly offshore water quality sampling was conducted on May 12, 13, and 14."; "Quarterly
+  offshore water quality sampling was conducted on August 18, 19, and 20."; "Monthly reports of
+  water quality and ocean conditions for the San Diego coastal region surrounding the Point Loma
+  Ocean Outfall are submitted to the San Diego Regional Water Quality Control Board and U.S. EPA
+  Region 9 in accordance with Order No. R9-2026-0002, NPDES Permit No. CA0107409 for the Point
+  Loma Wastewater Treatment Plant (PLWTP), Point Loma Ocean Outfall (PLOO)."; "Water quality
+  conditions are required to be monitored at eight shoreline stations, including D4, D5, D7, D8,
+  D9, D10, D11 and D12, which range from the tip of the Point Loma Peninsula to west of Mission
+  Bay (see station locations map). Over the past several years, due to increasing instability in
+  several cliffside areas of Point Loma, City staff have been unable to safely access and sample
+  several stations at various times."; "Over the past several years, due to increasing instability
+  in some cliffside areas of Point Loma, City staff have periodically been unable to safely access
+  and sample some stations. As a result, the after consultation with and approval by the Regional
+  Board, the sampling location has varied between D8, D8-A and D8-B. Access to site D8 was
+  recently restored and sampling at D8 resumed in March 2025."; "The eight kelp stations are
+  sampled weekly according to permit specifications to monitor water quality conditions within the
+  Point Loma kelp forest. These stations include three sites located along the inshore edge of the
+  kelp bed paralleling the 9-m depth contour (i.e., stations C4, C5 and C6), and five sites
+  located near the offshore edge of the kelp bed along the 18-m depth contour (i.e., stations A1,
+  A6, A7, C7 and C8)."; "Offshore water quality sampling is conducted quarterly typically during
+  the months of February, May, August, and November. A total of 36 offshore stations (F01–F36) are
+  sampled during each survey usually over a 3-day period. Three of the stations (F01–F03) are
+  located along the 18 m depth contour, while 11 stations are located along each of the following
+  contours: 60 m (stations F04–F14), 80 m (stations F15–F25), and 98 m (stations F26–F36). Of these
+  36 stations, 15 (F01-F03, F06-F14, F18-F20) are located within State jurisdictional waters
+  (i.e., within 3 nautical miles of shore) and are subject to the California Ocean Plan’s
+  compliance standards." The City's monthly water quality reports page lists 140 files under its
+  two PLOO headings, eight under "2026 Monthly Receiving Waters Monitoring Reports for the PLOO"
+  and 132 under "PLOO Monthly Receiving Waters Monitoring Report Archives"; this record holds the
+  eight under the 2026 heading (2026-10-05), whose first pages print "JANUARY 2026", "FEBRUARY
+  2026", "MARCH 2026", "APRIL 2026", "MAY 2026", "JUNE 2026", "JULY 2026" and "AUGUST 2026", and
+  none of the 132
 coverage_stated_at: >-
   The first eight quotations are each the first bullet under Kelp Bed Stations in SUMMARY OF
   RESULTS of the January to August files in turn, on PDF page 7 (printed page 3) of the January,
   March, June and July files and PDF page 8 (printed page 4) of the February, April, May and
-  August files; the ninth is the first bullet under Shore Stations in SUMMARY OF RESULTS of the
-  July file, PDF page 7 (printed page 3); the tenth is the one bullet under Offshore Stations in
-  SUMMARY OF RESULTS of the July file, PDF page 8 (printed page 4); the eleventh opens INTRODUCTION
-  in the July file, PDF page 5 (printed page 1); the twelfth opens MATERIALS AND METHODS, Shore
-  Stations, in the July file, PDF page 5; the thirteenth is the first two sentences under
-  MATERIALS AND METHODS, Kelp Bed Stations, in the July file, PDF page 5; and the fourteenth is
-  the second, third and fourth sentences of the paragraph under MATERIALS AND METHODS, Offshore
-  Stations, in the July file, PDF page 6 (printed page 2), all retrieved 2026-10-05; the two
-  headings and the counts under them are on the City's monthly water quality reports page named
-  in access, and the month lines are on PDF page 1 of each held file (2026-10-05)
+  August files. The ninth is the first bullet under Shore Stations in SUMMARY OF RESULTS of the
+  July file, PDF page 7 (printed page 3), and the tenth the same bullet of the February file, PDF
+  page 7; that bullet lists "D8" in the January, March, April, June and July files and "D8-B" in
+  the February, May and August files. The eleventh is the one bullet under Offshore Stations in
+  SUMMARY OF RESULTS of the July file, PDF page 8 (printed page 4), which the January, March,
+  April and June files print with their own month and next survey month; the twelfth, thirteenth
+  and fourteenth are that bullet of the February, May and August files in turn, each on PDF page 8
+  (printed page 4). The fifteenth opens INTRODUCTION in the July file, PDF page 5 (printed page 1),
+  the Order number in it differing between files as access states. The sixteenth is the first two
+  sentences under MATERIALS AND METHODS, Shore Stations, in the July file, PDF page 5, which all
+  eight files print; the January to May and August files follow them with "This has resulted in
+  the following modifications:" and a bullet, and the seventeenth is that bullet of the February
+  file, PDF page 5, which the June and July files do not print. The eighteenth is the first two
+  sentences under MATERIALS AND METHODS, Kelp Bed Stations, in the July file, PDF page 5. The
+  nineteenth is the paragraph under MATERIALS AND METHODS, Offshore Stations, in the July file, PDF
+  page 6 (printed page 2), to the end of its fourth sentence; the February, May and August files
+  print its first sentence with "February, May, August and November", without the comma after
+  "August". All retrieved 2026-10-05. The two headings and the counts under them are on the City's
+  monthly water quality reports page named in access, and the month lines are on PDF page 1 of
+  each held file (2026-10-05)
 retrieved: 2026-10-05
 fetch_script: src/fetch/sandiego_mwqr_ploo.py
 file: null
