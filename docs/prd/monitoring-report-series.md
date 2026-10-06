@@ -130,10 +130,14 @@ and stated here so a slice does not re-derive it.
      the PR for #323 wrote the ruling into the first limb of `CONTEXT.md`, *Vocabularies*, **tier**,
      which a row reads for the limb and its condition. Row 1: its report prints on its first page
      "Submitted to City of San Diego Public Utilities Department" (2026-10-04), the statement that
-     file's example quotes, and row 1 no longer stops at this question. The condition is each
-     source's own: each of rows 2–9 quotes in `access` what its own document prints, and a row whose
-     document prints no such statement stops under `NEEDS_CONTEXT`. On 2026-10-04 the
-     text layers of rows 2 and 4's PDFs print "Public Utilities" zero times and name the City only
+     file's second example quotes, and row 1 no longer stops at this question. Each row checks the
+     condition for itself: each of rows 2–9 quotes in `access` what its own document prints and,
+     where that states no membership, the page the condition's second clause admits (the first
+     limb's third example, added on the owner's delegated ruling of 2026-10-05, #260
+     issuecomment-6002129495, after row 2 stopped; rows 8 and 9 reach that page from their own
+     landing page, the monthly-report archives page, which links it the same way), and a row that
+     finds neither stops under `NEEDS_CONTEXT`. On 2026-10-04 the text layers of rows 2 and 4's
+     PDFs print "Public Utilities" zero times and name the City only
      as "the City of San Diego Ocean Monitoring Program" (and row 2's once more, as the discharger
      through the outfalls). Rows 10–35:the owner ruled on 2026-10-05, in conversation and recorded
      at #283 issuecomment-5998521819, that the park's own page
