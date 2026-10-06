@@ -244,7 +244,11 @@ Then the checks no gate makes, below. Each of them feeds step 8.
   third thing that row names, how much of the source this record holds, is the record's own
   statement rather than a quotation, and is outside this check. A statement you can name as neither
   span nor extent is itself the finding: report it as such, and leave what becomes of it to a
-  reader's ruling under *The rule*, not to this step.
+  reader's ruling under *The rule*, not to this step. Where the record holds more than one file,
+  read every held file for each statement, not only the file it was quoted from, which the
+  `coverage_stated_at` row asks the record to name; a held file that states the same thing
+  differently, or does not state it, is reported beside that statement's row, and left to a
+  reader's ruling in the same way.
 - **Show where each `measures` entry was cut.** The byte-diff above proves an entry is printed; it
   does not say that the entry begins and ends where the `measures` row of `CONTEXT.md`'s sources
   table says. For each entry, write every place the document prints it — caption, heading or
