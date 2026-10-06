@@ -87,7 +87,9 @@ access:
     glyph-index strings: the strings pypdf 6.19.0's extract_text returns for the 62 pages total
     87,262 characters; .claude/skills/review-source/pdftext_cmap.py prints "CMAPS 9 PAGES 62
     CHARS 88432" and its text for the first page begins "Macrocysti tp fiyentutPlis." rather than
-    with the title; pdftext_literal.py prints "PAGES 0 CHARS 0". The strings "doi" and "citation"
+    with the title; pdftext_literal.py prints "PAGES 0 CHARS 0". Where a quotation from the file
+    in this record runs across one of the file's line breaks, the break is joined with one space
+    and the file's other spacing is kept. The strings "doi" and "citation"
     occur in its text 1 and 0 times in any letter case, the 1 inside the URL
     https://dx.doi.org/10.2305/IUCN.UK.2021-1.RLTS.T178290276A197818455.en of the LITERATURE
     CITED entry for Gravem et al. 2021 (2026-10-05)
@@ -175,7 +177,7 @@ measures:
   - "Fractional cover of the invasive alga Sargassum horneri"
   - "red sea urchin (Mesocentrotus franciscanus) mean densities"
   - "purple sea urchin (Strongylocentrotus purpuratus) mean densities"
-  - "red (top) and purple (bottom) sea urchin recruitment (fraction of the population considered in the first year class by size - see Methods)"
+  - "red (top) and purple (bottom) sea urchin recruitment (fraction of the population considered in the first year class by size  - see Methods)"
   - "seastar Pisaster giganteus mean density"
   - "pink abalone (Haliotis corrugata) mean densities"
   - "North County Sedimentation"
@@ -183,7 +185,8 @@ findings: []
 coverage: >-
   "Conditions during the present reporting period (2019-2024) returned to favorable conditions for
   giant kelp recovery due to persistent La Niña conditions that persisted from 2021 to early
-  2023."; "Algae, invertebrates and bottom temperatures are monitored at twenty permanently
+  2023."; "Data are inclusive between 1997-2021.  Red points indicate present study period
+  (2020-2021)."; "Algae, invertebrates and bottom temperatures are monitored at twenty permanently
   established study sites (Fig. 4)."; Table 1, captioned "List of study sites including year of
   establishment and work conducted at each site.", lists under "Study Site" Card, SB, DM, LJN18,
   LJN15, LJN12, LJS18, LJS15, LJS12, PLN18, PLC21, PLC18, PLC15, PLC12, PLC08, PLS18, PLS15,
@@ -196,24 +199,26 @@ coverage: >-
   area, sediment depths are monitored along all of the NCKF sites."; "Fish surveys were initiated
   in the fall of 2019 and continue semi-annually (fall/spring) at four sites within the LJKF and
   four sites within the PLKF (Figs. 5 and 6, respectively)."; "The measurement sites off Pt. Loma
-  are located at 24, 15, and 9 m deep. Submarine light is also measured off southern La Jolla at
-  a depth of 24 m."; "The bottom temperature record along the central Pt. Loma study sites (Fig.
+  are located at 24, 15, and 9 m deep.  Submarine light is also measured off southern La Jolla
+  at a depth of 24 m."; "The bottom temperature record along the central Pt. Loma study sites (Fig.
   7) extends back to 1983 when the strong El Niño of 1982/83 was at its peak." The City's kelp
   forest monitoring page lists seven installments under "Available Reports"; this record holds
   the one it links as "Final Report: 2019-2024" and none of the other six
 coverage_stated_at: >-
   The first quotation is under EXECUTIVE SUMMARY on PDF page 3, the last sentence but one of the
   paragraph that begins on PDF page 2 with "The kelp forests throughout much of southern
-  California"; the second opens MATERIALS AND METHODS, PDF page 8; Table 1 and its caption are on
-  PDF page 13; the third quotation is the first sentence of the last paragraph under INTRODUCTION,
-  PDF page 8; the fourth opens the paragraph under MATERIALS AND METHODS, Invertebrates, PDF page
-  11, that begins "Sea urchin recruitment"; the fifth is the third sentence of the second
-  paragraph under Temperature and Sedimentation, PDF page 12; the sixth opens the paragraph under
-  Finfishes, PDF page 14; the seventh is the third and fourth sentences of the second paragraph
-  under Bottom Light Levels, PDF page 17; the eighth opens the second paragraph under RESULTS AND
-  DISCUSSION, Ocean Climate, PDF page 18, all of the held PDF, which prints no page numbers,
-  retrieved 2026-10-05; the seven link texts are on the City's kelp forest monitoring page named
-  in access (2026-10-05)
+  California"; the second is the last two sentences of the Figure 16 caption, PDF page 31; the
+  third opens MATERIALS AND METHODS, PDF page 8; Table 1 and its caption are on PDF page 13, its
+  headers "Study Site" and "Depth (m)" each printed across two lines, "Study" over "Site" and
+  "Depth" over "(m)", and quoted with the line break joined by one space; the fourth quotation is
+  the first sentence of the last paragraph under INTRODUCTION, PDF page 8; the fifth opens the
+  paragraph under MATERIALS AND METHODS, Invertebrates, PDF page 11, that begins "Sea urchin
+  recruitment"; the sixth is the third sentence of the second paragraph under Temperature and
+  Sedimentation, PDF page 12; the seventh opens the paragraph under Finfishes, PDF page 14; the
+  eighth is the third and fourth sentences of the second paragraph under Bottom Light Levels, PDF
+  page 17; the ninth opens the second paragraph under RESULTS AND DISCUSSION, Ocean Climate, PDF
+  page 18, all of the held PDF, which prints no page numbers, retrieved 2026-10-05; the seven
+  link texts are on the City's kelp forest monitoring page named in access (2026-10-05)
 retrieved: 2026-10-05
 fetch_script: src/fetch/sandiego_kelp_forest_2019_2024.py
 file: null
