@@ -345,7 +345,7 @@ coverage_stated_at: >-
   each. The ninth is the first bullet under Offshore Water Quality Sampling in SUMMARY OF RESULTS
   of the January file, PDF page 8, which the March, April and June files print with their own
   month and "May 2026", "May 2026" and "August 2026" in turn; the tenth is that bullet of the July
-  file, PDF page 8, which names June rather than July, as the June file's bullet does; and the
+  file, PDF page 8, which names June, as the June file's bullet does; and the
   eleventh, twelfth and thirteenth are the first bullet under Offshore Water Quality Sampling of the February, May and August files
   in turn, each on PDF page 8. The fourteenth is the paragraph under INTRODUCTION in the August
   file, PDF page 5 (printed page 1), which each file prints with the Order number access states
