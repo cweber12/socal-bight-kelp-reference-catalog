@@ -37,16 +37,18 @@ access:
     baseline information about the kelp forest ecosystem in the Park." Under the <h2> "For More
     Information", the accordion panel whose button reads "Monitoring Reports" prints "Source:"
     and links https://irma.nps.gov/DataStore/SavedSearch/Profile/1508 with the link text "NPS
-    DataStore Saved Search  1508", two spaces before "1508". The page prints "Last updated:
-    December 1, 2023" (2026-10-10)
+    DataStore Saved Search  1508", two spaces before "1508"; the sentence after it, "To search
+    for additional information, visit the NPS DataStore.", links https://irma.nps.gov/DataStore/
+    with the link text "NPS DataStore". The page prints "Last updated: December 1, 2023"
+    (2026-10-10)
   - >-
     https://irma.nps.gov/DataStore/SavedSearch/Profile/1508 answers HTTP 200 with an application
     shell: its HTML carries the saved search as {"Id":1508,"Title":"Kelp Forest
     Monitor","Description":"Kelp Forest Monitor",...} and contains the string "1990 Annual
-    Report" 0 times, and its script loads the list by POST
+    Report" 0 times in any letter case, and its script loads the list by POST
     https://irma.nps.gov/DataStore/SavedSearch/GetSavedSearchReferences with savedSearchId=1508.
-    That POST answers JSON with "TotalCount":26 and 26 Results, whose Titles name each year from
-    1990 to 2015 once. The Result with "Id":68419 has the Title "Kelp Forest Monitoring, Channel
+    That POST answers JSON with "TotalCount":26 and 26 Results, one reference for each year from
+    1990 to 2015. The Result with "Id":68419 has the Title "Kelp Forest Monitoring, Channel
     Islands National Park: 1990 Annual Report", Type "PublishedReport", Downloadability "Public",
     Visibility "Public", Lifecycle "Active", FileCount 1, the ReferenceUrl "
     https://irma.nps.gov/DataStore/Reference/Profile/68419" with a leading space as served,
@@ -101,8 +103,14 @@ access:
     National Park Service)" and its <h1> "Management", and it states "The park operates under
     Federal, Department of the Interior, and National Park Service policies and guidelines, in
     accordance with a General Management Plan (GMP) which was first published in 1980." The page
-    prints "Last updated: January 23, 2024" (retrieved 2026-10-10). The footer the DataStore
-    profile renders, defined in
+    prints "Last updated: January 23, 2024" (retrieved 2026-10-10).
+    https://irma.nps.gov/DataStore/, the page the network page links as "NPS DataStore", answers
+    HTTP 200 with Content-Type text/html; charset=utf-8 and the <title> "NPS DataStore"; a script
+    element in its HTML renders the <h1> "NPS DataStore Home" over the <h2> "The DataStore
+    application is a digital repository for the National Park Service that provides tools for
+    adding, organizing, and discovering documents and datasets relevant to park resources.", the
+    whole of that <h2>, and sets the same sentence as the page's meta description (retrieved
+    2026-10-10). The footer the DataStore profile renders, defined in
     https://irmafiles.nps.gov/WebContent/Irma/Common/v3_0_2/Scripts/ext_7_7_0/Modern/nps-custom-components.js,
     links "National Park Service", https://www.nps.gov/index.htm, and "US Department of the
     Interior", https://www.doi.gov/ (2026-10-10)
@@ -112,36 +120,43 @@ access:
     NATIONAL PARK" and "1990 Annual Report" (one printing of the title across three lines, which
     title joins with one space), "by", "DANIEL RICHARDS", "WILLIAM AVERY", "DAVID KUSHNER",
     "CHANNEL ISLANDS NATIONAL PARK", "1901 SPINNAKER DRIVE" and "VENTURA, CA 93001". The string
-    "National Park Service" occurs twice in its text: under EXECUTIVE SUMMARY, PDF page 5, "In
+    "National Park Service" occurs twice in its text in any letter case: under EXECUTIVE SUMMARY, PDF page 5, "In
     1990, 44 National Park Service and volunteer divers made 759 dives during a series of seven
     five-day and three shorter cruises to conduct the monitoring.", and under ACKNOWLEDGEMENTS,
     PDF page 75, "This program was supported by the U.S. National Park Service in cooperation
     with the California Department of Fish and Game and the Department of Commerce, National
     Oceanographic and Atmospheric Administration, Marine Sanctuary Program." The strings
-    "Cooperative", "Davis, CA" and "Western Regional" occur in its text 0 times each
-    (2026-10-10)
+    "Cooperative", "Davis, CA" and "Western Regional" occur in its text 0 times each in this
+    letter case (2026-10-10)
   - >-
     The sections are headed ABSTRACT (PDF page 4), EXECUTIVE SUMMARY (5), INTRODUCTION (8),
     METHODS (10), STATION RESULTS AND DISCUSSION (21), GENERAL DISCUSSION (66), ACKNOWLEDGEMENTS
     (75), LITERATURE CITED (76), "Appendix A.  1990 Station Data - All Sampling Methods" (78) and
-    "Appendix B." (223). The printed page numbers run from 1 on PDF page 4 and begin again at 1
-    on PDF page 78; locators in this record are PDF pages. The contents, PDF pages 2 and 3, list
-    "FIGURE 1 Kelp Forest Monitoring Locations in Channel Islands" at page 64 and
-    "APPENDIX B.  Species List - All stations". The file's pages carry no image XObject, and
-    "FIGURE 1" occurs in its text once, in those contents. PDF page 223 prints the heading "Appendix B." over "1990
-    Species List for all Channel Islands National Park Kelp Forest Monitoring Stations.", an
-    "Introduction", "Abundance Ratings" and "Notes"; PDF page 224, the last, prints "Station
+    "Appendix B." (223). PDF pages 2 and 3 print the page numbers "2" and "3", PDF page 4
+    prints "1" and the numbers run on from there, and PDF page 78 prints "1" again; locators in
+    this record are PDF pages. The contents, PDF pages 2 and 3, list under "LIST OF FIGURES" the label
+    "FIGURE 1" and, after a horizontal move on the same line, "Kelp Forest Monitoring Locations
+    in Channel Islands National Park", the second line's string continuing after "Park" with a
+    run of full stops and spaces, and "64" on the line after it; and they list
+    "APPENDIX B.  Species List - All stations". The file's pages carry no image XObject, and "FIGURE 1"
+    occurs in its text once in any letter case, in those contents. PDF page 223 prints "Appendix
+    B." and, after a horizontal move on the same line, " 1990 Species List for all Channel
+    Islands National", with a leading space, the line after continuing "Park Kelp Forest
+    Monitoring Stations."; under them it prints "Introduction ." (the space and the full stop
+    are in the string), "Abundance Ratings" and "Notes"; PDF page 224, the last, prints "Station
     names are listed in Table 3 of the text." (2026-10-10)
   - >-
     The PDF's document information dictionary states Creator "Microsoft Word - 90kfmtxt.doc",
     Title "KELP90", Producer "Acrobat PDFWriter 4.0 for Windows", CreationDate
     "D:19990924112138" and ModDate "D:19990924120230-06'00'", and the file's bytes contain
-    "xmpmeta" 0 times. Its text is literal strings shown with Tj in its page content streams.
+    "xmpmeta" 0 times in any letter case. Its text is literal strings shown with Tj in its page content streams.
     pypdf 6.19.0's extract_text returns 388,425 characters for the 224 pages, and
     .claude/skills/review-source/pdftext_literal.py prints "PAGES 76 CHARS 83919". Quotations
     from the file in this record are those strings as the content streams show them: where a
     quotation runs across one of the file's line breaks, the line's trailing spaces and the break
-    are joined as one space, and the file's other spacing is kept. In the Appendix A headings
+    are joined as one space, and the file's other spacing is kept; where two strings on one line
+    are separated by a horizontal move, as on PDF pages 3 and 223, they are quoted separately and
+    not joined. In the Appendix A headings
     quoted in measures, the "2" after "M" is a string of its own set in 7.5-point type and raised
     above the 12-point line, and is written "M2" here (2026-10-10)
 format: >-
@@ -154,7 +169,7 @@ license_stated_at: >-
   landing page, https://irma.nps.gov/DataStore/Reference/Profile/68419, whose JSON carries
   "LicenseTypeID":null, "LicenseTypeName":null and "LicenseTypeURL":null and whose delivered
   HTML contains "copyright", "terms of use", "disclaim", "public domain" and "rights reserved" 0
-  times each and "licen" 5 times, in those three field names, the field name "LicenseType" and
+  times each and "licen" 5 times, in any letter case, in those three field names, the field name "LicenseType" and
   its DisplayName "License Type"; POST /DataStore/Reference/GetProfileCoreModel on the same
   reference answers "IntellectualRights":null. The profile's footer is instantiated by its
   scripts rather than delivered as markup: the HTML carries xtype: 'footerComponent', which
@@ -164,7 +179,7 @@ license_stated_at: >-
   "Disclaimer of Liability and Endorsement | U.S. Department of the Interior", and NOTICES,
   https://www.nps.gov/aboutus/notices.htm, headed by the <title> "Notices (U.S. National Park
   Service)", both answer HTTP 200 and contain "licen", "terms of use" and "public domain" 0 times
-  each. "copyright" occurs in any letter case in the first 4 times, in the href and the text of
+  each in any letter case. "copyright" occurs in any letter case in the first 4 times, in the href and the text of
   each of its two links "Copyright, Restrictions and Permissions Notice" and "Copyright", both to
   /copyright, a page the profile's footer does not link; and in the second 8 times: in the HTML
   comments "Content Copyright National Park Service" and "JavaScript & DHTML Code Copyright
@@ -177,6 +192,7 @@ license_stated_at: >-
   2026-10-10)
 variables: []
 measures:
+  - 'Population dynamics of 68 taxa or "target species" (Table 2)'
   - "densities and distribution of discrete benthic organisms"
   - "percent cover of encrusting invertebrates, algae, and substrate composition"
   - "fish abundance"
