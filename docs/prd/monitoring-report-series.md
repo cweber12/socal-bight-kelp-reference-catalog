@@ -64,7 +64,7 @@ and stated here so a slice does not re-derive it.
      against July 2026, whose title and issuing unit differ. So the template claim holds for the
      2026 installments sampled and not, as measured, across the run; which installments each
      record holds is the subsetting paragraph's question, and the row states it in `coverage` and
-     `access`. #262 is the PLOO record (row 8); the SBOO record is `to file` (row 9).
+     `access`. #262 is the PLOO record (row 8); #334 is the SBOO record (row 9).
    - **The Channel Islands reports are 26 records**, one per year, the outcome the owner chose.
      Each year is its own DataStore reference with its own `DisplayCitation`, two of them with
      their own DOIs (#283, "The series" and "Decisions this record cannot avoid"); the audit of PR
@@ -237,7 +237,8 @@ Channel Islands reports, 1990 first because its file is the one #283 fetched, th
 ## Slices
 
 Issues #259, #260, #262 and #283 were filed ahead of this table, and their numbers are in the `#`
-column; every other row is `to file`, the convention `docs/prd/re-entry.md`'s Slices intro gives
+column, as is #334, filed for row 9 on 2026-10-10 after row 8 merged; every other row is `to file`,
+the convention `docs/prd/re-entry.md`'s Slices intro gives
 for a row whose issue does not exist yet. The rows are in work order. Each row is a record issue in
 the shape `docs/agents/issue-tracker.md` gives them: `add-source` is the seam, there is no
 mechanical failing test, and the notebooks the record's topics move land in the same PR. When the
@@ -277,7 +278,7 @@ gives each family two.
 | 6 | to file | `sandiego_kelp_forest_2016_2017` | Kelp forest monitoring, "Annual Report: 2016-2017" | the City's kelp forest page; relative link `/sites/default/files/kelpforestfinalreport_2018.pdf` | as row 3 | as row 3 | as row 1; the file name says 2018; "Appendix A" of the City's 2016–2017 Biennial Receiving Waters Monitoring Report, an installment of the series named as a candidate under the table (reading 1) |
 | 7 | to file | `sandiego_kelp_forest_2015_2016` | Kelp forest monitoring, "Annual Report: 2015-2016" | the City's kelp forest page; relative link `/sites/default/files/kelpforestfinalreport_2016.pdf` | as row 3 | as row 3 | as row 1; the PDF has no text layer (reading 7) |
 | 8 | [#262](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/262) | `sandiego_mwqr_ploo` | Monthly receiving waters monitoring reports, Point Loma Ocean Outfall | `https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports/monthly-report-archives`, HTTP 200 in 190,386 bytes on 2026-10-04; the `ploo_mwqr_*` file names, 125 distinct, plus the legacy names the row assigns to this outfall | `water-quality-harvest/discharges-outfalls`, `ocean-climate/temperature`, `ocean-climate/nutrients` | `scb.mainland.san-diego` | reading 1 makes #262 the PLOO record, where its body asks for the series; which installments it holds is the subsetting paragraph's question, which #262 names; of the page's 269 distinct PDF hrefs on 2026-10-04, 198 began `http://www.sandiego.gov`, 10 `https://` and 61 were relative, a different set from the 7 legacy-named files #262 counted as served over `http://`; #262 proposed `sandiego_mwqr` |
-| 9 | to file | `sandiego_mwqr_sboo` | Monthly receiving waters monitoring reports, South Bay Ocean Outfall | the same page; the `sbwrp_mwqr_*` file names, 137 distinct, plus the legacy names the row assigns to this outfall | as row 8 | `scb.mainland.san-diego`, with #262's note on the three stations south of the border, which states and decides nothing about the boundary | as row 8; file after row 8 merges, copying its shape |
+| 9 | [#334](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/334) | `sandiego_mwqr_sboo` | Monthly receiving waters monitoring reports, South Bay Ocean Outfall | the same page; the `sbwrp_mwqr_*` file names, 137 distinct, plus the legacy names the row assigns to this outfall | as row 8 | `scb.mainland.san-diego`, with #262's note on the three stations south of the border, which states and decides nothing about the boundary | as row 8; file after row 8 merges, copying its shape |
 | 10 | [#283](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/283) | `cinp_kfm_report_1990` | Channel Islands National Park Kelp Forest Monitoring, 1990 annual report | NPS DataStore saved search 1508, its 1990 reference; holding 485218, `chis_kelp90.pdf`, 306,257 bytes on 2026-09-30 (#283) | `bed-state/diver-surveys`, `bed-state/community`, `bed-state/mpas`, `grazers-predators-competitors/urchins`; `ocean-climate/temperature` from the year the loggers appear | `scb.islands.anacapa`, `scb.islands.san-miguel`, `scb.islands.santa-barbara`, `scb.islands.santa-cruz`, `scb.islands.santa-rosa` | reading 1 makes #283 the 1990 record, where its body asks for the series; #283 proposed `cinp_kfm_annual_reports`; `steward` `Channel Islands National Park` for this row and rows 11–35, each year's printed publisher in `access` (reading 2) |
 | 11 | to file | `cinp_kfm_report_1991` | as row 10, 1991 | saved search 1508, the 1991 reference | as row 10 | as row 10 | as row 10; file after row 10 merges, copying its shape |
 | 12 | to file | `cinp_kfm_report_1992` | as row 10, 1992 | saved search 1508, the 1992 reference | as row 10 | as row 10 | as row 11 |
