@@ -238,10 +238,10 @@ Channel Islands reports, 1990 first because its file is the one #283 fetched, th
 
 Issues #259, #260, #262 and #283 were filed ahead of this table, and their numbers are in the `#`
 column, as is #334, filed for row 9 on 2026-10-10 after row 8 merged; every other row is `to file`,
-the convention `docs/prd/re-entry.md`'s Slices intro gives
-for a row whose issue does not exist yet. The rows are in work order. Each row is a record issue in
-the shape `docs/agents/issue-tracker.md` gives them: `add-source` is the seam, there is no
-mechanical failing test, and the notebooks the record's topics move land in the same PR. When the
+the convention `docs/prd/re-entry.md`'s Slices intro gives for a row whose issue does not exist
+yet. The rows are in work order. Each row is a record issue in the shape
+`docs/agents/issue-tracker.md` gives them: `add-source` is the seam, there is no mechanical failing
+test, and the notebooks the record's topics move land in the same PR. When the
 PR that creates this file merges, the labels on #259, #260, #262 and #283 are the owner's to move,
 and filing the `to file` rows is the owner's (`CLAUDE.md`, "How work is tracked").
 
