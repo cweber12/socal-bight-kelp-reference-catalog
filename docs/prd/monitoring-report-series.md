@@ -209,9 +209,11 @@ and stated here so a slice does not re-derive it.
    (#258, "A cost to name"); `.claude/skills/review-source/pdftext_cmap.py` decodes them. The audit
    of PR #320 (F7) found that `pdftext_literal.py` reads the 2020–2021 and 2016–2017 PDFs, and that
    the 2015–2016 PDF has no text layer, 0 `/Font` and 1,669 image XObjects, so neither tool
-   returns text from it; row 7 says what that means for its quoted fields before it enters any.
-   No row of `CONTEXT.md` and no step of `add-source` says how a quoted field is entered from page
-   images, so row 7's issue, #342, waits on the owner's answer to that rather than on the row's.
+   returns text from it. Beyond the `citations` row, whose `stated_at` names "the steps by which
+   the text was taken out" where text "comes out only by a tool", no row of `CONTEXT.md` and no step
+   of `add-source` says how a quoted field is entered from page images; what that means for row 7's
+   quoted fields is the owner's to answer before the row enters any, and row 7's issue, #342, is
+   labelled `needs-info` until it is answered.
    Measured 2026-10-04: on the 2018–2019 PDF (row 5) `pdftext_literal.py` returns 0 characters and
    `pdftext_cmap.py` 71,180 over the 41 of its 42 pages it decoded, with ligatures left as
    U+FB01, U+FB00 and one U+FB03; on the
@@ -339,4 +341,5 @@ milestone or make it active.
 ## Done
 
 Every row whose issue is `ready-for-agent` merged as a record with the tier its route supports,
-with its notebooks; each `to file` row filed and merged, or still `to file`.
+with its notebooks; each `to file` row filed and merged, or still `to file`; and row 7's
+`needs-info` issue, #342, relabelled `ready-for-agent` and merged, or still open.
