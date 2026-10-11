@@ -50,18 +50,22 @@ access:
     "Ed Parnell, PhD", "Kristin Riser", "Brenna Bulach, MS", "Paul K. Dayton, PhD", "Scripps
     Institution of Oceanography, UC San Diego", "9500 Gilman Dr., La Jolla, CA 92093-0227",
     "Submitted to City of San Diego", "Public Utilities Department" and "March 31, 2022". PDF page
-    2 has no content stream. PDF page 3 prints "Evaluation of Anthropogenic Impacts on the San
+    2's /Contents is a FlateDecode stream that decodes to 0 bytes, and its /Resources is empty.
+    PDF page 3 prints "Evaluation of Anthropogenic Impacts on the San
     Diego Coastal Kelp" and "Forest Ecosystem (Biennial Project Report): 2020 to 2021" (one
     printing of the title across two lines, which title joins with one space), "Prepared By:",
     lines that pypdf 6.19.0's extract_text returns as "Ed Parnell, PhD1*", "Kristin Riser1",
     "Brenna Bulach, MS1" and "Paul K. Dayton, PhD1", "March 31, 2022", and at the foot of the page
     "*Corresponding Author: edparnell@ucsd.edu", "1Scripps Institution of Oceanography, UC San
     Diego" and "9500 Gilman Dr, Mail Code 0227, La Jolla, CA 92093-0227". The document names the
-    program once, in the first sentence of the last paragraph under INTRODUCTION, PDF page 9,
+    program in two forms, each once in its text and both on PDF page 9: "Ocean Monitoring
+    Program", in that letter case, in the first sentence of the last paragraph under INTRODUCTION,
     "Researchers at the Scripps Institution of Oceanography (SIO) have partnered with the City of
     San Diego Ocean Monitoring Program to conduct regular surveys of the kelp forests off San
-    Diego County including the kelp forests off Point Loma, La Jolla and North County.", and names
-    the City once more, under EXECUTIVE SUMMARY, PDF page 6, as the discharger: "The failed
+    Diego County including the kelp forests off Point Loma, La Jolla and North County.", and "kelp
+    forest monitoring program", all in lower case, in the third sentence under MATERIALS AND
+    METHODS, which begins "The main components of the kelp forest monitoring program include";
+    each count is the same in any letter case. It names the City once more, under EXECUTIVE SUMMARY, PDF page 6, as the discharger: "The failed
     recovery of giant kelp at many of our study sites can not be due to any localized effects of
     treated wastewater discharge by the City of San Diego through the ocean outfalls offshore of
     Imperial Beach (South Bay Ocean Outfall) or Pt. Loma (Pt. Loma Ocean Outfall)." The strings
@@ -71,20 +75,24 @@ access:
   - >-
     The City's page
     https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports/annual-report-archives,
-    whose <h1> is "Annual Receiving Waters Monitoring Reports", answers HTTP 200 with
-    Content-Type text/html; charset=UTF-8 and links "2020-2021 Report" to
+    whose <h1> is "Annual Receiving Waters Monitoring Reports" (U+00A0 after "Annual"), answers
+    HTTP 200 with Content-Type text/html; charset=UTF-8 and links "2020-2021 Report" to
     http://www.sandiego.gov/sites/default/files/compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf,
     which answers HTTP 301 with Location
     https://www.sandiego.gov/sites/default/files/compressed_2020-2021_biennial_receiving_waters_monitoring_report.pdf,
     which answers HTTP 200 with 38,157,298 bytes of Content-Type application/pdf, SHA-256
     683939f2d019d5efc8d79e0ed44c2f5f66352e36d713521eff712bbfbb777a13, 644 PDF pages. That
-    report's PDF page 3, a letter dated "June 30, 2022" and signed over "Deputy Director, Public
-    Utilities Department", names it "the 2020-2021 Biennial Receiving Waters Monitoring and
-    Assessment Report for the" over "Point Loma and South Bay Ocean Outfalls"; its PDF page 9,
-    which prints "iii" as its first line, lists under "Appendices - Enhanced Monitoring Reports"
-    "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego Coastal Kelp Forest" over
-    "Ecosystem (Biennial Project Report) 2020 to 2021". This record holds the file the kelp forest
-    monitoring page links and not that report (2026-10-11)
+    report's PDF page 10, which prints "iv" as its first line, prints under "How to cite this
+    document:" "City of San Diego. (2022). Biennial Receiving Waters Monitoring and Assessment
+    Report for the Point Loma and South Bay Ocean Outfalls, 2020–2021. City of San Diego Ocean
+    Monitoring Program, Public Utilities Department, Environmental Monitoring and Technical
+    Services Division, San Diego, CA." (the dash U+2013); its PDF page 9, which prints "iii" as its
+    first line, lists under "Appendices - Enhanced Monitoring Reports" "Appendix A: Evaluation of
+    Anthropogenic Impacts on the San Diego Coastal Kelp Forest" over "Ecosystem (Biennial Project
+    Report) 2020 to 2021"; and for its PDF pages 299 to 356, page for page, pypdf 6.19.0's
+    extract_text returns, with whitespace normalised, the same text as for this file's PDF pages 1
+    to 58, its page 300 and this file's page 2 both returning none. This record holds the
+    file the kelp forest monitoring page links and not that report (2026-10-11)
   - >-
     The sections are headed EXECUTIVE SUMMARY (PDF page 4), INTRODUCTION (7), MATERIALS AND
     METHODS (9), RESULTS AND DISCUSSION (19) and LITERATURE CITED (56). The PDF's document
@@ -207,7 +215,10 @@ coverage: >-
   temperature record along the central Pt. Loma study sites extends back to 1983 when the strong
   1982/1983 El Niño was ebbing." The City's kelp forest monitoring page lists seven installments
   under "Available Reports"; this record holds the one it links as "Biennial Report: 2020-2021"
-  and none of the other six
+  and none of the other six, and not the report the City's annual report archives page links as
+  "2020-2021 Report", whose contents list that file as "Appendix A: Evaluation of Anthropogenic
+  Impacts on the San Diego Coastal Kelp Forest" over "Ecosystem (Biennial Project Report) 2020 to
+  2021"
 coverage_stated_at: >-
   The first quotation is the first sentence of the third paragraph under EXECUTIVE SUMMARY, PDF
   page 4; the second is the last two sentences of the Figure 15 caption, PDF page 32; the third
@@ -221,7 +232,9 @@ coverage_stated_at: >-
   and fourth sentences of the second paragraph under Light, PDF page 18; the ninth opens the
   second paragraph under RESULTS AND DISCUSSION, Ocean Climate, PDF page 19, all of the held PDF,
   which prints no page numbers, retrieved 2026-10-11; the seven link texts are on the City's kelp
-  forest monitoring page named in access (2026-10-11)
+  forest monitoring page named in access, and the link text "2020-2021 Report" and the contents
+  entry are on the annual report archives page and that report's PDF page 9, both named in access
+  step 4 (2026-10-11)
 retrieved: 2026-10-11
 fetch_script: src/fetch/sandiego_kelp_forest_2020_2021.py
 file: null
@@ -240,6 +253,7 @@ topics:
   - ocean-climate/upwelling-enso
   - ocean-climate/heatwaves
   - waves-storms-sediment/sediment-sand
+  - waves-storms-sediment/beach-coupling
   - recruitment-connectivity/settlement
   - water-quality-harvest/discharges-outfalls
 regions:
