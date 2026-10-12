@@ -106,8 +106,10 @@ access:
     The document has six section headings, on PDF pages 3, 6, 8, 11, 33 and 34, set in a font
     whose glyphs pypdf 6.19.0's extract_text returns as "Eඑൾർඎඍංඏൾ Sඎආආൺඋඒ", "Iඇඍඋඈൽඎർඍංඈඇ",
     "Mൺඍൾඋංൺඅඌ ൺඇൽ Mൾඍඁඈൽඌ", "Rൾඌඎඅඍඌ ൺඇൽ Dංඌർඎඌඌංඈඇ", "Sඎආආൺඋඒ ඈൿ Fංඇൽංඇ඀ඌ" and "Lංඍൾඋൺඍඎඋൾ
-    Cංඍൾൽ", the Latin capitals as given and every other character a code point from U+0D7A to
-    U+0D92, and .claude/skills/review-source/pdftext_cmap.py returns as the same capitals with
+    Cංඍൾൽ", the eleven Latin capitals and eight spaces as given and each of the other 88
+    characters one of 19 code points from U+0D7A to U+0D92, the glyph codes that the heading
+    font's /ToUnicode CMap leaves unmapped and extract_text passes through, and
+    .claude/skills/review-source/pdftext_cmap.py returns as the same capitals with
     an asterisk for each other glyph, "E ********  S ******" for the first; under the fourth it
     prints the sub-headings "Ocean Climate" (PDF page 11), "Giant Kelp Status and Reproduction"
     (14), "Understory Kelp Status and Reproduction" (15), "Algal Community Analysis" (24),
@@ -120,17 +122,28 @@ access:
     "D:20200615125631-07'00'", carries no Creator, and the file's bytes contain "xmpmeta",
     "xpacket" and "/Metadata" 0 times each. The strings pypdf 6.19.0's extract_text returns for
     the 42 pages total 70,706 characters, and every quoted string from the file in this record
-    was compared against that text; pdftext_cmap.py prints "CMAPS 8 PAGES 41 CHARS 71180" and
+    was compared against that text and against the content stream decoded as stated below;
+    pdftext_cmap.py prints "CMAPS 8 PAGES 41 CHARS 71180" and
     .claude/skills/review-source/pdftext_literal.py prints "PAGES 0 CHARS 0". pypdf's text
     carries the ligatures U+FB00 11 times, U+FB01 11 times and U+FB03 once, each followed by two
     or three spaces where the file prints the rest of the word, and pdftext_cmap.py's text
     carries the same three ligatures the same number of times; no string quoted from the file
-    in this record contains one. Where a quotation from the file
-    in this record runs across one of the file's line breaks, the break and the spaces pypdf
-    returns at the end of the line before it are together joined as one space, and the file's
-    other spacing is kept as pypdf returns it, a run of two spaces and a space before a comma
-    included. The strings "doi", "cite" and "citation" occur in its text 0 times in any letter
-    case (2026-10-12)
+    in this record contains one. Where a quotation from the file in this record runs across one
+    of the file's line breaks, the break and the spaces pypdf returns at the end of the line
+    before it are together joined as one space. A quoted string's other spacing is the content
+    stream's: each page's text-showing operators were decoded in stream order through the
+    /ToUnicode CMap of the font then selected, glyph code by glyph code, with no space added or
+    removed, and every quoted string from the file was compared against that decoding character
+    for character. Inside the quoted strings pypdf 6.19.0's text differs from the stream only
+    where the font changes between roman and italic, in five strings: it returns two spaces where
+    the stream prints one between "pyrifera" and "pre-adults" and between "pyrifera" and
+    "pre-bifurcates" in the two measures entries that begin "Mean densities of Macrocystis
+    pyrifera" and end there, between "californica" and "and" in the coverage quotation that
+    begins "Reproduction and growth", and between "horneri" and "was" in the coverage quotation
+    that begins "S. horneri"; and it returns a space where the stream prints none after "(" in
+    the measures entry that begins "Recruitment rates", and before each of the two commas in the
+    coverage quotation that begins "Reproduction and growth". The strings "doi", "cite" and
+    "citation" occur in its text 0 times in any letter case (2026-10-12)
 format: >-
   PDF; served as Content-Type application/pdf, 6,647,185 bytes beginning %PDF-1.7, 42 pages
 license: >-
@@ -193,9 +206,9 @@ measures:
   - "Ocean bottom temperature trends"
   - "surface temperature"
   - "Mean densities of adult Macrocystis pyrifera"
-  - "Mean densities of Macrocystis pyrifera  pre-adults (≤4 stipes)"
+  - "Mean densities of Macrocystis pyrifera pre-adults (≤4 stipes)"
   - "Mean densities of Macrocystis pyrifera bifurcates"
-  - "Mean densities of Macrocystis pyrifera  pre-bifurcates"
+  - "Mean densities of Macrocystis pyrifera pre-bifurcates"
   - "Mean densities of Macrocystis pyrifera stipes"
   - "Reproductive states of Macrocystis pyrifera"
   - "Reproductive capacity of Macrocystis pyrifera as a function of the number of stipes"
@@ -210,7 +223,7 @@ measures:
   - "Fractional cover of the invasive alga Sargassum horneri"
   - "red sea urchin (Mesocentrotus franciscanus) mean densities"
   - "purple sea urchin (Strongylocentrotus purpuratus) mean densities"
-  - "Recruitment rates for red and purple sea urchins ( Mesocentrotus franciscanus and Strongylocentrotus purpuratus, respectively)"
+  - "Recruitment rates for red and purple sea urchins (Mesocentrotus franciscanus and Strongylocentrotus purpuratus, respectively)"
   - "seastar Pisaster giganteus mean densities"
   - "pink abalone (Haliotis corrugata) mean densities"
   - "North County Sedimentation"
@@ -220,8 +233,14 @@ coverage: >-
   recovering from severe temperature and nutrient stress that began in late 2013 and persisted
   until the spring of 2017."; "The kelp forests off San Diego have been studied by researchers at
   the Scripps Institution of Oceanography (SIO), of UC San Diego, since the 1950s, and baseline
-  data began in the 1970s."; "Algae, invertebrates and bottom temperatures are monitored at
-  twenty permanently established study sites (Appendix A.3)."; Appendix A.4, captioned "List of
+  data began in the 1970s."; "S. horneri was first observed in the kelp forests off San Diego at
+  the beginning of the study period in 2014 and spread to 13 of our study sites."; "Since then,
+  the largest temperature signals in the time series include the 1997/98 El Niño and the
+  extended warm period of 2014–2015 that occurred during the present study and was associated
+  with a large scale anomalous NE Pacific warm event (Di Lorenzo and Mantua 2016) termed the BLOB
+  but more recently referred to as a marine heat wave."; "Algae, invertebrates and bottom
+  temperatures are monitored at twenty permanently established study sites (Appendix A.3).";
+  Appendix A.4, captioned "List of
   study sites including year of establishment and work conducted at each site.", lists under
   "Study Site" Card, SB, DM, LJN18, LJN15, LJN12, LJS18, LJS15, LJS12, PLN18, PLC21, PLC18, PLC15,
   PLC12, PLC08, PLS18, PLS15, PLT12, PLT15 and PLM18, with "Depth (m)" 17, 16, 16, 18, 15, 12, 18,
@@ -231,17 +250,21 @@ coverage: >-
   kelp forests off San Diego County including the kelp forests off Point Loma, La Jolla and North
   County."; "Conspicuous macroalgal species/groups are enumerated or percent cover is estimated
   within 5 x 2 m (10 m2) contiguous quadrats along the band transect lines at all sites.";
-  "Reproduction and growth of Macrocystis pyrifera , and the understory kelps Pterygophora
-  californica  and Laminaria farlowii , are measured on permanently tagged plants along the
+  "Reproduction and growth of Macrocystis pyrifera, and the understory kelps Pterygophora
+  californica and Laminaria farlowii, are measured on permanently tagged plants along the
   central Point Loma study sites."; "Size frequencies of red (RSU - Mesocentrotus franciscanus)
   and purple (PSU - Strongylocentrotus purpuratus) sea urchins are recorded for > 100 individuals
   of each species located near all of the study sites except for the NCKF sites which do not have
   adequate densities of sea urchins."; "Sedimentation is monitored along the NCKF sites by
   measuring the height of permanently established spikes at replicate locations within each of
   those forests."; "Sea urchin recruitment is sampled semi-annually (spring and fall) at all
-  Point Loma and La Jolla study sites."; "Fish surveys were initiated in the fall of 2019 and
-  will continue semi-annually (fall/spring) at four sites within the LJKF (Appendix A.6) and
-  three sites within the PLKF (Appendix A.7)."; "The bottom temperature record at the central
+  Point Loma and La Jolla study sites."; "The distribution of algal species among all permanent
+  sites was calculated using factor analysis in R (R Core Team 2018)."; "Thirteen algal groups
+  and derived bare space were analyzed among 20 sites."; "Fish surveys were initiated in the
+  fall of 2019 and will continue semi-annually (fall/spring) at four sites within the LJKF
+  (Appendix A.6) and three sites within the PLKF (Appendix A.7)."; "Study sites within the LJKF
+  and PLKF were paired by depth (21 and 15 m) to facilitate comparisons of the fish communities
+  inside and outside the MPA (Appendix A.8)."; "The bottom temperature record at the central
   Point Loma study sites extends back to 1983 when the strong 1982/1983 El Niño was ebbing." The
   City's kelp forest monitoring page lists seven installments under "Available Reports"; this
   record holds the one it links as "Biennial Report: 2018-2019" and none of the other six, and
@@ -252,22 +275,28 @@ coverage_stated_at: >-
   The first quotation is the first sentence of the fourth paragraph under the first section
   heading, PDF page 4, printed page A2; the second is the tenth sentence of the third paragraph
   under the first section heading, PDF page 3, printed page A1, the paragraph's eleventh and last
-  sentence running on to PDF page 4; the third opens the first paragraph under the third section
-  heading, PDF page 8, printed page A6; Appendix A.4 and its caption are on PDF page 10, printed
-  page A8, the caption's first sentence of three quoted and its headers "Study Site", "Depth (m)"
-  and "Year Established" printed on one line with "Work Conducted (frequency)", whose column is
-  not quoted; the fourth quotation is the first sentence of the last paragraph under the second
-  section heading, PDF page 8; the fifth, sixth, seventh and eighth are the first, second, fourth
-  and fifth sentences of the paragraph under the third section heading, PDF page 8, that begins
-  "Conspicuous macroalgal"; the ninth opens the paragraph under the third section heading, PDF
-  page 11, printed page A9, that begins "Sea urchin recruitment"; the tenth opens the paragraph
-  under the third section heading, PDF page 11, that begins "Fish surveys"; the eleventh opens
-  the second paragraph under Ocean Climate, the first sub-heading under the fourth section
-  heading, PDF page 12, printed page A10, all of the held PDF, whose section headings and printed
-  page labels the fifth access step describes, retrieved 2026-10-12; the seven link texts are on
-  the City's kelp forest monitoring page named in access, and the link text "2018-2019 Report"
-  and the contents entry are on the annual report archives page and that report's PDF page 8,
-  both named in access step 4 (2026-10-12)
+  sentence running on to PDF page 4; the third is the fourth sentence of the first paragraph
+  under Invasive Algal Species, the fifth sub-heading under the fourth section heading, PDF page
+  25, printed page A23; the fourth is the second sentence of the second paragraph under Ocean
+  Climate, the first sub-heading under the fourth section heading, PDF page 12, printed page
+  A10, the sentence after the sixteenth quotation; the fifth opens the first paragraph under
+  the third section heading, PDF page 8, printed page A6; Appendix A.4 and its caption are on PDF
+  page 10, printed page A8, the caption's first sentence of three quoted and its headers "Study
+  Site", "Depth (m)" and "Year Established" printed on one line with "Work Conducted
+  (frequency)", whose column is not quoted; the sixth quotation is the first sentence of the
+  last paragraph under the second section heading, PDF page 8; the seventh, eighth, ninth and
+  tenth are the first, second, fourth and fifth sentences of the paragraph under the third
+  section heading, PDF page 8, that begins "Conspicuous macroalgal"; the eleventh opens the
+  paragraph under the third section heading, PDF page 11, printed page A9, that begins "Sea
+  urchin recruitment"; the twelfth opens the paragraph under the third section heading, PDF page
+  11, that begins "The distribution of algal species", and the thirteenth is that paragraph's
+  fourth sentence; the fourteenth opens the paragraph under the third section heading, PDF page
+  11, that begins "Fish surveys", and the fifteenth is that paragraph's fifth sentence; the
+  sixteenth opens the second paragraph under Ocean Climate, PDF page 12, all of the held PDF,
+  whose section headings and printed page labels the fifth access step describes, retrieved
+  2026-10-12; the seven link texts are on the City's kelp forest monitoring page named in access,
+  and the link text "2018-2019 Report" and the contents entry are on the annual report archives
+  page and that report's PDF page 8, both named in access step 4 (2026-10-12)
 retrieved: 2026-10-12
 fetch_script: src/fetch/sandiego_kelp_forest_2018_2019.py
 file: null
