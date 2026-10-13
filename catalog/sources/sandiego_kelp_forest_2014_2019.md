@@ -102,7 +102,14 @@ access:
     record runs across one of the file's line breaks, the break is joined with one space and the
     file's other spacing is kept. The strings "doi" and "citation" occur in its text 0 times in
     any letter case, and "cite" once in any letter case, inside the heading LITERATURE CITED
-    (2026-10-11)
+    (2026-10-11).
+    The fifth and sixth coverage quotations were compared character for character against PDF page
+    7's content stream, its text-showing operators decoded in stream order through WinAnsiEncoding,
+    glyph code by glyph code, with no space added or removed: each is a run of the stream's glyphs,
+    all in one TrueType font, ABCDEE+Liberation Serif, and each of the four line breaks inside the
+    two follows a space glyph that ends the stream's line and is quoted as that space. pypdf
+    6.19.0's text differs from the two only at those four breaks, where it returns a space and a
+    line feed, and pdftext_literal.py's text holds each as quoted (2026-10-13)
 format: >-
   PDF; served as Content-Type application/pdf, 6,284,478 bytes beginning %PDF-1.5, 41 pages
 license: >-
@@ -195,7 +202,13 @@ coverage: >-
   1995, 1983, 1983, 1983, 1997, 1983, 1992, 1997, 1997 and 1996; "Researchers at the Scripps
   Institution of Oceanography (SIO) have partnered with the City of San Diego Ocean Monitoring
   Program to conduct regular surveys of the kelp forests off San Diego County including the kelp
-  forests off Point Loma, La Jolla and North County."; "Sea urchin recruitment is sampled
+  forests off Point Loma, La Jolla and North County.";
+  "These surveys represent a continuation of ecological studies that began at SIO in the Point Loma
+  (PLKF) and La Jolla (LJKF) kelp forests and continue at several of the sites established in the
+  1970's and 1980's (Dayton and Tegner, 1984)."; "Additional study sites have been established more
+  recently in both kelp forests and in kelp forests off northern San Diego County (North County -
+  NCKF).";
+  "Sea urchin recruitment is sampled
   semi-annually (spring and fall) at all of the Pt. Loma and La Jolla study sites.";
   "Sedimentation is monitored along the NCKF sites by measuring the height of permanently
   established spikes at replicate locations within each of those forests."; "The bottom
@@ -205,18 +218,18 @@ coverage: >-
   none of the other six
 coverage_stated_at: >-
   The first quotation is the first sentence of the second paragraph under EXECUTIVE SUMMARY, PDF
-  page 2; the second is the last sentence of the first paragraph under EXECUTIVE SUMMARY, PDF
-  page 2; the third opens MATERIALS AND METHODS, PDF page 7; Table 1 and its caption are on PDF
-  page 11, the caption's first sentence of three quoted, its headers "Study Site", "Depth (m)"
-  and "Year Established" each printed across two lines, "Study" over "Site", "Depth" over "(m)"
-  and "Year" over "Established", and quoted with the line break joined by one space; the fourth
-  quotation is the first sentence of the last paragraph under INTRODUCTION, PDF page 7; the fifth
-  opens the paragraph under MATERIALS AND METHODS, PDF page 10, that begins "Sea urchin
-  recruitment"; the sixth is the fifth sentence of the paragraph under MATERIALS AND METHODS, PDF
-  page 8, that begins "Conspicuous macroalgal"; the seventh opens the second paragraph under
-  RESULTS AND DISCUSSION, Bottom Temperature, PDF page 13, all of the held PDF, which prints no
-  page numbers, retrieved 2026-10-11; the seven link texts are on the City's kelp forest
-  monitoring page named in access (2026-10-11)
+  page 2; the second is the last sentence of the first paragraph under EXECUTIVE SUMMARY, PDF page
+  2; the third opens MATERIALS AND METHODS, PDF page 7; Table 1 and its caption are on PDF page 11,
+  the caption's first sentence of three quoted, its headers "Study Site", "Depth (m)" and "Year
+  Established" each printed across two lines, "Study" over "Site", "Depth" over "(m)" and "Year"
+  over "Established", and quoted with the line break joined by one space; the fourth quotation is
+  the first sentence of the last paragraph under INTRODUCTION, PDF page 7, and the fifth and sixth
+  are that paragraph's second and third sentences; the seventh opens the paragraph under MATERIALS
+  AND METHODS, PDF page 10, that begins "Sea urchin recruitment"; the eighth is the fifth sentence
+  of the paragraph under MATERIALS AND METHODS, PDF page 8, that begins "Conspicuous macroalgal";
+  the ninth opens the second paragraph under RESULTS AND DISCUSSION, Bottom Temperature, PDF page
+  13, all of the held PDF, which prints no page numbers, retrieved 2026-10-11; the seven link texts
+  are on the City's kelp forest monitoring page named in access (2026-10-11)
 retrieved: 2026-10-11
 fetch_script: src/fetch/sandiego_kelp_forest_2014_2019.py
 file: null

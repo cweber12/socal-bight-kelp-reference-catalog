@@ -143,7 +143,12 @@ access:
     that begins "S. horneri"; and it returns a space where the stream prints none after "(" in
     the measures entry that begins "Recruitment rates", and before each of the two commas in the
     coverage quotation that begins "Reproduction and growth". The strings "doi", "cite" and
-    "citation" occur in its text 0 times in any letter case (2026-10-12)
+    "citation" occur in its text 0 times in any letter case (2026-10-12). The seventh and eighth
+    coverage quotations were compared against PDF page 8's content stream decoded in the same way:
+    each is a run of the stream's glyphs, all in one Type0 font, and each of the eight line breaks
+    inside the two follows a space glyph that ends the stream's line and is quoted as that space.
+    pypdf 6.19.0's text differs from the two only at those eight breaks, where it returns a space
+    and a line feed, and pdftext_cmap.py's text only there, where it returns two spaces (2026-10-13)
 format: >-
   PDF; served as Content-Type application/pdf, 6,647,185 bytes beginning %PDF-1.7, 42 pages
 license: >-
@@ -248,7 +253,12 @@ coverage: >-
   2004, 2004, 2004, 2004, 1992, 2004, 1983, 1995, 1983, 1983, 1983, 1997, 1983, 1992, 1997, 1997
   and 1996; "Researchers at SIO have partnered with the City to conduct regular surveys of the
   kelp forests off San Diego County including the kelp forests off Point Loma, La Jolla and North
-  County."; "Conspicuous macroalgal species/groups are enumerated or percent cover is estimated
+  County.";
+  "These surveys represent a continuation of ecological studies that began at SIO in the Point Loma
+  (PLKF) and La Jolla (LJKF) kelp forests and continue at some of the sites established in the 1970
+  and 1980 (Dayton and Tegner 1984)."; "Additional study sites have been established more recently
+  in both kelp forests and in kelp forests off northern San Diego County (North County - NCKF).";
+  "Conspicuous macroalgal species/groups are enumerated or percent cover is estimated
   within 5 x 2 m (10 m2) contiguous quadrats along the band transect lines at all sites.";
   "Reproduction and growth of Macrocystis pyrifera, and the understory kelps Pterygophora
   californica and Laminaria farlowii, are measured on permanently tagged plants along the
@@ -272,31 +282,31 @@ coverage: >-
   contents list that file as "Appendix A: Evaluation of Anthropogenic Impacts on the San Diego
   Coastal Kelp Forest" over "Ecosystem (Biennial Project Report)"
 coverage_stated_at: >-
-  The first quotation is the first sentence of the fourth paragraph under the first section
-  heading, PDF page 4, printed page A2; the second is the tenth sentence of the third paragraph
-  under the first section heading, PDF page 3, printed page A1, the paragraph's eleventh and last
-  sentence running on to PDF page 4; the third is the fourth sentence of the first paragraph
-  under Invasive Algal Species, the fifth sub-heading under the fourth section heading, PDF page
-  25, printed page A23; the fourth is the second sentence of the second paragraph under Ocean
-  Climate, the first sub-heading under the fourth section heading, PDF page 12, printed page
-  A10, the sentence after the sixteenth quotation; the fifth opens the first paragraph under
-  the third section heading, PDF page 8, printed page A6; Appendix A.4 and its caption are on PDF
-  page 10, printed page A8, the caption's first sentence of three quoted and its headers "Study
-  Site", "Depth (m)" and "Year Established" printed on one line with "Work Conducted
-  (frequency)", whose column is not quoted; the sixth quotation is the first sentence of the
-  last paragraph under the second section heading, PDF page 8; the seventh, eighth, ninth and
-  tenth are the first, second, fourth and fifth sentences of the paragraph under the third
-  section heading, PDF page 8, that begins "Conspicuous macroalgal"; the eleventh opens the
-  paragraph under the third section heading, PDF page 11, printed page A9, that begins "Sea
-  urchin recruitment"; the twelfth opens the paragraph under the third section heading, PDF page
-  11, that begins "The distribution of algal species", and the thirteenth is that paragraph's
-  fourth sentence; the fourteenth opens the paragraph under the third section heading, PDF page
-  11, that begins "Fish surveys", and the fifteenth is that paragraph's fifth sentence; the
-  sixteenth opens the second paragraph under Ocean Climate, PDF page 12, all of the held PDF,
-  whose section headings and printed page labels the fifth access step describes, retrieved
-  2026-10-12; the seven link texts are on the City's kelp forest monitoring page named in access,
-  and the link text "2018-2019 Report" and the contents entry are on the annual report archives
-  page and that report's PDF page 8, both named in access step 4 (2026-10-12)
+  The first quotation is the first sentence of the fourth paragraph under the first section heading,
+  PDF page 4, printed page A2; the second is the tenth sentence of the third paragraph under the
+  first section heading, PDF page 3, printed page A1, the paragraph's eleventh and last sentence
+  running on to PDF page 4; the third is the fourth sentence of the first paragraph under Invasive
+  Algal Species, the fifth sub-heading under the fourth section heading, PDF page 25, printed page
+  A23; the fourth is the second sentence of the second paragraph under Ocean Climate, the first
+  sub-heading under the fourth section heading, PDF page 12, printed page A10, the sentence after
+  the eighteenth quotation; the fifth opens the first paragraph under the third section heading, PDF
+  page 8, printed page A6; Appendix A.4 and its caption are on PDF page 10, printed page A8, the
+  caption's first sentence of three quoted and its headers "Study Site", "Depth (m)" and "Year
+  Established" printed on one line with "Work Conducted (frequency)", whose column is not quoted;
+  the sixth quotation is the first sentence of the last paragraph under the second section heading,
+  PDF page 8, and the seventh and eighth are that paragraph's second and third sentences; the ninth,
+  tenth, eleventh and twelfth are the first, second, fourth and fifth sentences of the paragraph
+  under the third section heading, PDF page 8, that begins "Conspicuous macroalgal"; the thirteenth
+  opens the paragraph under the third section heading, PDF page 11, printed page A9, that begins
+  "Sea urchin recruitment"; the fourteenth opens the paragraph under the third section heading, PDF
+  page 11, that begins "The distribution of algal species", and the fifteenth is that paragraph's
+  fourth sentence; the sixteenth opens the paragraph under the third section heading, PDF page 11,
+  that begins "Fish surveys", and the seventeenth is that paragraph's fifth sentence; the eighteenth
+  opens the second paragraph under Ocean Climate, PDF page 12, all of the held PDF, whose section
+  headings and printed page labels the fifth access step describes, retrieved 2026-10-12; the seven
+  link texts are on the City's kelp forest monitoring page named in access, and the link text
+  "2018-2019 Report" and the contents entry are on the annual report archives page and that report's
+  PDF page 8, both named in access step 4 (2026-10-12)
 retrieved: 2026-10-12
 fetch_script: src/fetch/sandiego_kelp_forest_2018_2019.py
 file: null

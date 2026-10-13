@@ -92,7 +92,15 @@ access:
     and the file's other spacing is kept. The strings "doi" and "citation"
     occur in its text 1 and 0 times in any letter case, the 1 inside the URL
     https://dx.doi.org/10.2305/IUCN.UK.2021-1.RLTS.T178290276A197818455.en of the LITERATURE
-    CITED entry for Gravem et al. 2021 (2026-10-05)
+    CITED entry for Gravem et al. 2021 (2026-10-05).
+    The second, third, fourth, eighth and ninth coverage quotations were compared character for
+    character against the content streams of PDF pages 2 and 8, their text-showing operators decoded
+    in stream order through the /ToUnicode CMap of the font then selected, glyph code by glyph code,
+    with no space added or removed: each is a run of the stream's glyphs, all in one TrueType font,
+    CAAAAA+LiberationSerif, and each of the eight line breaks inside the five follows a space glyph
+    that ends the stream's line and is quoted as that space. pdftext_cmap.py's text and pypdf
+    6.19.0's text differ from the five only at those eight breaks, where pdftext_cmap.py returns two
+    spaces and pypdf a space and a line feed (2026-10-13)
 format: >-
   PDF; served as Content-Type application/pdf, 5,128,132 bytes beginning %PDF-1.6, 62 pages
 license: >-
@@ -185,7 +193,14 @@ findings: []
 coverage: >-
   "Conditions during the present reporting period (2019-2024) returned to favorable conditions for
   giant kelp recovery due to persistent La Niña conditions that persisted from 2021 to early
-  2023."; "Data are inclusive between 1997-2021.  Red points indicate present study period
+  2023.";
+  "The kelp forests off San Diego have been studied by researchers at the Scripps Institution of
+  Oceanography (SIO) since the 1950's, and baseline data collection began in the 1970’s."; "These
+  surveys represent a continuation of ecological studies in the Point Loma and La Jolla kelp forests
+  at some of the same sites established as part of earlier studies conducted in the 1970s and
+  1980s."; "Additional study sites have been established more recently in both Point Loma and La
+  Jolla, and in kelp forests off northern San Diego County.";
+  "Data are inclusive between 1997-2021.  Red points indicate present study period
   (2020-2021)."; "Algae, invertebrates and bottom temperatures are monitored at twenty permanently
   established study sites (Fig. 4)."; Table 1, captioned "List of study sites including year of
   establishment and work conducted at each site.", lists under "Study Site" Card, SB, DM, LJN18,
@@ -194,7 +209,13 @@ coverage: >-
   12, 8, 18, 15, 12, 15 and 18; "Researchers at the Scripps Institution of Oceanography (SIO) have
   partnered with the City of San Diego Ocean Monitoring Program to conduct regular surveys of the
   kelp forests off San Diego County including the kelp forests off Point Loma, La Jolla and North
-  County."; "Sea urchin recruitment is sampled semi-annually (spring and fall) at all of the Pt.
+  County.";
+  "These surveys represent a continuation of ecological studies that began at SIO in the Point Loma
+  (PLKF) and La Jolla (LJKF) kelp forests and continue at some of the sites established in the
+  1970's and 1980's (Dayton and Tegner, 1984)."; "Additional study sites have been established more
+  recently in both kelp forests and in kelp forests off northern San Diego County (North County -
+  NCKF).";
+  "Sea urchin recruitment is sampled semi-annually (spring and fall) at all of the Pt.
   Loma and La Jolla study sites."; "With the establishment of kelp forest study sites in the
   area, sediment depths are monitored along all of the NCKF sites."; "Fish surveys were initiated
   in the fall of 2019 and continue semi-annually (fall/spring) at four sites within the LJKF and
@@ -207,18 +228,21 @@ coverage: >-
 coverage_stated_at: >-
   The first quotation is under EXECUTIVE SUMMARY on PDF page 3, the last sentence but one of the
   paragraph that begins on PDF page 2 with "The kelp forests throughout much of southern
-  California"; the second is the last two sentences of the Figure 16 caption, PDF page 31; the
-  third opens MATERIALS AND METHODS, PDF page 8; Table 1 and its caption are on PDF page 13, its
-  headers "Study Site" and "Depth (m)" each printed across two lines, "Study" over "Site" and
-  "Depth" over "(m)", and quoted with the line break joined by one space; the fourth quotation is
-  the first sentence of the last paragraph under INTRODUCTION, PDF page 8; the fifth opens the
-  paragraph under MATERIALS AND METHODS, Invertebrates, PDF page 11, that begins "Sea urchin
-  recruitment"; the sixth is the third sentence of the second paragraph under Temperature and
-  Sedimentation, PDF page 12; the seventh opens the paragraph under Finfishes, PDF page 14; the
-  eighth is the third and fourth sentences of the second paragraph under Bottom Light Levels, PDF
-  page 17; the ninth opens the second paragraph under RESULTS AND DISCUSSION, Ocean Climate, PDF
-  page 18, all of the held PDF, which prints no page numbers, retrieved 2026-10-05; the seven
-  link texts are on the City's kelp forest monitoring page named in access (2026-10-05)
+  California", and the second, third and fourth are the first, third and fifth sentences of the
+  third paragraph under EXECUTIVE SUMMARY, PDF page 2, the paragraph before that one; the fifth is
+  the last two sentences of the Figure 16 caption, PDF page 31; the sixth opens MATERIALS AND
+  METHODS, PDF page 8; Table 1 and its caption are on PDF page 13, its headers "Study Site" and
+  "Depth (m)" each printed across two lines, "Study" over "Site" and "Depth" over "(m)", and quoted
+  with the line break joined by one space; the seventh quotation is the first sentence of the last
+  paragraph under INTRODUCTION, PDF page 8, and the eighth and ninth are that paragraph's second and
+  third sentences; the tenth opens the paragraph under MATERIALS AND METHODS, Invertebrates, PDF
+  page 11, that begins "Sea urchin recruitment"; the eleventh is the third sentence of the second
+  paragraph under Temperature and Sedimentation, PDF page 12; the twelfth opens the paragraph under
+  Finfishes, PDF page 14; the thirteenth is the third and fourth sentences of the second paragraph
+  under Bottom Light Levels, PDF page 17; the fourteenth opens the second paragraph under RESULTS
+  AND DISCUSSION, Ocean Climate, PDF page 18, all of the held PDF, which prints no page numbers,
+  retrieved 2026-10-05; the seven link texts are on the City's kelp forest monitoring page named in
+  access (2026-10-05)
 retrieved: 2026-10-05
 fetch_script: src/fetch/sandiego_kelp_forest_2019_2024.py
 file: null
