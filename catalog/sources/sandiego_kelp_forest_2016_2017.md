@@ -48,8 +48,8 @@ access:
     PDF pages 1 and 2 print none. Every page's content stream carries, below the page's MediaBox,
     CropBox, TrimBox and BleedBox, each [0 0 612 792], and outside the clip in force there, a
     rectangle from y 0.03 to 792.03 on every page but PDF page 2, which sets none, a line of
-    6-point glyphs on the baseline y = -15, which no viewer renders and which pypdf 6.19.0's
-    extract_text returns, for PDF page 1, as
+    6-point glyphs on the baseline y = -15, which pypdf 6.19.0's extract_text returns, for PDF
+    page 1, as
     "BR1617_14_web Appendix A.indd   1 7/10/2018   3:44:21 PM"
     (three spaces before the 1 and before the time), and for each other page in the same form
     with that page's own number or label and a time between 3:44:35 PM and 3:44:39 PM, each
