@@ -143,7 +143,12 @@ access:
     that begins "S. horneri"; and it returns a space where the stream prints none after "(" in
     the measures entry that begins "Recruitment rates", and before each of the two commas in the
     coverage quotation that begins "Reproduction and growth". The strings "doi", "cite" and
-    "citation" occur in its text 0 times in any letter case (2026-10-12)
+    "citation" occur in its text 0 times in any letter case (2026-10-12). The seventh and eighth
+    coverage quotations were compared against PDF page 8's content stream decoded in the same way:
+    each is a run of the stream's glyphs, all in one Type0 font, and each of the eight line breaks
+    inside the two follows a space glyph that ends the stream's line and is quoted as that space.
+    pypdf 6.19.0's text differs from the two only at those eight breaks, where it returns a space
+    and a line feed, and pdftext_cmap.py's text only there, where it returns two spaces (2026-10-13)
 format: >-
   PDF; served as Content-Type application/pdf, 6,647,185 bytes beginning %PDF-1.7, 42 pages
 license: >-
