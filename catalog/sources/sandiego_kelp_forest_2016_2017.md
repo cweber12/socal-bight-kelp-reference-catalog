@@ -45,14 +45,17 @@ access:
     begins with the bytes %PDF- (2026-10-12)
   - >-
     The file has 24 PDF pages. PDF pages 3 to 24 print the page labels A1 to A22 in that order;
-    PDF pages 1 and 2 print none. Every page prints at its foot a line that pypdf 6.19.0's
+    PDF pages 1 and 2 print none. Every page's content stream carries, below the page's MediaBox,
+    CropBox, TrimBox and BleedBox, each [0 0 612 792], and outside the clip in force there, a
+    rectangle from y 0.03 to 792.03 on every page but PDF page 2, which sets none, a line of
+    6-point glyphs on the baseline y = -15, which no viewer renders and which pypdf 6.19.0's
     extract_text returns, for PDF page 1, as
     "BR1617_14_web Appendix A.indd   1 7/10/2018   3:44:21 PM"
     (three spaces before the 1 and before the time), and for each other page in the same form
     with that page's own number or label and a time between 3:44:35 PM and 3:44:39 PM, each
-    glyph of the line set by a text-positioning operator of its own in the content stream, which
-    prints no space glyph between the page's number or label and the date; on PDF page 2 that
-    line is all the page prints. Its first page prints, on separate lines in
+    glyph of the line set by a text-positioning operator of its own, with no space glyph between
+    the page's number or label and the date; PDF page 2 renders no text, its stream carrying only
+    that line. Its first page prints, on separate lines in
     this order, "Appendix A", "Status and Trends of San Diego Kelp Forests" and "2016 – 2017"
     (the dash U+2013, a space either side), the second and third of which title quotes with the
     line break joined by one space. PDF page 3 prints at its head, on separate lines in this
@@ -78,14 +81,16 @@ access:
     sentence that begins on PDF page 4 and ends on PDF page 5, "The Point Loma Ocean Outfall
     (PLOO), for example, was extended and deepened effective in late 1993, presently discharging
     treated wastewater ~7.3 km offshore in waters ~98 m deep." (the page break after "1993,",
-    across which PDF page 4's foot line and PDF page 5's label fall, joined as one space), and
+    across which PDF page 4's unrendered line and PDF page 5's label fall, joined as one space),
+    and
     under EXECUTIVE SUMMARY, PDF
     page 3, as "the Point Loma and South Bay ocean outfall regions". The strings "Public
     Utilities" and "Department" occur twice each in its text, "Submitted" and "Contract" once
     each, all six on PDF page 3; "Prepared for" and "Prepared By" 0 times in any letter case;
     and "Appendix" 25 times, every one of them "Appendix A": once on its first page and 24 times
-    in the foot lines, as "Appendix A.indd". Each count is whitespace normalised over pypdf
-    6.19.0's text and, where no letter case is named, the same in any letter case (2026-10-12)
+    in the unrendered lines, as "Appendix A.indd". Each count is whitespace normalised over
+    pypdf 6.19.0's text, the unrendered lines included, and, where no letter case is named, the
+    same in any letter case (2026-10-12)
   - >-
     The City's page
     https://www.sandiego.gov/public-utilities/sustainability/ocean-monitoring/reports/annual-report-archives,
@@ -95,7 +100,7 @@ access:
     against the page's origin to
     https://www.sandiego.gov/sites/default/files/2016_2017_biennial_rpt.pdf, which answers HTTP
     200 with 18,325,321 bytes of Content-Type application/pdf, no redirect, Last-Modified "Tue,
-    24 Oct 2023 19:22:20 GMT" and no ETag, SHA-256
+    24 Oct 2023 19:22:20 GMT" and ETag "6538196c-1179f49", SHA-256
     b5c4a70de9879387dc43908844a2c5563f06b0ebd1ead665d1b55c5755e1060a, 442 PDF pages. That
     report's PDF page 9, which prints "iii" as its first line, prints under "How to cite this
     document:" "City of San Diego. (2018). Biennial Receiving Waters Monitoring and Assessment
@@ -139,23 +144,26 @@ access:
     text-space units past the ligature's origin (the Tf operators state size 1), and shows a
     space glyph before the rest of the word, whose advance, with the word spacing and array
     adjustment then in force, brings the next glyph to within 0.03 text-space units of the
-    ligature's advance of 0.556 in the roman and 0.5 in the italic, so the page prints the word
-    without a gap; pypdf's text carries the ligature 31 times, each followed by a space. One
-    quoted string in this record carries it, the coverage quotation that begins "This report
-    summarizes", with no space after it, the one place a quoted string in this record omits a
-    glyph the decoded sequence holds. Inside the quoted strings pypdf 6.19.0's text differs from
-    the stream in six strings, at a font change in five of them: it returns a space where the
-    stream prints none before the comma after "pyrifera", and two spaces where the stream prints
-    one after "californica" and after the comma after "farlowii", in the coverage quotation that
-    begins "Reproduction and growth"; a space where the stream prints none between "m" and "2"
-    in the coverage quotation that begins "Conspicuous macroalgal"; a space where the stream
-    prints none before ")" after "franciscanus" in the coverage quotation that begins "Size
+    ligature's advance of 0.556 in the roman and 0.5 in the italic, so the page renders the word
+    with no gap while the glyph sequence holds a space; pypdf's text carries the ligature 31
+    times, each followed by that space. One quoted string in this record carries it, the coverage
+    quotation that begins "This report summarizes", which carries the glyph sequence "ﬁ ndings"
+    (U+FB01, U+0020) as the stream and pypdf both hold it. Inside the quoted strings pypdf
+    6.19.0's text differs from the stream in five strings, at a change of font between roman and
+    italic in three of them and at a change of text position in one font in two: it returns a
+    space where the stream prints none before the comma after "pyrifera", and two spaces where
+    the stream prints one after "californica" and after the comma after "farlowii", in the
+    coverage quotation that begins "Reproduction and growth"; a space where the stream prints
+    none before ")" after "franciscanus" in the coverage quotation that begins "Size
     frequencies"; two spaces where the stream prints one after "franciscanus" and a space where
     the stream prints none before the comma after "purpuratus" in the measures entry that begins
-    "Recruitment rates"; the space after the ligature in the coverage quotation named above; and,
-    at a positioning gap rather than a font change, the space between the page's number and the
-    date in the foot line the third step quotes. The strings "doi" and "citation" occur in its
-    text 0 times in any letter case, and
+    "Recruitment rates"; a space where the stream prints none between "m" and "2" in the coverage
+    quotation that begins "Conspicuous macroalgal", the "2" set by a text matrix of its own in
+    the same font; and the space between the page's number and the date in the unrendered line
+    the third step quotes. The outfall quotation in the third step is the one quoted string in
+    this record that omits glyphs the decoded sequence holds, the unrendered line and the label
+    its page break passes over. The strings "doi" and "citation" occur in its text 0 times in any
+    letter case, and
     "cite" once in any letter case, inside the heading LITERATURE CITED (2026-10-12)
 format: >-
   PDF; served as Content-Type application/pdf, 2,970,304 bytes beginning %PDF-1.4, 24 pages
@@ -227,7 +235,7 @@ measures:
   - "Sedimentation"
 findings: []
 coverage: >-
-  "This report summarizes the ﬁndings from the last several years of the SIO kelp forest
+  "This report summarizes the ﬁ ndings from the last several years of the SIO kelp forest
   monitoring project with an emphasis on calendar years 2016 and 2017."; "The kelp forests off
   San Diego have been studied by researchers at the Scripps Institution of Oceanography (SIO)
   since the 1970s, and are currently being monitored at twenty permanent study sites located
@@ -246,7 +254,12 @@ coverage: >-
   1983, 1983, 1983, 1997, 1983, 1992, 1997, 1997 and 1996; "Researchers at the Scripps
   Institution of Oceanography (SIO) have partnered with the City of San Diego Ocean Monitoring
   Program to conduct regular surveys of the kelp forests off San Diego County including the kelp
-  forests off Point Loma, La Jolla and North County."; "Conspicuous macroalgal species/groups are
+  forests off Point Loma, La Jolla and North County."; "These surveys represent a continuation of
+  ecological studies that began at SIO in the Point Loma Kelp Forest (PLKF) and La Jolla Kelp
+  Forest (LJKF) and continue at several of the sites established in the 1970s and 1980s (Dayton
+  and Tegner 1984)."; "Additional study sites have been established more recently in both kelp
+  forests and in kelp forests off northern San Diego County (NCKF)."; "Conspicuous macroalgal
+  species/groups are
   enumerated or percent cover is estimated within 5 x 2 m (10 m2) continuous quadrats along the
   band transect lines at all sites."; "Reproduction and growth of giant kelp Macroscystis
   pyrifera, and the understory kelps Pterygophora californica and Laminaria farlowii, are
@@ -259,8 +272,10 @@ coverage: >-
   urchin recruitment is sampled semi-annually (spring and fall) at all of the PLKF and LJKF study
   sites."; "The distribution of algal species among all permanent sites was calculated using
   factor analysis in R (R Core Team 2018)."; "Thirteen algal groups and derived bare space were
-  analyzed among 20 sites."; "The bottom temperature record at the central PLKF study sites
-  extends back to 1983 when the strong 1982/1983 El Niño was ebbing."; "Sediment horizons have
+  analyzed among 20 sites."; "Algal states among all of the study sites for 2016 and 2017 are
+  shown in Figures 11 and 12, respectively."; "The bottom temperature record at the central PLKF
+  study sites extends back to 1983 when the strong 1982/1983 El Niño was ebbing."; "Sediment
+  horizons have
   varied less than 10 cm since 2008 when the sediment time series began." The City's kelp forest
   monitoring page lists seven installments under "Available Reports"; this record holds the one
   it links as "Annual Report: 2016-2017" and none of the other six, and not the report the
@@ -271,18 +286,21 @@ coverage_stated_at: >-
   page 3, printed page A1, and the second is the sentence before it in that paragraph; the third
   is the sentence of the paragraph under Bottom Temperature, the first sub-heading under RESULTS
   AND DISCUSSION, that begins "The bottom temperature climate", on PDF page 10, printed page A8,
-  the paragraph opening on PDF page 9 with the thirteenth quotation; the fourth opens MATERIALS
+  the paragraph opening on PDF page 9 with the sixteenth quotation; the fourth opens MATERIALS
   AND METHODS, PDF page 5, printed page A3; Table 1 and its caption are on PDF page 8, printed
   page A6, the caption's first sentence of three quoted and its headers "Study Site", "Depth (m)"
   and "Year Established" printed on one line with "Work Conducted (frequency)", whose column is
-  not quoted; the fifth quotation is the first sentence of the last paragraph under
-  INTRODUCTION, PDF page 5; the sixth, seventh, eighth and ninth are the first, second, fourth
-  and fifth sentences of the paragraph under MATERIALS AND METHODS, PDF page 6, printed page A4,
-  that begins "Conspicuous macroalgal"; the tenth opens the paragraph under MATERIALS AND
-  METHODS, PDF page 9, printed page A7, that begins "Sea urchin recruitment"; the eleventh opens
-  the paragraph under MATERIALS AND METHODS, PDF page 9, that begins "The distribution of algal
-  species", and the twelfth is that paragraph's third sentence; the thirteenth opens the
-  paragraph under Bottom Temperature, PDF page 9; the fourteenth is the second sentence of the
+  not quoted; the fifth, sixth and seventh quotations are the first, second and third sentences
+  of the last paragraph under INTRODUCTION, PDF page 5; the eighth, ninth, tenth and eleventh
+  are the first, second, fourth and fifth sentences of the paragraph under MATERIALS AND
+  METHODS, PDF page 6, printed page A4, that begins "Conspicuous macroalgal"; the twelfth opens
+  the paragraph under MATERIALS AND METHODS, PDF page 9, printed page A7, that begins "Sea urchin
+  recruitment"; the thirteenth opens the paragraph under MATERIALS AND METHODS, PDF page 9, that
+  begins "The distribution of algal species", and the fourteenth is that paragraph's third
+  sentence; the fifteenth opens the paragraph under Understory Kelps, the third sub-heading under
+  RESULTS AND DISCUSSION, PDF page 15, printed page A13, that begins "Algal states"; the
+  sixteenth opens the paragraph under Bottom Temperature, PDF page 9; the seventeenth is the
+  second sentence of the
   paragraph under the sub-heading "Sedimentation among" over "North County Kelp Forests", PDF
   page 21, printed page A19, all of the held PDF, whose section headings and printed page labels
   the fifth and third access steps describe, retrieved 2026-10-12; the seven link texts are on
