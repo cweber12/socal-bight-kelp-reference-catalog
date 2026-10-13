@@ -81,7 +81,14 @@ access:
     0 times each. Its text is set in subset fonts as glyph-index strings: the strings pypdf
     6.19.0's extract_text returns for the 60 pages total 72,213 characters,
     .claude/skills/review-source/pdftext_cmap.py prints "CMAPS 9 PAGES 60 CHARS 73392" and
-    pdftext_literal.py prints "PAGES 0 CHARS 0" (2026-10-05)
+    pdftext_literal.py prints "PAGES 0 CHARS 0" (2026-10-05).
+    The fifth and sixth coverage quotations were compared character for character against PDF page
+    8's content stream, its text-showing operators decoded in stream order through the /ToUnicode
+    CMap of the font then selected, glyph code by glyph code, with no space added or removed: each
+    is a run of the stream's glyphs, all in one Type0 font, and each of the five line breaks inside
+    the two follows a space glyph that ends the stream's line and is quoted as that space.
+    pdftext_cmap.py's text and pypdf 6.19.0's text differ from the two only at those five breaks,
+    where pdftext_cmap.py returns two spaces and pypdf a space and a line feed (2026-10-13)
   - >-
     Under METHODS, PDF page 9, the document states "The full methods of the kelp forest
     monitoring program are described in a recent paper (Parnell et al. 2026) and in all previous
@@ -180,6 +187,11 @@ coverage: >-
   18 m, PLT = Point Loma Tip at 12 and 15 m, and PLM = Point Loma Mouth at 18 m."; "The SIO group
   has conducted regular surveys of the kelp forests off San Diego County since the 1970’s and now
   regularly surveys the kelp forests off Point Loma, La Jolla and North County (see Figure 1).";
+  "These surveys represent a continuation of ecological studies that began at SIO in the Point Loma
+  (PLKF) and La Jolla (LJKF) kelp forests and continue at some of the sites established in the
+  1970's and 1980's (Dayton & Tegner 1984)."; "Additional study sites have been established more
+  recently in both of those kelp forests as well as in kelp forests off northern San Diego County
+  (North County - NCKF).";
   "Benthic temperature measured at the cross-depth long-term monitoring sites from 2007 to 2025 at
   Point Loma Central at: a) 8 m depth, b) 12 m depth, c) 15 m depth, d) 18 m depth, and e) 21 m
   depth."; "The measurement sites off Point Loma are located at 9, 15, and 24 m depth. Submarine
@@ -192,12 +204,13 @@ coverage_stated_at: >-
   The first two sentences quoted are under METHODS, printed page 9 (PDF page 9), the first opening
   that section and the second opening its second paragraph; the third quotation is the third and
   fourth sentences of the Figure 1 caption on the same page; the fourth is the second sentence of
-  the last paragraph under INTRODUCTION, printed page 8 (PDF page 8); the fifth is the first
-  sentence of the Figure 3 caption, printed page 14 (PDF page 14); the sixth is the third and
-  fourth sentences of the paragraph under METHODS, Light, printed page 11 (PDF page 11); and the
-  seventh is the first sentence of the paragraph under RESULTS, Waves, printed page 17 (PDF page
-  17), all of the held PDF, retrieved 2026-10-05; the seven link texts are on the City's kelp
-  forest monitoring page named in access (2026-10-05)
+  the last paragraph under INTRODUCTION, printed page 8 (PDF page 8), and the fifth and sixth are
+  that paragraph's third and fourth sentences; the seventh is the first sentence of the Figure 3
+  caption, printed page 14 (PDF page 14); the eighth is the third and fourth sentences of the
+  paragraph under METHODS, Light, printed page 11 (PDF page 11); and the ninth is the first sentence
+  of the paragraph under RESULTS, Waves, printed page 17 (PDF page 17), all of the held PDF,
+  retrieved 2026-10-05; the seven link texts are on the City's kelp forest monitoring page named in
+  access (2026-10-05)
 retrieved: 2026-10-05
 fetch_script: src/fetch/sandiego_kelp_forest_2023_2025.py
 file: null
