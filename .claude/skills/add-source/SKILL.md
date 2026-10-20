@@ -123,7 +123,8 @@ does not list.
   `variables` row's closing clause is the other half of that case.
 - `findings`: as the `findings` row of the table says, which points at the `findings` row of the
   `references/<citekey>.md` table; that row says what makes an entry quotable and in which PR.
-- `coverage` as the `coverage` row of the table says, which fixes the order its clauses come in, and
+- `coverage` as the `coverage` row of the table says, which fixes the order its clauses come in and
+  when it quotes more than one statement of one thing, and
   `coverage_stated_at` where it states it. When `coverage` draws on several places, name each in
   `coverage_stated_at` in the order its clause appears in `coverage`. A span read off a file's
   first and last rows is a fact of the copy you fetched: date it, and expect to restate it on
