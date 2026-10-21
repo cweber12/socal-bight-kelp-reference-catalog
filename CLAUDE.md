@@ -30,15 +30,29 @@ One milestone is active at a time. A PRD for each milestone lives at `docs/prd/<
 is the last slice in the milestone. The next thing to do is the first open `ready-for-agent` issue
 in that table. An issue is ready when it names the seam, the failing test and the non-goals and
 fits one PR; if you cannot state the failing test, stop and ask. Ideas go in the pinned Parking-lot
-issue as one-line comments, never as new issues; the only issues an agent opens on its own are
-found-in-flight bugs under rule 3.
+issue as one-line comments. An agent opens an issue on its own for a found-in-flight bug under
+rule 3, and for a decision it has made that needs a PR ("Decisions an agent would hand back").
 
 A design or grill session that settles more than one `CONTEXT.md` rule ends in decisions and
 issues, not in text: the issues carry the seam, the failing test where there is one, and the
 non-goals, and the text is drafted against them by whoever picks them up. The owner files them, or
-asks for them by name — the sentence above still holds, and an agent opening them on its own is
-the thing it forbids. On 2026-09-19 a grill's decisions went straight to four PRs, none of which
-closed an issue or had one filed for it.
+asks for them by name; the issues an agent files unasked are the ones the section below gives it.
+On 2026-09-19 a grill's decisions went straight to four PRs, none of which closed an issue or had
+one filed for it.
+
+## Decisions an agent would hand back
+
+A choice an agent would otherwise leave to the owner is the agent's to make. The owner's word,
+2026-10-20, on a report that closed with two such items — a Parking-lot line waiting on "the
+owner's call" and an untriaged found-in-flight issue: "things I want an agent to decide. This
+applies to all chats." The kinds this covers are the ones that get handed back: a parked line that
+waits on a call, a `needs-triage` issue, a clause an issue's Goal carries that the owner's decision
+line does not, a precedence between two readings a rule leaves unordered. Decide it, and record
+the decision and the readings it rejected where the item lives — the Parking-lot comment, patched
+by id; the issue; the PR body. Where the decision needs a PR, file the issue that carries it, with
+the seam, the failing test and the non-goals, so it joins the work order. What stays the owner's is
+what this file already names: the merge, outside a declared auto-merge run; a new milestone or
+track. A report lists the decisions made and where each is recorded, not decisions waiting.
 
 ## In-flight bugs
 

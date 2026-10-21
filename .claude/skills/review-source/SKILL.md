@@ -331,9 +331,9 @@ Then draft, into that note or a file beside it:
 
 **File nothing.** No `gh issue create`, no `gh issue comment`, no record, no branch, no commit.
 What a candidate nobody has entered is, and where it lives, is the last paragraph of
-`human-tasks/<id>.md` in `CONTEXT.md`, *Record schemas*; putting it there is the owner's
-(`CLAUDE.md`, "How work is tracked"). Print the verdict, the destination with its derivation, and
-every draft in full, then **stop**.
+`human-tasks/<id>.md` in `CONTEXT.md`, *Record schemas*; changing that is a decision to make and
+file outside this skill (`CLAUDE.md`, "Decisions an agent would hand back"). Print the verdict, the
+destination with its derivation, and every draft in full, then **stop**.
 
 ## What this skill has not seen
 
