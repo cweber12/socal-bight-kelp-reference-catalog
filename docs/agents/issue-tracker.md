@@ -31,14 +31,17 @@ repo from `git remote -v` when run inside a clone.
   `6.4d Dataset sources`, `6.5 Lock and fetch`, `6.6 Indexes and citation`, `6.7 Bight expansion`.
   A PRD for each lives at
   `docs/prd/<slug>.md`; 6.3b is scheduled inside the 6.3 PRD, and 6.3c runs before 6.3b's beds
-  track while 6.3b's sites track runs beside 6.3c, except its last row, whose schedule is the
-  owner's call (`docs/prd/monitoring-sources.md`, its status line, and the 6.3 PRD's Sites track
-  section).
+  track while 6.3b's sites track runs beside 6.3c, except its last row, whose schedule is a
+  decision for whoever picks it up (`CLAUDE.md`, "Decisions an agent would hand back");
+  `docs/prd/monitoring-sources.md`, its status line, and the 6.3 PRD's Sites track section both
+  still call it the owner's, and were written before that section.
 - **The next thing to do** is the first open `ready-for-agent` issue in the active milestone's PRD
   **Slices** table. Not the top of `gh issue list`, which sorts newest-first and so puts the *last*
   slice of the milestone first (`CLAUDE.md`, "How work is tracked").
 - An issue is ready when it names the seam (function signature, gate row or file format), the
-  failing test, the non-goals, and fits one PR. If you cannot state the failing test, stop and ask.
+  failing test, the non-goals, and fits one PR. If you cannot state the failing test, decide what
+  the check is — "none mechanical", with an acceptance a reader can run — and record it on the
+  issue (`CLAUDE.md`, "Decisions an agent would hand back").
 - One issue → one branch (`<type>/<slug>`) → one PR, squash-merged, `Closes #N` in the body.
 
 ## Record issues
@@ -63,7 +66,8 @@ is what works it.
 
 ## Ideas are not issues
 
-Ideas go in the pinned **Parking lot** issue (#5) as one-line comments, never as new issues:
+Ideas go in the pinned **Parking lot** issue (#5) as one-line comments; an issue is filed for one
+once an agent has decided it (`CLAUDE.md`, "Decisions an agent would hand back"):
 
     gh issue comment 5 --body "- <one line>"
 

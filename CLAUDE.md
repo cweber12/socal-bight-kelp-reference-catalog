@@ -29,16 +29,41 @@ One milestone is active at a time. A PRD for each milestone lives at `docs/prd/<
 **Slices** table is the work order. `gh issue list` is not: it sorts newest-first, so its top row
 is the last slice in the milestone. The next thing to do is the first open `ready-for-agent` issue
 in that table. An issue is ready when it names the seam, the failing test and the non-goals and
-fits one PR; if you cannot state the failing test, stop and ask. Ideas go in the pinned Parking-lot
-issue as one-line comments, never as new issues; the only issues an agent opens on its own are
-found-in-flight bugs under rule 3.
+fits one PR; if you cannot state the failing test, decide what the check is — "none mechanical",
+with an acceptance a reader can run — and record it on the issue ("Decisions an agent would hand
+back"). Ideas go in the pinned Parking-lot issue as one-line comments. An agent opens an issue on
+its own for a found-in-flight bug under rule 3, and for a decision it has made that needs a PR
+("Decisions an agent would hand back").
 
 A design or grill session that settles more than one `CONTEXT.md` rule ends in decisions and
 issues, not in text: the issues carry the seam, the failing test where there is one, and the
 non-goals, and the text is drafted against them by whoever picks them up. The owner files them, or
-asks for them by name — the sentence above still holds, and an agent opening them on its own is
-the thing it forbids. On 2026-09-19 a grill's decisions went straight to four PRs, none of which
-closed an issue or had one filed for it.
+asks for them by name; the issues an agent files unasked are rule-3 bugs and the ones the section
+below gives it.
+On 2026-09-19 a grill's decisions went straight to four PRs, none of which closed an issue or had
+one filed for it.
+
+## Decisions an agent would hand back
+
+A choice an agent would otherwise leave to the owner is the agent's to make. The owner's word,
+2026-10-20, on a report that closed with two such items — a Parking-lot line waiting on "the
+owner's call" and an untriaged found-in-flight issue: "all items listed in Open items that are
+yours, not the next session's are things i want an agent to decide. this applies to all chats."
+What this reaches is what gets handed back: a parked line that waits on a call, a `needs-triage`
+issue, a clause an issue's Goal carries that the owner's decision line does not, a precedence
+between two readings a rule leaves unordered, a failing test nobody can state, a reading a PRD run
+would once have put to the owner. Decide it, and record the decision and the readings it rejected
+where the item lives — the Parking-lot comment, patched by id; the issue; the PR body; the run's
+ledger. Where the decision needs a PR, file the issue that carries it, with the seam, the failing
+test and the non-goals, so it joins the work order. A parked addition — a field, gate, directory,
+dependency or label — is decided the same way, but the agent deciding it does not add it in the
+slice it is implementing; "Scope guards" is unchanged. Where the premise a decision needs is
+missing from the repo, the decision is a rule PR, not a reading widened past its examples. Three
+things stay the owner's, each stated where it lives: the merge, outside a declared auto-merge run
+("Auto-merge in a declared PRD run"); skipping the audit ("Branches, commits, PRs"); filing a
+grill's issues (the paragraph above). A new milestone is not this file's to reserve; #5
+issuecomment-5823169852 records that naming and creating one is the owner's. A report lists the
+decisions made and where each is recorded; the merge is the one thing it may list as waiting.
 
 ## In-flight bugs
 
