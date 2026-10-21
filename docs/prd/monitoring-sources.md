@@ -36,7 +36,9 @@ revision, after the audit of PR #256: reading 8's criterion is recorded as faili
 paper, with its named pair and the superseded admission test left to #207; the `Done` criterion
 gains what it did not anticipate; and the `calcofi` bullet records the owner's settlement of
 2026-09-24. Revised 2026-09-28, on #202: reading 1's quotation of `CONTEXT.md`'s admission
-sentence is dated to the review that made it, because #202 replaced that sentence.
+sentence is dated to the review that made it, because #202 replaced that sentence. Revised
+2026-10-21, on #206: reading 3's quotation of the `references/` gloss is dated to before the PR
+for #206, which rewrote that line, and points at *Record format* for the current one.
 
 ## Problem
 

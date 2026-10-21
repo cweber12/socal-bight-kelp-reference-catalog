@@ -55,7 +55,7 @@ this file points at them and restates none.
    the Slices table says how.
 2. **A dataset's paper gets no `references/` record.** `CONTEXT.md` glosses `references/` as "a
    paper or report cited by a source or a figure" (*Record format*, the `catalog/` tree; the
-   wording before the PR for #206, 2026-10-21, which that section now carries), and
+   wording before the PR for #206, 2026-10-21; *Record format* has the current one), and
    6.3c's reading 3 is that papers are leads, not records. The four dataset-behind-paper records
    the review of 2026-10-01 named — `shrestha_fish_excretion`, `okun_inner_shelf_flow`,
    `bcodmo_839175` and `pisco_kelp_forest` — each name the paper in an `access` step, as the

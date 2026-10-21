@@ -2,7 +2,10 @@
 
 Status: done (eleven notebooks, five gate rows and the `add-source` refresh step landed by 2026-09-11)
 Created: 2026-09-09
-Revised: 2026-09-09, after an audit of the first draft reversed its central decision.
+Revised: 2026-09-09, after an audit of the first draft reversed its central decision. Revised
+2026-10-21, on #206: the first deferred decision's quotation of the `references/` gloss is dated
+to before the PR for #206, which rewrote that line, and points at *Record format* for the current
+one.
 
 ## Problem
 
