@@ -2,7 +2,10 @@
 
 Status: done (eleven notebooks, five gate rows and the `add-source` refresh step landed by 2026-09-11)
 Created: 2026-09-09
-Revised: 2026-09-09, after an audit of the first draft reversed its central decision.
+Revised: 2026-09-09, after an audit of the first draft reversed its central decision. Revised
+2026-10-21, on #206: the first deferred decision's quotation of the `references/` gloss is dated
+to before the PR for #206, which rewrote that line, and points at *Record format* for the current
+one.
 
 ## Problem
 
@@ -49,7 +52,8 @@ Recorded here because #42 is where each would change what a notebook renders, an
 1. **Where a paper lives, and whether a reference states its findings.** `CONTEXT.md`'s Purpose
    says the catalog holds "datasets, monitoring programs, reports and papers", but `sources/` is
    "a dataset, program, report series or transcribed table" and `references/` is "a paper or report
-   **cited by a source or a figure**". A paper that gives context, which no source cites and no
+   **cited by a source or a figure**" (the wording before the PR for #206, 2026-10-21; *Record
+   format* has the current one). A paper that gives context, which no source cites and no
    figure applies, has no home in either. Separately, a `findings` field holding statements
    verbatim with their page or section is admissible under "The rule" as written — the rule
    excludes *our* interpretation, not the paper's own words — and it is what turns a bibliography

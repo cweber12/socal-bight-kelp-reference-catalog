@@ -50,7 +50,7 @@ its file name.
 ```text
 catalog/
   sources/<id>.md          a dataset, program, report series or transcribed table
-  references/<citekey>.md  a paper or report cited by a source or a figure
+  references/<citekey>.md  a paper or report cited by a source, a site or a figure
   excluded/<slug>.md       an item reviewed and not admitted, with its one-line reason
   regions/<id>.md          a node of the region tree
   beds/<n>.md              a CDFW Administrative Kelp Bed
