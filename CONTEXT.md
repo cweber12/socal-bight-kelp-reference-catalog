@@ -429,10 +429,10 @@ A site holds what the program states. The region its coordinates fall in is comp
 | `id`* | `<program>.<site>`, equals file name | chosen on entry |
 | `program`* | str | the `<program>` half of `id` |
 | `name`* | str | as the program names it |
-| `key`* | str | the identifier exactly as the document that defines the site spells it — the program's own data, or the table that prints it (`ABUR`, `093.3 028.0`); `id` is lowercase and cannot carry it |
+| `key`* | str | the identifier exactly as the program's own data spells it — what the source's `site_key` names — or, where the document `defined_by` names spells one, exactly as that document spells it (`ABUR`, `093.3 028.0`); those may be two documents: `093.3 028.0` is `sta_id` as `calcofi`'s two held files spell it, and the Station Positions page that prints the station's coordinates lists it as Line 93.3, Sta 28; `id` is lowercase and cannot carry it |
 | `lat`*, `lon`* | str | as the document prints them (`"34.400275"`, `"34°2’34.56”N"`), glyphs and spaces included; converting them is the computation the sentence above keeps off the record |
 | `datum` | str or null | where the program states one |
-| `defined_by`* | exactly one of `{source, where}` or `{reference, where}` | the document that prints the coordinates — a source id that exists, or a `references/` citekey where that document is a paper — and where in it |
+| `defined_by`* | exactly one of `{source, where}` or `{reference, where}` | the document that prints the coordinates — a source id that exists, or a `references/` citekey where that document is a paper — and where in it; not necessarily the document `key` is spelled from (the `key` row) |
 | `retrieved` | date or null | |
 
 ### human-tasks/<id>.md
