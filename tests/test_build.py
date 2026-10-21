@@ -325,7 +325,7 @@ def test_a_held_source_is_not_in_the_not_held_section():
 def test_exclusions_render_for_their_topic_only():
     reviewed = sections(build_topic("ocean-climate", a_catalog()))["Reviewed and not included"]
     assert "bight-adjacent-2026" in reviewed
-    assert "Baja California site" in reviewed
+    assert "no dataset behind it" in reviewed
     assert "off-topic-2026" not in reviewed
 
 
