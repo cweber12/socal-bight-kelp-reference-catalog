@@ -116,7 +116,8 @@ step 2. A concern is a fact, not a worry: say what the source states and what it
 arose in. State the question, both readings, which field each would fill and with what, and what
 you read to get there. **Do not pick one**, and do not make the step pass by widening the schema
 or by writing a value the source does not state — `add-source`'s own instruction, in its preamble.
-The controller will not answer it either; it goes to the owner.
+The controller decides it from what you report (`CLAUDE.md`, "Decisions an agent would hand back"),
+so report everything the decision needs; what you leave out, you are resumed to measure.
 
 **`BLOCKED`** — an `add-source` STOP fired. Name the step by number, quote the STOP you hit, and
 give what you found: the status code and the first bytes for a dead route, the file and the

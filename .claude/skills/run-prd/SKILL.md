@@ -178,14 +178,18 @@ obeying it too narrowly.
 nothing and report that instead, with the rows that were ruled out and why. `docs/prd/scaffold.md`
 and `docs/prd/topic-notebooks.md` are both `Status: done` and reach this, so it is not a corner.
 
-**STOP before posting if more than one of the file's tables has an open `ready-for-agent` row.**
-Nothing in this repo orders between two tables in one file, and that gap is parked twice: #5
-issuecomment-5823293391 ("two tables on one milestone is two orders with nothing ordering between
-them") and #5 issuecomment-5834515570, which counts this file's tables. Ask which track to run; do
-not interleave them and do not pick one. Measured 2026-10-01, `re-entry.md` trips it: Part three's
-R3–R6 (#204–#207) and Part four's C2 (#38) are all open `ready-for-agent`, so that file stops
-here. `dataset-sources.md` and `monitoring-sources.md` have one table each, and of
-`regions-and-authorities.md`'s three only the Sites track has an open `ready-for-agent` row (#196,
+**Where more than one of the file's tables has an open `ready-for-agent` row, run the tables in
+the order the file prints them**: the first table with an open `ready-for-agent` row is the run's,
+its open rows finish before the next table's begin, and a row that names a blocker in another
+table waits where the row says. Say which table the first ledger write took and why. Nothing in
+the repo ordered between two tables in one file before this sentence; the gap was parked at #5
+issuecomment-5638837943 ("two tables on one milestone is two orders with nothing ordering between
+them"), cited by issuecomment-5823293391 and issuecomment-5834515570, and was decided this way on
+2026-10-20 under `CLAUDE.md`, "Decisions an agent would hand back" (the deciding line is on #5,
+dated that day). Measured 2026-10-01, `re-entry.md` is the file this reaches: Part three's R3–R6
+(#204–#207) and Part four's C2 (#38) were all open `ready-for-agent`, so Part three runs first.
+`dataset-sources.md` and `monitoring-sources.md` have one table each, and of
+`regions-and-authorities.md`'s three only the Sites track had an open `ready-for-agent` row (#196,
 #197).
 
 The comment carries one line per entry, in order: the table the row came from, the row's `order`
@@ -239,8 +243,9 @@ thread. **Consume them here, or the ledger is written and never read.**
 - **An open PR closes the first entry's issue** → the run is a resume and there is nothing to
   dispatch. Re-enter at the step the thread's last write leaves next: `CI settled` → step 10;
   `audited` → the fix round or the wait that write names; `fix round landed` → step 11; `handed to
-  the owner` → wait for the owner's merge; a finding recorded as the owner's → wait for the ruling,
-  as step 8 waits on a `NEEDS_CONTEXT`. **Never dispatch a row that has an open PR.** Step 6 does
+  the owner` → wait for the owner's merge; a finding recorded as the owner's, a write from before
+  2026-10-20 → decide it now as step 8 decides a `NEEDS_CONTEXT`, and ledger the decision. **Never
+  dispatch a row that has an open PR.** Step 6 does
   not catch it — `git worktree add` merely errors on the existing directory, and once that worktree
   is removed, which #5 says is the owner's to do, nothing would stop a second branch and a second PR
   for one issue.
@@ -435,10 +440,14 @@ git -C .claude/worktrees/catalog-add-<id> status --short
 - **`DONE_WITH_CONCERNS`** — the same, plus something wanting a reader's ruling rather than another
   step. Rule on each concern, carry it into the PR body in the agent's own words, and ledger it.
   Then step 9.
-- **`NEEDS_CONTEXT`** — a question the repo does not settle, with the readings it found. **Answer
-  nothing.** The row was dispatched to make the row's judgements, and a controller answering the one
-  the agent could not has widened the schema by proxy while holding less of the evidence. Ledger the
-  question and the readings, put them to the owner with what each would cost, and stop.
+- **`NEEDS_CONTEXT`** — a question the repo does not settle, with the readings it found. The row
+  was dispatched to make the row's judgements and holds the evidence; the controller decides from
+  what the row reported, not instead of it (`CLAUDE.md`, "Decisions an agent would hand back").
+  Ledger the question, the readings, the decision and why; resume the row with the decision as a
+  line of its start prompt. Where the report lacks what the decision needs, resume the row to
+  measure that first. Where the premise is missing from the repo — no `CONTEXT.md` sentence either
+  reading can cite — the decision is a rule PR: file the issue, ledger it, and the row waits on that
+  issue. Nothing here goes to the owner.
 
   **When the owner rules, resume the same agent with the ruling**, and ledger the ruling first so
   the record's PR body can cite a ruling rather than a preference. Two things belong in that resume
@@ -521,11 +530,12 @@ nothing: step 5 made the run sequential.
 
 **Rule on each finding under the rule `CLAUDE.md` states** in "Branches, commits, PRs", and record
 why wherever that rule says, the `audited` write being one of those places; `audit-pr` step 4 says
-where a finding ruled not fixed here goes. A finding the controller cannot settle — a reading of a
-`CONTEXT.md` rule, a field the row's issue or its start prompt reserved — goes to the owner the way
-step 8 sends a `NEEDS_CONTEXT`: ledger it with both readings, their costs and a recommendation, and
-wait. Declining to settle is itself a ruling, recorded as one; #141 issuecomment-5861820435 is the
-shape.
+where a finding ruled not fixed here goes. A finding that turns on a reading of a `CONTEXT.md`
+rule, or on a field the row's issue or its start prompt reserved, is decided the way step 8 decides
+a `NEEDS_CONTEXT`: ledger both readings, their costs and the decision; where the premise is missing
+from the repo, file the rule issue and the row waits on it (`CLAUDE.md`, "Decisions an agent would
+hand back"). #141 issuecomment-5861820435 is the shape of the ledger write, from when declining to
+settle was the ruling; the shape stands, the deferral does not.
 
 **Then, for each finding ruled on, a second and separate judgement: is its premise shared by the
 rows not yet built?** `CLAUDE.md`, "Auto-merge in a declared PRD run", third bullet, states the
