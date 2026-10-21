@@ -276,10 +276,10 @@ One of four, written with the step-5 line that decided it.
 | **not a source** | not a candidate for a record, but evidence about something the tracker or a record already carries — a citation for a parked question, a document that is the route to a dataset | the thread or record it is evidence about; the draft is a comment |
 
 **Which declines get an entry in `catalog/excluded/`** is decided by `CONTEXT.md`, *Record
-schemas*, `excluded/<slug>.md`, and by the decision #207 was filed to put there, while that issue
-is open. Read both before drafting one; two of the thirteen were nearly routed there against that
-decision. The thirteen held no decline that got one; the one record in `catalog/excluded/` on
-`main` on 2026-09-29 is the precedent.
+schemas*, `excluded/<slug>.md`, where the PR for #207 (2026-10-21) put the decision that issue
+was filed for. Read it before drafting one; two of the thirteen were nearly routed there against
+that decision. The thirteen held no decline that got one; the one record in `catalog/excluded/`
+on `main` on 2026-09-29 is the precedent.
 
 **The destination for an *add* is derived from the tracker, never listed here.** Destinations
 moved three times in the two days of the thirteen, so a milestone written into this file is stale

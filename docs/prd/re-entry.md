@@ -263,6 +263,7 @@ rule row M4's fill applies.
 | C2 | [#38](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/38) | `license_stated_at` on the four records with no migration row, the where-I-looked text out of every `license` value, then required | M1–M15, for the required flag | closes when a count of records lacking `license_stated_at` on `main` reads zero, no `license` value carries where it was read, and the field is required (#38, Done when); 19 lacking on 2026-09-28, which is the 15 migration rows plus those four |
 | P1 | to file | `coverage_spans` fills, one `catalog:` PR per record whose `coverage` quotes a span | S4 | a 6.6 row: the second touch of every record migrated here that quotes a span; one issue per record in Part two's shape, filed when S4 merges, which is when the records that quote a span are counted |
 | X1 | [#17](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/17) | every CSV under `catalog/tables/` has a `TRANSCRIBED` source record | nothing | outside the serial queue; may run at any time; on 2026-09-28 `catalog/tables/` holds one CSV, `hauksson2023_table1.csv`, whose `TRANSCRIBED` source record exists |
+| X2 | [#362](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/362) | `test:` the `excluded/` fixtures under `tests/` model the item R6's rule says gets no record | R6 | outside the serial queue; may run at any time after R6 merges; filed 2026-10-21 by the PR for #207 under `CLAUDE.md`, "Decisions an agent would hand back"; 14 sites and one assertion, counted that day |
 
 Issue #172 (`version`) is closed `wontfix` and has no row (its closing comment, 2026-09-23).
 
@@ -282,5 +283,5 @@ Rows S1, S3, S5 and S2 merged as `CONTEXT.md` rows; rows R1–R6 merged as one r
 M1–M15 merged as `catalog:` PRs, each saying which fields it carried, which notebooks it moved
 and, for M12, which of the two forms its held file supported; C1 merged with a count of
 bare-string `variables` entries on `main` at zero; C2 merged with `license_stated_at` required, no
-record lacking it and no `license` value carrying where it was read; X1 merged. S4 and P1 are
-6.6's and do not gate this milestone's close.
+record lacking it and no `license` value carrying where it was read; X1 and X2 merged. S4 and P1
+are 6.6's and do not gate this milestone's close.

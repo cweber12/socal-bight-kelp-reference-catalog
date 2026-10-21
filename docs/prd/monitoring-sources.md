@@ -38,7 +38,10 @@ gains what it did not anticipate; and the `calcofi` bullet records the owner's s
 2026-09-24. Revised 2026-09-28, on #202: reading 1's quotation of `CONTEXT.md`'s admission
 sentence is dated to the review that made it, because #202 replaced that sentence. Revised
 2026-10-21, on #206: reading 3's quotation of the `references/` gloss is dated to before the PR
-for #206, which rewrote that line, and points at *Record format* for the current one.
+for #206, which rewrote that line, and points at *Record format* for the current one. Revised
+2026-10-21, on #207: the paragraph under the Slices table that left two stale things to #207
+records what that PR did with them; reading 8 and its quotation of the `excluded/` gloss stand,
+because that PR did not change the gloss.
 
 ## Problem
 
@@ -199,7 +202,11 @@ test is sound; what fails is its application. The sentence names this paper as o
 no dataset behind them, which is false of this one; and the owner's decision of 2026-09-24 (#5
 issuecomment-5822998934, line 10, recorded in #214) enters a context paper as a document record
 under `catalog/sources/`, so lacking a dataset is no longer the admission test either. Both belong
-to **#207**, which writes the `excluded/` rule and reads these rows.
+to **#207**, which writes the `excluded/` rule and reads these rows. (The PR for #207, 2026-10-21,
+keyed that rule on the scope test and the item's own merits — `CONTEXT.md`, *Record schemas*,
+`excluded/<slug>.md` — and named no dataset; whether a Bight paper with no dataset behind it
+fails on its merits or enters as a document source is decided at #214 issuecomment-6325629215,
+where that track reads it. This sentence and reading 8 stand as written.)
 
 Rows 14 (#144) and 18 (#148) left milestone 6.3c without a record, on the owner's word of
 2026-09-28, and both stay open and `needs-triage`: the host of #144 did not answer when probed
