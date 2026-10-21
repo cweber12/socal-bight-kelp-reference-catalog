@@ -26,7 +26,7 @@ right and the code is a bug** — change the code, not the document, unless a hu
     ├── CLAUDE.md           how to work: tracker, branches, commits, scope guards
     ├── catalog/            the records themselves, one markdown file each
     │   ├── sources/        a dataset, program, report series or transcribed table
-    │   ├── references/     a paper or report cited by a source or a figure
+    │   ├── references/     a paper or report cited by a source, a site or a figure
     │   ├── excluded/       an item reviewed and not admitted, with its one-line reason
     │   ├── regions/        a node of the region tree
     │   ├── beds/           a CDFW Administrative Kelp Bed

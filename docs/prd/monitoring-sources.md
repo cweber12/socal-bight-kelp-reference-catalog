@@ -83,7 +83,8 @@ slice does not re-derive it.
    `PATTERN` in #153 and corrected once the vocabulary and the schema allowed the pairing. A portal
    that does not serve bytes gets the status step 2's table gives it.
 3. **Papers are leads, not records.** `CONTEXT.md` defines `references/` as "a paper or report cited
-   by a source or a figure", and where a context paper lives is parked (Parking lot, 2026-09-09).
+   by a source or a figure" (the wording before the PR for #206, 2026-10-21; *Record format* has
+   the current one), and where a context paper lives is parked (Parking lot, 2026-09-09).
    The manifest's fifteen proposed reference records are not filed; they are listed on the Parking
    lot (filed 2026-09-15) as evidence for that decision. The one exception a field needs —
    `transcribed_from.reference` for a transcribed table — arrives with that table's slice (row 16).
