@@ -405,6 +405,10 @@ excepted.
 `slug`* (equals file name), `reviewed`* (date), `what`* (the item), `reason`* (one line),
 `url`, `doi`, `topics` (optional; lets the notebook list what was reviewed and not admitted).
 
+The directory holds an item that passed the scope test (the three tests under *Topics: the ten
+questions*, above) and failed on its own merits; an item reviewed and rejected for falling outside
+the Bight gets no `excluded/` record.
+
 ### regions/<id>.md
 
 `id`* (equals file name), `name`*, `parent`* (region id, or null for `scb`), `defined_by`*
