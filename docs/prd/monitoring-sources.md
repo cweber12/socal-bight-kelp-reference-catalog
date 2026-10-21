@@ -203,9 +203,10 @@ no dataset behind them, which is false of this one; and the owner's decision of 
 issuecomment-5822998934, line 10, recorded in #214) enters a context paper as a document record
 under `catalog/sources/`, so lacking a dataset is no longer the admission test either. Both belong
 to **#207**, which writes the `excluded/` rule and reads these rows. (The PR for #207, 2026-10-21,
-keyed that rule on the scope test and not on a dataset — `CONTEXT.md`, *Record schemas*,
-`excluded/<slug>.md` — so reading 8's criterion is row 20's `reason`, not the rule, and this
-sentence and reading 8 stand as written.)
+keyed that rule on the scope test and the item's own merits — `CONTEXT.md`, *Record schemas*,
+`excluded/<slug>.md` — and named no dataset; whether a Bight paper with no dataset behind it
+fails on its merits or enters as a document source is decided at #214 issuecomment-6325629215,
+where that track reads it. This sentence and reading 8 stand as written.)
 
 Rows 14 (#144) and 18 (#148) left milestone 6.3c without a record, on the owner's word of
 2026-09-28, and both stay open and `needs-triage`: the host of #144 did not answer when probed
