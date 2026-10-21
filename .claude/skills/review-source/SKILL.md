@@ -245,8 +245,8 @@ project's activity log and a case study of a data pipeline, each answering none.
 **Region.** The tagging sentence, `CONTEXT.md`, *Vocabularies*, regions, gives the cases. The
 evidence is the stated geography from step 3 and the extracted text: count the place names in
 Python and quote each sentence that states an extent — a source can state more than one, and the
-note quotes each rather than choosing; what `coverage` does with two statements at entry is
-decided and not yet written into `CONTEXT.md` (#204, open on 2026-09-29, milestone 6.4). Write
+note quotes each rather than choosing; what `coverage` does with two statements at entry is the
+`coverage` row's, `CONTEXT.md`'s sources table (#204). Write
 the tag the sentences' case gives and which case, saying whether each stated extent gives the same
 one (BCO-DMO 709181 stated two on 2026-09-29 — a box in three documents and an ERDDAP
 `actual_range` — and its file's rows, a measurement rather than a statement, lay outside the box;
