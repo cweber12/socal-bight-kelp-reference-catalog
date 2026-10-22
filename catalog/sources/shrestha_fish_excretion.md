@@ -82,13 +82,13 @@ access:
     https://datadryad.org/api/v2/versions/328111/download, stores the body under its
     Content-Disposition filename, and keeps it only when the file begins with the zip local file
     header signature, the bytes 50 4B 03 04, carries no bytes before its first member and no
-    archive comment, and holds the four members the files listing names and no other, each with
-    the size and the SHA-256 that listing states; no account, key or referrer is required. The zip
-    held is 56,245,347 bytes. The zip is assembled on request: two earlier requests that day were
-    each served 56,245,597 bytes, their SHA-256s differing from each other and from the held zip's,
-    and in each of the three zips every member's modification time was the minute of its own
-    request and every member had the size and the SHA-256 the listing states (HTTP 200,
-    2026-09-27)
+    archive comment, ends where its end of central directory record ends, and holds the four
+    members the files listing names and no other, each with the size and the SHA-256 that listing
+    states; no account, key or referrer is required. The zip held is 56,245,347 bytes. The zip is
+    assembled on request: two earlier requests that day were each served 56,245,597 bytes, their
+    SHA-256s differing from each other and from the held zip's, and in each of the three zips
+    every member's modification time was the minute of its own request and every member had the
+    size and the SHA-256 the listing states (HTTP 200, 2026-09-27)
 format: >-
   The files listing named in access states four files, each with status "created" and digestType
   "sha-256": path "README.md", size 5724, mimeType "text/markdown", digest
