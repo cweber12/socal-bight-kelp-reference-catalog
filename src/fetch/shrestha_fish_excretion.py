@@ -33,12 +33,13 @@ checked too: it must begin with a local file header (the bytes 50 4B 03 04), car
 bytes before its first member or between one of its parts and the next, each part
 beginning where the one before it ends (the parts being its members, each running from the
 local file header its central directory entry places it at, through its name, extra field
-and compressed data, to the end of its data descriptor where it has one, that descriptor
-stating the CRC-32 and the sizes that entry states; then its central directory; then its
-zip64 end of central directory record and locator where it has them; then its end of
-central directory record), carry no archive comment, and end where its end of central
-directory record ends, so that no bytes follow it, or it is not kept. The members are read
-from the zip to be hashed and are not written out: what is held is the zip as served.
+and compressed data of the size that entry states, to the end of its data descriptor where
+it has one, that descriptor stating the CRC-32 and the sizes that entry states; then its
+central directory; then its zip64 end of central directory record and locator where it has
+them; then its end of central directory record), carry no archive comment, and end where
+its end of central directory record ends, so that no bytes follow it, or it is not kept.
+The members are read from the zip to be hashed and are not written out: what is held is
+the zip as served.
 """
 
 from __future__ import annotations
@@ -88,6 +89,7 @@ ZIP64_LOCATOR = b"PK\x06\x07"
 # the compressed and uncompressed sizes as 4 bytes each or, in zip64 form, 8 bytes each.
 LOCAL_HEADER_SIZE = 30
 DESCRIPTOR_FLAG = 0x08
+ZIP64_EXTRA_ID = 0x0001
 # An end of central directory record is 22 bytes, then its comment; the comment length is
 # the two little-endian bytes at offset 20, and the comment can be at most 65535 bytes. The
 # central directory's size and offset are its 4-byte fields at offsets 12 and 16. A zip64 zip
@@ -133,17 +135,27 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
     end = info.header_offset + LOCAL_HEADER_SIZE + name_length + extra_length + info.compress_size
     if not flag & DESCRIPTOR_FLAG:
         return end
+    # APPNOTE 4.3.9.2: when the local header's extra field carries the zip64 extended
+    # information field (id 0x0001), the descriptor's sizes are 8 bytes each. Without it they
+    # are read as 4 bytes first, because a 4-byte descriptor read as 8 bytes would match where
+    # an empty member is followed by 8 zero bytes, and as 8 bytes after that, for a writer
+    # that uses the 8-byte form without the field.
+    raw.seek(info.header_offset + LOCAL_HEADER_SIZE + name_length)
+    extra = raw.read(extra_length)
+    widths, at = (4, 8), 0
+    while at + 4 <= len(extra):
+        field_id = int.from_bytes(extra[at : at + 2], "little")
+        field_size = int.from_bytes(extra[at + 2 : at + 4], "little")
+        if field_id == ZIP64_EXTRA_ID:
+            widths = (8,)
+        at += 4 + field_size
     raw.seek(end)
     descriptor = raw.read(len(DATA_DESCRIPTOR) + 20)
     if descriptor[: len(DATA_DESCRIPTOR)] == DATA_DESCRIPTOR:
         descriptor = descriptor[len(DATA_DESCRIPTOR) :]
         end += len(DATA_DESCRIPTOR)
     stated = (info.CRC, info.compress_size, info.file_size)
-    # 8-byte sizes first. Read as 8-byte, a 4-byte descriptor matches only if its uncompressed
-    # size is 0 and the 8 bytes after it are 0 too, and those are where the next part begins
-    # with a signature; read as 4-byte, an 8-byte descriptor of an empty member matches, and
-    # the member would end 8 bytes short.
-    for width in (8, 4):
+    for width in widths:
         fields = (
             int.from_bytes(descriptor[0:4], "little"),
             int.from_bytes(descriptor[4 : 4 + width], "little"),
@@ -163,11 +175,11 @@ def check_container(path: Path, archive: zipfile.ZipFile) -> None:
     header; no bytes stand before its first member or between one of its parts and the next,
     each part beginning where the one before it ends (the parts being its members, each running
     from the local file header its central directory entry places it at, through its name, extra
-    field and compressed data, to the end of its data descriptor where it has one, that
-    descriptor stating the CRC-32 and the sizes that entry states; then its central directory;
-    then its zip64 end of central directory record and locator where it has them; then its end
-    of central directory record); it carries no archive comment; and it ends where its end of
-    central directory record ends, so no bytes follow that record."""
+    field and compressed data of the size that entry states, to the end of its data descriptor
+    where it has one, that descriptor stating the CRC-32 and the sizes that entry states; then
+    its central directory; then its zip64 end of central directory record and locator where it
+    has them; then its end of central directory record); it carries no archive comment; and it
+    ends where its end of central directory record ends, so no bytes follow that record."""
     size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))
