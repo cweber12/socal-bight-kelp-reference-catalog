@@ -33,14 +33,14 @@ checked too: it must begin with a local file header (the bytes 50 4B 03 04), car
 bytes before its first member or between one of its parts and the next, each part
 beginning where the one before it ends (the parts being its members, each running from the
 local file header its central directory entry places it at, through its name, extra field
-and compressed data of the size that entry states, that data being, where the member is
-stored, of the member's size and, where it is deflated, one deflate stream ending at the
-data's last byte, to the end of its data descriptor where it has one, that descriptor
-stating the CRC-32 and the sizes that entry states; then its central directory; then its
-zip64 end of central directory record and locator where it has them; then its end of
-central directory record), carry no archive comment, and end where its end of central
-directory record ends, so that no bytes follow it, or it is not kept. The members are read
-from the zip to be hashed and are not written out: what is held is the zip as served.
+and compressed data of the size that entry states, that data being either stored, and of
+the member's size, or deflated, and one deflate stream ending at the data's last byte, to
+the end of its data descriptor where it has one, that descriptor stating the CRC-32 and
+the sizes that entry states; then its central directory; then its zip64 end of central
+directory record and locator where it has them; then its end of central directory record),
+carry no archive comment, and end where its end of central directory record ends, so that
+no bytes follow it, or it is not kept. The members are read from the zip to be hashed and
+are not written out: what is held is the zip as served.
 """
 
 from __future__ import annotations
@@ -120,10 +120,9 @@ def contiguous(ends: int, part: str, begins: int, next_part: str) -> None:
 
 
 def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
-    """Raise unless the compressed data of the member info describes, which begins at byte
-    `begins` and is of the size its central directory entry states, is of the member's size where
-    the member is stored, and is one deflate stream ending at the data's last byte where it is
-    deflated."""
+    """Raise unless the compressed data of the member info describes, which begins at byte `begins`
+    and is of the size its central directory entry states, is either stored, and of the member's
+    size, or deflated, and one deflate stream ending at the data's last byte."""
     if info.compress_type == zipfile.ZIP_STORED:
         surplus = info.compress_size - info.file_size
         if surplus:
@@ -134,7 +133,10 @@ def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
             )
         return
     if info.compress_type != zipfile.ZIP_DEFLATED:
-        return
+        raise RuntimeError(
+            f"{URL} served {info.filename} with compression method {info.compress_type}, neither "
+            f"stored (0) nor deflated (8)"
+        )
     decompressor = zlib.decompressobj(-zlib.MAX_WBITS)
     raw.seek(begins)
     left = info.compress_size
@@ -224,18 +226,17 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
 
 def check_container(path: Path, archive: zipfile.ZipFile) -> None:
     """Raise unless the zip at path is its parts and nothing else: it begins with a local file
-    header; no bytes stand before its first member or between one of its parts and the next,
-    each part beginning where the one before it ends (the parts being its members, each running
-    from the local file header its central directory entry places it at, through its name, extra
-    field and compressed data of the size that entry states, that data being, where the member
-    is stored, of the member's size and, where it is deflated, one deflate stream ending at the
-    data's last byte, to the end of its data descriptor where it has one, that descriptor
-    stating the CRC-32 and the sizes that entry states; then its central directory; then its
-    zip64 end of central directory record and locator where it has them; then its end of
-    central directory record); it carries no archive comment; and it ends where its end of
-    central directory record ends, so no bytes follow that record. A member's extra field is the
-    member's: it is read only for the zip64 id that sets the width of its data descriptor's
-    sizes, and what else it holds is not checked."""
+    header; no bytes stand before its first member or between one of its parts and the next, each
+    part beginning where the one before it ends (the parts being its members, each running from the
+    local file header its central directory entry places it at, through its name, extra field and
+    compressed data of the size that entry states, that data being either stored, and of the
+    member's size, or deflated, and one deflate stream ending at the data's last byte, to the end of
+    its data descriptor where it has one, that descriptor stating the CRC-32 and the sizes that
+    entry states; then its central directory; then its zip64 end of central directory record and
+    locator where it has them; then its end of central directory record); it carries no archive
+    comment; and it ends where its end of central directory record ends, so no bytes follow that
+    record. A member's extra field is the member's: it is read only for the zip64 id that sets the
+    width of its data descriptor's sizes, and what else it holds is not checked."""
     size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))
