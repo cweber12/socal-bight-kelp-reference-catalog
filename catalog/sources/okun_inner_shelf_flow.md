@@ -79,13 +79,15 @@ access:
     "kelpcatalog/okun_inner_shelf_flow", requests
     https://datadryad.org/api/v2/versions/360631/download, stores the body under its
     Content-Disposition filename, and keeps it only when the file begins with the zip local file
-    header signature, the bytes 50 4B 03 04, carries no bytes before its first member and no
-    archive comment, ends where its end of central directory record ends, and holds the eighteen
-    members the files listing of version 360631 names and no other, each with the size and the
-    SHA-256 that listing states; no account, key or referrer is required. The zip held is
-    24,192,581 bytes. The zip is assembled on request: an earlier request that day was served
-    24,192,611 bytes with a different SHA-256, and in both zips every member's modification time
-    was the minute of its own request and every member had the size and the SHA-256 the listing
+    header signature, the bytes 50 4B 03 04, carries no bytes before its first member or between one
+    of its parts and the next (the parts being its members, then its central directory, then its
+    zip64 end of central directory record and locator where it has them, then its end of central
+    directory record) and no archive comment, ends where its end of central directory record ends,
+    and holds the eighteen members the files listing of version 360631 names and no other, each with
+    the size and the SHA-256 that listing states; no account, key or referrer is required. The zip
+    held is 24,192,581 bytes. The zip is assembled on request: an earlier request that day was
+    served 24,192,611 bytes with a different SHA-256, and in both zips every member's modification
+    time was the minute of its own request and every member had the size and the SHA-256 the listing
     states (HTTP 200, 2026-09-27)
 format: >-
   The files listing of version 360631 named in access states eighteen files, each with digestType
