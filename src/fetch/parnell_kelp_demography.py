@@ -30,9 +30,15 @@ them on 2026-10-01. Whatever the status and the headers say, the zip must hold t
 FILES names and no others, each with that size and that digest, or it is not kept. Because
 the zip's own digest cannot be pinned, the file around the members is checked too: it must
 begin with a local file header (the bytes 50 4B 03 04), carry no bytes before its first
-member, carry no archive comment, and end where its end of central directory record ends,
-so that no bytes follow it, or it is not kept. The members are read from the zip to be
-hashed and are not written out: what is held is the zip as served.
+member or between one of its parts and the next, each part beginning where the one before
+it ends (the parts being its members, each running from the local file header its central
+directory entry places it at, through its name, extra field and compressed data of the
+size that entry states, to the end of its data descriptor where it has one, that
+descriptor stating the CRC-32 and the sizes that entry states; then its central directory;
+then its zip64 end of central directory record and locator where it has them; then its end
+of central directory record), carry no archive comment, and end where its end of central
+directory record ends, so that no bytes follow it, or it is not kept. The members are read
+from the zip to be hashed and are not written out: what is held is the zip as served.
 """
 
 from __future__ import annotations
@@ -43,6 +49,7 @@ import json
 import urllib.request
 import zipfile
 from pathlib import Path
+from typing import BinaryIO
 
 SOURCE_ID = "parnell_kelp_demography"
 USER_AGENT = f"kelpcatalog/{SOURCE_ID}"
@@ -66,48 +73,175 @@ FILES = (
 )
 CHUNK = 1 << 20
 LOCAL_HEADER = b"PK\x03\x04"
+DATA_DESCRIPTOR = b"PK\x07\x08"
 END_RECORD = b"PK\x05\x06"
+ZIP64_END_RECORD = b"PK\x06\x06"
+ZIP64_LOCATOR = b"PK\x06\x07"
+# A local file header is 30 bytes, then the member's name, then its extra field; the two lengths
+# are the little-endian pairs at offsets 26 and 28, and bit 3 of the flag at offset 6 says a
+# data descriptor follows the compressed data: an optional 4-byte signature, the CRC-32, then
+# the compressed and uncompressed sizes as 4 bytes each or, in zip64 form, 8 bytes each.
+LOCAL_HEADER_SIZE = 30
+DESCRIPTOR_FLAG = 0x08
+ZIP64_EXTRA_ID = 0x0001
 # An end of central directory record is 22 bytes, then its comment; the comment length is
-# the two little-endian bytes at offset 20, and the comment can be at most 65535 bytes.
+# the two little-endian bytes at offset 20, and the comment can be at most 65535 bytes. The
+# central directory's size and offset are its 4-byte fields at offsets 12 and 16. A zip64 zip
+# puts 0xFFFFFFFF there and carries the true values as the 8-byte fields at offsets 40 and 48
+# of a zip64 end of central directory record, whose own size, less its first 12 bytes, is the
+# 8-byte field at its offset 4; a 20-byte locator, which ends where the end record begins,
+# gives that record's offset as the 8-byte field at its offset 8.
 END_RECORD_SIZE = 22
 END_RECORD_SEARCH = END_RECORD_SIZE + 0xFFFF
+ZIP64_END_RECORD_SIZE = 56
+ZIP64_LOCATOR_SIZE = 20
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DIR = ROOT / "data" / "raw" / SOURCE_ID
 
 
-def check_container(path: Path, archive: zipfile.ZipFile) -> None:
-    """Raise unless the zip at path is nothing but its members: it begins with a local file
-    header, no bytes stand before its first member, it carries no archive comment, and it ends
-    where its end of central directory record ends, so no bytes follow that record."""
-    size = path.stat().st_size
-    with path.open("rb") as raw:
-        head = raw.read(len(LOCAL_HEADER))
-        raw.seek(max(0, size - END_RECORD_SEARCH))
-        tail = raw.read()
-    if head != LOCAL_HEADER:
-        raise RuntimeError(f"{URL} served a file beginning {head!r}, not a local file header")
-    first = min((info.header_offset for info in archive.infolist()), default=None)
-    if first != 0:
-        raise RuntimeError(f"{URL} served {first} bytes before the zip's first member")
-    if archive.comment:
-        raise RuntimeError(f"{URL} served an archive comment of {len(archive.comment)} bytes")
-    found = tail.rfind(END_RECORD)
-    if found < 0:
-        raise RuntimeError(f"{URL} served a file with no end of central directory record")
-    end_record = size - len(tail) + found
-    comment_length = int.from_bytes(tail[found + 20 : found + 22], "little")
-    record_end = end_record + END_RECORD_SIZE + comment_length
-    if record_end != size:
+def contiguous(ends: int, part: str, begins: int, next_part: str) -> None:
+    """Raise unless `begins`, the byte at which next_part begins, is `ends`, where part ends."""
+    if begins > ends:
+        raise RuntimeError(f"{URL} served {begins - ends} bytes between {part} and {next_part}")
+    if begins < ends:
         raise RuntimeError(
-            f"{URL} served {size - record_end} bytes after the zip's end of central directory "
-            f"record, which ends at byte {record_end} of {size}"
+            f"{URL} served {next_part} beginning at byte {begins}, {ends - begins} bytes before "
+            f"{part} ends"
         )
 
 
+def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
+    """Return the byte at which the member info describes ends: after its local file header, its
+    name, its extra field and its compressed data, and after its data descriptor when the flag in
+    that header says one follows, which must state the CRC-32 and the sizes the central directory
+    states for the member."""
+    raw.seek(info.header_offset)
+    header = raw.read(LOCAL_HEADER_SIZE)
+    if header[: len(LOCAL_HEADER)] != LOCAL_HEADER:
+        raise RuntimeError(
+            f"{URL} served no local file header at byte {info.header_offset}, where the central "
+            f"directory places {info.filename}"
+        )
+    flag = int.from_bytes(header[6:8], "little")
+    name_length = int.from_bytes(header[26:28], "little")
+    extra_length = int.from_bytes(header[28:30], "little")
+    end = info.header_offset + LOCAL_HEADER_SIZE + name_length + extra_length + info.compress_size
+    if not flag & DESCRIPTOR_FLAG:
+        return end
+    # APPNOTE 4.3.9.2: when the local header's extra field carries the zip64 extended
+    # information field (id 0x0001), the descriptor's sizes are 8 bytes each. Without it they
+    # are read as 4 bytes first, because a 4-byte descriptor read as 8 bytes would match where
+    # an empty member is followed by 8 zero bytes, and as 8 bytes after that, for a writer
+    # that uses the 8-byte form without the field.
+    raw.seek(info.header_offset + LOCAL_HEADER_SIZE + name_length)
+    extra = raw.read(extra_length)
+    widths, at = (4, 8), 0
+    while at + 4 <= len(extra):
+        field_id = int.from_bytes(extra[at : at + 2], "little")
+        field_size = int.from_bytes(extra[at + 2 : at + 4], "little")
+        if field_id == ZIP64_EXTRA_ID:
+            widths = (8,)
+        at += 4 + field_size
+    raw.seek(end)
+    descriptor = raw.read(len(DATA_DESCRIPTOR) + 20)
+    if descriptor[: len(DATA_DESCRIPTOR)] == DATA_DESCRIPTOR:
+        descriptor = descriptor[len(DATA_DESCRIPTOR) :]
+        end += len(DATA_DESCRIPTOR)
+    stated = (info.CRC, info.compress_size, info.file_size)
+    for width in widths:
+        fields = (
+            int.from_bytes(descriptor[0:4], "little"),
+            int.from_bytes(descriptor[4 : 4 + width], "little"),
+            int.from_bytes(descriptor[4 + width : 4 + 2 * width], "little"),
+        )
+        if fields == stated:
+            return end + 4 + 2 * width
+    raise RuntimeError(
+        f"{URL} served {info.filename} with a data descriptor that does not state the CRC-32 "
+        f"{info.CRC:#010x} and the sizes {info.compress_size} and {info.file_size} its central "
+        f"directory entry states"
+    )
+
+
+def check_container(path: Path, archive: zipfile.ZipFile) -> None:
+    """Raise unless the zip at path is its parts and nothing else: it begins with a local file
+    header; no bytes stand before its first member or between one of its parts and the next,
+    each part beginning where the one before it ends (the parts being its members, each running
+    from the local file header its central directory entry places it at, through its name, extra
+    field and compressed data of the size that entry states, to the end of its data descriptor
+    where it has one, that descriptor stating the CRC-32 and the sizes that entry states; then
+    its central directory; then its zip64 end of central directory record and locator where it
+    has them; then its end of central directory record); it carries no archive comment; and it
+    ends where its end of central directory record ends, so no bytes follow that record."""
+    size = path.stat().st_size
+    with path.open("rb") as raw:
+        head = raw.read(len(LOCAL_HEADER))
+        if head != LOCAL_HEADER:
+            raise RuntimeError(f"{URL} served a file beginning {head!r}, not a local file header")
+        members = sorted(archive.infolist(), key=lambda info: info.header_offset)
+        first = members[0].header_offset if members else None
+        if first != 0:
+            raise RuntimeError(f"{URL} served {first} bytes before the zip's first member")
+        if archive.comment:
+            raise RuntimeError(f"{URL} served an archive comment of {len(archive.comment)} bytes")
+        raw.seek(max(0, size - END_RECORD_SEARCH))
+        tail = raw.read()
+        found = tail.rfind(END_RECORD)
+        if found < 0:
+            raise RuntimeError(f"{URL} served a file with no end of central directory record")
+        end_record = size - len(tail) + found
+        comment_length = int.from_bytes(tail[found + 20 : found + 22], "little")
+        record_end = end_record + END_RECORD_SIZE + comment_length
+        if record_end > size:
+            raise RuntimeError(
+                f"{URL} served an end of central directory record declaring a comment of "
+                f"{comment_length} bytes, which would end at byte {record_end} of {size}"
+            )
+        if record_end < size:
+            raise RuntimeError(
+                f"{URL} served {size - record_end} bytes after the zip's end of central directory "
+                f"record, which ends at byte {record_end} of {size}"
+            )
+        directory_size = int.from_bytes(tail[found + 12 : found + 16], "little")
+        directory_offset = int.from_bytes(tail[found + 16 : found + 20], "little")
+        records_begin, first_record = end_record, "the end of central directory record"
+        raw.seek(max(0, end_record - ZIP64_LOCATOR_SIZE))
+        locator = raw.read(ZIP64_LOCATOR_SIZE)
+        if end_record >= ZIP64_LOCATOR_SIZE and locator[: len(ZIP64_LOCATOR)] == ZIP64_LOCATOR:
+            zip64_offset = int.from_bytes(locator[8:16], "little")
+            raw.seek(zip64_offset)
+            zip64 = raw.read(ZIP64_END_RECORD_SIZE)
+            if zip64[: len(ZIP64_END_RECORD)] != ZIP64_END_RECORD:
+                raise RuntimeError(
+                    f"{URL} served a zip64 end of central directory locator pointing at byte "
+                    f"{zip64_offset}, where no zip64 end of central directory record begins"
+                )
+            zip64_end = zip64_offset + 12 + int.from_bytes(zip64[4:12], "little")
+            contiguous(
+                zip64_end,
+                "the zip64 end of central directory record",
+                end_record - ZIP64_LOCATOR_SIZE,
+                "its locator",
+            )
+            directory_size = int.from_bytes(zip64[40:48], "little")
+            directory_offset = int.from_bytes(zip64[48:56], "little")
+            records_begin, first_record = zip64_offset, "the zip64 end of central directory record"
+        contiguous(
+            directory_offset + directory_size, "the central directory", records_begin, first_record
+        )
+        end = member_end(raw, members[0])
+        for previous, info in zip(members, members[1:], strict=False):
+            contiguous(
+                end, f"member {previous.filename}", info.header_offset, f"member {info.filename}"
+            )
+            end = member_end(raw, info)
+        contiguous(end, f"member {members[-1].filename}", directory_offset, "the central directory")
+
+
 def check_members(path: Path) -> None:
-    """Raise unless the zip at path is nothing but its members (check_container) and holds
-    exactly the members FILES states."""
+    """Raise unless the zip at path passes check_container and holds exactly the members FILES
+    states."""
     stated = {name: (sha256, size) for name, sha256, size in FILES}
     with zipfile.ZipFile(path) as archive:
         check_container(path, archive)
