@@ -173,13 +173,15 @@ def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
         )
 
 
-def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
+def member_end(raw: BinaryIO, info: zipfile.ZipInfo, next_begins: int) -> int:
     """Return the byte at which the member info describes ends: after its local file header (which
     must state the compression method the central directory states for the member and, for the
     CRC-32 and each size, the value it states or, where a data descriptor follows, zero), its name,
     its extra field and its compressed data, which must pass check_stream, and after its data
     descriptor when the flag in that header says one follows, which must state the CRC-32 and the
-    sizes the central directory states for the member."""
+    sizes the central directory states for the member. Where the descriptor states them read with
+    4-byte sizes and with 8-byte, the reading taken is the one ending at next_begins, the byte at
+    which the next part begins, if either does, and otherwise the first that matches."""
     raw.seek(info.header_offset)
     header = raw.read(LOCAL_HEADER_SIZE)
     if header[: len(LOCAL_HEADER)] != LOCAL_HEADER:
@@ -239,9 +241,11 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
         return end
     # APPNOTE 4.3.9.2: when the local header's extra field carries the zip64 extended
     # information field (id 0x0001), the descriptor's sizes are 8 bytes each. Without it they
-    # are read as 4 bytes first, because a 4-byte descriptor read as 8 bytes would match where
-    # an empty member is followed by 8 zero bytes, and as 8 bytes after that, for a writer
-    # that uses the 8-byte form without the field.
+    # are read as 4 bytes and as 8, for a writer that uses the 8-byte form without the field.
+    # An empty member's 8-byte descriptor also states the central directory's values read as
+    # 4 bytes, so both readings can match; they end 8 bytes apart, and the one ending where
+    # the next part begins is taken. Where neither does, the first that matches is, and
+    # check_container refuses the zip.
     widths = (8,) if zip64 is not None else (4, 8)
     raw.seek(end)
     descriptor = raw.read(len(DATA_DESCRIPTOR) + 20)
@@ -249,6 +253,7 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
         descriptor = descriptor[len(DATA_DESCRIPTOR) :]
         end += len(DATA_DESCRIPTOR)
     stated = (info.CRC, info.compress_size, info.file_size)
+    ends = []
     for width in widths:
         fields = (
             int.from_bytes(descriptor[0:4], "little"),
@@ -256,7 +261,9 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
             int.from_bytes(descriptor[4 + width : 4 + 2 * width], "little"),
         )
         if fields == stated:
-            return end + 4 + 2 * width
+            ends.append(end + 4 + 2 * width)
+    if ends:
+        return next_begins if next_begins in ends else ends[0]
     raise RuntimeError(
         f"{URL} served {info.filename} with a data descriptor that does not state the CRC-32 "
         f"{info.CRC:#010x} and the sizes {info.compress_size} and {info.file_size} its central "
@@ -336,12 +343,13 @@ def check_container(path: Path, archive: zipfile.ZipFile) -> None:
         contiguous(
             directory_offset + directory_size, "the central directory", records_begin, first_record
         )
-        end = member_end(raw, members[0])
-        for previous, info in zip(members, members[1:], strict=False):
+        following = [info.header_offset for info in members[1:]] + [directory_offset]
+        end = member_end(raw, members[0], following[0])
+        for previous, info, next_begins in zip(members, members[1:], following[1:], strict=False):
             contiguous(
                 end, f"member {previous.filename}", info.header_offset, f"member {info.filename}"
             )
-            end = member_end(raw, info)
+            end = member_end(raw, info, next_begins)
         contiguous(end, f"member {members[-1].filename}", directory_offset, "the central directory")
 
 
