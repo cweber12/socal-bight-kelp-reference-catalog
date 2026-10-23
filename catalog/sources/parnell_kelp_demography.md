@@ -115,11 +115,13 @@ access:
     locator where it has them; then its end of central directory record) and no archive comment,
     ends where its end of central directory record ends, and holds the three members the files
     listing of version 409846 names and no other, each with the size and the SHA-256 that listing
-    states; no account, key or referrer is required. The zip held is 597,078 bytes. The zip is
-    assembled on request: two earlier requests that day were served 597,083 and 597,073 bytes, their
-    SHA-256s differing from each other and from the held zip's, and in each of the three zips every
-    member's modification time was the minute of its own request and every member had the size and
-    the SHA-256 the listing states (HTTP 200, 2026-10-01)
+    states; no account, key or referrer is required. The zip held is 597,083 bytes (HTTP 200,
+    2026-10-22), and in it every member's modification time was the minute of its request and every
+    member had the size and the SHA-256 the listing states. The zip is assembled on request: three
+    requests on 2026-10-01 were served 597,083, 597,073 and 597,078 bytes, their SHA-256s differing
+    from each other, and in each of the three zips every member's modification time was the minute
+    of its own request and every member had the size and the SHA-256 the listing states (HTTP 200,
+    2026-10-01)
 format: >-
   The files listing of version 409846 named in access states three files, each with digestType
   "sha-256": path "AlgaeBoxData.RData", size 388275, mimeType "", status "copied", digest
@@ -268,7 +270,7 @@ coverage_stated_at: >-
   https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fttdz096d also carries as abstract,
   states the sentence quoted from it; and the JSON-LD in the landing page's HTML states the
   spatialCoverage and the temporalCoverage (retrieved 2026-10-01)
-retrieved: 2026-10-01
+retrieved: 2026-10-22
 fetch_script: src/fetch/parnell_kelp_demography.py
 file: null
 transcribed_from: null
