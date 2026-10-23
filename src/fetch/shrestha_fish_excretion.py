@@ -181,7 +181,7 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo, next_begins: int) -> int:
     descriptor when the flag in that header says one follows, which must state the CRC-32 and the
     sizes the central directory states for the member. Where the descriptor states them read with
     4-byte sizes and with 8-byte, the reading taken is the one ending at next_begins, the byte at
-    which the next part begins, if either does."""
+    which the next part begins, if either does, and otherwise the first that matches."""
     raw.seek(info.header_offset)
     header = raw.read(LOCAL_HEADER_SIZE)
     if header[: len(LOCAL_HEADER)] != LOCAL_HEADER:
@@ -245,7 +245,7 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo, next_begins: int) -> int:
     # An empty member's 8-byte descriptor also states the central directory's values read as
     # 4 bytes, so both readings can match; they end 8 bytes apart, and the one ending where
     # the next part begins is taken. Where neither does, the first that matches is, and
-    # check_container reports the gap after it.
+    # check_container refuses the zip.
     widths = (8,) if zip64 is not None else (4, 8)
     raw.seek(end)
     descriptor = raw.read(len(DATA_DESCRIPTOR) + 20)
