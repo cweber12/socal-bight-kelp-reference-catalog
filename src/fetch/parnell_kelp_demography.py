@@ -32,15 +32,16 @@ the zip's own digest cannot be pinned, the file around the members is checked to
 begin with a local file header (the bytes 50 4B 03 04), carry no bytes before its first
 member or between one of its parts and the next, each part beginning where the one before
 it ends (the parts being its members, each running from the local file header its central
-directory entry places it at, through its name, extra field and compressed data of the
-size that entry states, that data being either stored, and of the member's size, or
-deflated, and one deflate stream ending at the data's last byte, to the end of its data
-descriptor where it has one, that descriptor stating the CRC-32 and the sizes that entry
-states; then its central directory; then its zip64 end of central directory record and
-locator where it has them; then its end of central directory record), carry no archive
-comment, and end where its end of central directory record ends, so that no bytes follow
-it, or it is not kept. The members are read from the zip to be hashed and are not written
-out: what is held is the zip as served.
+directory entry places it at, that header stating the compression method that entry states
+and, where the member has no data descriptor, the CRC-32 and the sizes that entry states,
+through its name, extra field and compressed data of the size that entry states, that data
+being either stored, and of the member's size, or deflated, and one deflate stream ending
+at the data's last byte, to the end of its data descriptor where it has one, that
+descriptor stating the CRC-32 and the sizes that entry states; then its central directory;
+then its zip64 end of central directory record and locator where it has them; then its end
+of central directory record), carry no archive comment, and end where its end of central
+directory record ends, so that no bytes follow it, or it is not kept. The members are read
+from the zip to be hashed and are not written out: what is held is the zip as served.
 """
 
 from __future__ import annotations
@@ -83,7 +84,9 @@ ZIP64_LOCATOR = b"PK\x06\x07"
 # A local file header is 30 bytes, then the member's name, then its extra field; the two lengths
 # are the little-endian pairs at offsets 26 and 28, and bit 3 of the flag at offset 6 says a
 # data descriptor follows the compressed data: an optional 4-byte signature, the CRC-32, then
-# the compressed and uncompressed sizes as 4 bytes each or, in zip64 form, 8 bytes each.
+# the compressed and uncompressed sizes as 4 bytes each or, in zip64 form, 8 bytes each. The
+# header's compression method is the 2 bytes at offset 8, and its CRC-32 and compressed and
+# uncompressed sizes are the 4 bytes at offsets 14, 18 and 22.
 LOCAL_HEADER_SIZE = 30
 DESCRIPTOR_FLAG = 0x08
 ZIP64_EXTRA_ID = 0x0001
@@ -165,10 +168,12 @@ def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
 
 
 def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
-    """Return the byte at which the member info describes ends: after its local file header, its
-    name, its extra field and its compressed data, which must pass check_stream, and after its
-    data descriptor when the flag in that header says one follows, which must state the CRC-32
-    and the sizes the central directory states for the member."""
+    """Return the byte at which the member info describes ends: after its local file header, which
+    must state the compression method and, where no data descriptor follows, the CRC-32 and the
+    sizes the central directory states for the member, its name, its extra field and its compressed
+    data, which must pass check_stream, and after its data descriptor when the flag in that header
+    says one follows, which must state the CRC-32 and the sizes the central directory states for the
+    member."""
     raw.seek(info.header_offset)
     header = raw.read(LOCAL_HEADER_SIZE)
     if header[: len(LOCAL_HEADER)] != LOCAL_HEADER:
@@ -179,6 +184,40 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
     flag = int.from_bytes(header[6:8], "little")
     name_length = int.from_bytes(header[26:28], "little")
     extra_length = int.from_bytes(header[28:30], "little")
+    raw.seek(info.header_offset + LOCAL_HEADER_SIZE + name_length)
+    extra = raw.read(extra_length)
+    zip64, at = None, 0
+    while at + 4 <= len(extra):
+        field_id = int.from_bytes(extra[at : at + 2], "little")
+        field_size = int.from_bytes(extra[at + 2 : at + 4], "little")
+        if field_id == ZIP64_EXTRA_ID:
+            zip64 = extra[at + 4 : at + 4 + field_size]
+        at += 4 + field_size
+    method = int.from_bytes(header[8:10], "little")
+    fields = [("compression method", method, info.compress_type, "d")]
+    if not flag & DESCRIPTOR_FLAG:
+        # APPNOTE 4.5.3: a size the header states as 0xFFFFFFFF is carried in the zip64 extended
+        # information field as 8 bytes, the uncompressed size first and the compressed second.
+        carried = iter(
+            int.from_bytes(zip64[i : i + 8], "little") for i in range(0, len(zip64 or b"") - 7, 8)
+        )
+        uncompressed = int.from_bytes(header[22:26], "little")
+        if uncompressed == 0xFFFFFFFF:
+            uncompressed = next(carried, uncompressed)
+        compressed = int.from_bytes(header[18:22], "little")
+        if compressed == 0xFFFFFFFF:
+            compressed = next(carried, compressed)
+        fields += [
+            ("CRC-32", int.from_bytes(header[14:18], "little"), info.CRC, "#010x"),
+            ("compressed size", compressed, info.compress_size, "d"),
+            ("uncompressed size", uncompressed, info.file_size, "d"),
+        ]
+    for field, local, central, spec in fields:
+        if local != central:
+            raise RuntimeError(
+                f"{URL} served {info.filename} with the {field} {local:{spec}} in its local "
+                f"file header, where its central directory entry states {central:{spec}}"
+            )
     begins = info.header_offset + LOCAL_HEADER_SIZE + name_length + extra_length
     check_stream(raw, begins, info)
     end = begins + info.compress_size
@@ -189,15 +228,7 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
     # are read as 4 bytes first, because a 4-byte descriptor read as 8 bytes would match where
     # an empty member is followed by 8 zero bytes, and as 8 bytes after that, for a writer
     # that uses the 8-byte form without the field.
-    raw.seek(info.header_offset + LOCAL_HEADER_SIZE + name_length)
-    extra = raw.read(extra_length)
-    widths, at = (4, 8), 0
-    while at + 4 <= len(extra):
-        field_id = int.from_bytes(extra[at : at + 2], "little")
-        field_size = int.from_bytes(extra[at + 2 : at + 4], "little")
-        if field_id == ZIP64_EXTRA_ID:
-            widths = (8,)
-        at += 4 + field_size
+    widths = (8,) if zip64 is not None else (4, 8)
     raw.seek(end)
     descriptor = raw.read(len(DATA_DESCRIPTOR) + 20)
     if descriptor[: len(DATA_DESCRIPTOR)] == DATA_DESCRIPTOR:
@@ -223,15 +254,17 @@ def check_container(path: Path, archive: zipfile.ZipFile) -> None:
     """Raise unless the zip at path is its parts and nothing else: it begins with a local file
     header; no bytes stand before its first member or between one of its parts and the next, each
     part beginning where the one before it ends (the parts being its members, each running from the
-    local file header its central directory entry places it at, through its name, extra field and
-    compressed data of the size that entry states, that data being either stored, and of the
-    member's size, or deflated, and one deflate stream ending at the data's last byte, to the end of
-    its data descriptor where it has one, that descriptor stating the CRC-32 and the sizes that
-    entry states; then its central directory; then its zip64 end of central directory record and
-    locator where it has them; then its end of central directory record); it carries no archive
-    comment; and it ends where its end of central directory record ends, so no bytes follow that
-    record. A member's extra field is the member's: it is read only for the zip64 id that sets the
-    width of its data descriptor's sizes, and what else it holds is not checked."""
+    local file header its central directory entry places it at, that header stating the compression
+    method that entry states and, where the member has no data descriptor, the CRC-32 and the sizes
+    that entry states, through its name, extra field and compressed data of the size that entry
+    states, that data being either stored, and of the member's size, or deflated, and one deflate
+    stream ending at the data's last byte, to the end of its data descriptor where it has one, that
+    descriptor stating the CRC-32 and the sizes that entry states; then its central directory; then
+    its zip64 end of central directory record and locator where it has them; then its end of central
+    directory record); it carries no archive comment; and it ends where its end of central directory
+    record ends, so no bytes follow that record. A member's extra field is the member's: it is read
+    only for the zip64 id, which carries the sizes its local file header states as 0xFFFFFFFF and
+    sets the width of its data descriptor's sizes, and what else it holds is not checked."""
     size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))
