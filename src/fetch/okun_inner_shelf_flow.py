@@ -215,10 +215,12 @@ def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
             if not chunk:
                 break
             left -= len(chunk)
-            # The output is bounded and discarded: only where the stream ends is wanted.
-            decompressor.decompress(chunk, CHUNK)
-            while decompressor.unconsumed_tail and not decompressor.eof:
-                decompressor.decompress(decompressor.unconsumed_tail, CHUNK)
+            # The output is bounded and discarded: only where the stream ends is wanted. Output
+            # that fills the bound can leave the stream's end inside zlib with no input left
+            # over, so a full output asks for more as an unconsumed tail does.
+            out = decompressor.decompress(chunk, CHUNK)
+            while not decompressor.eof and (decompressor.unconsumed_tail or len(out) == CHUNK):
+                out = decompressor.decompress(decompressor.unconsumed_tail, CHUNK)
     except zlib.error as exc:
         raise RuntimeError(
             f"{URL} served {info.filename} with compressed data that is not a deflate stream: {exc}"
@@ -303,7 +305,8 @@ def check_container(path: Path, archive: zipfile.ZipFile) -> None:
     zip64 end of central directory record and locator where it has them; then its end of
     central directory record); it carries no archive comment; and it ends where its end of
     central directory record ends, so no bytes follow that record. A member's extra field is the
-    member's, and what it holds is not checked."""
+    member's: it is read only for the zip64 id that sets the width of its data descriptor's
+    sizes, and what else it holds is not checked."""
     size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))
