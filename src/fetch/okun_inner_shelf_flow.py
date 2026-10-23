@@ -281,8 +281,9 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
     compressed = int.from_bytes(header[18:22], "little")
     if compressed == 0xFFFFFFFF:
         compressed = next(carried, compressed)
-    # APPNOTE 4.4.4: where a data descriptor follows, the header's CRC-32 and sizes may be zero.
-    # Any other value a reader of the header would take for the member's, so it must be that one.
+    # APPNOTE 4.4.4: where bit 3 is set, the header's CRC-32 and sizes are set to zero. A reader
+    # of the header can take a value there for the member's, so a value other than zero must be
+    # the central directory's.
     method = int.from_bytes(header[8:10], "little")
     described = bool(flag & DESCRIPTOR_FLAG)
     fields = (
@@ -296,7 +297,11 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
             raise RuntimeError(
                 f"{URL} served {info.filename} with the {field} {local:{spec}} in its local "
                 f"file header, where its central directory entry states {central:{spec}}"
-                + (", and not the zero a following data descriptor allows" if may_be_zero else "")
+                + (
+                    "; bit 3 of its flag being set, that header may state zero instead"
+                    if may_be_zero
+                    else ""
+                )
             )
     begins = info.header_offset + LOCAL_HEADER_SIZE + name_length + extra_length
     check_stream(raw, begins, info)
