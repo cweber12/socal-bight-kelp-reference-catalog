@@ -31,12 +31,15 @@ them on 2026-09-27. Whatever the status and the headers say, the zip must hold t
 FILES names and no others, each with that size and that digest, or it is not kept. Because
 the zip's own digest cannot be pinned, the file around the members is checked too: it must
 begin with a local file header (the bytes 50 4B 03 04), carry no bytes before its first
-member or between one of its parts and the next (the parts being its members, then its
-central directory, then its zip64 end of central directory record and locator where it has
-them, then its end of central directory record), carry no archive comment, and end where
-its end of central directory record ends, so that no bytes follow it, or it is not kept.
-The members are read from the zip to be hashed and are not written out: what is held is
-the zip as served.
+member or between one of its parts and the next, each part beginning where the one before
+it ends (the parts being its members, each running from the local file header its central
+directory entry places it at, through its name, extra field and compressed data, to the
+end of its data descriptor where it has one, that descriptor stating the CRC-32 and the
+sizes that entry states; then its central directory; then its zip64 end of central
+directory record and locator where it has them; then its end of central directory record),
+carry no archive comment, and end where its end of central directory record ends, so that
+no bytes follow it, or it is not kept. The members are read from the zip to be hashed and
+are not written out: what is held is the zip as served.
 """
 
 from __future__ import annotations
@@ -207,7 +210,11 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
         descriptor = descriptor[len(DATA_DESCRIPTOR) :]
         end += len(DATA_DESCRIPTOR)
     stated = (info.CRC, info.compress_size, info.file_size)
-    for width in (4, 8):
+    # 8-byte sizes first. Read as 8-byte, a 4-byte descriptor matches only if its uncompressed
+    # size is 0 and the 8 bytes after it are 0 too, and those are where the next part begins
+    # with a signature; read as 4-byte, an 8-byte descriptor of an empty member matches, and
+    # the member would end 8 bytes short.
+    for width in (8, 4):
         fields = (
             int.from_bytes(descriptor[0:4], "little"),
             int.from_bytes(descriptor[4 : 4 + width], "little"),
@@ -223,13 +230,15 @@ def member_end(raw: BinaryIO, info: zipfile.ZipInfo) -> int:
 
 
 def check_container(path: Path, archive: zipfile.ZipFile) -> None:
-    """Raise unless the zip at path is its members, its central directory and its end records,
-    each beginning where the one before it ends, and nothing else: it begins with a local file
-    header; no bytes stand before its first member or between one of its parts and the next (the
-    parts being its members, then its central directory, then its zip64 end of central directory
-    record and locator where it has them, then its end of central directory record); it carries
-    no archive comment; and it ends where its end of central directory record ends, so no bytes
-    follow that record. A member ends where member_end says it does."""
+    """Raise unless the zip at path is its parts and nothing else: it begins with a local file
+    header; no bytes stand before its first member or between one of its parts and the next,
+    each part beginning where the one before it ends (the parts being its members, each running
+    from the local file header its central directory entry places it at, through its name, extra
+    field and compressed data, to the end of its data descriptor where it has one, that
+    descriptor stating the CRC-32 and the sizes that entry states; then its central directory;
+    then its zip64 end of central directory record and locator where it has them; then its end
+    of central directory record); it carries no archive comment; and it ends where its end of
+    central directory record ends, so no bytes follow that record."""
     size = path.stat().st_size
     with path.open("rb") as raw:
         head = raw.read(len(LOCAL_HEADER))

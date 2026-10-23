@@ -107,15 +107,19 @@ access:
     https://datadryad.org/api/v2/versions/409846/download, stores the body under its
     Content-Disposition filename, and keeps it only when the file begins with the zip local file
     header signature, the bytes 50 4B 03 04, carries no bytes before its first member or between one
-    of its parts and the next (the parts being its members, then its central directory, then its
-    zip64 end of central directory record and locator where it has them, then its end of central
-    directory record) and no archive comment, ends where its end of central directory record ends,
-    and holds the three members the files listing of version 409846 names and no other, each with
-    the size and the SHA-256 that listing states; no account, key or referrer is required. The zip
-    held is 597,078 bytes. The zip is assembled on request: two earlier requests that day were
-    served 597,083 and 597,073 bytes, their SHA-256s differing from each other and from the held
-    zip's, and in each of the three zips every member's modification time was the minute of its own
-    request and every member had the size and the SHA-256 the listing states (HTTP 200, 2026-10-01)
+    of its parts and the next, each part beginning where the one before it ends (the parts being its
+    members, each running from the local file header its central directory entry places it at,
+    through its name, extra field and compressed data, to the end of its data descriptor where it
+    has one, that descriptor stating the CRC-32 and the sizes that entry states; then its central
+    directory; then its zip64 end of central directory record and locator where it has them; then
+    its end of central directory record) and no archive comment, ends where its end of central
+    directory record ends, and holds the three members the files listing of version 409846 names and
+    no other, each with the size and the SHA-256 that listing states; no account, key or referrer is
+    required. The zip held is 597,078 bytes. The zip is assembled on request: two earlier requests
+    that day were served 597,083 and 597,073 bytes, their SHA-256s differing from each other and
+    from the held zip's, and in each of the three zips every member's modification time was the
+    minute of its own request and every member had the size and the SHA-256 the listing states (HTTP
+    200, 2026-10-01)
 format: >-
   The files listing of version 409846 named in access states three files, each with digestType
   "sha-256": path "AlgaeBoxData.RData", size 388275, mimeType "", status "copied", digest
