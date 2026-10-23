@@ -134,8 +134,8 @@ def check_stream(raw: BinaryIO, begins: int, info: zipfile.ZipInfo) -> None:
         return
     if info.compress_type != zipfile.ZIP_DEFLATED:
         raise RuntimeError(
-            f"{URL} served {info.filename} with compression method {info.compress_type}, neither "
-            f"stored (0) nor deflated (8)"
+            f"{URL} served {info.filename} with compression method {info.compress_type} in its "
+            f"central directory entry, neither stored (0) nor deflated (8)"
         )
     decompressor = zlib.decompressobj(-zlib.MAX_WBITS)
     raw.seek(begins)
