@@ -84,18 +84,18 @@ access:
     header signature, the bytes 50 4B 03 04, carries no bytes before its first member or between one
     of its parts and the next, each part beginning where the one before it ends (the parts being its
     members, each running from the local file header its central directory entry places it at,
-    through its name, extra field and compressed data of the size that entry states, that data
-    being, where the member is stored, of the member's size and, where it is deflated, one deflate
-    stream ending at the data's last byte, to the end of its data descriptor where it has one, that
-    descriptor stating the CRC-32 and the sizes that entry states; then its central directory; then
-    its zip64 end of central directory record and locator where it has them; then its end of central
-    directory record) and no archive comment, ends where its end of central directory record ends,
-    and holds the four members the files listing names and no other, each with the size and the
-    SHA-256 that listing states; no account, key or referrer is required. The zip held is 56,245,562
-    bytes. The zip is assembled on request: three earlier requests that day were served 56,245,597,
-    56,245,597 and 56,245,347 bytes, their SHA-256s differing from each other and from the held
-    zip's, and in each of the four zips every member's modification time was the minute of its own
-    request and every member had the size and the SHA-256 the listing states (HTTP 200, 2026-09-27)
+    through its name, extra field and compressed data of the size that entry states, that data being
+    either stored, and of the member's size, or deflated, and one deflate stream ending at the
+    data's last byte, to the end of its data descriptor where it has one, that descriptor stating
+    the CRC-32 and the sizes that entry states; then its central directory; then its zip64 end of
+    central directory record and locator where it has them; then its end of central directory
+    record) and no archive comment, ends where its end of central directory record ends, and holds
+    the four members the files listing names and no other, each with the size and the SHA-256 that
+    listing states; no account, key or referrer is required. The zip held is 56,245,562 bytes. The
+    zip is assembled on request: three earlier requests that day were served 56,245,597, 56,245,597
+    and 56,245,347 bytes, their SHA-256s differing from each other and from the held zip's, and in
+    each of the four zips every member's modification time was the minute of its own request and
+    every member had the size and the SHA-256 the listing states (HTTP 200, 2026-09-27)
 format: >-
   The files listing named in access states four files, each with status "created" and digestType
   "sha-256": path "README.md", size 5724, mimeType "text/markdown", digest
