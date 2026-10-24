@@ -1,24 +1,23 @@
 # PRD — Re-entry (milestone 6.4)
 
-Status: not active, and this file does not open 6.4; the owner does. Milestone 6.3c closed on
-2026-09-28 and no PRD's status line reads `active` today. The owner's gate for opening 6.4
-is #5 issuecomment-5823169852: open it when 6.3c closes and #198 and #208 have merged; on 2026-09-28
-the first of those three has happened and the other two have not. That comment gives three reasons
-for holding 6.4 shut, and they have not aged alike: the `coverage` reorder collides with the open
-6.3c rows that enter a source record, **spent** — 6.3c closed with none open; rows M1–M15 want two
-fields that do not exist yet, so opening now costs a second touch per record, **live**, and it is
-why the gate's other two conditions are #198 and #208; and nothing ready to run needs it open,
-whose own clause was "beside an active 6.3c" and so no longer reads as written. Of this milestone's
-rows that comment names the six rule rows of Part three, #198, #179, #208 and this file's own
-revision (#210) as needing no open milestone; it names rows of other milestones too, and this file
-adds nothing to that list. The rows that wait for 6.4 to open are the migration rows (M1–M15) and
-the two closers. Which reading of "one milestone is active at a time" the practice of merging a row
-of an inactive milestone answers is still an open question on the Parking lot (settled point 6),
-and this file takes no reading of it.
+Status: active, opened by the owner on 2026-10-23 by the PR for #378, which revised this line;
+the same PR stepped 6.4d down (`docs/prd/dataset-sources.md`, its status line). The owner's gate
+for opening 6.4 is #5 issuecomment-5823169852: open it when 6.3c closes and #198 and #208 have
+merged. All three had happened by 2026-10-04: 6.3c closed on 2026-09-28 (PR #256), #198 merged as
+PR #265 on 2026-09-29 and #208 as PR #319 on 2026-10-04. So the two fields rows M1–M15 waited for
+exist, and the second of that comment's three reasons for holding 6.4 shut is spent as the first
+already was. This file carries no auto-merge declaration (`CLAUDE.md`, "Auto-merge in a declared
+PRD run"). Which rows are open and which labels they carry is read from GitHub, not from this
+file. The rows that waited for 6.4 to open are the migration rows (M1–M15) and the two closers.
+Which reading of "one milestone is active at a time" the practice of merging a row of an inactive
+milestone answers is still an open question on the Parking lot (settled point 6), and this file
+takes no reading of it.
 Created: 2026-09-23
 Revised: 2026-09-28, for the grill of 2026-09-24 (#210): settled point 2 reversed, `coverage` added
 to every migration row's fills, the schema queue reordered, the Problem paragraph and three counts
 re-measured, and a rule queue added as Part three.
+Revised: 2026-10-23, for #378: the status line, which now reads active, records the gate met and
+drops the 2026-09-28 account of which of its conditions had happened.
 
 ## Problem
 
