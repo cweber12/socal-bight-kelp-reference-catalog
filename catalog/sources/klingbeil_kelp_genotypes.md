@@ -5,6 +5,15 @@ title: >-
 steward: University of Wisconsin System
 url: https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9
 doi: 10.5061/dryad.nzs7h44v9
+citations:
+  - as_printed: >-
+      Alberto, Filipe (2023). Macrocystis pyrifera before (2008) and after (2018-19) microsatellite
+      data in Structure format [Dataset]. Dryad. https://doi.org/10.5061/dryad.nzs7h44v9
+    stated_at: >-
+      https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9, under the heading "Citation": in
+      the HTML that page sends it is the content of the element <p id="dataset-citation" hidden>,
+      which the heading's button shows, the DOI there being the text of a link to the same URL
+      (2026-10-26)
 status: VERIFIED
 tier: FETCHED
 access:
@@ -98,58 +107,90 @@ license: >-
   the licence panel the landing page loads from
   https://datadryad.org/stash_datacite/licenses/details.js?resource_id=248755, which answers HTTP
   200 to a request carrying the header X-Requested-With: XMLHttpRequest and HTTP 500 to one without
-  it. README.md, the one member of the held zip that is not the data file, contains none of
-  "licen", "copyright", "CC0", "public domain", "creative commons" or "terms" in any letter case.
-  The landing page's own HTML states in its JSON-LD a license of name "Creative Commons Zero v1.0
-  Universal" and license "https://spdx.org/licenses/CC0-1.0.html", and the API's dataset response
-  named in access states license "https://spdx.org/licenses/CC0-1.0.html" (2026-09-21)
+  it. The landing page's own HTML states in its JSON-LD a license of name "Creative Commons Zero
+  v1.0 Universal" and license "https://spdx.org/licenses/CC0-1.0.html", and the API's dataset
+  response named in access states license "https://spdx.org/licenses/CC0-1.0.html" (2026-09-21)
+license_stated_at: >-
+  Looked for first in the held zip: README.md, the one member of the held zip that is not the data
+  file, contains none of "licen", "copyright", "CC0", "public domain", "creative commons" or "terms"
+  in any letter case. Then on the landing page,
+  https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9, whose licence panel is filled from
+  https://datadryad.org/stash_datacite/licenses/details.js?resource_id=248755, the script its HTML
+  names; the JSON-LD in the same HTML, and
+  https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.nzs7h44v9, state the SPDX identifier
+  (retrieved 2026-09-21)
 variables:
-  - BC.18
-  - BC.25
-  - BC.19
-  - BC.4
-  - Mpy.8
-  - Mpy.14
+  - name: "BC.18"
+    description: null
+    unit: null
+  - name: "BC.25"
+    description: null
+    unit: null
+  - name: "BC.19"
+    description: null
+    unit: null
+  - name: "BC.4"
+    description: null
+    unit: null
+  - name: "Mpy.8"
+    description: null
+    unit: null
+  - name: "Mpy.14"
+    description: null
+    unit: null
+measures: []
+findings: []
 coverage: >-
-  The landing page's Methods state "To conduct a temporal genetic analysis, we sampled giant kelp at
-  five sites between 2018 and 2019 located in three regions differing in genetic coancestry in the
-  Southern California Bight (SCB), hereafter referred to as 2018 samples.", "These regions had also
-  been sampled before, in 2007 and 2008, and genotyped by Johansson et al. (2015) using
-  microsatellite marker analysis, hereafter referred to as 2008 samples.", "Two of our locations are
-  continental, Leo Carrillo, and Camp Pendleton, with one site sampled in each.", "Our third
-  location was Catalina Island, where we sampled three sites" and "New sample collections occurred
-  between January 2018 and June 2019." README.md states "The "after" disturbance sites, sampled in
-  2018-19, have their individual names starting with the following characters." over "CIR-19
-  (Catalina Island Backside 2-2019)", "CIQ-19 (Catalina Island Quarry-2019)" and "CSC-19 (Catalina
-  Island Quarry-2018)", and "Additionally, the following sites CIA-18, CIH-19, and CIW-18 are
-  "after" disturbance sites that did not have matching "before" data and thus were not included in
-  the Klingbeil et al., (2022) paper. These were all sites sampled on Catalina Island. They
-  correspond to Catalina Arrow Point, Catalina Indian Head Rock, and Catalina Wrigley." In the held
-  data file "CSC" occurs nowhere, and the names in its first column that carry a hyphen begin with
-  one of eight prefixes: LCA-18, CIB-19, CIR-19, CIA-18, CIH-19, CIW-18, CIQ-19 and CBD-18.
-  README.md also states that the data includes "all the data from the "before" study Johansson et
-  al. (2015, https://doi.org/10.1111/mec.13371)". Table 2 of the article named in access,
-  "Population genetics summary statistics for Macrocystis pyrifera temporal genetic diversity for
-  five sites in Southern California.", gives each population and sample year a Latitude and a
-  Longitude: "Leo Carrillo
+  "To conduct a temporal genetic analysis, we sampled giant kelp at five sites between 2018 and
+  2019 located in three regions differing in genetic coancestry in the Southern California Bight
+  (SCB), hereafter referred to as 2018 samples.", "These regions had also been sampled before, in
+  2007 and 2008, and genotyped by Johansson et al. (2015) using microsatellite marker analysis,
+  hereafter referred to as 2008 samples.", "Two of our locations are continental, Leo Carrillo,
+  and Camp Pendleton, with one site sampled in each.", "Our third location was Catalina Island,
+  where we sampled three sites" and "New sample collections occurred between January 2018 and June
+  2019.", the landing page's Methods, under "Sampling"; "In this study, we run a temporal analysis
+  of giant kelp, Macrocystis pyrifera, genetic diversity over the scope of 10 years (2008-2018)
+  using the same microsatellite marker panel to assess the genetic consequences of disturbance in
+  several populations of giant kelp (Macrocystis pyrifera) in the Southern California Bight.", the
+  landing page's Abstract; "The time between sampling periods was approximately 10 years (~2008 to
+  2018)", README.md in the held zip, under its first heading; "The "after" disturbance sites,
+  sampled in 2018-19, have their individual names starting with the following characters." over
+  "CIR-19 (Catalina Island Backside 2-2019)", "CIQ-19 (Catalina Island Quarry-2019)" and "CSC-19
+  (Catalina Island Quarry-2018)", and "Additionally, the following sites CIA-18, CIH-19, and
+  CIW-18 are "after" disturbance sites that did not have matching "before" data and thus were not
+  included in the Klingbeil et al., (2022) paper. These were all sites sampled on Catalina Island.
+  They correspond to Catalina Arrow Point, Catalina Indian Head Rock, and Catalina Wrigley.",
+  README.md, under "## Description of the data and file structure"; in the held data file "CSC"
+  occurs nowhere, and the names in its first column that carry a hyphen begin with one of eight
+  prefixes: LCA-18, CIB-19, CIR-19, CIA-18, CIH-19, CIW-18, CIQ-19 and CBD-18; "all the data from
+  the "before" study Johansson et al. (2015, https://doi.org/10.1111/mec.13371)", what README.md
+  states in the same section the data includes; "Leo Carrillo
   (LCA-08)" and "Leo Carrillo (LCA-18)", "34°2’34.56”N" and "118°56’4.20”W"; "Catalina Island
   Backside 1 (CIB-08)" and "Catalina Island Backside 1 (CIB-19)", "33°20’2.76”N" and
   "118°29’16.68”W"; "Catalina Island Backside 2 (CIR-08)" and "Catalina Island Backside 2 (CIR-19)",
   "33°25’45.72”N" and "118°31’49.32”W"; "Catalina Island Quarry (CIQ-08)", "33°26’32.51”N" and
   "118°28’20.88”W"; "Catalina Island Quarry (CIQ-19)", "33°26’ 26.16”N" and "118°27’ 45.00”W";
   "Carlsbad (CBD-08)", "33°22’4.00”N" and "117°35’24.40”W"; and "Camp Pendleton (CBD-18)",
-  "33°17’27.28”N" and "117°29’59.89”W". The landing page's JSON-LD states "spatialCoverage": []
+  "33°17’27.28”N" and "117°29’59.89”W", the Latitude and the Longitude that Table 2 of the article
+  named in access, "Population genetics summary statistics for Macrocystis pyrifera temporal
+  genetic diversity for five sites in Southern California.", gives each population and sample
+  year; "spatialCoverage": [], the JSON-LD in the landing page's HTML
 coverage_stated_at: >-
-  The Methods section of https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9 states the five
-  sentences quoted first; README.md in the held zip states the sentences and the site names quoted
-  next, and Structure_before_and_after.Klingbeil2022.txt beside it holds the prefixes; Table 2 of
+  The Methods section of https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9, under its
+  heading "Sampling", states the five sentences quoted first, and the Abstract of the same page
+  states the sentence quoted next, its HTML carrying each "Macrocystis pyrifera" inside <em>;
+  README.md in the held zip states the sentences and the site names quoted after that, a line
+  break inside a quoted sentence, with the spaces beside it, being entered as one space, and
+  Structure_before_and_after.Klingbeil2022.txt beside it holds the prefixes; Table 2 of
   https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2022.947393/full states
   the populations and their coordinates; and the JSON-LD in the landing page's HTML states the
-  spatialCoverage (retrieved 2026-09-21)
+  spatialCoverage (retrieved 2026-09-21; the Abstract sentence and the README.md sentence on the
+  time between sampling periods, 2026-10-26)
 retrieved: 2026-09-21
 fetch_script: src/fetch/klingbeil_kelp_genotypes.py
 file: null
 transcribed_from: null
+derived_from: null
 topics:
   - recruitment-connectivity/genetics
 regions:
@@ -167,6 +208,7 @@ sites:
   - klingbeil.ciq-19
   - klingbeil.cbd-08
   - klingbeil.cbd-18
+site_key: []
 references: []
 human_task: null
 ---
