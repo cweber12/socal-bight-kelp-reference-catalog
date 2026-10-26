@@ -114,7 +114,7 @@ license_stated_at: >-
   "Public domain", its heading and its link, is filled from
   https://datadryad.org/stash_datacite/licenses/details.js?resource_id=248755, the script its HTML
   names. That script answered HTTP 200 to a request carrying the header X-Requested-With:
-  XMLHttpRequest, and to one without it HTTP 500 on 2026-09-21 and HTTP 422 on 2026-10-26. The
+  XMLHttpRequest on 2026-09-21 and on 2026-10-26, and to one without it HTTP 500 on 2026-09-21 and HTTP 422 on 2026-10-26. The
   JSON-LD in the same HTML states the second of the three clauses of license, and
   https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.nzs7h44v9, the API's dataset response
   named in access, states the third (retrieved 2026-09-21)
@@ -146,23 +146,31 @@ coverage: >-
   2007 and 2008, and genotyped by Johansson et al. (2015) using microsatellite marker analysis,
   hereafter referred to as 2008 samples.", "Two of our locations are continental, Leo Carrillo,
   and Camp Pendleton, with one site sampled in each.", "Our third location was Catalina Island,
-  where we sampled three sites" and "New sample collections occurred between January 2018 and June
-  2019.", the landing page's Methods, under "Sampling"; "In this study, we run a temporal analysis
+  where we sampled three sites", "We note that the 2018 site from this location is located 12 km
+  south of the 2018 site (San Mateo) from Johannsson et al. (2015), due to logistic constraints
+  that precluded sampling the same site." and "New sample collections occurred between January
+  2018 and June 2019.", the landing page's Methods, under "Sampling"; "We note that the 2018 site
+  from this location is located 12 km south of the 2008 site (San Mateo) from Johansson et al.
+  (2015), due to logistic constraints that precluded sampling the same site.", the article named
+  in access, after its sentence "The southernmost sampling location, Camp Pendleton, belonged to
+  the Southern California/Baja California genetic group."; "In this study, we run a temporal analysis
   of giant kelp, Macrocystis pyrifera, genetic diversity over the scope of 10 years (2008-2018)
   using the same microsatellite marker panel to assess the genetic consequences of disturbance in
   several populations of giant kelp (Macrocystis pyrifera) in the Southern California Bight.", the
   landing page's Abstract; "The time between sampling periods was approximately 10 years (~2008 to
-  2018)", README.md in the held zip, under its first heading; "The "after" disturbance sites,
+  2018)", README.md in the held zip, under its first heading; "Macrocystis pyrifera before (2008)
+  and after (2018-19) microsatellite data in Structure format", the title the landing page is
+  headed with; "The "after" disturbance sites,
   sampled in 2018-19, have their individual names starting with the following characters." over
   "CIR-19 (Catalina Island Backside 2-2019)", "CIQ-19 (Catalina Island Quarry-2019)" and "CSC-19
   (Catalina Island Quarry-2018)", and "Additionally, the following sites CIA-18, CIH-19, and
   CIW-18 are "after" disturbance sites that did not have matching "before" data and thus were not
   included in the Klingbeil et al., (2022) paper. These were all sites sampled on Catalina Island.
   They correspond to Catalina Arrow Point, Catalina Indian Head Rock, and Catalina Wrigley.",
-  README.md, under "## Description of the data and file structure"; eight prefixes, LCA-18,
-  CIB-19, CIR-19, CIA-18, CIH-19, CIW-18, CIQ-19 and CBD-18, one of which begins each name that
-  carries a hyphen in the first column of the held data file, in which "CSC" occurs nowhere; "all
-  the data from the "before" study Johansson et al. (2015, https://doi.org/10.1111/mec.13371)", what README.md
+  README.md, under "## Description of the data and file structure"; "CSC" occurring nowhere, and
+  eight prefixes, LCA-18, CIB-19, CIR-19, CIA-18, CIH-19, CIW-18, CIQ-19 and CBD-18, one of which
+  begins each name that carries a hyphen in its first column, the held data file; "all the data
+  from the "before" study Johansson et al. (2015, https://doi.org/10.1111/mec.13371)", what README.md
   states in the same section the data includes; "Leo Carrillo
   (LCA-08)" and "Leo Carrillo (LCA-18)", "34°2’34.56”N" and "118°56’4.20”W"; "Catalina Island
   Backside 1 (CIB-08)" and "Catalina Island Backside 1 (CIB-19)", "33°20’2.76”N" and
@@ -178,15 +186,19 @@ coverage: >-
   landing page's HTML
 coverage_stated_at: >-
   The Methods section of https://datadryad.org/dataset/doi:10.5061/dryad.nzs7h44v9, under its
-  heading "Sampling", states the five sentences quoted first, and the Abstract of the same page
-  states the sentence quoted next, its HTML carrying each "Macrocystis pyrifera" inside <em>;
-  README.md in the held zip states the sentences and the site names quoted after that, a line
+  heading "Sampling", states the six sentences quoted first, the article named in access states
+  the sentence quoted next, its HTML carrying a no-break space, U+00A0, in "12 km" and in "et al.",
+  and the Abstract of the same landing page states the sentence quoted after that, its HTML
+  carrying each "Macrocystis pyrifera" inside <em>;
+  README.md in the held zip states the sentences and the site names quoted after that, apart from
+  the title, which the landing page's <h1> states, a line
   break inside a quotation, with the spaces beside it, being entered as one space, and
   Structure_before_and_after.Klingbeil2022.txt beside it holds the prefixes; Table 2 of
   https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2022.947393/full states
   the populations and their coordinates; and the JSON-LD in the landing page's HTML states the
   spatialCoverage and the temporalCoverage (retrieved 2026-09-21; the Abstract sentence, the
-  README.md sentence on the time between sampling periods and the temporalCoverage, 2026-10-26)
+  README.md sentence on the time between sampling periods, the title, the temporalCoverage and the
+  two sentences on the 2018 site's distance from the 2008 site, 2026-10-26)
 retrieved: 2026-09-21
 fetch_script: src/fetch/klingbeil_kelp_genotypes.py
 file: null
