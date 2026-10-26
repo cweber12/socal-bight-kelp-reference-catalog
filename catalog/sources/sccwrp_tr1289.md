@@ -88,7 +88,7 @@ topics:
   - waves-storms-sediment/sediment-sand
   - ocean-climate/temperature
   - ocean-climate/oxygen-ph
-  - water-quality-harvest/discharges-outfalls
+  - water-quality-harvest
 regions:
   - scb
 beds: []
