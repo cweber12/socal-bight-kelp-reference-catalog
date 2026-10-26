@@ -1,10 +1,14 @@
 # PRD — Dataset sources (milestone 6.4d)
 
-Status: active, opened by the owner on 2026-10-02 by the PR for #297, which revised this line
-(#263, Non-goals, left opening the milestone to the owner). The declaring sentence above the Slices
-table stands (`CLAUDE.md`, "Auto-merge in a declared PRD run"); PR #290 merged unattended under it
-on 2026-10-01, and the run's state since is on the #261 ledger thread. Which rows are open and
-which labels they carry is read from GitHub, not from this file.
+Status: not active since 6.4 opened on the owner's word of 2026-10-23, by the PR for #378, which
+revised this line (`docs/prd/re-entry.md`, its status line). It was active from 2026-10-02,
+opened by the owner by the PR for #297 (#263, Non-goals, left opening the milestone to the owner).
+Its one open issue, #144 (`cordc_hfrnet`), is a candidate and not a row (reading 1). It stays
+open under the owner's ruling at #141 issuecomment-5852435312, and its host did not connect on the
+four probes of 2026-10-22 and 2026-10-23 (the last, #144 issuecomment-6376889864). The declaring
+sentence above the Slices table stands (`CLAUDE.md`, "Auto-merge in a declared PRD run"); PR #290
+merged unattended under it on 2026-10-01, and the run's state since is on the #261 ledger thread.
+Which rows are open and which labels they carry is read from GitHub, not from this file.
 Created: 2026-10-01
 
 ## Problem
