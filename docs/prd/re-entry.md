@@ -22,7 +22,7 @@ drops the 2026-09-28 account of which conditions had happened, the three-reasons
 list of rows needing no open milestone, and adds the auto-merge pointer. Two Non-goals sentences
 now say what the PR for #378 did.
 Revised: 2026-10-26, for #378 issuecomment-6384724309, decisions 1 and 4: rows M2–M15 carry the
-issues filed for them, #381–#394, and #209 is row X3.
+issues filed for them, #381–#394, #209 is row X3, and the Done section names X3.
 
 ## Problem
 
@@ -268,7 +268,7 @@ rule row M4's fill applies.
 | P1 | to file | `coverage_spans` fills, one `catalog:` PR per record whose `coverage` quotes a span | S4 | a 6.6 row: the second touch of every record migrated here that quotes a span; one issue per record in Part two's shape, filed when S4 merges, which is when the records that quote a span are counted |
 | X1 | [#17](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/17) | every CSV under `catalog/tables/` has a `TRANSCRIBED` source record | nothing | outside the serial queue; may run at any time; on 2026-09-28 `catalog/tables/` holds one CSV, `hauksson2023_table1.csv`, whose `TRANSCRIBED` source record exists |
 | X2 | [#362](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/362) | `test:` the `excluded/` fixtures under `tests/` model the item R6's rule says gets no record | R6 | outside the serial queue; may run at any time after R6 merges; filed 2026-10-21 by the PR for #207 under `CLAUDE.md`, "Decisions an agent would hand back"; 14 sites and one assertion, counted that day |
-| X3 | [#209](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/209) | `catalog:` `sccwrp_tr1289` takes the bare `water-quality-harvest` tag | nothing | **done** — merged as PR #380 on 2026-10-26; outside the serial queue, and the one exception to the table being the work order for this milestone (#378 issuecomment-6384724309, decision 4); the retag row M15's note keeps out of M15 |
+| X3 | [#209](https://github.com/cweber12/socal-bight-kelp-reference-catalog/issues/209) | `catalog:` `sccwrp_tr1289` takes the bare `water-quality-harvest` tag | nothing | **done** — merged as PR #380 on 2026-10-26; outside the serial queue, run first when 6.4 opened, before it had a row here (#378 issuecomment-6384724309, decision 4); the retag row M15's note keeps out of M15 |
 
 Issue #172 (`version`) is closed `wontfix` and has no row (its closing comment, 2026-09-23).
 
