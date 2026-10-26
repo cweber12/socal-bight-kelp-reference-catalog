@@ -302,9 +302,10 @@ are read: the row's own cell where its table has that column (`re-entry.md`'s Pa
 `blocked on`), and the issue's `## Blocked by` section. Where a blocker names an issue the tracker
 settles it, and step 3's listing already holds the state — #143's row says "enters after row 7",
 which is row 7's issue #137, `CLOSED`, so it is satisfied. Where it names no issue nothing settles
-it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", fourteen of whose `#` cells
-say `to file`, so an order that begins at #38 stops here at its first entry. #141's `## Blocked by`
-reads "None; can start immediately."
+it: `re-entry.md`'s #38 is blocked on "M1–M15, for the required flag", which names rows and no
+issue, so an order that begins at #38 stops here at its first entry. Fourteen of those rows' `#`
+cells said `to file` on 2026-10-01; their issues, #381–#394, were filed on 2026-10-26. #141's
+`## Blocked by` reads "None; can start immediately."
 
 **A row may state its own exit from a blocker, and then the blocker does not stop it.** #145's
 `## Blocked by` names #144 and adds "If row 14 closes at step 2, this row starts anyway" — so #144
