@@ -21,8 +21,8 @@ citations:
       https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7
     stated_at: >-
       https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=DRYAD, the same service: the
-      whole of the 206-byte text/plain body it answers with HTTP 200, with no trailing newline
-      (2026-10-26)
+      whole of the 206-byte text/plain body it answers with HTTP 200, with no trailing newline;
+      the same URL with &access=true added answers the same 206 bytes (2026-10-26)
   - as_printed: >-
       @misc{knb-lter-sbc.13.33, author={Daniel C Reed and Robert J Miller}, title={{SBC LTER: Reef:
       Bottom Temperature: Continuous water temperature, ongoing since 2000. ver 33}}, year={2026},
@@ -35,19 +35,43 @@ citations:
       note, and a line break before the closing brace, each entered here as one space; it has no
       trailing newline (2026-10-26)
   - as_printed: >-
+      Reed, D. and R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water
+      temperature, ongoing since 2000 ver 33. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7. Accessed 2026-10-27.
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?access=true, the same service: the
+      whole of the 238-byte text/plain body it answers with HTTP 200, with no trailing newline;
+      the same URL with style=ESIP added answers the same 238 bytes. The trailing "Accessed" value
+      is the service's date in UTC at the request: these were made on 2026-10-26 at 19:59 PDT,
+      2026-10-27 02:59 UTC, the Date header of each response stating Tue, 27 Oct 2026 (2026-10-26)
+  - as_printed: >-
+      @misc{knb-lter-sbc.13.33, author={Daniel C Reed and Robert J Miller}, title={{SBC LTER: Reef:
+      Bottom Temperature: Continuous water temperature, ongoing since 2000. ver 33}}, year={2026},
+      publisher={Environmental Data Initiative}, doi={10.6073/pasta/e565d409b63f20c768133c653ccdb2d7},
+      url={https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7}, urldate={2026-10-27},
+      note = {Type: dataset} }
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=BIBTEX&access=true, the same
+      service: the whole of the 432-byte text/plain body it answers with HTTP 200. As printed it
+      carries a line break and four spaces of indent before each of author, title, year, publisher,
+      doi, url, urldate and note, and a line break before the closing brace, each entered here as
+      one space; it has no trailing newline. The urldate value is the service's date in UTC at the
+      request, made at the time the entry above states (2026-10-26)
+  - as_printed: >-
       Reed, D, R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water temperature,
       ongoing since 2000 ver 33. Environmental Data Initiative.
       https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7. Accessed 2026-10-26.
     stated_at: >-
       https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.13, the steward's
-      package page, under the heading "Data Set Citation". The HTML that page sends leaves the
-      element <div id="field-citation"> empty; https://sbclter.msi.ucsb.edu/assets/js/package/summary.js
+      package page, under the heading "Data Set Citation". In the HTML that page sends the element
+      <div id="field-citation" class="pl-2"> holds one space;
+      https://sbclter.msi.ucsb.edu/assets/js/package/summary.js
       fills it in the browser from https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=RAW,
       after https://sbclter.msi.ucsb.edu/assets/js/package/main.js has read
       https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/newest. The text was taken out
       in Chrome as the textContent of the shown copy of that element, the DOI being the text of a
-      link to the same URL. The trailing "Accessed" value is the date of the view, 2026-10-26 on
-      this one. In Chrome the pasta URL answered HTTP 200; under the User-Agent
+      link to the same URL. The trailing "Accessed" value is the viewer's local date at the view,
+      2026-10-26 (PDT) on this one. In Chrome the pasta URL answered HTTP 200; under the User-Agent
       "kelpcatalog/knb-lter-sbc.13" it answered HTTP 403 with a text/plain body beginning "User
       'EDI-078e6e3cee4f7f2812f150701da9351acb51e089 (Public Access)' is not authorized to execute
       service method 'readMetadata'." (2026-10-26)
