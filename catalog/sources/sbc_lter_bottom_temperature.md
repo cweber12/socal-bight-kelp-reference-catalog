@@ -5,6 +5,76 @@ title: >-
 steward: Santa Barbara Coastal LTER
 url: https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.13.33
 doi: 10.6073/pasta/e565d409b63f20c768133c653ccdb2d7
+citations:
+  - as_printed: >-
+      Reed, D. and R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water
+      temperature, ongoing since 2000 ver 33. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7.
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33, the citation service of the
+      Environmental Data Initiative, the publisher the EML names: the whole of the 217-byte
+      text/plain body it answers with HTTP 200, under no heading and with no trailing newline; the
+      same URL with ?style=ESIP answers the same 217 bytes (2026-10-26)
+  - as_printed: >-
+      Reed D and Miller R (2026) SBC LTER: Reef: Bottom Temperature: Continuous water temperature,
+      ongoing since 2000. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=DRYAD, the same service: the
+      whole of the 206-byte text/plain body it answers with HTTP 200, with no trailing newline;
+      the same URL with &access=true added answers the same 206 bytes (2026-10-26)
+  - as_printed: >-
+      @misc{knb-lter-sbc.13.33, author={Daniel C Reed and Robert J Miller}, title={{SBC LTER: Reef:
+      Bottom Temperature: Continuous water temperature, ongoing since 2000. ver 33}}, year={2026},
+      publisher={Environmental Data Initiative}, doi={10.6073/pasta/e565d409b63f20c768133c653ccdb2d7},
+      url={https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7}, note = {Type: dataset} }
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=BIBTEX, the same service: the
+      whole of the 406-byte text/plain body it answers with HTTP 200. As printed it carries a line
+      break and four spaces of indent before each of author, title, year, publisher, doi, url and
+      note, and a line break before the closing brace, each entered here as one space; it has no
+      trailing newline (2026-10-26)
+  - as_printed: >-
+      Reed, D. and R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water
+      temperature, ongoing since 2000 ver 33. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7. Accessed 2026-10-27.
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?access=true, the same service: the
+      whole of the 238-byte text/plain body it answers with HTTP 200, with no trailing newline;
+      the same URL with style=ESIP added answers the same 238 bytes. The trailing "Accessed" value
+      is the service's date in UTC at the request: these were made on 2026-10-26 at 19:59 PDT,
+      2026-10-27 02:59 UTC, the Date header of each response stating Tue, 27 Oct 2026 (2026-10-26)
+  - as_printed: >-
+      @misc{knb-lter-sbc.13.33, author={Daniel C Reed and Robert J Miller}, title={{SBC LTER: Reef:
+      Bottom Temperature: Continuous water temperature, ongoing since 2000. ver 33}}, year={2026},
+      publisher={Environmental Data Initiative}, doi={10.6073/pasta/e565d409b63f20c768133c653ccdb2d7},
+      url={https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7}, urldate={2026-10-27},
+      note = {Type: dataset} }
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=BIBTEX&access=true, the same
+      service: the whole of the 432-byte text/plain body it answers with HTTP 200. As printed it
+      carries a line break and four spaces of indent before each of author, title, year, publisher,
+      doi, url, urldate and note, and a line break before the closing brace, each entered here as
+      one space; it has no trailing newline. The urldate value is the service's date in UTC at the
+      request, made at the time the entry above states (2026-10-26)
+  - as_printed: >-
+      Reed, D, R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water temperature,
+      ongoing since 2000 ver 33. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7. Accessed 2026-10-26.
+    stated_at: >-
+      https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.13, the steward's
+      package page, under the heading "Data Set Citation". In the HTML that page sends the element
+      <div id="field-citation" class="pl-2"> holds one space;
+      https://sbclter.msi.ucsb.edu/assets/js/package/summary.js
+      fills it in the browser from https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=RAW,
+      after https://sbclter.msi.ucsb.edu/assets/js/package/main.js has read
+      https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/newest. The text was taken out
+      in Chrome as the textContent of the shown copy of that element, the DOI being the text of a
+      link to the same URL. The trailing "Accessed" value is the viewer's local date at the view,
+      2026-10-26 (PDT) on this one. In Chrome the pasta URL answered HTTP 200; under the User-Agent
+      "kelpcatalog/knb-lter-sbc.13" it answered HTTP 403 with a text/plain body beginning "User
+      'EDI-078e6e3cee4f7f2812f150701da9351acb51e089 (Public Access)' is not authorized to execute
+      service method 'readMetadata'." (2026-10-26)
 status: VERIFIED
 tier: FETCHED
 access:
@@ -123,65 +193,101 @@ license: >-
   complete accuracy of data sets cannot be guaranteed. This data package (with its components) is
   made available “as is” and with no warranty of accuracy or fitness for use. The creators of this
   data package and the repository where these data were obtained shall not be liable for any
-  damages resulting from misinterpretation, use or misuse of the data package or its components.",
-  the dataset's intellectualRights element in the EML named in access (2026-09-19)
+  damages resulting from misinterpretation, use or misuse of the data package or its components."
+license_stated_at: >-
+  Looked for first in the held file, Bottom_temp_all_years_20260129.csv: its first line is the
+  header SITE,SERIAL,DATE_LOCAL,TIME_LOCAL,TEMP_C, and its other 15,469,803 lines carry no lowercase
+  letter. Then on the landing page named in access,
+  https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.13.33, which answered HTTP
+  403 on 2026-09-19, as access states, and on 2026-10-26, under the User-Agent
+  "kelpcatalog/knb-lter-sbc.13", HTTP 200 with a 17,041-byte page titled "Data Portal - Login |
+  Environmental Data Initiative (EDI)" that does not contain "knb-lter-sbc.13". Read in the EML
+  named in access, the dataset's intellectualRights element, whose three para elements license
+  quotes in order, each line break inside them, with the spaces beside it, and each break between
+  two of them being entered as one space (retrieved 2026-09-19; re-read 2026-10-26, the EML's SHA-1
+  unchanged)
 variables:
-  - SITE
-  - SERIAL
-  - DATE_LOCAL
-  - TIME_LOCAL
-  - TEMP_C
+  - name: "SITE"
+    description: "Name of field site. Depth of temperature logger at each site varies from 4.95 to 8.15 meters. See enumerated list for site-specific depths."
+    unit: null
+  - name: "SERIAL"
+    description: "Serial number of instrument used for observation. Instruments: 32K StowAway TidbiT (-5 deg C to 37 deg C) manufactured by Onset Computer Corporation."
+    unit: null
+  - name: "DATE_LOCAL"
+    description: "Date of observation, local (YYYY-MM-DD)"
+    unit: null
+  - name: "TIME_LOCAL"
+    description: "Time of Observation, local time (hh:mm)"
+    unit: null
+  - name: "TEMP_C"
+    description: "Ambient water temperature, measured with Onset tidbit."
+    unit: "celsius"
+measures: []
+findings: []
 coverage: >-
-  The abstract states "To examine temporal and spatial patterns of temperature in giant kelp
-  forests, SBC has measured ambient water temperature at nine reef sites located along the mainland
-  coast of the Santa Barbara Channel and at two sites on the north side Santa Cruz Island beginning
-  in 2000." The dataset's coverage holds eleven geographicCoverage elements, each giving one point
-  as its boundingCoordinates, west equal to east and north equal to south: "ABUR: Arroyo Burro Reef
-  is located on the Santa Barbara Channel near the mouth of Arroyo Burro Creek and Beach. Depth
-  ranges from 5.4 to 7 meters." at -119.7445915, 34.400275; "AHND: Arroyo Hondo Reef is located on
-  the Santa Barbara Channel near the east end of Gaviota State Park, CA. Depth ranges from -4.3m to
-  -6.6 meters." at -120.1426165, 34.471817; "AQUE: Arroyo Quemada Reef: Arroyo Quemada Reef depth
-  range from 5.4 m to 10.7 m. Reference on Land is close to US101/Arroyo Quemada Ln." at
-  -120.11905, 34.46774988; "BULL: Builto: Bulito has three permanent transect: Transect I, III, VI.
-  Depth Range from -5.5 to -7.3. Reference on land is close to Ranch Real road and Hollister Ranch
-  road crossing section." at -120.33349, 34.45850533; "CARP: Carpinteria Reef is located on the
-  Santa Barbara Channel offshore of the Carpinteria Salt Marsh. Depth range is from -2.2 to -8.8
-  meters" at -119.5416933, 34.3916319; "GOLB: Goleta Bay is located on the Santa Barbara Channel
-  east of Goleta Pier. Depth range is -4.2 to -5 meters." at -119.8221, 34.4137165; "IVEE: Isla
-  Vista (IV) Reef is located on the Santa Barbara Channel near the University of California Santa
-  Barbara, CA. Depth range is from -8.2 to -8.8 meters." at -119.85755, 34.402783; "MOHK: Mohawk
-  Reef: Mohawk Reef depth ranges from 4.5m to 6.0 m. Reference on land is Mohawk Rd / Edgewater
-  Way." at -119.72957, 34.3940708; "NAPL: Naples Reef is located on the Santa Barbara Channel near
-  the community of Naples and Dos Pueblos Canyon, Santa Barbara County, CA. Depth ranges from -5.9
-  to -13.4 meters." at -119.95154, 34.4221216; "SCDI: Santa Cruz Island, Diablo; Depth ranges from
-  -5.2 to -11.9 meters" at -119.75763, 34.05865; and "SCTW: Santa Cruz Island, Twin Harbor West;
-  Depth ranges from -2.7 to -7.8 meters" at -119.71513, 34.0444335. Its temporalCoverage runs from
-  2002-08-14 to 2026-01-20; the DATE_LOCAL values of the file run from 2002-08-14 to 2026-01-27 in
-  the copy retrieved 2026-09-19. The abstract states the cadence as "Two submersible temperature
-  loggers, sampling every 30 minutes and offset from each other by 15 minutes, are deployed so that
-  data is recorded every 15 minutes at each site." The SITE attribute's definition states "Depth of
-  temperature logger at each site varies from 4.95 to 8.15 meters.", and the methods state "Two
-  temperature loggers were deployed at each site at a depth of approximately 7 m (MLLW), and
-  fastened to permanent rebar stakes on the seafloor with two cable ties." The dataset's place
-  keywords name "Arroyo Burro", "Arroyo Hondo", "Arroyo Quemada", "Bullito", "Carpinteria", "Goleta
-  Bay", "Isla Vista", "Mohawk", "Naples", "Santa Cruz Island, Diablo" and "Santa Cruz Island, Twin
-  Harbor West"
+  "SBC LTER: Reef: Bottom Temperature: Continuous water temperature, ongoing since 2000", the
+  dataset's title; "To examine temporal and spatial patterns of temperature in giant kelp forests,
+  SBC has measured ambient water temperature at nine reef sites located along the mainland coast of
+  the Santa Barbara Channel and at two sites on the north side Santa Cruz Island beginning in 2000."
+  and "Two submersible temperature loggers, sampling every 30 minutes and offset from each other by
+  15 minutes, are deployed so that data is recorded every 15 minutes at each site.", the abstract;
+  "Submersible temperature loggers (Tidbit, Onset Computer Corporation, Bourne MA) were used to
+  measure bottom temperature at nine coastal reef and two island sites in the Santa Barbara Channel,
+  CA." and "Two temperature loggers were deployed at each site at a depth of approximately 7 m
+  (MLLW), and fastened to permanent rebar stakes on the seafloor with two cable ties.", the methods;
+  "Bottom water temperature, all years" and "Continous temperature at permanent reef sites", the
+  entityName and the entityDescription of the EML's one dataTable;
+  "ABUR: Arroyo Burro Reef is located on the Santa Barbara Channel near the mouth of Arroyo Burro
+  Creek and Beach. Depth ranges from 5.4 to 7 meters." at -119.7445915, 34.400275; "AHND: Arroyo
+  Hondo Reef is located on the Santa Barbara Channel near the east end of Gaviota State Park, CA.
+  Depth ranges from -4.3m to -6.6 meters." at -120.1426165, 34.471817; "AQUE: Arroyo Quemada Reef:
+  Arroyo Quemada Reef depth range from 5.4 m to 10.7 m. Reference on Land is close to US101/Arroyo
+  Quemada Ln." at -120.11905, 34.46774988; "BULL: Builto: Bulito has three permanent transect:
+  Transect I, III, VI. Depth Range from -5.5 to -7.3. Reference on land is close to Ranch Real road
+  and Hollister Ranch road crossing section." at -120.33349, 34.45850533; "CARP: Carpinteria Reef is
+  located on the Santa Barbara Channel offshore of the Carpinteria Salt Marsh. Depth range is from
+  -2.2 to -8.8 meters" at -119.5416933, 34.3916319; "GOLB: Goleta Bay is located on the Santa
+  Barbara Channel east of Goleta Pier. Depth range is -4.2 to -5 meters." at -119.8221, 34.4137165;
+  "IVEE: Isla Vista (IV) Reef is located on the Santa Barbara Channel near the University of
+  California Santa Barbara, CA. Depth range is from -8.2 to -8.8 meters." at -119.85755, 34.402783;
+  "MOHK: Mohawk Reef: Mohawk Reef depth ranges from 4.5m to 6.0 m. Reference on land is Mohawk Rd /
+  Edgewater Way." at -119.72957, 34.3940708; "NAPL: Naples Reef is located on the Santa Barbara
+  Channel near the community of Naples and Dos Pueblos Canyon, Santa Barbara County, CA. Depth
+  ranges from -5.9 to -13.4 meters." at -119.95154, 34.4221216; "SCDI: Santa Cruz Island, Diablo;
+  Depth ranges from -5.2 to -11.9 meters" at -119.75763, 34.05865; and "SCTW: Santa Cruz Island,
+  Twin Harbor West; Depth ranges from -2.7 to -7.8 meters" at -119.71513, 34.0444335, the
+  geographicDescription and the boundingCoordinates of each of the eleven geographicCoverage elements
+  in the dataset's coverage, each giving one point, west equal to east and north equal to south;
+  "2002-08-14" to "2026-01-20", the beginDate and endDate of the dataset's temporalCoverage; "Name
+  of field site. Depth of temperature logger at each site varies from 4.95 to 8.15 meters. See
+  enumerated list for site-specific depths." over the codes and definitions "ABUR" "Arroyo Burro",
+  "AHND" "Arroyo Hondo", "AQUE" "Arroyo Quemada", "BULL" "Bulito", "CARP" "Carpinteria", "GOLB"
+  "Goleta Bay", "IVEE" "Isla Vista", "MOHK" "Mohawk", "NAPL" "Naples", "SCDI" "Santa Cruz Island,
+  Diablo" and "SCTW" "Santa Cruz Island, Twin Harbor West Reef", the SITE attribute's definition and
+  its enumerated list; "Arroyo Burro", "Arroyo Hondo", "Arroyo Quemada", "Bullito", "Carpinteria",
+  "Goleta Bay", "Isla Vista", "Mohawk", "Naples", "Santa Cruz Island, Diablo" and "Santa Cruz
+  Island, Twin Harbor West", the dataset's place keywords; and DATE_LOCAL values from 2002-08-14 to
+  2026-01-27, the data rows of Bottom_temp_all_years_20260129.csv in the copy retrieved 2026-09-19
 coverage_stated_at: >-
-  The span of the held copy apart, it is stated in the EML named in access,
-  https://cn.dataone.org/cn/v2/object/ plus the
-  percent-encoded identifier
-  https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/33: the dataset's abstract element
-  states the nine-and-two sentence; the dataset's coverage element states the eleven
-  geographicDescriptions with their boundingCoordinates, and the temporalCoverage; the data rows of
-  Bottom_temp_all_years_20260129.csv state the span of the copy; the abstract
-  states the cadence sentence; the dataTable's attributeList states the SITE definition and the
-  dataset's methods element the deployment sentence; and the dataset's keywordSet whose
-  keywordThesaurus is "Santa Barbara Coastal LTER Places", in which every keyword carries
-  keywordType "place", states the place keywords (retrieved 2026-09-19)
+  The EML named in access, https://cn.dataone.org/cn/v2/object/ plus the percent-encoded identifier
+  https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/33, states every quotation in
+  coverage: the dataset's title element the title; the dataset's abstract element the two sentences
+  quoted next; the dataset's methods element the two after those; the entityName and
+  entityDescription elements of the EML's one dataTable the two after those; the dataset's coverage
+  element the eleven geographicDescriptions with their boundingCoordinates, and the
+  temporalCoverage; the attributeList of that dataTable the SITE attributeDefinition, and the code and the
+  definition of each codeDefinition in that attribute's enumeratedDomain; and the dataset's
+  keywordSet whose keywordThesaurus is "Santa Barbara Coastal LTER Places", in which every keyword
+  carries keywordType "place", the place keywords. A line break inside a quotation, with the spaces
+  beside it, is entered as one space. The data rows of Bottom_temp_all_years_20260129.csv state the
+  span of the held copy (retrieved 2026-09-19; the title, the methods sentence on the nine coastal
+  reef and two island sites, the entityName and entityDescription, the SITE attributeDefinition
+  whole and its codeDefinitions, 2026-10-26)
 retrieved: 2026-09-19
 fetch_script: src/fetch/sbc_lter_bottom_temperature.py
 file: null
 transcribed_from: null
+derived_from: null
 topics:
   - ocean-climate/temperature
   - ocean-climate/heatwaves
@@ -201,6 +307,9 @@ sites:
   - sbc_lter.napl
   - sbc_lter.scdi
   - sbc_lter.sctw
+site_key:
+  - file: Bottom_temp_all_years_20260129.csv
+    column: SITE
 references: []
 human_task: null
 ---
