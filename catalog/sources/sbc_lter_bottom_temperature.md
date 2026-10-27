@@ -15,6 +15,42 @@ citations:
       Environmental Data Initiative, the publisher the EML names: the whole of the 217-byte
       text/plain body it answers with HTTP 200, under no heading and with no trailing newline; the
       same URL with ?style=ESIP answers the same 217 bytes (2026-10-26)
+  - as_printed: >-
+      Reed D and Miller R (2026) SBC LTER: Reef: Bottom Temperature: Continuous water temperature,
+      ongoing since 2000. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=DRYAD, the same service: the
+      whole of the 206-byte text/plain body it answers with HTTP 200, with no trailing newline
+      (2026-10-26)
+  - as_printed: >-
+      @misc{knb-lter-sbc.13.33, author={Daniel C Reed and Robert J Miller}, title={{SBC LTER: Reef:
+      Bottom Temperature: Continuous water temperature, ongoing since 2000. ver 33}}, year={2026},
+      publisher={Environmental Data Initiative}, doi={10.6073/pasta/e565d409b63f20c768133c653ccdb2d7},
+      url={https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7}, note = {Type: dataset} }
+    stated_at: >-
+      https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=BIBTEX, the same service: the
+      whole of the 406-byte text/plain body it answers with HTTP 200. As printed it carries a line
+      break and four spaces of indent before each of author, title, year, publisher, doi, url and
+      note, and a line break before the closing brace, each entered here as one space; it has no
+      trailing newline (2026-10-26)
+  - as_printed: >-
+      Reed, D, R. Miller. 2026. SBC LTER: Reef: Bottom Temperature: Continuous water temperature,
+      ongoing since 2000 ver 33. Environmental Data Initiative.
+      https://doi.org/10.6073/pasta/e565d409b63f20c768133c653ccdb2d7. Accessed 2026-10-26.
+    stated_at: >-
+      https://sbclter.msi.ucsb.edu/data/catalog/package/?package=knb-lter-sbc.13, the steward's
+      package page, under the heading "Data Set Citation". The HTML that page sends leaves the
+      element <div id="field-citation"> empty; https://sbclter.msi.ucsb.edu/assets/js/package/summary.js
+      fills it in the browser from https://cite.edirepository.org/cite/knb-lter-sbc.13.33?style=RAW,
+      after https://sbclter.msi.ucsb.edu/assets/js/package/main.js has read
+      https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/newest. The text was taken out
+      in Chrome as the textContent of the shown copy of that element, the DOI being the text of a
+      link to the same URL. The trailing "Accessed" value is the date of the view, 2026-10-26 on
+      this one. In Chrome the pasta URL answered HTTP 200; under the User-Agent
+      "kelpcatalog/knb-lter-sbc.13" it answered HTTP 403 with a text/plain body beginning "User
+      'EDI-078e6e3cee4f7f2812f150701da9351acb51e089 (Public Access)' is not authorized to execute
+      service method 'readMetadata'." (2026-10-26)
 status: VERIFIED
 tier: FETCHED
 access:
@@ -175,6 +211,8 @@ coverage: >-
   measure bottom temperature at nine coastal reef and two island sites in the Santa Barbara Channel,
   CA." and "Two temperature loggers were deployed at each site at a depth of approximately 7 m
   (MLLW), and fastened to permanent rebar stakes on the seafloor with two cable ties.", the methods;
+  "Bottom water temperature, all years" and "Continous temperature at permanent reef sites", the
+  entityName and the entityDescription of the EML's one dataTable;
   "ABUR: Arroyo Burro Reef is located on the Santa Barbara Channel near the mouth of Arroyo Burro
   Creek and Beach. Depth ranges from 5.4 to 7 meters." at -119.7445915, 34.400275; "AHND: Arroyo
   Hondo Reef is located on the Santa Barbara Channel near the east end of Gaviota State Park, CA.
@@ -210,15 +248,17 @@ coverage_stated_at: >-
   The EML named in access, https://cn.dataone.org/cn/v2/object/ plus the percent-encoded identifier
   https://pasta.lternet.edu/package/metadata/eml/knb-lter-sbc/13/33, states every quotation in
   coverage: the dataset's title element the title; the dataset's abstract element the two sentences
-  quoted next; the dataset's methods element the two after those; the dataset's coverage element
-  the eleven geographicDescriptions with their boundingCoordinates, and the temporalCoverage; the
-  attributeList of the EML's one dataTable the SITE attributeDefinition, and the code and the
+  quoted next; the dataset's methods element the two after those; the entityName and
+  entityDescription elements of the EML's one dataTable the two after those; the dataset's coverage
+  element the eleven geographicDescriptions with their boundingCoordinates, and the
+  temporalCoverage; the attributeList of that dataTable the SITE attributeDefinition, and the code and the
   definition of each codeDefinition in that attribute's enumeratedDomain; and the dataset's
   keywordSet whose keywordThesaurus is "Santa Barbara Coastal LTER Places", in which every keyword
   carries keywordType "place", the place keywords. A line break inside a quotation, with the spaces
   beside it, is entered as one space. The data rows of Bottom_temp_all_years_20260129.csv state the
   span of the held copy (retrieved 2026-09-19; the title, the methods sentence on the nine coastal
-  reef and two island sites, the SITE attributeDefinition whole and its codeDefinitions, 2026-10-26)
+  reef and two island sites, the entityName and entityDescription, the SITE attributeDefinition
+  whole and its codeDefinitions, 2026-10-26)
 retrieved: 2026-09-19
 fetch_script: src/fetch/sbc_lter_bottom_temperature.py
 file: null
